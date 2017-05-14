@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -std=c11 -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/keygen.dir/Main.c.o  -o bin/keygen libkeygen-options.a libkeygen-output.a keygen/lib/libkeygen.a -lssl -lcrypto -lz 

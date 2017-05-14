@@ -1,0 +1,90 @@
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr><td bgcolor=@@@TITLEBAR@@@>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0"><tr>
+<td nowrap bgcolor=@@@TITLEBAR@@@ width="30%">
+@@@STARTFOLDERFORM@@@
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@>
+<B>@@@FOLDERPOPUP@@@</B></FONT></td>
+@@@ENDFORM@@@
+<td nowrap bgcolor=@@@TITLEBAR@@@ align="center">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>@@@QUOTAUSAGE@@@</B></font>&nbsp;</td>
+<td nowrap bgcolor=@@@TITLEBAR@@@ align="right" width="30%">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>@@@NUMBEROFMESSAGES@@@</B></font>&nbsp;</td>
+</tr></table>
+
+</td></tr><tr><td bgcolor=@@@MENUBAR@@@>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0"><tr>
+@@@STARTPAGEFORM@@@
+<td nowrap bgcolor=@@@MENUBAR@@@>
+@@@LEFTMENUBARLINKS@@@</td>
+<td nowrap bgcolor=@@@MENUBAR@@@ align="right">
+@@@RIGHTMENUBARLINKS@@@</td>
+</tr></table>
+
+</td></tr></table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr>
+<td>@@@PAGECONTROL@@@</td>
+<td align="right" nowrap>@@@EVENTREMINDER@@@</td>
+</tr></table>
+
+@@@CONTROLBAR1START@@@
+<table border="0" align="center" width="95%" cellpadding="1" cellspacing="0"><tr>
+<td width="35%" bgcolor=@@@MENUBAR@@@ nowrap>@@@SEARCH1@@@</td>
+<td align="center" bgcolor=@@@MENUBAR@@@ nowrap>@@@PAGEMENU1@@@</td>
+<td width="35%" align="right" bgcolor=@@@MENUBAR@@@ nowrap>@@@MOVECONTROLS1@@@</td>
+</tr></table>
+<br>
+@@@CONTROLBAR1END@@@
+
+<table border="0" align="center" width="95%" cellpadding="1" cellspacing="1" bgcolor=@@@BACKGROUND@@@>
+@@@HEADERS@@@
+</table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<td width="35%">@@@PAGECONTROL@@@</td>
+<td align="center">@@@TOPCONTROL@@@</td>
+<td width="35%">&nbsp;</td>
+</table>
+
+@@@CONTROLBAR2START@@@
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr>
+<td width="35%" bgcolor=@@@MENUBAR@@@ nowrap>@@@SEARCH2@@@</td>
+<td align="center" bgcolor=@@@MENUBAR@@@ nowrap>@@@PAGEMENU2@@@</td>
+<td width="35%" align="right" bgcolor=@@@MENUBAR@@@ nowrap>@@@MOVECONTROLS2@@@</td>
+</tr></table>
+@@@CONTROLBAR2END@@@
+
+@@@ENDFORM@@@
+
+<script language="JavaScript">
+<!--
+   function CheckAll()
+   {
+      for (var i=0;i<document.pageform.elements.length;i++)
+      {
+         var e = document.pageform.elements[i];
+         if (e.type == 'checkbox' && e.name != 'allbox')
+            e.checked = document.pageform.allbox.checked;
+      }
+   }
+   function OpConfirm(text, conf)
+   {
+      for (var i=0;i<document.pageform.elements.length;i++)
+      {
+         var e = document.pageform.elements[i];
+         if (e.type == 'checkbox' && e.name != 'allbox' && e.checked == 1 ) {
+            if (conf) {
+               return confirm(text);
+            } else {
+               return 1;
+            }
+         }
+      }
+      return false;
+   }
+//-->
+</script>

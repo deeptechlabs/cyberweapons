@@ -1,0 +1,36 @@
+25@@@header@@@include@@@X\-Spam\-Level: \*\*\*\*\*\*\*\*@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@virus.*mail|virus.*alert|virus.*found@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@sampledesktopdesktopsampledesktopsamplesample@@@move@@@DELETE@@@1
+30@@@subject@@@include@@@\s{12}@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@new photos from my party@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@bill caricature@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@A.*powful tool@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@A.*humour game@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@Attachments Deleted by MailScan@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@Worm Klez.E immunity@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@Verba Volant@@@move@@@mail-trash@@@1
+30@@@subject@@@include@@@viagra|xanax|vicodin|zoloft|citrate|penis@@@move@@@mail-trash@@@1
+30@@@from@@@include@@@anti.*virus|amavisd|interscan|mailsqr@@@move@@@mail-trash@@@1
+30@@@from@@@include@@@\s{7}@@@move@@@mail-trash@@@1
+30@@@from@@@include@@@[a-z][0-9]{6,11}@(yahoo|hotmail).com@@@move@@@mail-trash@@@1
+30@@@from@@@include@@@[a-z][0-9]{6,11}@pchome.com.tw@@@move@@@mail-trash@@@1
+40@@@header@@@include@@@X-Mailer: [a-z]{6,}$@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@sample.exe@@@move@@@DELETE@@@1
+50@@@attfilename@@@include@@@patch.exe|sulfnbk.exe|Mmsn_offline.htm@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@GuessGame.html|GuessGame.vbe@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@readme.eml|readme.exe|readme.com|readme.wav@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@navidad.exe|Emanuel.exe|creative.exe@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@zipped_files.exe|myromeo.exe|xromeo.exe@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@anti_cih.exe|avp_updates.exe|qi_test.exe@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@seicho-no-ie.exe|MATCHER.EXE@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@NakedWife.EXE|MYBABYPIC.EXE|SAMPLE.EXE@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@FLCSS.EXE|NARCISSUS.EXE|INETD.EXE@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@ANNAKOURNIKOVA.JPG.VBS|Joke.vbs@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@BINLADEN_BRASIL.EXE|STOPTERRORISTS.EXE@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@Anti_TeRRoRisM.exe|WTC.exe@@@move@@@mail-trash@@@1
+50@@@attfilename@@@include@@@antraxinfo.vbs|GONE.SCR|CHRISTMAS.EXE@@@move@@@mail-trash@@@1
+60@@@textcontent@@@include@@@viagra|xanax|vicodin|zoloft|citrate|penis@@@move@@@mail-trash@@@1
+60@@@textcontent@@@include@@@Welcome to Yahoo! Mail@@@move@@@mail-trash@@@1
+60@@@textcontent@@@include@@@I want a good job,I must support my parents.@@@move@@@mail-trash@@@1
+60@@@textcontent@@@include@@@I send you this file in order to have your advice@@@move@@@mail-trash@@@1
+60@@@textcontent@@@include@@@Te mando este archivo para que me des tu punto de vista@@@move@@@mail-trash@@@1

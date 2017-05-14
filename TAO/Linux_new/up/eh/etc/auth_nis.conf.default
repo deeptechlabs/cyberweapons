@@ -1,0 +1,22 @@
+#
+# config file for auth_nis.pl
+#
+
+#
+# ypcat_passwd
+# -----------------------------------------------------------------------
+# the command that gets passwd map from NIS/YP server
+#
+# platform        ypcat command
+# -------------   --------------------------------
+# NIS/YP          /usr/bin/ypcat passwd|
+# NIS+            /usr/bin/niscat passwd.org_dir|
+
+# yppoppassd_host
+# yppoppassd_port
+# -----------------------------------------------------------------------
+# the server and port where yppoppassd is
+
+ypcat_passwd		/usr/bin/ypcat passwd|
+yppoppassd_host		127.0.0.1
+yppoppassd_port		106

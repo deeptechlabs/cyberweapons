@@ -1,0 +1,41 @@
+background="#FFFFFF"
+titlebar="#002266"
+titlebar_text="#EAEDF4"
+menubar="#F4F2EF"
+window_dark="#DDDDDD"
+window_light="#EEEEEE"
+attachment_dark="#DDDDDD"
+attachment_light="#E5E5E5"
+columnheader="#BFCCD7"
+tablerow_dark="#E6E6E6"
+tablerow_light="#EEEEEE"
+fontface="Verdana, Arial, Helvetica, sans-serif"
+###STARTSTYLESHEET###
+<!--
+body 
+{  
+    background-image: url(@@@BG_URL@@@);
+    background-repeat: @@@BGREPEAT@@@;
+    font-family: Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@
+}
+th   {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; font-weight: bold; background-color: #D3DCE3;}
+td   {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@;}
+td.msgbody   {  font-family: @@@FIXEDFONT@@@ Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@;}
+form   {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@}
+h1   {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 16pt; font-weight: bold}
+A:link    {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: #305080}
+A:visited {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: #305080}
+A:hover   {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: red}
+A.msgbody:link    {  font-family: @@@FIXEDFONT@@@ Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: blue}
+A.msgbody:visited {  font-family: @@@FIXEDFONT@@@ Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: blue}
+A.msgbody:hover   {  font-family: @@@FIXEDFONT@@@ Verdana, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: red}
+A:link.nav {  font-family: Verdana, Arial, Helvetica, sans-serif; color: #000000}
+A:visited.nav {  font-family: Verdana, Arial, Helvetica, sans-serif; color: #000000}
+A:hover.nav {  font-family: Verdana, Arial, Helvetica, sans-serif; color: red;}
+.nav {  font-family: Verdana, Arial, Helvetica, sans-serif; color: #000000}
+.medtext { font-size: @@@MEDFONTSIZE@@@;}
+.smalltext { font-size: @@@SMALLFONTSIZE@@@;}
+.smallblacktext { font-size: @@@SMALLFONTSIZE@@@; color: #000000}
+.smallcolortext { font-size: @@@SMALLFONTSIZE@@@; color: #c00000}
+.hilighttext { font-style: normal; font-weight: bold; background-color: #DCDCDC; }
+-->

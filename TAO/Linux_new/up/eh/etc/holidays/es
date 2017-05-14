@@ -1,0 +1,126 @@
+1@@@.*,01,01,.*@@@0@@@0@@@Año Nuevo@@@0
+2@@@.*,01,06,.*@@@0@@@0@@@Día de Reyes@@@0
+3@@@.*,01,07,.*@@@0@@@0@@@Día de la Simpatía@@@0
+4@@@.*,01,10,.*@@@0@@@0@@@Día del Trabajador del Transporte@@@0
+5@@@.*,01,19,.*@@@0@@@0@@@Día Internacional de la Religión@@@0
+6@@@.*,01,23,.*@@@0@@@0@@@Día Mundial de la Libertad@@@0
+7@@@.*,01,25,.*@@@0@@@0@@@Día Nacional del Reportero Gráfico@@@0
+8@@@.*,02,02,.*@@@0@@@0@@@Primera Fundación de Buenos Aires@@@0
+9@@@.*,02,14,.*@@@0@@@0@@@Día de los enamorados - San Valentín@@@0
+10@@@.*,02,15,.*@@@0@@@0@@@Día del Redactor publicitario@@@0
+11@@@.*,02,22,.*@@@0@@@0@@@Día de la Antártida Argentina@@@0
+12@@@.*,02,24,.*@@@0@@@0@@@Día del Mecánico@@@0
+13@@@.*,03,01,.*@@@0@@@0@@@Día del Transporte@@@0
+14@@@.*,03,04,.*@@@0@@@0@@@Día del Hermano@@@0
+15@@@.*,03,04,.*@@@0@@@0@@@Día Universal de la Oración@@@0
+16@@@.*,03,08,.*@@@0@@@0@@@Día Internacional de la Mujer@@@0
+17@@@.*,03,12,.*@@@0@@@0@@@Día del Escudo Nacional@@@0
+18@@@.*,03,15,.*@@@0@@@0@@@Día Internacional de los Derechos del Consumidor@@@0
+19@@@.*,03,16,.*@@@0@@@0@@@Día de la Seguridad@@@0
+20@@@.*,03,19,.*@@@0@@@0@@@Día del Artesano@@@0
+21@@@.*,03,21,.*@@@0@@@0@@@Comienza el Otoño@@@0
+22@@@.*,03,24,.*@@@0@@@0@@@Día del Diplomático@@@0
+23@@@.*,03,25,.*@@@0@@@0@@@Día del Niño por nacer@@@0
+24@@@.*,03,26,.*@@@0@@@0@@@Día Mundial del Teatro@@@0
+25@@@.*,03,27,.*@@@0@@@0@@@Día del Aeronáutico@@@0
+26@@@.*,03,31,.*@@@0@@@0@@@Día Nacional del Agua@@@0
+27@@@.*,04,0[1-7],Sun@@@0@@@0@@@Día de la Novia@@@0
+28@@@.*,04,02,.*@@@0@@@0@@@Día del Veterano de Guerra@@@0
+29@@@.*,04,03,.*@@@0@@@0@@@Día de la Modelo Publicitaria@@@0
+30@@@.*,04,07,.*@@@0@@@0@@@Día de la Salud@@@0
+31@@@.*,04,09,.*@@@0@@@0@@@Día del Investigador@@@0
+32@@@.*,04,12,.*@@@0@@@0@@@Día del Decorador@@@0
+33@@@.*,04,13,.*@@@0@@@0@@@Día de la Numismática@@@0
+34@@@.*,04,13,.*@@@0@@@0@@@Día del Kinesiólogo@@@0
+35@@@.*,04,14,.*@@@0@@@0@@@Día de las Américas @@@0
+36@@@.*,04,2[2-8],Sun@@@0@@@0@@@Día del Matrimonio@@@0
+37@@@.*,04,26,.*@@@0@@@0@@@Día del Librero@@@0
+38@@@.*,04,29,.*@@@0@@@0@@@Día del Animal@@@0
+39@@@.*,05,01,.*@@@0@@@0@@@Día de los Trabajadores@@@0
+40@@@.*,05,02,.*@@@0@@@0@@@Día de la Cruz Roja Internacional@@@0
+41@@@.*,05,02,.*@@@0@@@0@@@Día de los Medios de Comunicación@@@0
+42@@@.*,05,06,.*@@@0@@@0@@@Día del Taxista@@@0
+43@@@.*,05,07,.*@@@0@@@0@@@Día del Gráfico@@@0
+44@@@.*,05,08,.*@@@0@@@0@@@Día de Nuestra Señora de Luján@@@0
+45@@@.*,05,12,.*@@@0@@@0@@@Día del Nieto@@@0
+46@@@.*,05,14,.*@@@0@@@0@@@Día del Futbolista@@@0
+47@@@.*,05,19,.*@@@0@@@0@@@Día Nacional de la Escarapela@@@0
+48@@@.*,05,21,.*@@@0@@@0@@@Día del Ahijado@@@0
+49@@@.*,05,25,.*@@@0@@@0@@@Día de la Revolución de Mayo@@@0
+50@@@.*,05,26,.*@@@0@@@0@@@Día del Visitador Médico@@@0
+51@@@.*,05,27,.*@@@0@@@0@@@Día del Marketing@@@0
+52@@@.*,05,29,.*@@@0@@@0@@@Día del ejército Argentino@@@0
+53@@@.*,06,((1[5-9])|(2[0-1])),Sun@@@0@@@0@@@Día del Padre@@@0
+54@@@.*,06,01,.*@@@0@@@0@@@Día Internacional de la Infancia@@@0
+55@@@.*,06,02,.*@@@0@@@0@@@Día del Bombero Argentino@@@0
+56@@@.*,06,02,.*@@@0@@@0@@@Día del graduado de Ciencias Económicas@@@0
+57@@@.*,06,03,.*@@@0@@@0@@@Día del Inmigrante Italiano@@@0
+58@@@.*,06,05,.*@@@0@@@0@@@Día Mundial del Medio Ambiente@@@0
+59@@@.*,06,06,.*@@@0@@@0@@@Día de la Empresa@@@0
+60@@@.*,06,07,.*@@@0@@@0@@@Día del Periodista@@@0
+61@@@.*,06,11,.*@@@0@@@0@@@Día del Vecino@@@0
+62@@@.*,06,13,.*@@@0@@@0@@@Día del Escritor@@@0
+63@@@.*,06,15,.*@@@0@@@0@@@Día del Libro@@@0
+64@@@.*,06,20,.*@@@0@@@0@@@Día de la Bandera@@@0
+65@@@.*,06,21,.*@@@0@@@0@@@Comienzo del Invierno@@@0
+66@@@.*,06,24,.*@@@0@@@0@@@Día del Cantor Nacional@@@0
+67@@@.*,07,01,.*@@@0@@@0@@@Semana de la Dulzura@@@0
+68@@@.*,07,03,.*@@@0@@@0@@@Día del Locutor@@@0
+69@@@.*,07,09,.*@@@0@@@0@@@Día de la Declaración de la Independencia Nacional@@@0
+70@@@.*,07,20,.*@@@0@@@0@@@Día Internacional del Amigo@@@0
+71@@@.*,07,28,.*@@@0@@@0@@@Día del Personal Doméstico@@@0
+72@@@.*,08,((0[8-9])|(1[0-4])),Sun@@@0@@@0@@@Día del Niño@@@0
+73@@@.*,08,((1[5-9])|(2[0-1])),Sun@@@0@@@0@@@Día del Abuelo@@@0
+74@@@.*,08,02,.*@@@0@@@0@@@Día del Gastronómico@@@0
+75@@@.*,08,06,.*@@@0@@@0@@@Día del Veterinario@@@0
+76@@@.*,08,07,.*@@@0@@@0@@@Día del Agrónomo@@@0
+77@@@.*,08,17,.*@@@0@@@0@@@Día del Libertador. Fallecimiento del Gral. José de San Martín@@@0
+78@@@.*,08,25,.*@@@0@@@0@@@Día del Peluquero@@@0
+79@@@.*,08,26,.*@@@0@@@0@@@Día del Actor@@@0
+80@@@.*,08,29,.*@@@0@@@0@@@Día del Abogado@@@0
+81@@@.*,08,31,.*@@@0@@@0@@@Día de la Partera@@@0
+82@@@.*,09,0[1-7],Sun@@@0@@@0@@@Día de la Tía@@@0
+83@@@.*,09,04,.*@@@0@@@0@@@Día de la Secretaria@@@0
+84@@@.*,09,11,.*@@@0@@@0@@@Día del Maestro@@@0
+85@@@.*,09,17,.*@@@0@@@0@@@Día del Psicólogo@@@0
+86@@@.*,09,21,.*@@@0@@@0@@@Comienza la Primavera@@@0
+87@@@.*,09,21,.*@@@0@@@0@@@Día del Estudiante@@@0
+88@@@.*,09,24,.*@@@0@@@0@@@Día del Novio@@@0
+89@@@.*,09,24,.*@@@0@@@0@@@Día del Colectivero@@@0
+90@@@.*,09,27,.*@@@0@@@0@@@Día Mundial del Turismo@@@0
+91@@@.*,10,((1[5-9])|(2[0-1])),Sun@@@0@@@0@@@Día de la Madre@@@0
+92@@@.*,10,02,.*@@@0@@@0@@@Día Universal del Niño@@@0
+93@@@.*,10,02,.*@@@0@@@0@@@Día del encargado de edificios@@@0
+94@@@.*,10,03,.*@@@0@@@0@@@Día del Odontólogo@@@0
+95@@@.*,10,10,.*@@@0@@@0@@@Día del Arbitro@@@0
+96@@@.*,10,12,.*@@@0@@@0@@@Día de la Raza - Descubrimiento de América@@@0
+97@@@.*,10,20,.*@@@0@@@0@@@Día Nacional de la flor@@@0
+98@@@.*,10,21,.*@@@0@@@0@@@Día del Seguro@@@0
+99@@@.*,10,24,.*@@@0@@@0@@@Día de las Naciones Unidas@@@0
+100@@@.*,10,31,.*@@@0@@@0@@@Día del Ahorro@@@0
+101@@@.*,10,31,.*@@@0@@@0@@@Halloween - Noche de brujas@@@0
+102@@@.*,11,((0[8-9])|(1[0-4])),Sun@@@0@@@0@@@Día de la Abuela@@@0
+103@@@.*,11,02,.*@@@0@@@0@@@Día de los Muertos por la Patria@@@0
+104@@@.*,11,07,.*@@@0@@@0@@@Día del Canillita@@@0
+105@@@.*,11,08,.*@@@0@@@0@@@Día del Arquitecto@@@0
+106@@@.*,11,10,.*@@@0@@@0@@@Día de la Tradición@@@0
+107@@@.*,11,11,.*@@@0@@@0@@@San Martín de Tours, Patrono de la Ciudad de Buenos Aires@@@0
+108@@@.*,11,21,.*@@@0@@@0@@@Día del Enfermero@@@0
+109@@@.*,11,22,.*@@@0@@@0@@@Día de la Flor Nacional - el Ceibo@@@0
+110@@@.*,12,03,.*@@@0@@@0@@@Día del Médico@@@0
+111@@@.*,12,05,.*@@@0@@@0@@@Día del Ama de Casa@@@0
+112@@@.*,12,08,.*@@@0@@@0@@@Día de la Inmaculada Concepción@@@0
+113@@@.*,12,09,.*@@@0@@@0@@@Día de la Informática@@@0
+114@@@.*,12,21,.*@@@0@@@0@@@Comienza el Verano@@@0
+115@@@.*,12,24,.*@@@0@@@0@@@Noche Buena@@@0
+116@@@.*,12,25,.*@@@0@@@0@@@Navidad@@@0
+117@@@.*,12,28,.*@@@0@@@0@@@Día de los Inocentes@@@0
+118@@@.*,12,31,.*@@@0@@@0@@@Noche Vieja@@@0
+119@@@.*,easter,easter,.*@@@0@@@0@@@Pascuas@@@0
+120@@@.*,easter,easter+60,.*@@@0@@@0@@@Corpus Christi@@@0@@@@@@none
+121@@@.*,easter,easter-2,.*@@@0@@@0@@@Viernes Santo@@@0
+122@@@.*,easter,easter-3,.*@@@0@@@0@@@Jueves Santo@@@0
+123@@@.*,easter,easter-47,.*@@@0@@@0@@@Carnaval@@@0
+124@@@.*,easter,easter-7,.*@@@0@@@0@@@Domingo de Ramos@@@0
+125@@@.*,easter,easter-8,.*@@@0@@@0@@@Sábado de Gloria@@@0
+126@@@.*,easter,easter-46,.*@@@0@@@0@@@Miércoles de Cenizas@@@0

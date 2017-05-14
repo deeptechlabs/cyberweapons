@@ -1,0 +1,44 @@
+<BR>
+<BR>
+<table border="0" align="center" width="90%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>Import Address Book</B></font>
+</td><td bgcolor=@@@TITLEBAR@@@ align="right">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>@@@FREESPACE@@@ Available</B></font>
+</td></tr>
+<tr><td colspan="2" align="center" bgcolor=@@@WINDOW_LIGHT@@@>
+
+<table border="0" align="center" width="85%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@WINDOW_LIGHT@@@>
+<BR>Outlook Express 5 and Netscape Mail can export their address books in a
+format known as CSV, or Comma Separated Values.  @@@NAME@@@ can import these files
+into your personal Address Book to save you hours of tediously typing them in
+by hand.
+<ul>
+<li> In Netscape, open your address book, and select File-&gt;Export, then
+under "Save as type:" choose "Comma Separated (*.csv)." <BR><BR>
+<li> For Outlook Express, in the main Outlook Express window. choose
+File-&gt;Export-&gt;Address Book, and select the export type "Text file." Make
+sure that the Name and E-mail fields come first, which is the default setting.
+</ul>
+</td></tr></table>
+
+@@@STARTIMPORTFORM@@@
+@@@MUARADIOGROUP@@@
+<BR>
+@@@IMPORTFILEFIELD@@@
+</td></tr>
+<tr><td colspan=2 bgcolor=@@@WINDOW_LIGHT@@@>&nbsp;</td></tr>
+<tr><td width="50%" align="right" bgcolor=@@@WINDOW_LIGHT@@@>
+@@@IMPORTBUTTON@@@ &nbsp;&nbsp;
+</td>
+@@@ENDFORM@@@
+@@@STARTCANCELFORM@@@
+<td width="50%" bgcolor=@@@WINDOW_LIGHT@@@>
+&nbsp;&nbsp;@@@CANCELBUTTON@@@
+</td></tr>
+<tr><td colspan=2 bgcolor=@@@WINDOW_LIGHT@@@>&nbsp;</td></tr>
+</table>
+@@@ENDFORM@@@

@@ -1,0 +1,13 @@
+<BR><BR><BR><BR><BR><BR><BR>
+<table border="0" align="center" width="40%" cellpadding="1" cellspacing="1">
+@@@STARTSAVEDFORM@@@
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>Preference Saved</B></font>
+</td></tr><tr><td align="center" bgcolor=@@@WINDOW_LIGHT@@@>
+<BR>Preferences successfully saved.<BR>&nbsp;<BR>
+@@@CONTINUEBUTTON@@@
+<BR>&nbsp;
+</td></tr>
+@@@ENDFORM@@@
+</table>

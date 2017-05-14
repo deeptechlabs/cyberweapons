@@ -1,0 +1,79 @@
+#
+# config file for auth_unix.pl
+#
+
+# passwdfile_plaintext
+# -----------------------------------------------------------------------
+# the plaintext file containing all usernames and related uid, gid, 
+# homedir, shell info. The default is /etc/passwd on most unix systems.
+
+# passwdfile_encrypted
+# -----------------------------------------------------------------------
+# the file containing all usernames and corresponding encrypted passwords.
+#
+# platform                         passwdfile encrypted
+# ------------------------------   --------------------------------
+# Shadow Passwd (linux/solaris)    /etc/shadow
+# FreeBSD                          /etc/master.passwd
+# Mac OS X                         /usr/bin/nidump passwd .|
+# NIS/YP                           /usr/bin/ypcat passwd|
+# NIS+                             /usr/bin/niscat passwd.org_dir|
+# else...                          /etc/passwd
+
+# passwdmkdb
+# -----------------------------------------------------------------------
+# The command executed after any password modification to update the 
+# changes of passwdfile to passwd database.
+#
+# platform                         passwd mkdb command
+# ------------------------------   --------------------------------
+# Free/Net/OpenBSD                 /usr/sbin/pwd_mkdb
+# Linux/Solaris	                   none
+# else...                          none
+
+# check_expire
+# -----------------------------------------------------------------------
+# if this option is set to yes, openwebmail will check if an account
+# is expired when the user logins. valid value: yes, no
+#
+# This feature may only work on *bsd, linux or solaris.
+
+# check_nologin
+# -----------------------------------------------------------------------
+# if this option is set to yes and file /etc/nologin does exist,
+# then all account will be suspended. valid value: yes, no
+
+# check_shell
+# -----------------------------------------------------------------------
+# if the user's shell is not listed in /etc/shells,
+# then this user won't be able to login. valid value: yes, no
+
+# check_cobaltuser
+# -----------------------------------------------------------------------
+# check if this user has valid homedir on cobalt server 
+#
+# this check_coblatuser option takes advantage of the fact that 
+# cobalt puts all users under the following directory : /home/sites/FQDN_HOST/users
+#
+# Use this module in conjunction with allowed_serverdomain to lock
+# down which domains actually have access to webmail.
+#
+# ***** IMPORTANT *****
+#
+# If you are going to use this option for check then the webmail on your
+# Cobalt MUST be accessed via the the FQDN 'http://HOST.DOMAIN.COM'.
+# Using 'http://DOMAIN.COM' will fail the user security check.
+
+# change_smbpasswd
+# -----------------------------------------------------------------------
+# if this option is set to yes, openwebmail will also change the
+# smbpasswd after changing the unix password successfully
+
+passwdfile_plaintext	/etc/passwd
+passwdfile_encrypted	/etc/master.passwd
+passwdmkdb		/usr/sbin/pwd_mkdb
+check_expire		no
+check_nologin		no
+check_shell		no
+check_cobaltuser	no
+change_smbpasswd	no

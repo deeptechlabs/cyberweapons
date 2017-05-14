@@ -1,0 +1,186 @@
+@@@STARTCOMPOSEFORM@@@
+<table border="0" align="center" width="90%" cellpadding="1" cellspacing="1">
+<tr><td colspan="2" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>Compose Message</B></font>
+</td></tr><tr><td colspan="2" bgcolor=@@@MENUBAR@@@>
+<table width="100%" cellspacing="0" cellpadding="0"><tr>
+<td>@@@BACKTOFOLDER@@@</td>
+<td align="right">
+<table border="0" cellpadding="0" cellspacing="0"><tr>
+<td>Charset for composing: </td>
+<td>@@@CONVTOMENU@@@&nbsp;</td>
+</tr></table>
+</td>
+</tr></table>
+</td></tr><tr><td colspan="2">&nbsp;</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ nowrap>
+<B>From:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+<table border="0" cellpadding="0" cellspacing="1"><tr>
+<td>@@@FROMMENU@@@&nbsp;&nbsp;</td>
+<td><B>Priority:</B></td>
+<td>@@@PRIORITYMENU@@@</td>
+</tr></table>
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ nowrap>
+<B>To:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@TOFIELD@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ nowrap>
+<B>CC:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@CCFIELD@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ nowrap>
+<B>BCC:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@BCCFIELD@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ nowrap>
+<B>Reply-To:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+<table border="0" cellpadding="0" cellspacing="0"><tr>
+<td>@@@REPLYTOFIELD@@@&nbsp;&nbsp;</td>
+<td><B>Confirm Reading</B></td>
+<td>@@@CONFIRMREADINGCHECKBOX@@@</td>
+</tr></table>
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ nowrap>
+<B>Attachment:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@ATTACHMENTFIELD@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ nowrap>
+<B>Subject:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+<table border="0" cellpadding="0" cellspacing="0"><tr>
+<td>@@@SUBJECTFIELD@@@&nbsp;&nbsp;</td>
+<td><B>Backup sent message</B></td>
+<td>@@@BACKUPSENTMSGCHECKBOX@@@</td>
+</tr></table>
+</td></tr>
+
+<tr><td colspan="2" bgcolor=@@@WINDOW_LIGHT@@@ class=msgbody>
+@@@BUTTONSBEFORE@@@
+@@@BODYAREA@@@
+@@@BUTTONSAFTER@@@
+</td></tr>
+
+@@@ENDFORM@@@<!-- End of message composition form -->
+@@@STARTSPELLCHECKFORM@@@
+@@@ENDFORM@@@
+@@@STARTCANCELFORM@@@
+@@@ENDFORM@@@
+</table>
+
+<script language="JavaScript">
+<!--
+   if (self.document.composeform.to.value == "") {
+      self.document.composeform.to.focus();
+   } else {
+      self.document.composeform.body.focus();
+   }
+
+   function OnLoadHandler()
+   {
+      document.composeform.to.focus();
+   }
+
+   function GoAddressWindow(toccbcc)
+   {
+      var url = "@@@ABOOKURL@@@?action=addressbook&sessionid=@@@SESSIONID@@@&form=composeform&field=" + toccbcc+"&abook_keyword=@@@ABOOKKEYWORD@@@&abook_searchtype=@@@ABOOKSEARCHTYPE@@@";
+
+      // double escape, one for url, one for elist value (see openwebmail-abook.pl)
+      if (toccbcc == "to")
+         url += "&elist=" + escape(escape(document.composeform.to.value));
+      else if (toccbcc == "cc")
+         url += "&elist=" + escape(escape(document.composeform.cc.value));
+      else if (toccbcc == "bcc")
+         url += "&elist=" + escape(escape(document.composeform.bcc.value));
+
+      var hWnd = window.open(url,"_addressbook","width=@@@ABOOKWIDTH@@@,height=@@@ABOOKHEIGHT@@@,resizable=yes,scrollbars=yes");
+      if ((document.window != null) && (!hWnd.opener))
+         hWnd.opener = document.window;
+   }
+
+   function DeleteAttFile(deleteattfile)
+   {
+      document.composeform.deleteattfile.value=deleteattfile;
+      bodygethtml();
+      document.composeform.submit();
+   }
+
+   function msgfmthelp()
+   {
+      alert("Sorry, IE 5.5+(Windows) or Mozilla 1.3+(all OS) is required for HTML composing support.");
+   }
+
+   function msgfmtchangeconfirm()
+   {
+      if ((document.composeform.msgformat.value == "html" ||
+           document.composeform.msgformat.value == "both") &&
+          document.composeform.newmsgformat.value == "text" ) {
+         if (confirm("The HTML data format will be lost after the conversion, are you sure to change to Text mode?")) {
+            bodygethtml();
+            document.composeform.submit();
+            return true;
+         } else {
+            document.composeform.newmsgformat.value = document.composeform.msgformat.value;
+            return false;
+         }
+      }
+      if (document.composeform.msgformat.value == "text" &&
+          (document.composeform.newmsgformat.value == "html" ||
+           document.composeform.newmsgformat.value == "both") ) {
+         document.composeform.submit();
+         return true;
+      }
+      // else always follow new format but no need to submit to CGI
+      document.composeform.msgformat.value = document.composeform.newmsgformat.value;
+      return true;
+   }
+
+   function bodygethtml()
+   {
+      if (document.composeform.msgformat.value == "html" ||
+          document.composeform.msgformat.value == "both") {
+         document.composeform.body.value = editor.getHTML();
+      }
+   }
+
+   function bodysethtml()
+   {
+      if (document.composeform.msgformat.value == "html" ||
+          document.composeform.msgformat.value == "both") {
+         editor.setHTML(document.composeform.body.value);
+      }
+   }
+
+   function spellcheck()
+   {
+      bodygethtml();
+      document.spellcheckform.sessionid.value = document.composeform.sessionid.value;
+      document.spellcheckform.form.value = "composeform";
+      document.spellcheckform.field.value = "body";
+      document.spellcheckform.string.value = document.composeform.body.value;
+      window.open('','_spellcheck','width=600,height=400,top=40,left=80,scrollbars=yes,resizable=yes,location=no');
+      return true;
+   }
+
+   function sendcheck()
+   {
+      if (document.composeform.to.value == ""
+       && document.composeform.cc.value == ""
+       && document.composeform.bcc.value == "" ) {
+         alert("Please specify the receiver before sending.");
+         return false;
+      }
+      if (document.composeform.subject.value == "" ) {
+         return(confirm("This message has no subject, do you still want to send it?"));
+      }
+      return true;
+   }
+//-->
+</script>

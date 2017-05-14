@@ -1,0 +1,84 @@
+<center> 
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Day View</b></font>
+</td><td align="right" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>@@@DAYDIFF@@@&nbsp;</b></font>
+</td></tr>
+@@@STARTFORM@@@
+<tr><td bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td><td bgcolor=@@@MENUBAR@@@ align="right">
+@@@DATESELMENU@@@&nbsp;
+</td></tr>
+@@@ENDFORM@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+</table>
+
+<table width=95% cellpadding=1 cellspacing=0><tr bgcolor=@@@TABLEROW_DARK@@@>
+<td nowrap align=center>@@@PREV_LINK@@@ <b>@@@CALTITLE@@@</b> @@@NEXT_LINK@@@</td>
+</tr></table>
+&nbsp;
+
+<table border=0 width=95%><tr><td align="right" valign=top width=85%>
+
+<table border=0 cellspacing=0 cellpadding=0 width=100% bgcolor=@@@BACKGROUND@@@>
+@@@CALENDARITEMS@@@
+</table>
+
+</td><td bgcolor=@@@WINDOW_DARK@@@ align=center valign=top width=15%>
+
+<table border=0 cellspacing=2 width=100%>
+@@@STARTADDITEMFORM@@@
+<tr><td colspan=2 align=center><B>Add Calendar Entry</B></td></tr>
+<tr><td colspan=2 nowrap>@@@ITEMDATEMENU@@@</td></tr>
+<tr><td colspan=2 nowrap>@@@STRINGFIELD@@@</td></tr>
+<tr><td width=25% nowrap>Start time</td><td nowrap>@@@STARTHOURMINMENU@@@</td></tr>
+<tr><td width=25% nowrap>End time</td><td nowrap>@@@ENDHOURMINMENU@@@</td></tr>
+<tr><td colspan=2 nowrap>@@@FREQMENU@@@</td></tr>
+<tr><td colspan=2 nowrap>@@@THISANDNEXTNDAYSCHECKBOX@@@ This day and next @@@NDAYSFIELD@@@ days</td></tr>
+<tr><td colspan=2 nowrap>@@@MONTHFREQMENU@@@</td></tr>
+<tr><td colspan=2 nowrap>@@@EVERYYEARCHECKBOX@@@ Every year</td></tr>
+<tr><td colspan=2 nowrap>Make this item a hyperlink to</td></tr>
+<tr><td colspan=2 nowrap>@@@LINKFIELD@@@</td></tr>
+@@@EMAILSTART@@@
+<tr><td colspan=2 nowrap>Send notification email to</td></tr>
+<tr><td colspan=2 nowrap>@@@EMAILFIELD@@@</td></tr>
+@@@EMAILEND@@@
+<tr><td nowrap>Event Color</td><td nowrap>@@@EVENTCOLORMENU@@@</td></tr>
+<tr><td colspan=2>@@@COLORTABLE@@@</td></tr>
+<tr><td colspan=2 align=center>@@@SUBMITBUTTON@@@</td></tr>
+@@@ENDFORM@@@
+</table>
+
+</td></tr></table>
+</center>
+
+<style type="text/css">
+<!--
+#mypopupCal{ position: absolute;
+             visibility: hidden;
+             background-color: @@@MENUBAR@@@;
+             layer-background-color: @@@MENUBAR@@@; }
+.stylecal { font-size: 9pt; color: #000000; }
+A.notmonth:link { font-size: 9pt; color: #cccccc; }
+A.notmonth:visited { font-size: 9pt; color: #cccccc; }
+A.notmonth:hover { font-size: 9pt; color: #ff0000; }
+A.stylecal:link { font-size: 9pt; color: #000000; }
+A.stylecal:visited { font-size: 9pt; color: #000000; }
+A.stylecal:hover { font-size: 9pt; color: #ff0000; }
+// -->
+</style>
+
+<div id="mypopupCal"></div>
+
+<script language="JavaScript">
+<!--
+   function submit_changed_dateselform()
+   {
+      document.dateselform.submit();
+   }
+//-->
+</script>

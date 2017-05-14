@@ -1,0 +1,31 @@
+
+This directory is used to put virtualdomain specific configuration file.
+
+For example, you have 3 virtual domains on the same server:
+
+  sample1.com
+  sample2.com
+  sample3.com
+
+You may create 3 files with the above names in this directory by copying 
+openwebmail.conf to this direcotry and have different settings for each
+virtualdomain. 
+
+Openwebmail will read openwebmail.conf first, then use the following 
+information to find which virtualdomain configuration file to load:
+
+1. the domainname in the URL
+2. the domainname in the loginame 
+
+Settings in virtualdomain specific configuration will override the same one
+in openwebmail.conf and openwebmail.conf.default
+
+ps: Sometimes your server may be know as more than one names for each virtual domain.
+    eg: www.sample1.com, webmail.sameple1.com, mail.sample1.com
+    You can define the domainname_equiv in openwebmail.conf like this
+
+    <domainname_equiv>
+    sample1.com:	www.sample1.com, webmail.sameple1.com, mail.sample1.com
+    sample2.com:	www.sample2.com, webmail.sameple2.com, mail.sample2.com
+    sample3.com:	www.sample3.com, webmail.sameple3.com, mail.sample3.com
+    </domainname_equiv>

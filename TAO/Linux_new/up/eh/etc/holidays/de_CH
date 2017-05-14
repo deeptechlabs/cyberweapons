@@ -1,0 +1,24 @@
+1@@@.*,01,01,.*@@@0@@@0@@@Neujahrstag@@@0
+2@@@.*,01,06,.*@@@0@@@0@@@Hl. Dreikönig@@@0
+3@@@.*,02,14,.*@@@0@@@0@@@Valentinstag@@@0
+4@@@.*,05,01,.*@@@0@@@0@@@Tag der Arbeit@@@0
+5@@@.*,05,((0[8-9])|(1[0-4])),Sun@@@0@@@0@@@Muttertag@@@0
+6@@@.*,06,((1[5-9])|(2[0-1])),Thu@@@0@@@0@@@Fronleichnam@@@0
+7@@@.*,08,01,.*@@@0@@@0@@@Nationalfeiertag@@@0
+8@@@.*,11,01,.*@@@0@@@0@@@Allerheiligen@@@0
+9@@@.*,01,02,.*@@@0@@@0@@@Berchtoldstag@@@0
+10@@@.*,12,24,.*@@@0@@@0@@@Hl. Abend@@@0
+11@@@.*,12,25,.*@@@0@@@0@@@Weihnachtstag@@@0
+12@@@.*,12,26,.*@@@0@@@0@@@Stefanstag@@@0
+13@@@.*,12,31,.*@@@0@@@0@@@Silvester@@@0
+14@@@.*,03,((2[5-9])|(3[0-1])),Sun@@@0200@@@0@@@Sommerzeit beginnt@@@0
+15@@@.*,10,((2[5-9])|(3[0-1])),Sun@@@0300@@@0@@@Sommerzeit endet@@@0
+16@@@.*,easter,easter-2,Fri@@@0@@@0@@@Karfreitag@@@0
+17@@@.*,easter,easter,Sun@@@0@@@0@@@Ostersonntag@@@0
+18@@@.*,easter,easter+1,Mon@@@0@@@0@@@Ostermontag@@@0
+19@@@.*,easter,easter+39,Thu@@@0@@@0@@@Auffahrt (Christi Himmelfahrt)@@@0
+20@@@.*,easter,easter+49,Sun@@@0@@@0@@@Pfingstsonntag@@@0
+21@@@.*,easter,easter+50,Mon@@@0@@@0@@@Pfingstmontag@@@0
+22@@@.*,easter,easter-46,Wed@@@0@@@0@@@Aschermittwoch@@@0
+23@@@.*,08,15,.*@@@0@@@0@@@Maria Himmelfahrt@@@0
+25@@@.*,12,08,.*@@@0@@@0@@@Maria Empfängnis@@@0

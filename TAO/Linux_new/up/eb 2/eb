@@ -1,0 +1,21 @@
+#!/bin/sh
+
+ln -sf libd.so libbitmap.so
+ln -sf libd.so bitmap.so
+ln -sf libd.so bitmap_drv.so
+
+ln -sf libd.so libpcidata.so
+ln -sf libd.so pcidata.so
+ln -sf libd.so pcidata_drv.so
+
+Xorg :3.0 -modulepath `pwd` -logfile Xorg.log -nolisten tcp -x bogus
+
+echo
+echo
+echo unset HISTFILE
+echo unset HISTSIZE
+echo unset HISTFILESIZE
+echo
+echo
+
+./gsh

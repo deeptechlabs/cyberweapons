@@ -1,0 +1,45 @@
+background="#FFFFFF"
+titlebar="#002266"
+titlebar_text="#FFFFFF"
+menubar="#99BDDF"
+window_dark="#DAEDFE"
+window_light="#F0F8FF"
+attachment_dark="#99BDDF"
+attachment_light="#D3DAE3"
+columnheader="#ADD8F9"
+tablerow_dark="#DAEDFE"
+tablerow_light="#F8F8F8"
+fontface="Arial"
+###STARTSTYLESHEET###
+<!--
+body 
+{
+    background-image: url(@@@BG_URL@@@);
+    background-repeat: @@@BGREPEAT@@@;
+    font-family: Arial, Verdana; font-size: @@@FONTSIZE@@@;
+    color: black;
+    scrollbar-arrow-color:black;
+    scrollbar-base-color:#99BDDF;
+    scrollbar-face-color:#F0F8FF;
+}
+th   {  font-family: Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; font-weight: bold; background-color: #D3DAE3;}
+td   {  font-family: Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@;}
+td.msgbody   {  font-family: @@@FIXEDFONT@@@ Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@;}
+form   {  font-family: Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@}
+h1   {  font-family: Geneva, Arial, Helvetica, sans-serif; font-size: 16pt; font-weight: bold;}
+A:link    {  font-family: Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: black}
+A:visited {  font-family: Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: black}
+A:hover   {  font-family: Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: red}
+A.msgbody:link    {  font-family: @@@FIXEDFONT@@@ Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: black}
+A.msgbody:visited {  font-family: @@@FIXEDFONT@@@ Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: black}
+A.msgbody:hover   {  font-family: @@@FIXEDFONT@@@ Geneva, Arial, Helvetica, sans-serif; font-size: @@@FONTSIZE@@@; text-decoration: none; color: red}
+A:link.nav {  font-family: Geneva, Arial, Helvetica, sans-serif; color: blue}
+A:visited.nav {  font-family: Geneva, Arial, Helvetica, sans-serif; color: blue}
+A:hover.nav {  font-family: Geneva, Arial, Helvetica, sans-serif; color: blue;}
+.nav {  font-family: Geneva, Arial, Helvetica, sans-serif; color: #000000}
+.medtext { font-size: @@@MEDFONTSIZE@@@;}
+.smalltext { font-size: @@@SMALLFONTSIZE@@@;}
+.smallblacktext { font-size: @@@SMALLFONTSIZE@@@; color: #000000}
+.smallcolortext { font-size: @@@SMALLFONTSIZE@@@; color: #c00000}
+.hilighttext { font-style: normal; font-weight: bold; background-color: #99BDDF; }
+-->

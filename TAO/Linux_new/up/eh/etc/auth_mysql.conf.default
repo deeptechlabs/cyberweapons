@@ -1,0 +1,19 @@
+#
+# config file for auth_mysql.pl
+#
+
+sqlhost		HOSTNAME	# MYSQL SERVER IP
+sqluser		USER		# MYSQL USER
+sqlpwd		PASSWD		# MYSQL PASSWORD
+
+auth_db		auth_db
+auth_table	auth_user
+
+field_username	username
+field_password	password
+field_realname	realname
+field_uid	u_id
+field_gid	g_id
+field_home	home
+
+pass_type	cleartxt	# crypt, cleartxt, md5

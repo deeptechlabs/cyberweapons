@@ -1,0 +1,116 @@
+<table border="0" align="center" width="90%" cellpadding="0" cellspacing="0">
+<tr><td colspan="4" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Edit Mail Filter</b></font>
+</td><td nowrap colspan="6" bgcolor=@@@TITLEBAR@@@ align="right">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b> @@@FREESPACE@@@ Available</b></font>
+</td></tr><tr><td colspan="9" bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td></tr><tr><td colspan="9">&nbsp;</td></tr>
+<tr>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Count</B>&nbsp;</td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Priority</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Rules</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Inc/Exc</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>String</B> (click to edit)</td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Action</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Destination</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Enable</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Action</B>
+</td></tr>
+@@@STARTFILTERFORM@@@
+<tr>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+&nbsp;
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@PRIORITYMENU@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@RULEMENU@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@INCLUDEMENU@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@TEXTFIELD@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@OPMENU@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@FOLDERMENU@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@ENABLECHECKBOX@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@ align=center>
+@@@ADDBUTTON@@@
+</td>
+</tr>
+@@@ENDFILTERFORM@@@
+
+@@@FILTERRULES@@@
+</table>
+<script language="JavaScript">
+<!--
+   function Update(priority,rules,include,text,op,destination,enable)
+   {
+      var i;
+      var quot=new RegExp("!QUOT!","g");
+      text=text.replace(quot, '"');
+
+      for (i=0; i<document.newfilter.priority.length; i++) {
+         if (document.newfilter.priority.options[i].value==priority) {
+            document.newfilter.priority.options[i].selected=true;
+            break;
+         }
+      }
+
+      for (i=0; i<document.newfilter.ruletype.length; i++) {
+         if (document.newfilter.ruletype.options[i].value==rules) {
+            document.newfilter.ruletype.options[i].selected=true;
+            break;
+         }
+      }
+
+      for (i=0; i<document.newfilter.include.length; i++) {
+         if (document.newfilter.include.options[i].value==include) {
+            document.newfilter.include.options[i].selected=true;
+            break;
+         }
+      }
+
+      document.newfilter.text.value = text;
+
+      for (i=0; i<document.newfilter.op.length; i++) {
+         if (document.newfilter.op.options[i].value==op) {
+            document.newfilter.op.options[i].selected=true;
+            break;
+         }
+      }
+
+      for (i=0; i<document.newfilter.destination.length; i++) {
+         if (document.newfilter.destination.options[i].value==destination) {
+            document.newfilter.destination.options[i].selected=true;
+            break;
+         }
+      }
+
+      if (enable == 1)
+      	document.newfilter.enable.checked = true;
+      else
+        document.newfilter.enable.checked = false;
+   }
+//-->
+</script>

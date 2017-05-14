@@ -1,0 +1,25 @@
+<table border="0" align="center" width="90%" cellpadding="1" cellspacing="0">
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>User History</B></font>
+</td></tr>
+<tr><td bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td></tr>
+</table>
+&nbsp;
+<table border="0" align="center" width="90%" cellspacing="0" cellpadding="0">
+<tr>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Time</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Client Address</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>User</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Event</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Description</B></td>
+</tr>
+@@@LOGINHISTORY@@@
+</table>

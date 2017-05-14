@@ -1,0 +1,16 @@
+#
+# config file for filelock.pl
+#
+
+# filelocktype
+# -----------------------------------------------------------------------
+# this can be either 'flock' or 'dotfile'
+#
+# Set this to 'dotfile' to use .lock file for filelock
+# 'dotfile' lock is only recommended if the mailspool or user's homedir 
+# are located on an remote nfs server and the lockd on your nfs server 
+# or client has problems
+#
+# ps: the freebsd/linux nfs may need 'dotlock'. solaris doesn't.
+
+filelocktype	flock

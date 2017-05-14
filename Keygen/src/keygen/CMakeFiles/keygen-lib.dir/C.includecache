@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/dendisuhubdy/dev/keygen/src/keygen/KeyGen.c
+keygen/KeyGen.h
+/Users/dendisuhubdy/dev/keygen/src/keygen/keygen/KeyGen.h
+string.h
+-
+stdbool.h
+-
+assert.h
+-
+openssl/rand.h
+-
+openssl/err.h
+-
+
+include/keygen/KeyGen.h
+stdint.h
+-
+stddef.h
+-
+

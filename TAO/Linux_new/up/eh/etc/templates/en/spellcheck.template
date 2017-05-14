@@ -1,0 +1,44 @@
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>Spell Check for @@@DICTIONARY@@@</B></font>
+</td></tr>
+<tr><td align="center" bgcolor=@@@WINDOW_LIGHT@@@>
+
+<table border="0" align="center" width="90%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@WINDOW_LIGHT@@@>
+<BR>A set of suggested replacements will be provided for each mis-spelled word.
+The user can choose one from them to replace the original word.
+If no suggested replacement is found or the user chooses "-manually fix-"
+and then clicks [Check Again], a text field will be available for user to
+input manually.
+If the user chooses "--Add to Dictionary--" and then clicks [Check Again], 
+the original word will be added to the user's personal dictionary.
+</td></tr>
+</table>
+<br>
+
+<table width="95%" bgcolor="#000000" border="0" cellpadding="0" cellspacing="1">
+@@@STARTSPELLCHECKFORM@@@
+<tr><td>
+<table width="100%" bgcolor=#FFFFFF border="0" cellpadding="2" cellspacing="1">
+<tr><td valign="top"><font size=-1>
+@@@WORDSHTML@@@
+</font></td></tr></table>
+</td></tr></table>
+
+<br>
+@@@CHECKAGAINBUTTON@@@
+@@@FINISHCHECKINGBUTTON@@@
+@@@EDITPERSDICTIONARYBUTTON@@@
+@@@CANCELBUTTON@@@
+<br><br>
+</td></tr>
+@@@ENDFORM@@@
+</table>
+
+<script language="JavaScript">
+<!--
+   self.focus();
+//-->
+</script>

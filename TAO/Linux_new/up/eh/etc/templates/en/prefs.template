@@ -1,0 +1,486 @@
+@@@STARTPREFSFORM@@@
+<table border="0" align="center" width="90%" cellpadding="1" cellspacing="0" bgcolor=@@@BACKGROUND@@@>
+<tr>
+<td nowrap bgcolor=@@@TITLEBAR@@@ width="30%">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>User Preference</B></font>
+<td nowrap bgcolor=@@@TITLEBAR@@@ align="center">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>@@@QUOTAUSAGE@@@</B></font>
+<td nowrap bgcolor=@@@TITLEBAR@@@ align="right" width="30%">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>@@@REALNAME@@@&nbsp;</B></font>
+</tr>
+<tr><td colspan="3" bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td></tr>
+</table>
+&nbsp;
+<table border="0" align="center" width="90%" cellpadding="1" cellspacing="1" bgcolor=@@@BACKGROUND@@@>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Personal Information</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@ @@@DESCWIDTH@@@>
+<B>Language:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@LANGUAGEMENU@@@&nbsp;Charset @@@CHARSETMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>TimeZone offset:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@TIMEOFFSETMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Daylight Saving Time:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DAYLIGHTSAVINGMENU@@@
+</td></tr>
+@@@WEBMAILSTART@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>From:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FROMEMAILMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Reply-to:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@REPLYTOFIELD@@@
+</td></tr>
+@@@FORWARDSTART@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Forward mail to:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FORWARDADDRESS@@@
+&nbsp;
+@@@KEEPLOCALCOPY@@@
+Keep local copy
+</td></tr>
+@@@FORWARDEND@@@
+@@@AUTOREPLYSTART@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Auto Reply:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@AUTOREPLYCHECKBOX@@@
+&nbsp;
+Subject:
+@@@AUTOREPLYSUBJECT@@@
+</td></tr>
+<tr><td colspan="2" align="center" bgcolor=@@@WINDOW_DARK@@@ class=msgbody>
+<B>Auto Reply Text (500 characters or less)</B><BR>
+@@@AUTOREPLYTEXT@@@
+</td></tr>
+@@@AUTOREPLYEND@@@
+<tr><td colspan="2" align="center" bgcolor=@@@WINDOW_DARK@@@ class=msgbody>
+<B>Signature (500 characters or less)</B><BR>
+@@@SIGAREA@@@
+<br>&nbsp;
+</td></tr>
+@@@WEBMAILEND@@@
+
+@@@FULLPREFSSTART@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Display Preference</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Style:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@STYLEMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Icon set:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@ICONSETMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Background image:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@ nowrap>
+@@@BACKGROUNDMENU@@@ <font size=-2>URL </font>@@@BGURLFIELD@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Background image repeated:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@BGREPEATCHECKBOX@@@<br>
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Font size:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FONTSIZEMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Date format:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DATEFORMATMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Hour format:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@HOURFORMATMENU@@@ hour
+</td></tr>
+
+@@@WEBMAILSTART@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Folder browsing</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Controlbar position in folder view:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@CTRLPOSITIONFOLDERVIEWMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Messages per page:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@HEADERSPERPAGE@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Field order:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FIELDORDERMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Default sort:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SORTMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Display mini search icon@@@MINISEARCHICON@@@:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@USEMINISEARCHICONCHECKBOX@@@<br>
+</td></tr>
+
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Message Operation</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Confirm before message move/copy:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@CONFIRMMSGMOVECOPY@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Default destination:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DEFAULTDESTINATIONMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Smart Destination:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SMARTDESTINATION@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>View next after message move/copy:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@VIEWNEXTAFTERMSGMOVECOPY@@@
+</td></tr>
+@@@AUTOPOP3START@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Auto fetch POP3 at login:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@AUTOPOP3CHECKBOX@@@ (wait @@@AUTOPOP3WAITMENU@@@ seconds)
+</td></tr>
+@@@AUTOPOP3END@@@
+@@@MOVEOLDSTART@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Move old msg to SAVED at logout:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@MOVEOLDMSGFROMINBOX@@@
+</td></tr>
+@@@MOVEOLDEND@@@
+
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Message Reading Options</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Controlbar position in message reading:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@CTRLPOSITIONMSGREADMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Default headers:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@HEADERSMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Use fixed-width font when reading messages:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@USEFIXEDFONT@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Use smiley images when reading messages:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@USESMILEICON@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Show HTML message as plain text:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SHOWHTMLASTEXT@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Show image attachment as link:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SHOWIMGASLINK@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Disable JavaScript inside message:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DISABLEJS@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Disable embed/object/applet tag inside message:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DISABLEEMBCODE@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Disable embedded links inside message:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DISABLEEMBLINKMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Send 'confirm reading' receipt:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SENDRECEIPTMENU@@@
+</td></tr>
+
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Message Replying Options</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Message format:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@MSGFORMATMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Size for mail edit area:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+Width @@@EDITCOLUMNSMENU@@@ Height @@@EDITROWSMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Send button position:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SENDBUTTONPOSITIONMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Reparagraph message before reply:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@REPARAGRAPHORIGMSG@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Reply with original message:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@REPLYWITHORIGMSGMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Backup outgoing message to SENT folder:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@BACKUPSENTMSG@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Charset for outgoing message:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SENDCHARSETMENU@@@
+</td></tr>
+
+@@@FILTERSTART@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Message Filtering Options</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Limit for repeated messages:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FILTERREPEATLIMIT@@@ &nbsp;( 0 means No check for repeatness )
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Filter msgs with email address in bad format:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FILTERBADADDRFORMAT@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Filter messages with faked SMTP:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FILTERFAKEDSMTP@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Filter messages with faked From field:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FILTERFAKEDFROM@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Filter msgs with faked exe content-type:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FILTERFAKEDEXECONTENTTYPE@@@
+</td></tr>
+@@@FILTEREND@@@
+
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>AddressBook Options</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Size for addressbook window:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+Width @@@ABOOKWIDTHMENU@@@ Height @@@ABOOKHEIGHTMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Addressbook button position:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@ABOOKBUTTONPOSITIONMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Addressbook default filter:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@ABOOKDEFAULTFILTER@@@
+</td></tr>
+@@@WEBMAILEND@@@
+
+@@@CALENDARSTART@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Calendar Options</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Default calendar view:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DEFAULTVIEWMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Holiday definition:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@HOLIDAYDEFMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Number of items in month view:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@MONTHVIEWNUMITEMSMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Week start:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@WEEKSTARTMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Start hour:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@STARTHOURMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>End hour:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@ENDHOURMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Time interval in dayview:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@INTERVALMENU@@@ minutes
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Show empty hours:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SHOWEMPTYHOURSCHECKBOX@@@
+</td></tr>
+@@@REMINDERSTART@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Event reminder check days:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@REMINDERDAYSMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Reminder for global calendar events:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@REMINDERFORGLOBALCHECKBOX@@@
+</td></tr>
+@@@REMINDEREND@@@
+@@@CALENDAREND@@@
+
+@@@WEBDISKSTART@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>WebDisk Options</B></td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Number of items in directory list:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DIRNUMITEMSMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Confirm before directory/file move/copy:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@CONFIRMFILEMOVECOPY@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Confirm before directory/file deletion:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@CONFIRMFILEDEL@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Confirm before directory/file compress:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@CONFIRMFILECOMPRESS@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Size for file edit window:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+Width @@@FILEEDITCOLUMNSMENU@@@ Height @@@FILEEDITROWSMENU@@@
+</td></tr>
+@@@WEBDISKEND@@@
+
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" bgcolor=@@@COLUMNHEADER@@@><B>Misc Options</B></td></tr>
+@@@WEBMAILSTART@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Use Regex in search and filterrule:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@REGEXMATCH@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Hide folder internal data:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@HIDEINTERNAL@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>NewMail sound notification:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@NEWMAILSOUNDMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>NewMail window notification:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+remaining @@@NEWMAILWINDOWTIMEMENU@@@ seconds &nbsp;( 0 means No window notification )
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Mail sent window notification:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+remaining @@@MAILSENTWINDOWTIMEMENU@@@ seconds &nbsp;( 0 means No window notification )
+</td></tr>
+@@@SPELLCHECKSTART@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Dictionary for spellcheck :</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@DICTIONARYMENU@@@
+</td></tr>
+@@@SPELLCHECKEND@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Trash mail reserved day(s):</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@RESERVEDDAYSMENU@@@
+</td></tr>
+@@@WEBMAILEND@@@
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Refresh Interval:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@REFRESHINTERVALMENU@@@
+</td></tr>
+<tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Session timeout:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@SESSIONTIMEOUTMENU@@@
+</td></tr>
+@@@FULLPREFSEND@@@
+
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2" align="center" bgcolor=@@@WINDOW_DARK@@@>
+<table><tr>
+<td>@@@SAVEBUTTON@@@</td>
+@@@ENDFORM@@@
+
+@@@FULLPREFSSTART@@@
+@@@STARTCANCELFORM@@@
+<td>@@@CANCELBUTTON@@@</td>
+@@@ENDFORM@@@
+@@@FULLPREFSEND@@@
+
+</tr></table></td></tr></table>
+
+<script language="JavaScript">
+<!--
+   function playsound(url, soundname) 
+   {
+      if (soundname != "NONE" ) {
+         window.open(url+soundname);
+      } 
+   }
+//-->
+</script>

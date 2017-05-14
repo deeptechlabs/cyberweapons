@@ -1,0 +1,106 @@
+<BR><BR><BR><BR><BR>
+
+<table border="1" align="center" width="90%" cellpadding="0" cellspacing="0"><tr><td>
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+
+<tr><td bgcolor=@@@TITLEBAR@@@ align="left">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3"><B>@@@VDOMAINTITLE@@@</B></FONT>
+</td></tr>
+<tr><td align="center" valign="middle" bgcolor=@@@WINDOW_LIGHT@@@>
+
+@@@STARTUSERFORM@@@
+<BR>
+
+<table align="center" border="0" cellspacing="0" cellpadding="1">
+<tr>
+<td align="right">User Name: </td>
+<td>@@@VUSER@@@&nbsp;@&nbsp;@@@DOMAINNAME@@@</td>
+<td width="10%">&nbsp;</td>
+<td align="right">Real Name: </td>
+<td>@@@REALNAME@@@</td>
+</tr>
+</table>
+</td></tr>
+
+<tr><td align="center" valign="middle" bgcolor=@@@WINDOW_LIGHT@@@>
+<hr width="90%">
+</td></tr>
+
+<tr><td align="center" valign="middle" bgcolor=@@@WINDOW_LIGHT@@@>
+<table align="center" border="0" cellspacing="0" cellpadding="1">
+<tr>
+<td align="right">@@@SETPASS@@@: </td>
+<td>@@@NEWPASSWORDFIELD@@@</td>
+<td width="10%" align="right">@@@CHKLOGIN@@@ </td>
+<td>Suspend Login @@@DISABLECHKLOGIN@@@</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td align="right">Confirm Password: </td>
+<td>@@@CONFIRMNEWPASSWORDFIELD@@@</td>
+<td width="10%" align="right">@@@CHKFWD@@@ </td>
+<td>Forward E-Mail to: </td>
+<td>@@@DIRECT@@@</td>
+</tr>
+</table>
+</td></tr>
+
+<tr><td align="center" valign="middle" bgcolor=@@@WINDOW_LIGHT@@@>
+<hr width="90%">
+</td></tr>
+
+<tr><td align="center" valign="middle" bgcolor=@@@WINDOW_LIGHT@@@>
+<table align="center" border="0" cellspacing="0" cellpadding="1" width="90%">
+<tr>
+ <td nowrap bgcolor=@@@COLUMNHEADER@@@><B>Email Address/Alias</B> (click to edit)</td>
+ <td nowrap bgcolor=@@@COLUMNHEADER@@@><B>Real Name</B></td>
+ <td align="center" bgcolor=@@@COLUMNHEADER@@@><B>Action</B></td>
+</tr>
+<tr>
+ <td nowrap bgcolor=@@@TABLEROW_LIGHT@@@>@@@EMAILFIELD@@@</td>
+ <td nowrap bgcolor=@@@TABLEROW_LIGHT@@@>@@@REALNAMEFIELD@@@</td>
+ <td align="center" bgcolor=@@@TABLEROW_LIGHT@@@>@@@ADDBUTTON@@@</td>
+</tr>
+@@@ALIASENTRIES@@@
+</table>
+</td></tr>
+
+<tr><td align="center" valign="middle" bgcolor=@@@WINDOW_LIGHT@@@>
+<hr width="90%">
+</td></tr>
+
+<tr><td align="center" valign="middle" bgcolor=@@@WINDOW_LIGHT@@@>
+<table align="center" border="0" cellspacing="0" cellpadding="1">
+<tr>
+<td>@@@CHANGEBUTTON@@@&nbsp;</td>
+@@@ENDFORM@@@
+@@@STARTDELFORM@@@
+<td>@@@DELETEBUTTON@@@&nbsp;</td>
+@@@ENDFORM@@@
+@@@STARTCANCELFORM@@@
+<td>@@@CANCELBUTTON@@@</td>
+@@@ENDFORM@@@
+</tr></table>
+</td></tr></table>
+</td></tr></table>
+
+
+<script language="JavaScript">
+<!--
+   document.userform.@@@FOCUS@@@.focus()
+
+   function AddMod()
+   {
+      document.userform.addmod.value = 1;
+   }
+   function Delete(aliasdel)
+   {
+      document.userform.aliasdel.value = aliasdel;
+   }
+   function Update(emailaddr, e_realnm)
+   {
+      document.userform.emailaddr.value = emailaddr;
+      document.userform.e_realnm.value = e_realnm;
+   }
+//-->
+</script>

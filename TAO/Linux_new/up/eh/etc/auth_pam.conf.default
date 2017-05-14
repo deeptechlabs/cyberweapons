@@ -1,0 +1,44 @@
+#
+# config file for auth_pam.pl
+#
+
+# servicename
+# -----------------------------------------------------------------------
+# service name for authentication in /etc/pam.conf
+# refer to http://www.fazekas.hu/~sini/neomail_pam/ for more detail
+
+# passwdfile_plaintext
+# -----------------------------------------------------------------------
+# the plaintext file containing all usernames
+
+# check_nologin
+# -----------------------------------------------------------------------
+# if this option is set to yes and file /etc/nologin does exist,
+# then all account will be suspended valid value: yes, no
+
+# check_shell
+# -----------------------------------------------------------------------
+# if the user's shell is not listed in /etc/shells,
+# then this user won't be able to login valid value: yes, no
+
+# check_cobaltuser
+# -----------------------------------------------------------------------
+# check if this user has valid homedir on cobalt server 
+#
+# this check_coblatuser option takes advantage of the fact that 
+# cobalt puts all users under the following directory : /home/sites/FQDN_HOST/users
+#
+# Use this module in conjunction with allowed_serverdomain to lock
+# down which domains actually have access to webmail.
+#
+# ***** IMPORTANT *****
+#
+# If you are going to use this option for check then the webmail on your
+# Cobalt MUST be accessed via the the FQDN 'http://HOST.DOMAIN.COM'.
+# Using 'http://DOMAIN.COM' will fail the user security check.
+
+servicename		openwebmail
+passwdfile_plaintext	/etc/passwd
+check_nologin		no
+check_shell		no
+check_cobaltuser	no

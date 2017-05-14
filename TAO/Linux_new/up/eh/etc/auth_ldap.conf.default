@@ -1,0 +1,10 @@
+#
+# config file for auth_ldap.pl
+#
+
+ldaphost	HOSTNAME	# LDAP SERVER IP
+ou		People          # LDAP ORGANIZATIONAL UNIT
+cn		USERNAME        # LDAP USER
+dc1		DC1             # FIRST DC
+dc2		DC2             # SECOND DC
+password	PASSWORD        # LDAP PASSWORD

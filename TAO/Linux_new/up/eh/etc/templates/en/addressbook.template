@@ -1,0 +1,56 @@
+@@@STARTADDRESSFORM@@@
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<tr><td colspan="4" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>@@@ADDRESSBOOKFOR@@@</B></font>
+</td></tr><tr>
+<td align="center" bgcolor=@@@WINDOW_LIGHT@@@>
+<input name="allbox" type="checkbox" value="1" onClick="CheckAll();">
+</td><td colspan="3" align="center" bgcolor=@@@WINDOW_LIGHT@@@ nowrap>
+@@@SEARCH@@@
+</td>
+</tr>
+<tr><td colspan="4" align="center">
+@@@BUTTONSBEFORE@@@
+</td></tr>
+@@@ADDRESSES@@@
+<tr><td colspan="4" align="center">
+@@@BUTTONSAFTER@@@
+</td></tr>
+</table>
+@@@HIDDENFIELDS@@@
+@@@ENDFORM@@@
+
+<script language="JavaScript">
+<!--
+   self.focus();
+   function CheckAll()
+   {
+      for (var i=0;i<document.addressbook.elements.length;i++) {
+         var e = document.addressbook.elements[i];
+         if (e.type == 'checkbox')
+            e.checked = document.addressbook.allbox.checked;
+      }
+   }
+   function Update(email)
+   {
+      // decode elist escaped in openwebmail-abook.pl
+      var addrlist=unescape(document.addressbook.elist.value);
+      // decode %unicode in string returned from previous unescape
+      addrlist=unescape(addrlist);
+
+      for (var i = 0; i < document.addressbook.elements.length; i++)
+      {
+         var e = document.addressbook.elements[i];
+         if ((e.name == "to" && e.checked) || e.value == email) {
+            if (addrlist)
+               addrlist += ",";
+            addrlist += e.value;
+         }
+      }
+      window.opener.document.@@@FORMNAME@@@.@@@FIELDNAME@@@.value = addrlist;
+      window.close();
+   }
+
+//-->
+</script>

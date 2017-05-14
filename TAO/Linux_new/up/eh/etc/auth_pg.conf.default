@@ -1,0 +1,21 @@
+#
+# config file for auth_pg.pl
+#
+
+#
+# CREATE TABLE "users" (
+#	"Uid"		serial,
+#	"Gid"		int4,
+#	"uname"		char(64),  -- username
+#	"upass"		char(32),  -- password (cleartxt, MD5 or crypt)
+#	"rname"		char(), -- realname
+#	"MailDir"	char(64) -- Home Dir
+#	);
+#
+
+PgHost		localhost
+PgPort		5432
+PgBase 		DATABASE_NAME
+PgUser		USERNAME
+PgPass 		PASSWORD
+PgPassType	crypt 		# crypt, md5, cleartxt

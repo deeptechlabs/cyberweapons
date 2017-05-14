@@ -1,0 +1,38 @@
+<center>
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<tr><td colspan="2" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Year View</b></font>
+</td></tr>
+@@@STARTFORM@@@
+<tr><td bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td><td bgcolor=@@@MENUBAR@@@ align="right">
+@@@DATESELMENU@@@&nbsp;
+</td></tr>
+@@@ENDFORM@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+</table>
+
+<table width=95% cellpadding=1 cellspacing=0><tr bgcolor=@@@TABLEROW_DARK@@@>
+<td nowrap align=center>@@@PREV_LINK@@@ <b>@@@CALTITLE@@@</b> @@@NEXT_LINK@@@</td>
+</tr></table>
+&nbsp;
+
+<table width=95% border=0 bgcolor=@@@BACKGROUND@@@ cellspacing=1><tr nowrap>
+@@@MONTH1@@@
+@@@MONTH2@@@
+@@@MONTH3@@@
+@@@MONTH4@@@
+</tr><tr nowrap>
+@@@MONTH5@@@
+@@@MONTH6@@@
+@@@MONTH7@@@
+@@@MONTH8@@@
+</tr><tr nowrap>
+@@@MONTH9@@@
+@@@MONTH10@@@
+@@@MONTH11@@@
+@@@MONTH12@@@
+</tr></table>
+</center>

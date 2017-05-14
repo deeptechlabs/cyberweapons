@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/dendisuhubdy/dev/keygen/src/Output.c
+keygen/Output.h
+/Users/dendisuhubdy/dev/keygen/src/keygen/Output.h
+stdbool.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+
+include/keygen/KeyGen.h
+stdint.h
+-
+stddef.h
+-
+
+include/keygen/Options.h
+getopt.h
+-
+stdbool.h
+-
+keygen/KeyGen.h
+include/keygen/keygen/KeyGen.h
+
+include/keygen/Output.h
+keygen/Options.h
+include/keygen/keygen/Options.h
+keygen/KeyGen.h
+include/keygen/keygen/KeyGen.h
+

@@ -1,0 +1,11 @@
+<table border="0" align="center" width="98%" cellpadding="1" cellspacing="0">
+<tr><td rowspan=2 width="90%" bgcolor=@@@WINDOW_DARK@@@>
+@@@HEADERS@@@
+</td><td width="10%" nowrap valign="top" align="right" bgcolor=@@@WINDOW_DARK@@@>
+&nbsp;
+</td></tr><tr><td width="10%" nowrap valign="bottom" align="right" bgcolor=@@@WINDOW_DARK@@@>
+&nbsp;
+</td></tr><tr><td colspan="2" width="100%" bgcolor=@@@WINDOW_LIGHT@@@ class=msgbody>
+@@@BODY@@@
+</td></tr>
+</table>

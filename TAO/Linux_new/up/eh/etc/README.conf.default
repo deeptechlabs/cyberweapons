@@ -1,0 +1,43 @@
+
+                       ABOUT *CONF.DEFAULT FILES
+
+There are many *.conf.default and *.conf file in this directory.
+Some of them are for openwebmail system and otheres are for openwebmail modules.
+
+openwebmail.conf.*, sites.conf/*, users.conf/*, smtpauth.conf
+-------------------------------------------------------------
+The openwebmail system will try to load conf file in the following order
+1. openwebmail.conf.default
+2. openwebmail.conf
+3. smtpauth.conf (username/password to pass smtp authentication)
+3. sites.conf/sitename (site specific config file)
+4. users.conf/username (user specific config file)
+
+While openwebmail.conf.default is a complete list of openwebmail system options,
+the openwebmail.conf may contain the options to be overridden.
+
+If your openwebmail is running in persistent mode,
+openwebmail.conf.default will be loaded for only once, 
+but other conf file will be reloaded by openwebmail if they have been changed.
+
+
+auth_*.conf.default, dbm.conf.default, filelock.conf.default, suid.conf.default
+------------------------------------------------------------------------------
+Other *.conf.default files contain default setting for openwebmail modules,
+you may write your own *.conf to replace the *.conf.default.
+The module will try to load *.conf instead of *.conf.default if *.conf exist.
+
+For example. the auth_unix.conf.default is config file for auth/auth_unix.pl,
+you may copy it to auth_unix.conf and modify it for yourr need.
+Your auth_unix.conf must contains all options from auth_unix.conf.default, 
+as openwebmail won't load auth_unix.conf.default if auth_unix.conf is found.
+
+If your openwebmail is running in persistent mode, 
+all modules will be loaded for only once, so your modification to auth_*.conf
+,dbm.conf or filelock.conf won't been seen by openwebmail modules if openwebmail
+has been loaded in memory.
+
+A simple solution for this is running 'touch openwebmail*pl'
+to update the timestamp of openwebmail scripts,
+so the speedycgi backend will reload the script from disk again,
+then the modified conf will be read at that time.

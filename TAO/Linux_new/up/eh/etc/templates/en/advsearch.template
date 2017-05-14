@@ -1,0 +1,82 @@
+<table border="0" align="center" width="90%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Advanced Search</b></font>
+</td></tr><tr><td bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td></tr><tr><td>&nbsp;</td></tr>
+@@@STARTADVSEARCHFORM@@@
+<tr><td>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@COLUMNHEADER@@@>
+<B>Select Folder</B>
+&nbsp;<input name="allbox" type="checkbox" value="1" onClick="CheckAll();">
+</td></tr>
+<tr><td bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@FOLDERLIST@@@
+</td></tr>
+</table>
+
+</td></tr><tr><td>&nbsp;</td></tr><tr><td>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td bgcolor=@@@COLUMNHEADER@@@><B>Where</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@><B>Type of search</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@><B>Text to search</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@ align=center><B>Line Results</B></td>
+</tr>
+<tr>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@WHEREMENU0@@@</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@TYPEMENU0@@@</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@SEARCHTEXT0@@@ and</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@ align=center>@@@RESLINE@@@</td>
+</tr>
+<tr>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@WHEREMENU1@@@</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@TYPEMENU1@@@</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@SEARCHTEXT1@@@ and</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@ align=center>&nbsp;</td>
+</tr>
+<tr>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@WHEREMENU2@@@</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@TYPEMENU2@@@</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@>@@@SEARCHTEXT2@@@</td>
+<td bgcolor=@@@TABLEROW_LIGHT@@@ align=center>@@@BUTTONSEARCH@@@</td>
+</tr>
+</table>
+
+</td></tr><tr><td>&nbsp;</td></tr><tr><td>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1" bgcolor=@@@BACKGROUND@@@>
+<tr><td colspan="4"><B>Results: @@@TOTALFOUND@@@</B></td></tr>
+<tr><td width="10%" bgcolor=@@@COLUMNHEADER@@@>
+<B>@@@FOLDER@@@</B></td>
+<td width="18%" bgcolor=@@@COLUMNHEADER@@@>
+<B>@@@DATE@@@</B></td>
+<td width="25%" bgcolor=@@@COLUMNHEADER@@@>
+<B>@@@SENDER@@@</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@>
+<B>@@@SUBJECT@@@</B></td>
+</tr>
+@@@SEARCHRESULT@@@
+</table>
+@@@ENDFORM@@@
+
+</td></tr>
+</table>
+
+<script language="JavaScript">
+<!--
+   function CheckAll()
+   {
+      for (var i=0;i<document.advsearchform.folders.length;i++)
+      {
+         var e = document.advsearchform.folders[i];
+         if (e.type == 'checkbox' && e.name != 'allbox')
+            e.checked = document.advsearchform.allbox.checked;
+      }
+   }
+//-->
+</script>

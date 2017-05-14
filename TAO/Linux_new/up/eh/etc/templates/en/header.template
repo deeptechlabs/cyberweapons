@@ -1,0 +1,12 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=@@@CHARSET@@@">
+<TITLE>@@@USERINFO@@@ @@@NAME@@@ @@@MODE@@@</TITLE>
+<LINK rel="shortcut icon" href="@@@ICO_LINK@@@">
+</HEAD>
+<BODY BACKGROUND="@@@BG_URL@@@" BGCOLOR=@@@BACKGROUND@@@ @@@DIRECTIVE@@@
+ONHELP="window.open('@@@HELP_URL@@@', '_help'); return false;">
+<style type="text/css">
+@@@CSS@@@
+</style>
+<FONT FACE=@@@FONTFACE@@@>

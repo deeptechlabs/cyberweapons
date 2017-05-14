@@ -1,0 +1,23 @@
+1@@@.*,02,03,.*@@@0@@@0@@@Beginning of spring (setsubun)@@@0@@@0@@@none
+2@@@.*,03,14,.*@@@0@@@0@@@White Day@@@0@@@0@@@none
+3@@@.*,09,((1[5-9])|(2[0-1])),Mon@@@0@@@0@@@Respect for the Aged Day (keiro no hi)@@@0@@@0@@@none
+4@@@.*,03,21,.*@@@0@@@0@@@Spring Eqinox Day (shunbun no hi)@@@0@@@0@@@none
+5@@@.*,11,03,.*@@@0@@@0@@@Culture Day (bunka no hi)@@@0@@@0@@@none
+6@@@.*,04,29,.*@@@0@@@0@@@Golden Week@@@0@@@0@@@none
+7@@@.*,07,((1[5-9])|(2[0-1])),Mon@@@0@@@0@@@Ocean Day (umi no hi)@@@0@@@0@@@none
+8@@@.*,10,((0[8-9])|(1[0-4])),Mon@@@0@@@0@@@Health and Sports Day (taiiku no hi)@@@0@@@0@@@none
+9@@@.*,11,15,.*@@@0@@@0@@@Seven-Five-Three Children's Festival (shichigosan)@@@0@@@0@@@none
+10@@@.*,01,12,.*@@@0@@@0@@@Coming of Age (seiji no hi)@@@0@@@0@@@none
+11@@@.*,02,14,.*@@@0@@@0@@@Valentine's Day@@@0@@@0@@@none
+12@@@.*,07,07,.*@@@0@@@0@@@Star Festival (tanabata)@@@0@@@0@@@none
+13@@@.*,11,23,.*@@@0@@@0@@@Labour Thanksgiving Day (kinro kansha no hi)@@@0@@@0@@@none
+14@@@.*,05,03,.*@@@0@@@0@@@Constitution Day (kenpo kinenbi)@@@0@@@0@@@none
+15@@@\d\d\d\d(0101|0102|0103)@@@0@@@0@@@New Year (shogatsu)@@@0@@@0@@@none
+16@@@.*,08,15,.*@@@0@@@0@@@Obon Festival@@@0@@@0@@@none
+17@@@\d\d\d\d(0429|0430|0501|0502|0503|0504|0505)@@@0@@@0@@@Green Day (midori no hi)@@@0@@@0@@@none
+18@@@.*,02,11,.*@@@0@@@0@@@National Foundation Day (kenkoku kinenbi)@@@0@@@0@@@none
+19@@@.*,12,24,.*@@@0@@@0@@@Christmas@@@0@@@0@@@none
+20@@@.*,12,23,.*@@@0@@@0@@@Emperor's Birthday (tenno no tanjobi)@@@0@@@0@@@none
+21@@@.*,05,04,.*@@@0@@@0@@@Between Day (kokumin no kyujitsu)@@@0@@@0@@@none
+22@@@.*,03,03,.*@@@0@@@0@@@Doll's Festival (hina matsuri)@@@0@@@0@@@none
+23@@@.*,05,05,.*@@@0@@@0@@@Children's (Boy's Festival) (kodomo no hi)@@@0@@@0@@@none

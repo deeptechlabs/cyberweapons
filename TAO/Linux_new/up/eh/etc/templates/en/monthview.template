@@ -1,0 +1,89 @@
+<center> 
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<tr><td colspan="2" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Month View</b></font>
+</td></tr>
+@@@STARTFORM@@@
+<tr><td bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td><td bgcolor=@@@MENUBAR@@@ align="right">
+@@@DATESELMENU@@@&nbsp;
+</td></tr>
+@@@ENDFORM@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+</table>
+
+<table width=95% cellpadding=1 cellspacing=0><tr bgcolor=@@@TABLEROW_DARK@@@>
+<td nowrap align=center>@@@PREV_LINK@@@ <b>@@@CALTITLE@@@</b> @@@NEXT_LINK@@@</td>
+</tr></table>
+&nbsp;
+
+<table cellspacing=1 border="0" bgcolor=@@@BACKGROUND@@@ cols="7" width="95%">
+@@@STARTDAYFORM@@@
+<tr align="center" bgcolor="@@@COLUMNHEADER@@@">
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY0@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY1@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY2@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY3@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY4@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY5@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY6@@@</B></td>
+</tr>
+<tr>
+@@@DAY00@@@
+@@@DAY01@@@
+@@@DAY02@@@
+@@@DAY03@@@
+@@@DAY04@@@
+@@@DAY05@@@
+@@@DAY06@@@
+</tr>
+<tr>
+@@@DAY10@@@
+@@@DAY11@@@
+@@@DAY12@@@
+@@@DAY13@@@
+@@@DAY14@@@
+@@@DAY15@@@
+@@@DAY16@@@
+</tr>
+<tr>
+@@@DAY20@@@
+@@@DAY21@@@
+@@@DAY22@@@
+@@@DAY23@@@
+@@@DAY24@@@
+@@@DAY25@@@
+@@@DAY26@@@
+</tr>
+<tr>
+@@@DAY30@@@
+@@@DAY31@@@
+@@@DAY32@@@
+@@@DAY33@@@
+@@@DAY34@@@
+@@@DAY35@@@
+@@@DAY36@@@
+</tr>
+<tr>
+@@@DAY40@@@
+@@@DAY41@@@
+@@@DAY42@@@
+@@@DAY43@@@
+@@@DAY44@@@
+@@@DAY45@@@
+@@@DAY46@@@
+</tr>
+<tr>
+@@@DAY50@@@
+@@@DAY51@@@
+@@@DAY52@@@
+@@@DAY53@@@
+@@@DAY54@@@
+@@@DAY55@@@
+@@@DAY56@@@
+</tr>
+@@@ENDFORM@@@
+</table>
+</center>

@@ -1,0 +1,20 @@
+1@@@.*,05,08,.*@@@0@@@0@@@Den osvobození (státní svátek)@@@0@@@0@@@0
+2@@@.*,05,05,.*@@@0@@@0@@@Kvìtnové povstání èeského lidu (významný den)@@@0@@@0@@@0
+3@@@.*,05,01,.*@@@0@@@0@@@Svátek práce (den pracovního klidu)@@@0@@@0@@@0
+4@@@.*,01,01,.*@@@0@@@0@@@Den obnovy samostatného èeského státu (státní svátek)@@@0@@@0@@@0
+5@@@.*,07,05,.*@@@0@@@0@@@Cyril a Metodìj (státní svátek)@@@0@@@0@@@0
+6@@@.*,10,28,.*@@@0@@@0@@@Den vzniku samostatného èeskoslovenského státu (státní svátek)@@@0@@@0@@@0
+7@@@.*,01,01,.*@@@0@@@0@@@Nový rok (den pracovního klidu)@@@0@@@0@@@0
+8@@@.*,03,12,.*@@@0@@@0@@@Den vstupu ÈR do NATO (1999, významný den)@@@0@@@0@@@0
+9@@@.*,12,26,.*@@@0@@@0@@@2. svátek vánoèní (den pracovního klidu)@@@0@@@0@@@0
+10@@@.*,11,17,.*@@@0@@@0@@@Den boje za svobodu a demokracii (státní svátek)@@@0@@@0@@@0
+11@@@.*,07,06,.*@@@0@@@0@@@Mistr Jan Hus (státní svátek)@@@0@@@0@@@0
+12@@@.*,09,28,.*@@@0@@@0@@@Den èeské státnosti (státní svátek)@@@0@@@0@@@0
+13@@@.*,12,24,.*@@@0@@@0@@@©tìdrý den (den pracovního klidu)@@@0@@@0@@@0
+14@@@.*,12,25,.*@@@0@@@0@@@1. svátek vánoèní (den pracovního klidu)@@@0@@@0@@@0
+15@@@.*,easter,easter,.*@@@0@@@0@@@Nedìle velikonoèní (Bo¾í hod)@@@0
+16@@@.*,easter,easter+1,.*@@@0@@@0@@@Pondìlí velikonoèní@@@0
+17@@@.*,02,14,.*@@@0@@@0@@@Svatý Valentýn@@@0
+18@@@.*,04,0[1-7],Sun@@@0200@@@0@@@Zaèátek letního èasu@@@0
+19@@@.*,10,((2[5-9])|(3[0-1])),Sun@@@0200@@@0@@@Konec letního èasu@@@0
+

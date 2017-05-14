@@ -1,0 +1,82 @@
+<table border="0" align="center" width="95%" cellpadding="1" cellspacing="1">
+<tr><td bgcolor=@@@TITLEBAR@@@ >
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>@@@SELTITLE@@@</b></font>
+</td></tr></table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr>
+@@@STARTDIRFORM@@@
+<td>
+<table border="0" cellpadding="0" cellspacing="0"><tr>
+<td nowrap>@@@DIRUPLINK@@@ &nbsp;</td><td><B>Dir&nbsp;@@@CURRENTDIR@@@</B></td>
+</tr></table>
+</td>
+<td align="right">
+<table border="0" cellpadding="0" cellspacing="0"><tr>
+<td>@@@SHOWHIDDENLABEL@@@</td><td>@@@SHOWHIDDENCHECKBOX@@@</td>
+<td>Single page</td><td>@@@SINGLEPAGECHECKBOX@@@</td>
+</tr></table>
+</td>
+</tr></table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="1" bgcolor=@@@BACKGROUND@@@>
+<tr>
+<td bgcolor=@@@COLUMNHEADER@@@ width="50%">
+&nbsp;
+<B>@@@FILENAME@@@</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@ width="10%" align="center" nowrap>
+<B>@@@FILESIZE@@@</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@ width="40%" align="center" nowrap>
+<B>@@@FILEDATE@@@</B></td>
+</tr>
+@@@FILELIST@@@
+</table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr>
+<td align=center nowrap>@@@LEFTPAGECONTROL@@@ @@@PAGELINKS@@@ @@@RIGHTPAGECONTROL@@@</td>
+</tr></table>
+
+<table border="0" align="center" width="95%" cellpadding="2" cellspacing="0"><tr>
+<td bgcolor=@@@MENUBAR@@@ nowrap width="5%">Filename&nbsp;</td>
+<td bgcolor=@@@MENUBAR@@@ nowrap width="40%">@@@DESTNAMEFIELD@@@&nbsp;</td>
+<td bgcolor=@@@MENUBAR@@@ nowrap>@@@BUTTONS@@@</td>
+@@@ENDFORM@@@
+</tr></table>
+
+@@@SAVEATTFILEFORM@@@
+@@@SAVEATTACHMENTFORM@@@
+
+<script language="JavaScript">
+<!--
+   function filldestname(str) {
+      document.selform.destname.value =str;
+      document.selform.okbutton.focus();
+   }
+   function addattachment_and_close()
+   {
+      if (document.selform.destname.value != "") {
+         window.opener.document.composeform.webdisksel.value=document.selform.destname.value;
+         window.opener.document.composeform.submit();
+         window.close();
+      }
+   }
+   function saveattfile_and_close(attfile)
+   {
+      if (document.selform.destname.value != "") {
+         document.saveattfileform.attfile.value = attfile;
+         document.saveattfileform.webdisksel.value = document.selform.destname.value;
+         document.saveattfileform.submit();
+      }
+   }
+   function saveattachment_and_close(folder, messageid, attachment_nodeid)
+   {
+      if (document.selform.destname.value != "") {
+         document.saveattachmentform.folder.value = folder;
+         document.saveattachmentform.message_id.value = messageid;
+         document.saveattachmentform.attachment_nodeid.value = attachment_nodeid;
+         document.saveattachmentform.webdisksel.value = document.selform.destname.value;
+         document.saveattachmentform.submit();
+      }
+   }
+//-->
+</script>

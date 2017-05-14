@@ -1,0 +1,19 @@
+<center>
+<table width="90%" cellspacing="0" cellpadding="0" border="0">
+<tr><td><font size="-1" color="#dd0000"><b>
+
+Dear @@@USEREMAIL@@@,<br><br>
+You have been idle for a long time.
+If no more action is taken,
+this session will be ended within 60 seconds.
+
+</b></font></td></tr></table>
+<br>
+<form>
+<input type="button" NAME="OK" value=" ok " onclick="window.close();"/>
+</form>
+<br><br>
+<script language="JavaScript">
+setTimeout("close()", 60*1000);
+</script>
+</center>

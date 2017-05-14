@@ -1,0 +1,87 @@
+#
+# config file for auth_pop3.pl
+#
+
+# This module assumes to be used in the following two case
+#
+# 1. users are located on remote pop3 server, or
+# 2. users are virtual users on this machine
+#
+# and it will use one effectiveuser for all openwebmail users on the local machine.
+#
+# You have to do the following things to make the whole system work
+#
+# 1. decide what effectiveuser will openwebmail be executed as.
+#
+#    a. if you have root permission on this machine,
+#       but you don't want to run openwebmail as suid scripts
+#
+#       1> install openwebmail as readme.txt described
+#       2> cd cgi-bin/openwebmail
+#       3> chmod u-s *pl to remove setuid bit from scripts
+#       4> find the effectiveuser of your httpd, eg: nobody
+#
+#       ps:The effective user of httpd is normally 'nobody', 'www' or 'apache'. 
+#          It could be found by executing 'ps -aux|grep -aux',
+#
+#       5> set option effectiveuser to 'nobody'
+#       6> chown -R nobody cgi-bin/openwebmail/etc
+#
+#       Openwebmail effectiveuser will be always 'nobody'
+#
+#    b. if you have root permission on this machine,
+#       and it is okay for you to run openwebmail as suid scripts
+#       1> install openwebmail as readme.txt described
+#       2> cd cgi-bin/openwebmail
+#       3> find the effectiveuser of your httpd, eg: nobody
+#       4> change option effectiveuser to 'nobody'
+#
+#       Openwebmail effectiveuser will switch to 'nobody' when user login
+#
+#    c. if you don't have root permission on this machine
+#       and you want to run openwebmail with user, eg:owmail
+#       1> login as owmail
+#       2> mkdir public_html; cd public_html
+#       3> tar -zxvBpf openwebmail-x.yy.tgz
+#       4> cd cgi-bin/openwebmail
+#       5> chmod u-s *pl to remove setuid bit from scripts
+#       6> make the *.pl to be executed by user 'owmail'
+#       ps: You may need to reference the manpage/document of your httpd to
+#           know how to do user specific CGI
+#       7> change option effectiveuser to 'owmail'
+#
+#       Openwebmail effectiveuser will be always 'owmail'
+#
+# 2. set the following options in openwebmail.conf
+#
+#    auth_module		auth_pop3.pl
+#    mailspooldir		any directory that the runtime user could write
+#    use_syshomedir		no
+#    use_homedirspools		no
+#    logfile			any file that runtime user could write
+#    enable_changepwd		no
+#    enable_autoreply		no
+#    enable_setforward		no
+#    authpop3_server		pop3 server for authentication (default:localhost)
+#    authpop3_port		110
+#    authpop3_getmail		yes
+#    authpop3_delmail		yes
+#    authpop3_usessl		no
+#
+# 3. if your users are not on remote server but virtual users on this machine
+#    (eg: you use vm-pop3d on this machine for authentication)
+#
+#    a. you need to install openwebmail as described in step 1.b or 1.c
+#       and the effectiveuser must be the same as the vm-pop3d.
+#    b. replace the following two options in step 2
+#
+#       mailspooldir		the mailspool used by vmpop3d
+#       authpop3_getmail	no
+
+
+# effectiveuser
+# -----------------------------------------------------------------------
+# the effectiveuser that will be used for all users authenticated by 
+# the authpop3 module
+
+effectiveuser	nobody

@@ -1,0 +1,14 @@
+1@@@.*,05,0[1-7],Sun@@@0@@@0@@@Anyák napja@@@http://www.kkmk.hu/vilagnap/anyak.htm@@@0@@@none
+2@@@.*,12,24,.*@@@0@@@0@@@Karácsonyeste@@@0@@@0@@@none
+3@@@.*,02,14,.*@@@0@@@0@@@Bálint-nap@@@0@@@0@@@none
+4@@@.*,08,20,.*@@@0@@@0@@@államalapító Szent István ünnepe@@@http://kincsestar.radio.hu/jeles/jelesaug20.htm@@@0@@@none
+5@@@.*,10,23,.*@@@0@@@0@@@1956. évi forradalom és szabadságharc kezdetének, valamint a Magyar Köztársaság 1989. évi kikiáltásának napja@@@http://kincsestar.radio.hu/jeles/jelesokt.23.htm@@@0@@@none
+6@@@.*,12,31,.*@@@0@@@0@@@Szilveszter@@@0@@@0@@@none
+7@@@.*,12,06,.*@@@0@@@0@@@Mikulás@@@http://www.mikulas.hu/@@@0@@@none
+8@@@.*,03,15,.*@@@0@@@0@@@Nemzeti ünnep@@@http://www.sztaki.hu/providers/torvenytar/jog_24/jog_2462.htm@@@0@@@none
+9@@@.*,03,08,.*@@@0@@@0@@@Nemzetközi Nõnap@@@http://legjobblap.hu/nonap/@@@0@@@none
+10@@@.*,05,25,.*@@@0@@@0@@@Gyermeknap@@@http://www.gyereknap.hu/@@@0@@@none
+11@@@.*,12,25,.*@@@0@@@0@@@Karácsony@@@http://karacsony.lap.hu/@@@0@@@none
+12@@@.*,04,((1[5-9])|(2[0-1])),Sun@@@0@@@0@@@Húsvét@@@http://www.baratsag.com/text/journal/treasure/easter/@@@0@@@none
+13@@@.*,05,01,.*@@@0@@@0@@@A munka ünnepe - Majális@@@0@@@0@@@none
+

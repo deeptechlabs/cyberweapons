@@ -1,0 +1,42 @@
+#
+# config file for auth_mysql_vmail.pl
+#
+
+#
+# This is the table which holds information about domains in vmail-sql (got from vmail-sql's README).
+# CREATE TABLE domain (
+#         domain_name VARCHAR(255) PRIMARY KEY,   # domain name
+#         unix_user VARCHAR(255),                 # which Unix user owns files etc.
+#         password_hash VARCHAR(255),             # admin password for this domain
+#         path VARCHAR(255),                      # base path for this domain
+#         max_popbox INT                          # maximum number of popboxes in this domain
+# ) ;
+#
+# This is the table which holds user's informations in vmail-sql (got from vmail-sql's README).
+# CREATE TABLE popbox (
+#         domain_name VARCHAR(255) not null,      # domain this refers to
+#         local_part VARCHAR(255) not null,       # username for this POP box
+#         password_hash VARCHAR(255),             # hash of this user's password
+#         mbox_name VARCHAR(255),                 # appended to domain.path
+#         PRIMARY KEY (domain_name(16), local_part(32));
+# ) ;
+#
+
+# database access
+mysql_server		SERVER		# MySQL server
+mysql_database		DATABASE        # MySQL database
+mysql_user		USER            # MySQL username
+mysql_passwd		PASSWORD	# MySQL password
+password_hash_method	md5             # supported methods: md5 and plaintext
+
+#userlist:        sql cmd to get user's list ###
+#user_password:   sql cmd to get user's password (you can use _user_ and _domain_ variables)
+#user_homedir:    sql cmd to get user's home directory (you can use _user_ and _domain_ variables)
+#unix_user:       sql cmd to get real unix user (you can use _user_ and _domain_ variables)
+#chnage_password: sql cmd to change user's password (you can use _user_, _domain_ and _new_password_ variables)
+
+userlist	SELECT local_part FROM popbox ORDER BY local_part
+user_password	SELECT password_hash FROM popbox WHERE local_part='_user_' AND domain_name='_domain_'
+user_homedir
+unix_user	SELECT domain.unix_user FROM domain LEFT JOIN popbox ON domain.domain_name=popbox.domain_name WHERE popbox.mbox_name='_user_' AND popbox.domain_name='_domain_'
+change_password UPDATE popbox SET password_hash='_new_password_' WHERE local_part='_user_' AND domain_name='_domain_'

@@ -1,0 +1,498 @@
+package ow::en;
+
+# English translation, charset: iso-8859-1
+# by openwebmail team
+
+%lang_folders =
+   (
+   INBOX            => 'Inbox',
+   'saved-messages' => 'Saved',
+   'sent-mail'      => 'Sent',
+   'saved-drafts'   => 'Draft',
+   'mail-trash'     => 'Trash',
+   DELETE           => '--DELETE--'
+   );
+
+%lang_sortlabels =
+   (
+   status      => 'Status (Unread first)',
+   date        => 'Date (Newest first)',
+   date_rev    => 'Date (Oldest first)',
+   sender      => 'Sender (Newest first)',
+   sender_rev  => 'Sender (Oldest first)',
+   subject     => 'Subject (Newest first)',
+   subject_rev => 'Subject (Oldest first)',
+   size        => 'Size (Largest first)',
+   size_rev    => 'Size (Smallest first)'
+   );
+
+%lang_onofflabels =
+   (
+   auto => 'Auto switched',
+   on   => 'On',
+   off  => 'Off',
+   );
+
+%lang_prioritylabels =
+   (
+   normal      => 'Normal',
+   urgent      => 'Urgent',
+   'non-urgent'=> 'Non-Urgent'
+   );
+
+%lang_msgformatlabels =
+   (
+   auto => 'Auto selected',
+   text => 'Text',
+   html => 'HTML',
+   both => 'HTML and Text'
+   );
+
+%lang_withoriglabels =
+   (
+   at_beginning => 'at Beginning',
+   at_end       => 'at End',
+   none         => 'None'
+   );
+
+%lang_receiptlabels =
+   (
+   ask => 'Ask to confirm',
+   yes => 'Yes',
+   no  => 'No'
+   );
+
+%lang_disableemblinklabels =
+   (
+   none    => 'None',
+   cgionly => 'CGI only',
+   all     => 'All embedded URLs'
+   );
+
+%lang_ctrlpositionlabels =
+   (
+   top    => 'At top',
+   bottom => 'At bottom'
+   );
+
+%lang_sendpositionlabels =
+   (
+   before => 'Before mail edit area',
+   after  => 'After mail edit area',
+   both   => 'Before and after mail edit area'
+   );
+
+%lang_abookbuttonpositionlabels = 
+   (
+   before => 'Before addressbook entries',
+   after  => 'After addressbook entries',
+   both   => 'Before and after addressbook entries'
+   );
+
+%lang_timelabels =
+   (
+      3 => '3 minutes',
+      5 => '5 minutes',
+     10 => '10 minutes',
+     20 => '20 minutes',
+     30 => '30 minutes',
+     60 => '60 minutes',
+    120 => '2 hours',
+    180 => '3 hours',
+    360 => '6 hours',
+    720 => '12 hours',
+   1440 => '24 hours'
+   );
+
+%lang_advsearchlabels =
+   (
+   contains    => 'contains',
+   notcontains => 'does not contain',
+   is          => 'is',
+   isnot       => 'is not',
+   startswith  => 'starts with',
+   endswith    => 'ends with',
+   regexp      => 'matches regexp',
+   );
+
+%lang_sizes =
+   (
+   mb   => 'MB',	# mega bytes
+   kb   => 'KB',	# kilo bytes
+   byte => 'Byte'
+   );
+
+%lang_calendar = 
+   (
+   yearview  => 'Yearview',
+   monthview => 'Monthview',
+   weekview  => 'Weekview',
+   dayview   => 'Dayview',
+   listview  => 'Listview'
+   );
+
+%lang_month =
+   (
+   1  => 'January',
+   2  => 'February',
+   3  => 'March',
+   4  => 'April',
+   5  => 'May',
+   6  => 'June',
+   7  => 'July',
+   8  => 'August',
+   9  => 'September',
+   10 => 'October',
+   11 => 'November',
+   12 => 'December'
+   );
+
+%lang_wday =
+   (
+   0 => 'Sunday',
+   1 => 'Monday',
+   2 => 'Tuesday',
+   3 => 'Wednesday',
+   4 => 'Thursday',
+   5 => 'Friday',
+   6 => 'Saturday'
+   );
+
+%lang_wday_abbrev =
+   (
+   week => 'WK',
+   0 => 'S',
+   1 => 'M',
+   2 => 'T',
+   3 => 'W',
+   4 => 'T',
+   5 => 'F',
+   6 => 'S'
+   );
+
+%lang_order =
+   (
+   1 => '1st',
+   2 => '2nd',
+   3 => '3rd',
+   4 => '4th',
+   5 => 'last'
+   );
+
+%lang_wdbutton =
+   (
+   refresh  => 'Refresh',
+   preview  => 'Preview',
+   edit     => 'Edit',
+   listarchive=> 'List',
+   decompress=>'Decompress',
+   extract  => 'Extract',
+   mkpdf    => 'Make Pdf',
+   mkps     => 'Make Ps',
+   chdir    => 'ChDir',
+   mkdir    => 'MkDir',
+   newfile  => 'NewFile',
+   copy     => 'Copy',
+   move     => 'Move',
+   symlink  => 'Symlink',
+   delete   => 'Delete',
+   gzip     => 'gzCompress',
+   mkzip    => 'MkZip',
+   mktgz    => 'MkTgz',
+   mkthumbnail  => 'MkThumb',
+   download => 'Download',
+   upload   => 'Upload',
+   );   
+
+%lang_text =
+   (
+   loading    => 'Loading, please wait',
+   help       => 'Help',
+   login      => 'Login',
+   clear      => 'Clear',
+   webmail    => 'WebMail',
+   point      => 'Point',
+   pixel      => 'Pixel',
+   changepwd  => 'Change Password',
+   viewhistory=> 'View History',
+   of         => 'of',
+   messages   => 'messages',
+   unread     => 'unread',
+   nomessages => 'No messages',
+   inmessages => 'Incoming msgs',
+   composenew => 'Compose new message',
+   refresh    => 'Refresh',
+   userprefs  => 'User preferences',
+   addressbook=> 'Address book',
+   folders    => 'Folders',
+   emptytrash => 'Empty trash',
+   totrash    => 'Move to Trash',
+   forever    => 'Forever',
+   delatlogout=> 'Delete at Logout',
+   userdef    => 'User Defined',
+   logout     => 'Logout',
+   page       => 'Page',
+   msgsperpage=> '@@@MSGCOUNT@@@ messages per page',
+   msgcopyconf=> '\'Are you sure you want to copy the selected message(s)?\'',
+   copy       => 'Copy',
+   msgmoveconf=> '\'Are you sure you want to move the selected message(s)?\'',
+   move       => 'Move',
+   markasread => 'Mark as read',
+   markasunread => 'Mark as unread',
+   dateformat => 'Date format',
+   date       => 'Date',
+   recipient  => 'Recipient',
+   sender     => 'Sender',
+   subject    => 'Subject',
+   thread     => 'Thread',
+   size       => 'Size',
+   backto     => 'Back to',
+   reply      => 'Reply',
+   replyall   => 'Reply all',
+   forward    => 'Forward',
+   forwardasatt=>'Forward as attachment',
+   forwardasorig=>'Forward as original',
+   printfriendly=> 'Print friendly',
+   msgformat  => 'MsgFormat',
+   from       => 'From',
+   replyto    => 'Reply-to',
+   to         => 'To',
+   cc         => 'CC',
+   bcc        => 'BCC',
+   simplehead => 'Simple headers',
+   allhead    => 'All headers',
+   simpleattmode => 'Simple attachments',
+   allattmode    => 'All attachments',
+   attachment => 'Attachment',
+   type       => 'Type',
+   filename   => 'Filename',
+   encoding   => 'Encoding',
+   description=> 'Description',
+   download   => 'Download',
+   charset    => 'Charset',
+   samecharset=> 'The same as composing charset',
+   thisispartialmsg => 'This is a partial message',
+   msgrebuild => 'Message Rebuild',
+   editdraft  => 'Edit Draft',
+   savedraft  => 'Save Draft',
+   draftsaved => 'Draft @@@SUBJECT@@@ has been saved successfully',
+   send       => 'Send',
+   msgsent    => 'Message @@@SUBJECT@@@ has been sent successfully',
+   about      => 'About',
+   close      => 'Close',
+   cancel     => 'Cancel',
+   ok         => 'Ok',
+   continue   => 'Continue',
+   loginagain => 'Login again',
+   exit       => 'Exit',
+   yourname   => 'Your Name',
+   save       => 'Save',
+   add        => 'Add',
+   folderrenprop => '\'Please enter the new name for this folder\'',
+   rename     => 'Rename',
+   folderdelconf => '\'Are you sure you want to delete this folder and all its contents?\'',
+   markread   => 'MarkRead',
+   foldermarkreadconf => '\'Are you going to mark read on all messages in this folder?\'',
+   chkindex   => 'CheckIndex',
+   folderchkindexconf => '\'Are you going to check the index of this folder?\'',
+   reindex    => 'ReIndex',
+   folderreindexconf => '\'Are you sure you want to reindex this folder?\'',
+   total      => 'Total',
+   edit       => 'Edit',
+   delete     => 'Delete',
+   reserve    => 'Reserve',
+   clearadd   => 'Clear all addresses',
+   importadd  => 'Import addresses',
+   exportadd  => 'Export addresses',
+   import     => 'Import',
+   addmod     => 'Add/Modify',
+   modify     => 'Modify',
+   abooktitle => 'Address Book',
+   abook      => 'ADDRESS BOOK',
+   name       => 'Name',
+   email      => 'Email',
+   note       => 'Note',
+   max        => 'Maximum',
+   group      => 'Group',
+   quotausage => 'Quota usage',
+   quotalimit => 'Quota limit',
+   quotahit   => 'QUOTA HIT',
+   tzmap      => 'World timezone map',
+   testsound  => 'Test sound',
+   editfroms  => 'Edit personal email addresses',
+   pop3book   => 'POP3 Setup',
+   retr_pop3s => 'Retrieve POP3 Mail',
+   filterbook => 'Mail Filter Setup',
+   include    => 'Include',
+   exclude    => 'Exclude',
+   smtprelay  => 'SMTP Relay',
+   header     => 'Header',
+   body       => 'Body',
+   attfilename=> 'AttFilename',
+   all        => 'All',
+   enable     => 'Enable',
+   disable    => 'Disable',
+   yes        => 'Yes',
+   no         => 'No',
+   filtered   => 'Filtered',
+   blockrelay => 'Block SMTP Relay',
+   blockemail => 'Block email',
+   read       => 'Read',
+   yourmsg    => 'Your message',
+   delivered  => 'Delivered',
+   wasreadon1 => 'was read on',
+   wasreadon2 => '.',
+   globaladdressbook => 'Global AddressBook',
+   globalfilterrule => 'Global FilterRule',
+   readonly   => 'ReadOnly',
+   textcontent=> 'TextContent',
+   search     => 'Search',
+   advsearch  => 'Advanced search',
+   folder     => 'Folder',
+   nofoldersel=> 'No Folder selected',
+   showall    => 'Show All',
+   spellcheck => 'Spell Check',
+   checkagain => 'Check Again',
+   finishchecking => 'Finish Checking',
+   editpdict  => 'Edit Personal Dictionary',
+   addtodict  => 'Add to Dictionary',
+   manuallyfix=> 'Manually Fix',
+   editstat   => 'Edit Stationery',
+   savestat   => 'Save Stationery',
+   clearstat  => 'Clear All Stationery',
+   statreply  => '-- Stationery for Reply --',
+   calendar   => 'Calendar',
+   allday     => 'All day',
+   today      => 'Today',
+   am         => 'am',
+   pm         => 'pm',
+   calfmt_year          => 'Year @@@YEAR@@@',
+   calfmt_yearmonth     => '@@@MONTH_STR@@@ @@@YEAR@@@',
+   calfmt_yearmonthday  => '@@@MONTH_STR@@@ @@@DAY@@@ @@@YEAR@@@',
+   calfmt_yearmonthdaywday => '@@@MONTH_STR@@@ @@@DAY@@@ @@@YEAR@@@ @@@WEEKDAY_STR@@@',
+   calfmt_hourminampm => '@@@HOURMIN@@@ @@@AMPM@@@',
+   autosel    => 'Auto selected',
+   none       => 'None',
+   moreitems  => 'more items',
+   multieditconf => 'This item was added for multiple dates.\\nEditing it will change the item for all dates.\\nContinue with Edit?',
+   multidelconf  => 'This item was added for multiple dates.\\nDeleting it will delete the item for all dates.\\nContinue with Delete?',
+   caldelconf => 'Are you sure you want to delete this item?',
+   noitemforthisday => 'No items for this day',
+   thisday_only          => 'This day\'s date only',
+   the_wday_of_thismonth => 'The @@@ORDER@@@ @@@WDAY@@@ of the month',
+   every_wday_thismonth  => 'Every @@@WDAY@@@ this month',
+   thismonth_only           => 'This month only',
+   every_oddmonth_thisyear  => 'Every odd month this year',
+   every_evenmonth_thisyear => 'Every even month this year',
+   every_month_thisyear     => 'Every month this year',
+   webdisk      => 'WebDisk',
+   sshterm      => 'SSH Terminal',
+   dir          => 'Dir',
+   dirs         => 'Dirs',
+   file         => 'File',
+   files        => 'Files',
+   program      => 'Program',
+   dest_of_chdir  => 'the destined directory',
+   name_of_newdir => 'the directory name to create',
+   name_of_newfile=> 'the filename to create',
+   dest_of_thecopy=> 'the destined directory or file of the copy',
+   dest_of_themove=> 'the destined directory or file of the move',
+   dest_of_thezip=> 'the destined filename of the new zip',
+   dest_of_thetgz=> 'the destined filename of the new tgz',
+   homedir      => 'Homedir',
+   showthumbnail    => 'Thumbnails',
+   showhidden   => 'Show hidden files',
+   lastmodified => 'Last modified time',
+   perm         => 'Perm',
+   permission   => 'Access Permission',
+   noitemfound  => 'No item found',
+   savefile     => 'Savefile',
+   succeeded    => 'succeeded',
+   failed       => 'failed',
+   savefile_towd=> 'Save file to WebDisk',
+   saveatt_towd => 'Save attachment to WebDisk',
+   addatt_fromwd=> 'Add attachment from WebDisk',
+   vdomain_usermgr    => 'Virtual Domain User Management',
+   vdomain_createuser => 'Create User',
+   vdomain_changeuser => 'Change User',
+   vdomain_deleteuser => 'Delete User',
+   vdomain_changeview => 'Change view to',
+   vdomain_usersonly  => 'users only',
+   vdomain_useralias  => 'users/aliases',
+   vdomain_fmtuseralias => 'formatted users/aliases',
+   vdomain_admin      => 'Admin',
+   vdomain_localuser  => 'Local User',
+   set_passwd         => 'Set Password',
+   reset_passwd       => 'Reset Password',
+   email_alias        => 'E-MAIL Alias'
+   );
+
+%lang_err =
+   (
+   has_illegal_chars => 'has illegal characters!',
+   couldnt_open      => 'Couldn\'t open',
+   couldnt_locksh    => 'Couldn\'t get read lock on',
+   couldnt_lock      => 'Couldn\'t get write lock on',
+   couldnt_seek      => 'Couldn\'t seek to the beginning of',
+   couldnt_close     => 'Couldn\'t close',
+   couldnt_updatedb  => 'Couldn\'t update index db ',
+   disallowed_pop3   => 'Disallowed POP3 server',
+   disallowed_client => 'You are not allowed to connect from this client',
+   disallowed_receiverdomain => 'You are not allowed to send message to this email address',
+   norootlogin       => 'Sorry, root login is disabled for security\'s sake.',
+   shouldnt_move_here=> 'You shouldn\'t be trying to move messages here!',
+   destination_folder=> 'Destination folder',
+   doesnt_exist      => 'doesn\'t exist!',
+   foldername_long   => 'Folder name cannot be more than 16 characters!',
+   folder_with_name  => 'A folder with the name',
+   already_exists    => 'already exists!',
+   cant_create_folder=> 'Can\'t create folder!',
+   under_indexing    => 'is still under indexing, please try later',
+   abook_invalid     => 'Sorry, this file doesn\'t appear to be an address book exported from Microsoft Outlook Express 5 in CSV format.  Make sure that when viewing it in a text editor, the first line starts out "Name,E-mail Address", then go',
+   back              => 'back',
+   tryagain          => 'and try again.',
+   abook_toobig      => 'Sorry, this would exceed the size limit for your address book.  Please go',
+   cant_create_dir   => 'Can\'t create your user directory!',
+   att_overlimit     => 'Sorry, your attachments exceed the attachment size limit, which is',
+   inv_msg_op        => 'Invalid operation for message',
+   sess_cookieerr    => 'Your request didn\'t contain the proper sessionid cookie -- access denied!',
+   sess_iperr        => 'Your request didn\'t come from the same ip of this session -- access denied!',
+   no_endpart        => 'End part not found',
+   part_missing      => 'Some part was missing',
+   rebuild_fmterr    => 'New message format error',
+   rebuild_sizeerr   => 'New message size mismatch',
+   user_not_exist    => 'user does not exist',
+   func_notsupported => 'function not supported',
+   auth_syserr       => 'Authentication system error',
+   param_fmterr      => 'parameter format error',
+   pwd_incorrect     => 'Password incorrect',
+   pwd_confirmmismatch=>'New password confirm mismatch',
+   pwd_tooshort      => 'Password too short (minimum length @@@PASSWDMINLEN@@@)',
+   pwd_toosimple     => 'Password too simple (both alphabet and digit are required)',
+   network_server_error => 'network server error',
+   sendmail_error    => 'Sorry, there was a problem sending your message.  Please click your browser\'s Back button, check your message, and try again.',
+   at_char_not_allowed => 'The @ character is not allowed in this field.  Press browser back button and try again',
+   badnum_in_days => 'bad number in consecutive days field',
+   access_denied     => 'Access denied',
+   couldnt_chdirto   => 'Couldn\'t chdir to',
+   isnt_a_dir        => 'is not a directory',
+   edit_notfordir    => 'You can\'t edit a directory',
+   onefileonly       => 'Only one file is allowed for this operation',
+   no_file_todownload=> 'No file is specified for download',
+   upload_overlimit  => 'Upload file size is over the limit',
+   decomp_notsupported =>'Decompression support is not available for this file.',
+   filefmt_notsupported =>'The file format is not supported.',
+   webdisk_readonly  => 'Sorry, your webdisk is read only.',
+   quota_syserr      => 'Quota system error',
+   quotahit_alert    => 'Sorry, you\'ve hit your quota limit. Please delete some messages from mail folders or some files from the webdisk to free disk space.',
+   quotahit_delmail  => 'Warning, since the quota limit(@@@QUOTALIMIT@@@) were hit, oldest messages in folders have been removed automatcially',
+   quotahit_delfile  => 'Warning, since the quota limit(@@@QUOTALIMIT@@@) were hit, some files in the webdisk have been removed automatcially',
+   spool_overlimit   => 'Sorry, your INBOX has exceeded the spool limit(@@@SPOOLLIMIT@@@). Please move some messages from INBOX to other folders.',
+   vdomain_toomanyuser  => 'Sorry, the user count of this domain has reached its maximum limit',
+   vdomain_toomanyalias => 'Sorry, the E-MAIL alias count of this user has reached its maximum limit',
+   vdomain_userrequired => 'A user name is required',
+   vdomain_fwdrequired => 'A valid forwarding E-MAIL is required',
+   all_module_disabled => 'All modules are disabled'
+   );
+
+1;

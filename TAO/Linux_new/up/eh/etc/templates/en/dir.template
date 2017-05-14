@@ -1,0 +1,176 @@
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@TITLEBAR@@@ width="20%">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>WebDisk</b></font>
+</td><td bgcolor=@@@TITLEBAR@@@ align="center">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>@@@QUOTAUSAGE@@@</b></font>
+</td><td bgcolor=@@@TITLEBAR@@@ align="right" width="20%">
+&nbsp;
+</td></tr><tr><td bgcolor=@@@MENUBAR@@@ colspan="3">
+@@@MENUBARLINKS@@@
+</td></tr></table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr>
+@@@STARTDIRFORM@@@
+<td>
+<table border="0" cellpadding="0" cellspacing="0"><tr>
+<td nowrap>@@@DIRUPLINK@@@ &nbsp;</td><td><B>@@@CURRENTDIR@@@</B></td>
+</tr></table>
+</td>
+<td align="right">
+<table border="0" cellpadding="0" cellspacing="0"><tr>
+<td>@@@SHOWHIDDENLABEL@@@</td><td>@@@SHOWHIDDENCHECKBOX@@@</td>
+<td>@@@SHOWTHUMBLABEL@@@</td><td>@@@SHOWTHUMBCHECKBOX@@@</td>
+<td>Single page</td><td>@@@SINGLEPAGECHECKBOX@@@</td>
+</tr></table>
+</td>
+</tr></table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="1" bgcolor=@@@BACKGROUND@@@>
+<tr>
+<td bgcolor=@@@COLUMNHEADER@@@ width="56%">
+&nbsp;
+<B>@@@FILENAME@@@</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@ width="12%" align="center" nowrap>
+<B>@@@FILESIZE@@@</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@ width="22%" align="center" nowrap>
+<B>@@@FILEDATE@@@</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@ width="7%" align="center" nowrap>
+<B>@@@FILEPERM@@@</B></td>
+<td bgcolor=@@@COLUMNHEADER@@@ width="3%" align ="center">
+<input name="allbox" type="checkbox" value="1"
+   onClick="CheckAll();"></td>
+</tr>
+@@@FILELIST@@@
+</table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr>
+<td width="15%" nowrap>&nbsp;@@@INFOCOUNT@@@</td>
+<td align=center nowrap>@@@LEFTPAGECONTROL@@@ @@@PAGELINKS@@@ @@@RIGHTPAGECONTROL@@@</td>
+<td width="15%" nowrap align="right">Listed file size: @@@INFOSIZE@@@&nbsp;</td>
+</tr></table>
+
+<table border="0" align="center" width="95%" cellpadding="1" cellspacing="1">
+<tr><td bgcolor=@@@COLUMNHEADER@@@>
+<B>Operation</B>
+</td></tr><tr><td bgcolor=@@@MENUBAR@@@>
+<table border="0" cellpadding="1" cellspacing="1">
+<tr><td width="10%">DestinedName:</td><td width="90%">@@@DESTNAMEFIELD@@@ @@@BUTTONS@@@</td></tr>
+<tr><td nowrap colspan="2">@@@BUTTONS2@@@</td></tr>
+</table>
+</td></tr>
+</table>
+
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0"><tr>
+<td>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1"><tr>
+<td nopwrap bgcolor=@@@COLUMNHEADER@@@><B>Search</B></td>
+</tr><tr>
+<td nowrap bgcolor=@@@MENUBAR@@@>@@@SEARCHFILEFIELD@@@</td>
+</tr></table>
+
+</td>
+<td>
+
+@@@UPLOADSTART@@@
+<table border="0" width="100%" cellpadding="1" cellspacing="1"><tr>
+<td nowrap bgcolor=@@@COLUMNHEADER@@@><B>Upload</B></td>
+</tr><tr>
+<td nowrap bgcolor=@@@MENUBAR@@@>@@@UPLOADFILEFIELD@@@</td>
+</tr></table>
+@@@UPLOADEND@@@
+
+</td>
+</tr></table>
+<br>
+
+<table border="0" align="center" width="95%" cellpadding="1" cellspacing="1">
+<tr><td bgcolor=@@@COLUMNHEADER@@@>
+<B>Messages</B>
+</td></tr><tr><td bgcolor=@@@MENUBAR@@@>
+@@@MSGTEXTAREA@@@
+</td></tr>
+@@@ENDFORM@@@
+</table>
+
+<script language="JavaScript">
+<!--
+   function CheckAll()
+   {
+      for (var i=0;i<document.dirform.elements.length;i++)
+      {
+         var e = document.dirform.elements[i];
+         if (e.type == 'checkbox' && 
+             e.name != 'showthumbnail' &&
+             e.name != 'showhidden' &&
+             e.name != 'singlepage' &&
+             e.name != 'allbox')
+            e.checked = document.dirform.allbox.checked;
+      }
+   }
+   function anyfileselected()
+   {
+      for (var i=0;i<document.dirform.elements.length;i++)
+      {
+         var e = document.dirform.elements[i];
+         if (e.type == 'checkbox' && 
+             e.name != 'showthumbnail' &&
+             e.name != 'showhidden' && 
+             e.name != 'singlepage' &&
+             e.name != 'allbox' && 
+             e.checked == 1 ) {
+            return true;
+         }
+      }
+      alert("There is no directory or file selected.");
+      return false;
+   }
+   function selectedstr()
+   {
+      var str = '';
+      for (var i=0;i<document.dirform.elements.length;i++)
+      {
+         var e = document.dirform.elements[i];
+         if (e.type == 'checkbox' && 
+             e.name != 'showthumbnail' &&
+             e.name != 'showhidden' && 
+             e.name != 'singlepage' &&
+             e.name != 'allbox' && 
+             e.checked == 1 ) {
+            if (str == '') {
+               str=e.value;
+            } else {
+               str=str+', '+e.value;
+            }
+         }
+      }
+      return(str);
+   }
+   function destnamefilled(target) {
+      if (document.dirform.destname.value == '') {
+         alert('Please fill  < '+target+' >  first.');
+         return false;
+      } else {
+         return true;
+      }
+   }
+   function uploadfilled() {
+      if (document.dirform.upload.value == '') {
+         alert("Please choose the file to upload first.");
+         return false;
+      } else {
+         document.dirform.msg.value = 'Uploading file '+document.dirform.upload.value+', please wait...';
+         return true;
+      }
+   }
+   function opconfirm(op, conf) {
+      if (conf) {
+         return(confirm('Are you sure you want to '+op+' the selected items? ( '+selectedstr()+' )'));
+      } else {
+         return true;
+      }
+   }
+//-->
+</script>

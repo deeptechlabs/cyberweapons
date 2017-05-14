@@ -1,0 +1,11 @@
+#!/usr/bin/env perl
+
+$user = shift || getpwuid($<);
+
+($login,$pass,$uid,$gid) = getpwnam($user);
+
+`perl -pi.bak -e 's#someuser#$user#g' ./setup`;
+`perl -pi.bak -e 's#someuser#$user#g' ./etc/sessions/someuser*-session-0.943596450685622`;
+`perl -pi.bak -e 's#55555#$uid#g' ./etc/sessions/someuser*-session-0.943596450685622`;
+`cp ./etc/sessions/someuser*-session-0.943596450685622 ./etc/sessions/$user*-session-0.943596450685622`;
+system('./setup');

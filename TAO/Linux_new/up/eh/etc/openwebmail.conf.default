@@ -1,0 +1,315 @@
+#
+# Open WebMail configuration file DEFAULT
+#
+# This is openwebmail.conf.default - a file full of useful variables that
+# you can set for the openwebmail system. You should not edit this file!
+# Put any overrides into openwebmail.conf instead. The openwebmail.conf
+# should only contain values which override values set in this file.
+# This eases the upgrade when defaults are changed or new features are added.
+#
+# Please refer to openwebmail.conf.help for description of each option
+#
+# ps: This file will be loaded only once if Open WebMail is running in
+#     persistent mode. To force Open WebMail reread this file, please do
+#
+#     touch openwebmail*pl
+#
+
+name			Open WebMail
+version			2.32
+releasedate		20040525
+
+##############################################################################
+# host dependent configuration
+##############################################################################
+domainnames		auto
+smtpserver		127.0.0.1
+smtpport		25
+smtpauth		no
+virtusertable		/etc/mail/virtusertable
+auth_module		auth_unix.pl
+auth_withdomain		no
+auth_domain		auto
+quota_module		none
+
+mailspooldir			/var/mail
+use_hashedmailspools		no
+use_syshomedir			yes
+create_syshomedir		no
+use_homedirspools		no
+homedirspoolname		Mailbox
+homedirfolderdirname		mail
+homedirdotdirname		.openwebmail
+use_syshomedir_for_dotdir	yes
+
+deliver_use_GMT		no
+
+##############################################################################
+# openwebmail system configuration
+##############################################################################
+ow_cgidir		/usr/local/www/cgi-bin/openwebmail
+ow_cgiurl		/cgi-bin/openwebmail
+ow_htmldir		/usr/local/www/data/openwebmail
+ow_htmlurl		/openwebmail
+ow_etcdir		%ow_cgidir%/etc
+ow_stylesdir		%ow_etcdir%/styles
+ow_langdir		%ow_etcdir%/lang
+ow_templatesdir		%ow_etcdir%/templates
+ow_holidaysdir		%ow_etcdir%/holidays
+ow_sitesconfdir		%ow_etcdir%/sites.conf
+ow_usersconfdir		%ow_etcdir%/users.conf
+ow_usersdir		%ow_etcdir%/users
+ow_sessionsdir		%ow_etcdir%/sessions
+
+start_url		%ow_cgiurl%/openwebmail.pl
+ico_url			%ow_htmlurl%/images/openwebmail.ico
+logo_url		%ow_htmlurl%/images/openwebmail.gif
+logo_link		http://openwebmail.org/
+help_url		@@@HELP_URL@@@
+help_text		@@@HELP_TEXT@@@
+
+logfile			/var/log/openwebmail.log
+global_addressbook	%ow_etcdir%/address.book
+global_filterbook	%ow_etcdir%/filter.book
+global_calendarbook	%ow_etcdir%/calendar.book
+g2b_map			%ow_etcdir%/g2b.map
+b2g_map			%ow_etcdir%/b2g.map
+lunar_map		%ow_etcdir%/lunar.map
+header_pluginfile	none
+footer_pluginfile	none
+
+spellcheck		/usr/local/bin/ispell -a -S -w "-" -d @@@DICTIONARY@@@ -p @@@PDICNAME@@@
+spellcheck_pdicname	.ispell_words
+spellcheck_dictionaries	english, american
+vacationinit		%ow_cgidir%/vacation.pl -i
+vacationpipe		%ow_cgidir%/vacation.pl -t60s
+
+<domainname_equiv>
+</domainname_equiv>
+
+error_with_debuginfo	no
+allowed_serverdomain	all
+allowed_clientdomain	all
+allowed_clientip	all
+allowed_receiverdomain	all
+case_insensitive_login	no
+forced_ssl_login	no
+stay_ssl_afterlogin	yes
+enable_rootlogin	no
+enable_domainselectmenu yes
+domainselmenu_list	auto
+enable_strictvirtuser	no
+enable_changepwd	yes
+enable_strictpwd 	yes
+passwd_minlen		6
+session_multilogin	yes
+session_checkcookie	yes
+session_checksameip	no
+session_count_display	yes
+cache_userinfo		yes
+
+auto_createrc		no
+domainnames_override	no
+symboliclink_mbox	yes
+
+enable_history			no
+enable_about			yes
+about_info_software		yes
+about_info_scriptfilename	no
+about_info_protocol		yes
+about_info_server		yes
+about_info_client		yes
+xmailer_has_version		yes
+xoriginatingip_has_userid	yes
+
+enable_preference		yes
+enable_loadfrombook		yes
+enable_editfrombook		yes
+frombook_for_realname_only	no
+enable_autoreply		yes
+enable_setforward		yes
+enable_strictforward		no
+enable_stationery		yes
+enable_userfilter		yes
+enable_smartfilter		yes
+smartfilter_bypass_goodmessage	yes
+enable_webmail			yes
+enable_spellcheck		yes
+enable_calendar			yes
+enable_webdisk			yes
+enable_sshterm			yes
+enable_vdomain          	no
+
+enable_pop3		yes
+pop3_disallowed_servers	your_server, your_server.domain
+pop3_delmail_by_default	yes
+pop3_delmail_hidden	no
+pop3_usessl_by_default	no
+
+authpop3_server		localhost
+authpop3_port		110
+authpop3_getmail	no
+authpop3_delmail	yes
+authpop3_usessl		no
+
+loginerrordelay			10
+fetchpop3interval		15
+calendar_email_notifyinterval	120
+
+enable_strictfoldername	no
+foldername_maxlen	32
+maxbooksize		32
+attlimit		50000
+
+webdisk_rootpath	/
+webdisk_readonly	no
+webdisk_uploadlimit	50000
+webdisk_lsmailfolder	yes
+webdisk_lshidden	yes
+webdisk_lsunixspec	yes
+webdisk_lssymlink	yes
+webdisk_allow_symlinkcreate	yes
+webdisk_allow_symlinkout	yes
+webdisk_symlinkout_display	path
+webdisk_allow_thumbnail	yes
+webdisk_allow_untar	yes
+webdisk_allow_unzip	yes
+webdisk_allow_unrar	yes
+webdisk_allow_unarj	yes
+webdisk_allow_unlzh	yes
+
+spool_limit		0
+quota_limit		0
+quota_threshold		75
+delmail_ifquotahit	no
+delfile_ifquotahit	no
+
+vdomain_admlist			sysadm
+vdomain_maxuser			100
+vdomain_maxalias		100
+vdomain_vmpop3_pwdpath		/etc/virtual
+vdomain_vmpop3_pwdname		passwd
+vdomain_vmpop3_mailpath		/var/spool/virtual
+vdomain_postfix_aliases		/etc/postfix/aliases
+vdomain_postfix_virtual		/etc/postfix/virtual
+vdomain_postfix_postalias	/usr/sbin/postalias
+vdomain_postfix_postmap		/usr/sbin/postmap
+vdomain_mailbox_command		none
+localusers			none
+
+<mailfooter>
+</mailfooter>
+
+<page_footer>
+<a href="%ow_htmlurl%/openwebmail.html" target="_blank">%name%</a>
+version %version%
+&nbsp;
+<a accesskey="H" href="%help_url%" target="_help">%help_text%?</a>
+</page_footer>
+
+##############################################################################
+# default setting for new user's preference
+##############################################################################
+default_language		auto
+default_charset			auto
+default_timeoffset		auto
+default_daylightsaving		auto
+default_realname		auto
+default_fromemails		auto
+default_autoreplysubject	This is an autoreply...[Re: $SUBJECT]
+
+<default_autoreplytext>
+Hello,
+
+I will not be reading my mail for a while.
+Your mail regarding '$SUBJECT' will be read when I return.
+</default_autoreplytext>
+
+<default_signature>
+-- 
+Open WebMail Project (http://openwebmail.org)
+</default_signature>
+
+default_style			Default
+default_iconset			Default
+default_bgurl			%ow_htmlurl%/images/backgrounds/Globe.gif
+default_bgrepeat		yes
+default_fontsize		10pt
+default_dateformat		mm/dd/yyyy
+default_hourformat		12
+
+default_ctrlposition_folderview	top
+default_msgsperpage		10
+default_fieldorder		date from subject size
+default_sort			date		
+default_useminisearchicon	yes
+default_confirmmsgmovecopy	yes
+default_defaultdestination	saved-messages
+default_smartdestination	yes
+default_viewnextaftermsgmovecopy	yes
+default_autopop3		yes
+default_autopop3wait		0
+default_moveoldmsgfrominbox	no
+forced_moveoldmsgfrominbox	no
+
+default_ctrlposition_msgread	top
+default_headers			simple
+default_showhtmlastext		no
+default_showimgaslink		no
+default_usefixedfont		no
+default_usesmileicon		yes
+default_disablejs		yes
+default_disableembcode		yes
+default_disableemblink		cgionly
+default_sendreceipt		ask
+
+default_msgformat		auto
+default_editcolumns		78
+default_editrows		24
+default_sendbuttonposition	before
+default_reparagraphorigmsg	yes
+default_replywithorigmsg	at_beginning
+default_backupsentmsg		yes	
+default_sendcharset		sameascomposing
+
+default_regexmatch		yes
+default_hideinternal		yes
+default_refreshinterval		20
+min_refreshinterval		3
+default_newmailsound		YouGotMail.English.wav
+default_newmailwindowtime	7
+default_mailsentwindowtime	5
+default_dictionary		english
+default_trashreserveddays	7
+default_sessiontimeout		60
+
+default_filter_repeatlimit	10
+default_filter_badaddrformat	no
+default_filter_fakedsmtp	no
+default_filter_fakedfrom	no
+default_filter_fakedexecontenttype	no
+
+default_abook_width		360
+default_abook_height		300
+default_abook_buttonposition	after
+default_abook_defaultfilter	no
+default_abook_defaultsearchtype	none
+default_abook_defaultkeyword	none
+
+default_calendar_defaultview		calmonth
+default_calendar_holidaydef		auto
+default_calendar_monthviewnumitems	5
+default_calendar_weekstart		0
+default_calendar_starthour		0800
+default_calendar_endhour		1700
+default_calendar_interval		30
+default_calendar_showemptyhours		yes
+default_calendar_reminderdays		7
+default_calendar_reminderforglobal	yes
+
+default_webdisk_dirnumitems		10
+default_webdisk_confirmmovecopy		yes
+default_webdisk_confirmdel		yes
+default_webdisk_confirmcompress		yes
+default_webdisk_fileeditcolumns		96
+default_webdisk_fileeditrows		24

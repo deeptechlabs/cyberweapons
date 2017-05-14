@@ -1,0 +1,21 @@
+#
+# config file for suid.pl
+#
+
+# has_savedsuid_support
+# -----------------------------------------------------------------------
+# Does your system have 'saved set-user-ID' support?
+# 
+# On a system with saved set-user-ID support, the effective uid of a process
+# will be saved to 'saved set-user-ID' (structure prepared by OS) before euid
+# is changed, thus the process can switch back to the previous euid if required.
+# 
+# If this option is set to 'no', openwebmail will try to save the euid 0 to ruid,
+# this gives the same effect as 'saved set-user-ID' but is somewhat unsafe
+# since the child forked by openwebmail may have ruid 0
+# 
+# Only set this to 'no' if you got 'authentication error' in changing the 
+# passwd or permission denied error on the tmp file when used with speedycgi
+
+has_savedsuid_support	yes
+ 

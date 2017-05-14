@@ -1,0 +1,102 @@
+#
+# This is the example of per user capability file, each user can has his own
+# settings by creating config file with filename the same as his userid.
+#
+# Any option set in this file will overide the same one in openwebmail.conf.
+# Please refer to openwebmail.conf.help for detailed description of each option
+#
+
+#domainnames		server1.domain1.com, server2.domain2.com
+
+logfile			/var/log/openwebmail.log
+global_addressbook	%ow_etcdir%/address.book
+global_filterbook	%ow_etcdir%/filter.book
+global_calendarbook	%ow_etcdir%/calendar.book
+
+error_with_debuginfo	no
+allowed_serverdomain	all
+allowed_clientdomain	all
+allowed_clientip	all
+allowed_receiverdomain	all
+
+case_insensitive_login	no
+stay_ssl_afterlogin	yes
+enable_changepwd	yes
+enable_strictpwd 	yes
+passwd_minlen		6
+session_multilogin	yes
+session_checkcookie	yes
+session_checksameip	no
+
+auto_createrc		no
+domainnames_override	no
+symboliclink_mbox	yes
+
+enable_about			yes
+about_info_software		yes
+about_info_scriptfilename	no
+about_info_protocol		yes
+about_info_server		yes
+about_info_client		yes
+xmailer_has_version		yes
+xoriginatingip_has_userid	yes
+
+enable_preference		yes
+enable_loadfrombook		yes
+enable_editfrombook		yes
+frombook_for_realname_only	no
+enable_autoreply		yes
+enable_setforward		yes
+enable_strictforward		no
+enable_stationery		yes
+enable_userfilter		yes
+enable_smartfilter		yes
+smartfilter_bypass_goodmessage	yes
+enable_webmail			yes
+enable_calendar			yes
+enable_webdisk			yes
+enable_sshterm			yes
+
+enable_pop3		yes
+disallowed_pop3servers	your_server, your_server.domain
+delpop3mail_by_default	yes
+delpop3mail_hidden	no
+
+loginerrordelay		10
+fetchpop3interval	15
+calendar_email_notifyinterval	120
+
+enable_strictfoldername	no
+foldername_maxlen	32
+maxbooksize		32
+attlimit		50000
+
+webdisk_rootpath	/
+webdisk_readonly	no
+webdisk_uploadlimit	50000
+webdisk_lsmailfolder	yes
+webdisk_lshidden	yes
+webdisk_lsunixspec	yes
+webdisk_lssymlink	yes
+webdisk_allow_symlinkcreate	yes
+webdisk_allow_symlinkout	yes
+webdisk_allow_thumbnail		yes
+
+spool_limit		0
+quota_limit		0
+quota_threshold		75
+delmail_ifquotahit	no
+delfile_ifquotahit	no
+
+forced_moveoldmsgfrominbox	no
+min_refreshinterval		3
+
+<mailfooter>
+</mailfooter>
+
+<page_footer>
+<a href="%ow_htmlurl%/openwebmail.html" target="_blank">%name%</a>
+version %version%
+&nbsp;
+<a accesskey="H" href="%help_url%" target="_help">%help_text%?</a>
+</page_footer>

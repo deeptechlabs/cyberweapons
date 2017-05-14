@@ -1,0 +1,167 @@
+#
+# config file for auth_vdomain.pl
+#
+
+# This module is used to authenticate users of virtual domain on system running
+# vm-pop3d and postfix. These user won't have any unix account on the server,
+# they are mail only users.
+#
+# This module has the following assumptions:
+#
+# 1. the virtual user have to login openwebmail with USERNAME@VIRTUALDOMAIN
+# 2. passwd file for each virtual domain is /etc/virtual/VIRTUALDOMAIN/passwd
+# 3. mailspool   for each user           is /var/spool/virtual/VIRTUALDOMAIN/USERNAME
+# 4. homedir     for each user           is $config{ow_usersdir}/USERNAME@VIRTUALDOMAIN
+
+# Configure PostFix
+# -----------------
+# Assume postfix conf is located at /etc/postfix
+# and we want to set 2 virtual domains: sample1.com and sample2.com
+# and we have users sysadm@sample1.com, sysadm@sample2.com
+#
+# 1. put the following option in /etc/postfix/main.cf
+#
+#    virtual_maps=hash:/etc/postfix/virtual
+#    alias_maps=hash:/etc/postfix/alias, $alias_database
+#    default_privs=nobody
+#
+# ps: if your postfix is 2.00 or above
+#     use virtual_alias_maps instead of virtual_maps in the above
+#
+# 2. put the virtual user mapping in /etc/postfix/virtual
+#    to map an email address to a virtual user
+#
+#    sample1.com		# any notes for sample1.com
+#    sample2.com		# any notes for sample2.com
+#    sysadm@sample1.com		sysadm.sample1.com
+#    sysadm@sample2.com		sysadm.sample2.com
+#
+#    then run 'cd /etc/postfix/; postmap virtual'
+#
+# ps: the first two lines of the virtual domain are required for postfix
+#     style virtual domain, please refer to man page virtual.5 for more detail
+#
+# 3. put the alias mapping in /etc/postfix/aliases
+#    to redirect mails for the virtual user to related mailbox
+#
+#    sysadm.sample1.com:	/var/spool/virtual/sample1.com/sysadm
+#    sysadm.sample2.com:	/var/spool/virtual/sample2.com/sysadm
+#
+#    then run 'cd /etc/postfix/; postalias aliases'
+#
+# ps: When postfix creating the mailbox for a virtual user,
+#     the gid of this mailbox will be 'mail' and
+#     the uid will be determined by the following order:
+#
+#  a. if the alias.db (created by 'postalias alias') is owned by user other than root,
+#     then the owner uid will be used
+#  b. if alias.db is owned by root,
+#     then the uid of the user defined in option default_privs in main.cf will be used.
+#
+#  Since alias.db is owned by root in most case and
+#  option default_privs in main.cf is defined to 'nobody',
+#  the virtual user mailbox will be owned by uid 'nobody' and gid 'mail'.
+
+# Configure vm-pop3d
+# ------------------
+# Assume vm-pop3s is installed in /usr/local/sbin/vm-pop3d)
+#
+# 1. if you are using inetd, put the following line in /etc/inetd.conf
+#
+# pop3	stream	tcp	nowait	root	/usr/local/sbin/vm-pop3d	vm-pop3d -u nobody
+#
+# 2. if you are using xinetd, create /etc/xinetd.d/vmpop3 with following content
+#
+# service pop3
+#     {
+#             socket_type     = stream
+#             protocol        = tcp
+#             wait            = no
+#             user            = root
+#             instances       = 25
+#             server          = /usr/local/sbin/vm-pop3d
+#             server_args     = -u nobody
+#             log_type        = SYSLOG local4 info
+#             log_on_success  = PID HOST EXIT DURATION
+#             log_on_failure  = HOST ATTEMPT
+#             disable         = no
+#     }
+#
+# ps: if the pop3 client login as username,
+#     vm-pop3d will query /etc/passwd for authentication.
+#     if the pop3 client login as username@virtualdomain
+#     vm-pop3d will query /etc/virtual/virtualdomain/passwd for authentication
+#
+#     And the -u nobody is to tell vm-pop3d to use euid nobody
+#     while accessing the mailbox of virtual users
+
+# Configure Open WebMail
+# ----------------------
+# For each virtual domain, creat per domain conf file
+# ($config{ow_siteconfdir}/VIRTUALDOMAIN) with the following options
+#
+# auth_module		auth_vdomain.pl
+# auth_withdomain	yes
+# mailspooldir		/var/spool/virtual/VIRTUALDOMAIN
+# use_syshomedir	no
+# use_homedirspools	no
+# enable_autoreply	no
+# enable_setforward	no
+# enable_vdomain		yes
+# vdomain_admlist		sysadm, john
+# vdomain_maxuser		100
+# vdomain_vmpop3_pwdpath	/etc/virtual
+# vdomain_vmpop3_pwdname	passwd
+# vdomain_vmpop3_mailpath	/var/spool/virtual
+# vdomain_postfix_aliases	/etc/postfix/aliases
+# vdomain_postfix_virtual	/etc/postfix/virtual
+# vdomain_postfix_postalias	/usr/sbin/postalias
+# vdomain_postfix_postmap	/usr/sbin/postmap
+#
+# ps: vdomain_admlist defines the users who can create/delete/modify accounts
+#     of this virtual domain in openwebmail
+
+# create domain specific directory and files
+# ------------------------------------------
+# 1. mkdir /etc/virtual
+#    mkdir /var/spool/virtual
+#
+# 2. for each virtual domain
+#
+#    a. create domain passwd file
+#       mkdir     /etc/virtual/DOMAIN
+#       touch     /etc/virtual/DOMAIN/passwd
+#       chmod 644 /etc/virtual/DOMAIN/passwd
+#
+#    b. create domain mailspool dir so user mailbox can be created under it.
+#       mkdir        /var/spool/virtual/DOMAIN
+#       chown nobody /var/spool/virtual/DOMAIN
+#       chgrp mail   /var/spool/virtual/DOMAIN
+#
+# 3. add user 'sysadm' to the virtual domain password file
+#
+#    htpasswd /etc/virtual/DOMAIN/passwd sysadm
+
+# change the user for all virtual domain mails
+# ---------------------------------------------
+# If you wish to use other username, eg: vmail,
+# instead of 'nobody' for the virtual domain mails
+#
+# 1. set default_privs=vmail in postfix main.cf
+# 2. use '-u vmail' for vmpop3d
+# 3  chown vmail /var/spool/virtual/DOMAIN
+# 4. set $localuid to getpwnam('vmail');
+# 5. if you wish to use homdir of 'vmail' for all virtual domain mails,
+#    a. set 'use_syshomedir yes' in openwebmail per domain conf.
+#    b. create vmail homedir with vmail uid, gid
+#    c. then homedir for virtual user will be vmail_homedir/VIRTUALDOMAIN/USERNAME
+
+# That's all! Now you can
+#
+# 1. send mail to sysadm@sample1.com and sysadm@sample2.com
+# 2. login openwebmail with username=sysadm@sample1.com or sysadm@sample2.com
+# 3. click the  'Virtual Domain management' button in user preference,
+#    then add/delete virtual users in the same virtual domain
+
+# the user for all virtual users mailbox by default
+virtualuser	nobody

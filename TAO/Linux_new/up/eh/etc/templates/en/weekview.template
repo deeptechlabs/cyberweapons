@@ -1,0 +1,69 @@
+<center> 
+<table border="0" align="center" width="95%" cellpadding="0" cellspacing="0">
+<tr><td colspan="2" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Week View</b></font>
+</td></tr>
+@@@STARTFORM@@@
+<tr><td bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td><td bgcolor=@@@MENUBAR@@@ align="right">
+@@@DATESELMENU@@@&nbsp;
+</td></tr>
+@@@ENDFORM@@@
+<tr><td colspan="2">&nbsp;</td></tr>
+</table>
+
+<table width=95% cellpadding=1 cellspacing=0><tr bgcolor=@@@TABLEROW_DARK@@@>
+<td nowrap align=center>@@@PREV_LINK@@@ <b>@@@CALTITLE@@@</b> @@@NEXT_LINK@@@</td>
+</tr></table>
+&nbsp;
+
+<table cellspacing=1 border="0" bgcolor=@@@BACKGROUND@@@ cols="7" width="95%">
+<tr align="center">
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY0@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY1@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY2@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY3@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY4@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY5@@@</B></td>
+<td width="14%" bgcolor=@@@COLUMNHEADER@@@ nowrap><B>@@@WEEKDAY6@@@</B></td>
+</tr>
+<tr>
+@@@DAY0@@@
+@@@DAY1@@@
+@@@DAY2@@@
+@@@DAY3@@@
+@@@DAY4@@@
+@@@DAY5@@@
+@@@DAY6@@@
+</tr>
+</table>
+</center>
+
+<style type="text/css">
+<!--
+#mypopupCal{ position: absolute;
+             visibility: hidden;
+             background-color: @@@MENUBAR@@@;
+             layer-background-color: @@@MENUBAR@@@; }
+.stylecal { font-size: 9pt; color: #000000; }
+A.notmonth:link { font-size: 9pt; color: #cccccc; }
+A.notmonth:visited { font-size: 9pt; color: #cccccc; }
+A.notmonth:hover { font-size: 9pt; color: #ff0000; }
+A.stylecal:link { font-size: 9pt; color: #000000; }
+A.stylecal:visited { font-size: 9pt; color: #000000; }
+A.stylecal:hover { font-size: 9pt; color: #ff0000; }
+// -->
+</style>
+
+<div id="mypopupCal"></div>
+
+<script language="JavaScript">
+<!--
+   function submit_changed_dateselform()
+   {
+      document.dateselform.submit();
+   }
+//-->
+</script>

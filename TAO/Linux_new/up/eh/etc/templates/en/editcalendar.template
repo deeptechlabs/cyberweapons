@@ -1,0 +1,81 @@
+<BR><BR>
+@@@STARTFORM@@@
+<table border="0" align="center" width="60%" cellpadding="3" cellspacing="1" bgcolor=@@@BACKGROUND@@@>
+<tr><td colspan="2" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>Change Calendar Entry</B></FONT>
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Date:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@ITEMDATEMENU@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>New entry:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@STRINGFIELD@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Start time:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@STARTHOURMINMENU@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>End time:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@ENDHOURMINMENU@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Recurrence:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@FREQMENU@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>&nbsp;</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@THISANDNEXTNDAYSCHECKBOX@@@ This day and next @@@NDAYSFIELD@@@ days
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>&nbsp;</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@MONTHFREQMENU@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>&nbsp;</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@EVERYYEARCHECKBOX@@@ Every year
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>New link:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@LINKFIELD@@@
+@@@EMAILSTART@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Notify Email:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@EMAILFIELD@@@
+@@@EMAILEND@@@
+</td></tr><tr><td align="right" bgcolor=@@@WINDOW_DARK@@@>
+<B>Event Color:</B>
+</td><td bgcolor=@@@WINDOW_DARK@@@>
+@@@EVENTCOLORMENU@@@
+</td></tr><tr><td colspan="2" align="center" bgcolor=@@@WINDOW_DARK@@@>
+<table border=0 cellpading=5 align=center width="40%"><tr>
+<td align=center>@@@SUBMITBUTTON@@@</td>
+@@@ENDFORM@@@
+@@@STARTCANCELFORM@@@
+<td align=center>@@@CANCELBUTTON@@@</td>
+@@@ENDFORM@@@
+</tr></table>
+</td></tr></table>
+
+<style type="text/css">
+<!--
+#editcalendarpopupCal{ position: absolute;
+                       visibility: hidden;
+                       background-color: @@@MENUBAR@@@;
+                       layer-background-color: @@@MENUBAR@@@; }
+.stylecal { font-size: 9pt; color: #000000; }
+A.notmonth:link { font-size: 9pt; color: #cccccc; }
+A.notmonth:visited { font-size: 9pt; color: #cccccc; }
+A.notmonth:hover { font-size: 9pt; color: #ff0000; }
+A.stylecal:link { font-size: 9pt; color: #000000; }
+A.stylecal:visited { font-size: 9pt; color: #000000; }
+A.stylecal:hover { font-size: 9pt; color: #ff0000; }
+// -->
+</style>
+
+<div id="editcalendarpopupCal"></div>
+
+

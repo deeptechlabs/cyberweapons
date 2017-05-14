@@ -1,0 +1,23 @@
+<BR><BR><BR><BR><BR><BR><BR>
+<table border="0" align="center" width="80%" cellpadding="1" cellspacing="1">
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>@@@MSGTITLE@@@</B></font>
+</td></tr><tr>
+<form><td align="center" bgcolor=@@@WINDOW_LIGHT@@@>
+<BR>@@@MSG@@@<BR>
+<BR>&nbsp;
+@@@OKBUTTON@@@
+</td></form>
+</tr></table>
+
+<script language="JavaScript">
+<!--
+   setTimeout("autoclose()", @@@TIME@@@*1000);
+   function autoclose() 
+   {
+   @@@JSCODE@@@
+   window.close();
+   }
+//-->
+</script>

@@ -1,0 +1,19 @@
+#
+# config file for auth_pgsql.pl
+#
+
+sqlhost		HOSTNAME	# MYSQL SERVER IP
+sqluser		USER		# MYSQL USER
+sqlpwd		PASSWD		# MYSQL PASSWORD
+
+auth_db		db_auth
+auth_table	t_users
+
+field_username	name
+field_password	passwd
+field_realname	gecos
+field_uid	uid
+field_gid	gid
+field_home	homedir
+
+pass_type	cleartxt	# crypt, cleartxt

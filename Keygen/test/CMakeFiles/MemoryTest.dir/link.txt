@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/MemoryTest.dir/MemoryTest.cpp.o  -o MemoryTest libtestmain.a ../src/keygen/lib/libkeygen.a /usr/local/lib/libCppUTest.a -lssl -lcrypto -lz 

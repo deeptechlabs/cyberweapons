@@ -1,0 +1,9 @@
+<BR><BR><BR><BR><BR><BR><BR>
+<table border="0" align="center" width="250" cellpadding="0" cellspacing="0">
+<tr><td bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<B>Session Timeout</B></FONT></TD></TR>
+<tr><td align="center" bgcolor=@@@WINDOW_LIGHT@@@>
+<BR>Sorry, your session appears to have timed out! Please go back and
+<a href="@@@STARTURL@@@">login</a>.<BR><BR>
+</td></tr></table>

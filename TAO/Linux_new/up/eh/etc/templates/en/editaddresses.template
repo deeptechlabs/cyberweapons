@@ -1,0 +1,73 @@
+<table border="0" align="center" width="90%" cellpadding="0" cellspacing="0">
+<tr><td colspan="2" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Edit Address Book</b></font>
+</td><td colspan="2" bgcolor=@@@TITLEBAR@@@ align="right">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>@@@FREESPACE@@@ Available</b></font>
+</td></tr><tr><td colspan="2" bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td><td colspan="2" bgcolor=@@@MENUBAR@@@ align="right" nowrap>
+@@@STARTSEARCHFORM@@@
+@@@SEARCH@@@
+&nbsp;
+</td>
+@@@ENDFORM@@@
+</tr><tr><td colspan="4">&nbsp;</td></tr>
+<tr><td bgcolor=@@@COLUMNHEADER@@@>
+<B>Name</B> (Click to edit)</td>
+<td bgcolor=@@@COLUMNHEADER@@@>
+<B>E-mail Address(es)</B> (Click to mail)</td>
+<td bgcolor=@@@COLUMNHEADER@@@>
+<B>Note</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Action</B>
+</td></tr>
+@@@STARTADDRESSFORM@@@
+<tr><td bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@REALNAMEFIELD@@@
+</td><td bgcolor=@@@TABLEROW_LIGHT@@@ nowrap>
+@@@EMAILFIELD@@@
+</td><td bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@NOTEFIELD@@@
+</td><td align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@ADDBUTTON@@@
+</td></tr>
+@@@ENDFORM@@@
+
+@@@ADDRESSES@@@
+
+</table>
+
+<script language="JavaScript">
+<!--
+   function GoAddressWindow(field)
+   {
+      var url = "@@@ABOOKURL@@@?action=addressbook&sessionid=@@@SESSIONID@@@&form=newaddress&field=" + field;
+
+      // double escape, one for url, one for elist (see openwebmail-abook.pl)
+      if (field == "email")
+         url += "&elist=" + escape(escape(document.newaddress.email.value));
+
+      var hWnd = window.open(url,"_addressbook","width=380,height=360,resizable=yes,scrollbars=yes");
+      if ((document.window != null) && (!hWnd.opener))
+         hWnd.opener = document.window;
+   }
+
+   function Update(name,email,note)
+   {
+      document.newaddress.realname.value = name;
+      document.newaddress.email.value = email;
+      document.newaddress.note.value = note;
+   }
+
+   function addcheck()
+   {
+      if (document.newaddress.email.value  == "") {
+         alert("Please specify the email address.");
+         return false;
+      }
+      return true;
+   }
+//-->
+</script>

@@ -1,0 +1,79 @@
+<p align="center">
+<a href="@@@LOGO_LINK@@@">
+<img border="0" src="@@@LOGO_URL@@@"></a></p>
+<table border="0" align="center" width="260" cellpadding="0" cellspacing="0">
+<tr><td bgcolor="#3161bd" background="@@@IMAGEDIR_URL@@@/bg-titleblue.gif">
+&nbsp;<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3"><B>Login</B></FONT>
+</td></tr><tr><td align="center" bgcolor="#3161bd">
+
+<table width="100%" cellpadding="0" cellspacing="1" border="0">
+<tr>
+<td bgcolor=#ffffff>
+@@@STARTFORM@@@
+<BR>
+<table align=center border=0 cellspacing=2 cellpadding=0>
+<tr>
+<td align="right" nowrap>UserID: </td><td>@@@LOGINNAMEFIELD@@@</td>
+</tr><tr>
+<td align="right" nowrap>Password: </td><td>@@@PASSWORDFIELD@@@</td>
+@@@DOMAINSTART@@@
+</tr><tr>
+<td align="right" nowrap>Domain: </td><td>@@@DOMAINMENU@@@</td>
+@@@DOMAINEND@@@
+</tr><tr>
+<td align=center>
+<table><tr><td>@@@LOGINBUTTON@@@</td></tr></table>
+</td>
+<td align=center>
+<table><tr><td><font size=1>use HTTP<br>compression</font></td><td>@@@HTTPCOMPRESSIONCHECKBOX@@@</td></tr></table>
+</td>
+</tr>
+</table>
+<BR>
+</td>
+@@@ENDFORM@@@
+</tr></table>
+
+</td></tr></table>
+
+<script language="JavaScript">
+<!--
+
+   if (document.login.loginname.value == "") {
+      document.login.loginname.focus()
+   } else {
+      document.login.password.focus()
+   }
+
+   function focuspwd()
+   {
+      document.login.password.focus();
+      return(true);
+   }
+
+   function focusloginbutton()
+   {
+      document.login.loginbutton.focus();
+      return (true);
+   }
+
+   function httpcompresshelp()
+   {
+      if (document.login.httpcompress.checked) {
+         alert(
+"HTTP Compression can reduce the use of network bandwidth between your computer and the webmail server effectively, "+
+"but there are some compatibility issues:\n\n"+
+"1. some proxy servers only support HTTP compression via HTTP 1.1, "+
+"you may have to enable the HTTP1.1 support for proxy in your browser\n"+
+"2. some proxy servers don't support HTTP compression at all, "+
+"you may have to list the webmail server as directly connected in the proxy configuration of your browser.\n"+
+"3. some browsers have problems when using HTTP compression with SSL...\n"+
+"4. some browsers claim to support HTTP compression but actually not...\n\n"+
+"So if you encounter any problem, please login again with this checkbox unchecked.\n"
+         );
+      }
+      return(true);
+   }
+
+//-->
+</script>

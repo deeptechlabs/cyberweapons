@@ -1,0 +1,95 @@
+<table border="0" align="center" width="90%" cellpadding="0" cellspacing="0">
+<tr><td colspan="5" bgcolor=@@@TITLEBAR@@@>
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b>Edit POP3 Book</b></font>
+</td><td nowrap colspan="3" bgcolor=@@@TITLEBAR@@@ align="right">
+<font color=@@@TITLEBAR_TEXT@@@ face=@@@FONTFACE@@@ size="3">
+<b> @@@FREESPACE@@@ Available</b></font>
+</td></tr><tr><td colspan="8" bgcolor=@@@MENUBAR@@@>
+@@@MENUBARLINKS@@@
+</td></tr><tr><td colspan="8">&nbsp;</td></tr>
+<tr>
+<td nowrap bgcolor=@@@COLUMNHEADER@@@>
+<B>POP3 Server</B> (click to edit)</td>
+<td nowrap bgcolor=@@@COLUMNHEADER@@@>
+<B>Port</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+@@@USEPOP3SSLSTART@@@<B>Use SSL</B>@@@USEPOP3SSLEND@@@</td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Id</B> (click to receive)</td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Passwd</B></td>
+<td align="center" bgcolor=@@@COLUMNHEADER@@@>
+@@@DELPOP3STRSTART@@@<B>Del remote mail</B>@@@DELPOP3STREND@@@</td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Enable</B></td>
+<td nowrap align="center" bgcolor=@@@COLUMNHEADER@@@>
+<B>Action</B>
+</td></tr>
+@@@STARTPOP3FORM@@@
+<tr>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@HOSTFIELD@@@
+</td>
+<td nowrap bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@PORTFIELD@@@
+</td>
+<td nowrap align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@USEPOP3SSLCHECKBOX@@@
+</td>
+<td nowrap align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@REALNAMEFIELD@@@
+</td>
+<td nowrap align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@PASSFIELD@@@
+</td>
+<td nowrap align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@DELCHECKBOX@@@
+</td>
+<td nowrap align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@ENABLECHECKBOX@@@
+</td>
+<td nowrap align="center" bgcolor=@@@TABLEROW_LIGHT@@@>
+@@@ADDBUTTON@@@
+</td>
+</tr>
+@@@ENDFORM@@@
+
+@@@ADDRESSES@@@
+
+</table>
+
+<script language="JavaScript">
+<!--
+   function Update(pop3host,pop3port,pop3ssl,pop3user,pop3passwd,pop3del,enable)
+   {
+      document.newpop3.pop3host.value = pop3host;
+      document.newpop3.pop3port.value = pop3port;
+      if (pop3ssl == 1)
+        document.newpop3.pop3ssl.checked = true;
+      else
+        document.newpop3.pop3ssl.checked = false;
+
+      document.newpop3.pop3user.value = pop3user;
+      document.newpop3.pop3passwd.value = pop3passwd;
+
+      if (pop3del == 1)
+        document.newpop3.pop3del.checked = true;
+      else
+        document.newpop3.pop3del.checked = false;
+
+      if (enable == 1)
+        document.newpop3.enable.checked = true;
+      else
+        document.newpop3.enable.checked = false;
+   }
+
+   function ssl()
+   {
+      if (document.newpop3.pop3ssl.checked==true)
+        document.newpop3.pop3port.value='995';
+      else
+        document.newpop3.pop3port.value='110';
+   }
+//-->
+</script>
