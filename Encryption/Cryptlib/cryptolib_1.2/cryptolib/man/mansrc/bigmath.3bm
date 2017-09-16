@@ -1,0 +1,134 @@
+.\" @(#)bigmath.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH BIGMATH 3BM
+.SH NAME
+bigAdd, bigSubtract, bigDivide, bigLeftShift, bigRightShift, bigCompare, bigCopy, bigMultiply, bigMod, bigPow, negate, crtCombine
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+\fC
+typedef struct Bignum {
+.in +5
+Sign sign;
+size_t length; /* length of number (in Ulong units)	*/
+size_t space; /* storage space (in Ulong units)	*/
+Ulong *num;
+.in -5
+} Bignum;
+
+typedef Bignum * BigInt;
+\fR
+
+.LP
+\fBvoid bigAdd(BigInt a, BigInt b, BigInt result)\fR
+.LP
+\fBvoid bigSubtract(BigInt a, BigInt b, BigInt result)\fR
+.LP
+\fBvoid bigDivide(BigInt a, BigInt divisor, BigInt quotient, BigInt remainder)\fR
+.LP
+\fBvoid bigLeftShift(BigInt a, int numbits, BigInt result)\fR
+.LP
+\fBvoid bigRightShift(BigInt a, int numbits, BigInt result)\fR
+.LP
+\fBvoid bigAnd(BigInt a, BigInt b, BigInt result)\fR
+.LP
+\fBvoid bigOr(BigInt a, BigInt b, BigInt result)\fR
+.LP
+\fBvoid bigXor(BigInt a, BigInt b, BigInt result)\fR
+.LP
+\fBint bigCompare(BigInt a, BigInt b)\fR
+.LP
+\fBvoid bigCopy(BigInt a, BigInt result)\fR
+.LP
+\fBvoid bigMultiply(BigInt a, BigInt b, BigInt result)\fR
+.LP
+\fBvoid bigMod(BigInt a, BigInt modulus, BigInt result)\fR
+.LP
+\fBvoid bigPow(BigInt a, BigInt exponent, BigInt modulus, BigInt result)\fR
+.LP
+\fBvoid double_bigPow(BigInt a1, BigInt a2, BigInt exp1, BigInt exp2, BigInt modulus, BigInt result)\fR
+.LP
+\fBTable *g16_bigpow(BigInt a, BigInt modulus, int len_of_exp_in_4bit_nibs)\fR
+.LP
+\fBvoid brickell_bigpow(Table *table, BigInt exponent, BigInt modulus, BigInt result)\fR
+.LP
+\fBvoid void negate (BigInt a, BigInt modulus, BigInt result)\fR
+.LP
+\fBvoid void crtCombine (BigInt a, BigInt b, BigInt p, BigInt q, BigInt c12, BigInt result)
+
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+For example:
+.in 10
+\fCresult = bigInit(0);
+.in 10
+bigAdd(a, b, result);\fR
+.LP
+
+$bigAdd$ adds two $BigInts$ together and stores the
+result in $result$.
+
+$bigSubtract$ subtracts $BigInt ~b$ from $BigInt ~a$ and
+stores the result in $result$.  If the second argument is larger
+than the first, the sign of the result is negative.  $bigTest(b)$
+is used to check the sign of a $BigInt$.
+
+$bigDivide$ divides $a$ by $divisor$ and stores the quotient in
+$quotient$ and the remainder in $remainder$.
+.in 10
+\fCquotient = bigInit(0);
+.in 10
+remainder = bigInit(0);
+.in 10
+bigDivide(a, divisor, quotient, remainder);\fR
+.LP
+
+$bigLeftShift$ and $bigRightShift$ shift their first
+argument by $numbits$ to the left and right respectively, and place
+the result in $result$.
+
+$bigAnd$, $bigOr$ and $bigXor$ do the obvious.
+
+$bigCompare$ compares two $BigInts$.  The result of the
+comparison is an integer which is positive if $a ~>~ b$, negative
+if $a ~<~ b$ or zero if $a ~=~ b$.
+
+$bigCopy$ copies a $BigInt$ into another.
+
+$bigMultiply$ multiplies two $BigInts$ using a combination of
+$O(n sup size +2 log3 )$ and $O(n sup size +2 2 )$ algorithms and
+places the result in $result$.
+
+$bigMod$ returns $a ~mod~ modulus$ in $result$.
+
+$bigPow$ computes $result ~=~ a sup size +2 b mod~ n$
+using \fIaddition chaining tables\fR and \fIMontgomery reduction\fR.
+
+$double_bigPow$ computes $result ~=~ {a sup size +2 b} {c sup size +2 d} mod ~p$
+
+If one expects to use modular exponentiation using the same base and modulus (as in El Gamal
+or Diffie-Hellman systems) one can precompute a table to be used in Brickell's speedup
+for exponentiation.  If the calculation is $r ~=~ {alpha} sup size +2 e mod ~p$, we calculate
+$table ~=~ g16_bigpow({alpha}, p, length_of_e)$ and $brickell_bigpow(table, e, p, r)$.
+Here, length_of_e is the number of 4 bit nibbles in the exponent.
+
+$negate$ returns $-a~mod ~p$ by calculating $a*(p - 1) ~ mod p$.
+
+$crtCombine$ does a Chinese Remainder combination of a and b with respect to
+primes p and q with coefficient, $c12 ~=~ p ~mod ~q$.
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM)

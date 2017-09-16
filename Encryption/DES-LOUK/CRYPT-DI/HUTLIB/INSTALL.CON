@@ -1,0 +1,2 @@
+hut-include.h usr/include/hut-include.h data
+libhut.a usr/lib/libhut.a lib

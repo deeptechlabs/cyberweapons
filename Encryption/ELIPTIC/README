@@ -1,0 +1,44 @@
+This is version 2.1 of the elliptic curve public key encryption package
+by Mike Rosing(Dr. mike) <cryptech.mcs.net>.  It is functionally
+identical to the 2.0 release except for a few minor bug fixes and a
+lot of portability-enhancing clean-up.  A detailed list of the changes
+made since v2.0 can be found in the "CHANGES" file.  Other innocuous
+porting notes are contained in the "NOTES" file.
+
+The 2.0 release was developed on a Mac running the MachTen kernel.
+Every attempt was made in the v2.1 port to not introduce changes
+that would be troublesome on the platform, since I could not test
+on it.
+
+The 2.1 release was testing on the following platforms:
+
+386-based PC
+
+> MS-DOS v5 and v6 using Borland C++ v6.0
+
+> Linux v 1.0.9 and gcc v 2.5.8
+
+Sun SPARCstation 10
+
+> SunOS v 4.1.3 and gcc v 2.7.0(and also briefly of 2.6.3)
+
+> SunOS v 4.1.3 and SunPro acc v 2.0
+
+> SunOS v 4.1.3 and the default SunOS cc compiler
+
+Dr. mike tells me that v 1.0 has more than historic interest for
+anyone who want to use a different key length.  It was not
+difficult to get v1.0 to compile on any of the platforms listed
+above.  Refer to the included eliptic.doc file for details on
+this and other aspects of Dr. mike's implementation and for
+references to the mathematical texts and papers on which it is
+based.
+
+Regards,
+Steve Albrecht
+steve@eh.pd.mcs.net
+73657.1342@compuserve.com
+
+7 Nov '95
+7 Nov '95
+

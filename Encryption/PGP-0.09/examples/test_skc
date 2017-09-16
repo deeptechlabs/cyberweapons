@@ -1,0 +1,18 @@
+#!/usr/local/bin/perl -w
+
+use Stream::IO;
+use PGP::PacketFactory;
+
+my $fis = new Stream::FileInput "secring.pgp";
+my $dis = new Stream::DataInput $fis;
+
+my $skc = PGP::PacketFactory::restore($dis);
+die $skc unless ref($skc);
+$skc->display();
+
+my $sk = $skc->decrypt("joe");
+die "Cannot decrypt secret key ($sk)" unless ref $sk;
+
+$skc->display();
+$sk->display();
+

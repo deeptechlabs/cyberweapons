@@ -1,0 +1,5317 @@
+%!PS-Adobe-3.0
+%%Title: Microsoft Word - DIAMOND2.DOC
+%%Creator: PSCRIPT.DRV Version 4.0
+%%CreationDate: 12/21/95 15:54:15
+%%BoundingBox: 19 9 593 784 
+%%Pages: (atend)
+%%PageOrder: Ascending
+%%Requirements: 
+%%DocumentNeededFonts: (atend)
+%%DocumentSuppliedFonts: (atend)
+%%DocumentData: Clean7Bit
+%%LanguageLevel: 1
+%%EndComments
+
+[{
+%%BeginFeature: *JobPatchFile 1
+
+save 
+/version23-manualfeedpatch where { pop false } { true }ifelse
+ % we don't do an explicit 'get' since product and version MAY
+ % be in systemdict or statusdict - this technique gets the lookup
+ % without failure
+statusdict begin
+  product (LaserWriter) eq        % true if LaserWriter
+  version cvr 23.0 eq             % true if version 23
+end
+
+and  % only install this patch if both are true
+and  % true only if patch is not installed and is for this printer
+     % save object and boolean on stack
+dup { exch restore }if
+% either true OR saveobject false
+dup
+{
+  /version23-manualfeedpatch true def
+  /oldversion23-showpage /showpage load def
+  /showpage       % this showpage will wait extra time if manualfeed is true
+  {%
+     statusdict /manualfeed known
+     {% manualfeed known in statusdict
+        statusdict /manualfeed get
+        {% if true then we loop for 5 seconds
+           usertime 5000 add       % target usertime
+           { % loop
+             dup usertime sub 0 lt
+             { exit }if
+           }loop
+           pop             % pop the usertime off the stac
+        }if
+     }if
+     oldversion23-showpage
+  }bind def
+}if
+not{ restore }if
+
+%%EndFeature
+} stopped cleartomark
+%%BeginProlog 
+%%BeginProcSet: Pscript_Win_ErrorHandler 1.0 1
+/currentpacking where{pop/oldpack currentpacking def/setpacking where{pop
+false setpacking}if}if/$brkpage 64 dict def $brkpage begin/prnt{dup type
+/stringtype ne{=string cvs}if dup length 6 mul/tx exch def/ty 10 def
+currentpoint/toy exch def/tox exch def 1 setgray newpath tox toy 2 sub moveto
+0 ty rlineto tx 0 rlineto 0 ty neg rlineto closepath fill tox toy moveto 0
+setgray show}bind def/nl{currentpoint exch pop lmargin exch moveto 0 -10
+rmoveto}def/=={/cp 0 def typeprint nl}def/typeprint{dup type exec}readonly def
+/lmargin 72 def/rmargin 72 def/tprint{dup length cp add rmargin gt{nl/cp 0 def
+}if dup length cp add/cp exch def prnt}readonly def/cvsprint{=string cvs
+tprint( )tprint}readonly def/integertype{cvsprint}readonly def/realtype{
+cvsprint}readonly def/booleantype{cvsprint}readonly def/operatortype{(--)
+tprint =string cvs tprint(-- )tprint}readonly def/marktype{pop(-mark- )tprint}
+readonly def/dicttype{pop(-dictionary- )tprint}readonly def/nulltype{pop
+(-null- )tprint}readonly def/filetype{pop(-filestream- )tprint}readonly def
+/savetype{pop(-savelevel- )tprint}readonly def/fonttype{pop(-fontid- )tprint}
+readonly def/nametype{dup xcheck not{(/)tprint}if cvsprint}readonly def
+/stringtype{dup rcheck{(\()tprint tprint(\))tprint}{pop(-string- )tprint}
+ifelse}readonly def/arraytype{dup rcheck{dup xcheck{({)tprint{typeprint}forall
+(})tprint}{([)tprint{typeprint}forall(])tprint}ifelse}{pop(-array- )tprint}
+ifelse}readonly def/packedarraytype{dup rcheck{dup xcheck{({)tprint{typeprint}
+forall(})tprint}{([)tprint{typeprint}forall(])tprint}ifelse}{pop
+(-packedarray- )tprint}ifelse}readonly def/courier/Courier findfont 10
+scalefont def end errordict/handleerror{systemdict begin $error begin $brkpage
+begin newerror{/newerror false store vmstatus pop pop 0 ne{grestoreall}if
+showpage initgraphics courier setfont lmargin 720 moveto(ERROR: )prnt
+errorname prnt nl(OFFENDING COMMAND: )prnt/command load prnt $error/ostack
+known{nl nl(STACK:)prnt nl nl $error/ostack get aload length{==}repeat}if
+systemdict/showpage get exec(%%[ Error: )print errorname =print
+(; OffendingCommand: )print/command load =print( ]%%)= flush}if end end end}
+dup 0 systemdict put dup 4 $brkpage put bind readonly put/currentpacking where
+{pop/setpacking where{pop oldpack setpacking}if}if
+%%EndProcSet
+%%BeginProcSet: Pscript_Res_Emul 1.0 0
+/defineresource where{pop}{userdict begin/defineresource{userdict/Resources 2
+copy known{get begin}{15 dict dup begin put}ifelse exch readonly exch
+currentdict 1 index known not{dup 30 dict def}if load 3 -1 roll 2 index put
+end}bind readonly def/findresource{userdict/Resources get exch get exch get}
+bind readonly def/resourceforall{pop pop pop pop}bind readonly def
+/resourcestatus{userdict/Resources 2 copy known{get exch 2 copy known{get exch
+known{0 -1 true}{pop pop false}ifelse}{pop pop pop false}ifelse}{pop pop false
+}ifelse}bind readonly def end}ifelse
+%%EndProcSet
+%%BeginResource: procset Pscript_Win_Driver 2.0 0
+/Pscript_Win_Driver 200 dict dup begin
+%%BeginResource: file Pscript_FatalError 2.0 0
+/FatalErrorIf{{initgraphics findfont exch scalefont setfont counttomark 3 div
+cvi{moveto show}repeat showpage quit}{cleartomark}ifelse}bind def
+%%EndResource
+/VM? {vmstatus exch sub exch pop gt { [
+(This job requires more memory than is available in this printer.) 100 500
+(Try one or more of the following, and then print again:) 100 485
+(In the PostScript dialog box, click Optimize For Portability.) 115 470
+(In the Device Options dialog box, make sure the Available Printer Memory is accurate.) 115 455
+(Reduce the number of fonts in the document.) 115 440
+(Print the document in parts.) 115 425
+12 /Times-Roman showpage
+(%%[ PrinterError: Low Printer VM ]%%) =
+true FatalErrorIf}if} bind def
+30000  VM?
+%%BeginResource: file Pscript_Win_Utils 2.0 0
+/|/def load def/,/load load |/~/exch , |/?/ifelse , |/!/pop , |/`/begin , |/^
+/index , |/@/dup , |/+/translate , |/$/roll , |/U/userdict , |/M/moveto , |/-
+/rlineto , |/&/currentdict , |/:/gsave , |/;/grestore , |/F/false , |/T/true ,
+|/N/newpath , |/E/end , |/Ac/arc , |/An/arcn , |/A/ashow , |/D/awidthshow , |
+/C/closepath , |/V/div , |/O/eofill , |/L/fill , |/I/lineto , |/-C/rcurveto ,
+|/-M/rmoveto , |/+S/scale , |/Ji/setfont , |/Lc/setlinecap , |/Lj/setlinejoin
+, |/Lw/setlinewidth , |/S/show , |/LH/showpage , |/K/stroke , |/W/widthshow ,
+|/R/rotate , |/b{bind |}bind |/bd{bind |}bind |/xd{~ |}bd/ld{, |}bd/lw/Lw ld
+/lc/Lc ld/lj/Lj ld/sg/setgray ld/L2? F/languagelevel where{! languagelevel 2
+ge{! T}if}if |/g{@ not{U/DefIf_save save put}if U/DefIf_bool 2 ^ put}b
+/DefIf_El{if U/DefIf_bool get not @{U/DefIf_save get restore}if}b/e{DefIf_El !
+}b/self & |/reinitialize{[/TextInit/GraphInit/UtilsInit counttomark{@ where{
+self eq}{F}?{cvx exec}{!}?}repeat cleartomark}b/initialize{`{/ADO_mxRot ~ |
+/TextInitialised? F | reinitialize E}{U/Pscript_Win_Data 200 dict @ ` put
+/ADO_mxRot ~ |/TextInitialised? F | reinitialize}?}b/terminate{!{& self eq{
+exit}{E}?}loop E}b/suspend/terminate , |/resume{` Pscript_Win_Data `}b/snap{
+transform 0.25 sub round 0.25 add ~ 0.25 sub round 0.25 add ~ itransform}b
+/dsnap{dtransform round ~ round ~ idtransform}b<04>cvn{}|/setjn{{statusdict
+/jobname known{statusdict/jobname 3 -1 $ put}if}stopped cleartomark}b/solid{[]
+0 setdash}b/setdsh{0 setdash}b/colspRefresh{}b/rp{4 2 $ M 1 ^ 0 - 0 ~ - neg 0
+-}b/rr{1 ^ 0 - 0 ~ - neg 0 - C}b
+%%EndResource
+%%BeginResource: file Pscript_Win_Utils_L1 2.0 0
+L2? not g{/rf{N rp L}b/fx{1 1 dtransform @ 0 ge{1 sub 1}{1 add -0.25}? 3 -1 $
+@ 0 ge{1 sub 1}{1 add -0.25}? 3 1 $ 4 1 $ idtransform 4 -2 $ idtransform}b/BZ{
+4 -2 $ snap + +S fx rf}b/rs{N rp C K}b/rc{N rp clip N}b/sg{setgray}b/sco{
+setrgbcolor}b/sgco{{sg}{sco}?}b}e
+%%EndResource
+%%BeginResource: file Pscript_Win_Utils_L2 2.0 0
+L2? g{/colspA/DeviceGray |/colspABC/DeviceRGB |/setAorABC{{colspA}{colspABC}?
+setcolorspace}b/rf/rectfill , |/fx{1 1 dtransform @ 0 ge{1 sub 0.5}{1 add -0.5
+}? 3 -1 $ @ 0 ge{1 sub 0.5}{1 add -0.5}? 3 1 $ 4 1 $ idtransform 4 -2 $
+idtransform}b/BZ{4 -2 $ snap + +S fx rf}b/rs/rectstroke , |/rc/rectclip , |/sg
+{@ @ setcolor}b/sco{setcolor}b/colspRefresh{colspABC setcolorspace}b/sgco{{sg
+}{sco}?}b/UtilsInit{F setglobal}b/definecolorrendering{/ColorRendering
+defineresource !}b/findcolorrendering{@/ColorRendering resourcestatus{! !
+/ColorRendering findresource T}{! F}?}b/selectcolorrendering{@/ColorRendering
+resourcestatus{! !/ColorRendering}{!/DefaultColorRendering/ColorRendering}?
+findresource setcolorrendering}b}e
+%%EndResource
+%%BeginResource: file Pscript_Win_Encoding 2.0 0
+/bullets{{/bullet}repeat}b/ANSIEncoding[/grave/acute/circumflex/tilde/macron
+/breve/dotaccent/dieresis/ring/cedilla/hungarumlaut/ogonek/caron/dotlessi 18
+bullets StandardEncoding 32 95 getinterval aload ! 3 bullets/quotesinglbase
+/florin/quotedblbase/ellipsis/dagger/daggerdbl/circumflex/perthousand/Scaron
+/guilsinglleft/OE 4 bullets/quoteleft/quoteright/quotedblleft/quotedblright
+/bullet/endash/emdash/tilde/trademark/scaron/guilsinglright/oe 2 bullets
+/Ydieresis/space/exclamdown/cent/sterling/currency/yen/brokenbar/section
+/dieresis/copyright/ordfeminine/guillemotleft/logicalnot/hyphen/registered
+/macron/degree/plusminus/twosuperior/threesuperior/acute/mu/paragraph
+/periodcentered/cedilla/onesuperior/ordmasculine/guillemotright/onequarter
+/onehalf/threequarters/questiondown/Agrave/Aacute/Acircumflex/Atilde/Adieresis
+/Aring/AE/Ccedilla/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute
+/Icircumflex/Idieresis/Eth/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis
+/multiply/Oslash/Ugrave/Uacute/Ucircumflex/Udieresis/Yacute/Thorn/germandbls
+/agrave/aacute/acircumflex/atilde/adieresis/aring/ae/ccedilla/egrave/eacute
+/ecircumflex/edieresis/igrave/iacute/icircumflex/idieresis/eth/ntilde/ograve
+/oacute/ocircumflex/otilde/odieresis/divide/oslash/ugrave/uacute/ucircumflex
+/udieresis/yacute/thorn/ydieresis]| ANSIEncoding @ 39/quotesingle put 96/grave
+put/ANSIEncodingOld ANSIEncoding 256 array copy | ANSIEncodingOld @[138 153
+154 169 172 174 177 178 179 181 185 188 189 190 208 215 221 222 240 247 253
+254]{/bullet put @}forall 166/bar put 176/ring put
+%%EndResource
+%%BeginResource: file Pscript_Win_Text 2.0 0
+/TextInit{TextInitialised? not{/Pscript_Windows_Font & |/TextInitialised? T |
+/fM[1 0 0 -1 0 0]|/mFM matrix |/iMat[1 0 0.212557 neg 1 0 0]|}if}b/xUP null |
+/yUP null |/uW null |/xSP null |/ySP null |/sW null |/copyfont{1 ^ length add
+dict `{1 ^/FID ne{|}{! !}?}forall & E}b/rF{3 copyfont @ `/Encoding
+ANSIEncoding &/CharStrings known{CharStrings/Eth known not{! ANSIEncodingOld}
+if}if | E}b/mF{findfont ~{@/Encoding get @ StandardEncoding eq{! T}{{
+ISOLatin1Encoding}stopped{! F}{eq}?{T}{@ ` T 32 1 127{Encoding 1 ^ get
+StandardEncoding 3 -1 $ get eq and}for E}?}?}{F}?{rF}{3 copyfont}? `
+/OrigFontType ~ |/OrigFontName ~ | & E 2 ^ ~ definefont fM 5 4 -1 $ put fM 4 0
+put fM makefont Pscript_Windows_Font 3 1 $ put}b/xF{scalefont
+Pscript_Windows_Font 3 1 $ put}b/xMF{mFM astore makefont Pscript_Windows_Font
+3 1 $ put}b/xF2/scalefont , |/xMF2{mFM astore makefont}b/sLT{: Lw -M
+currentpoint snap M 0 - 0 Lc K ;}b/sSU{N/uW ~ |/yUP ~ |/xUP ~ |}b/sU{xUP yUP
+uW sLT}b/sST{N/sW ~ |/ySP ~ |/xSP ~ |}b/sT{xSP ySP sW sLT}b/sR{: + R 0 0 M}b
+/sRxy{: matrix astore concat 0 0 M}b/eR/; , |
+%%EndResource
+%%BeginResource: file Pscript_Win_Text_Bold 2.0 0
+/mBF{@ 4 copyfont `/FontName ~ |/OrigFontType ~ |/OrigFontName ~ | 0
+FontMatrix idtransform ! &/PaintType known{PaintType 0 eq{/PaintType 2 |
+/StrokeWidth ~ |}{PaintType 1 eq PaintType 2 eq or PaintType 3 eq or &
+/StrokeWidth known and{StrokeWidth add/StrokeWidth ~ |}{!}?}?}{!}? @ & E
+definefont Pscript_Windows_Font 3 1 $ put}b/xBF{Pscript_Windows_Font ` 1 ^
+/FontName get 1 ^ scalefont 3 1 $ scalefont 2 copy ~ | ~ ! | E}b/xMBF{mFM
+astore Pscript_Windows_Font ` 1 ^/FontName get 1 ^ makefont 3 1 $ makefont 2
+copy ~ | ~ ! | E}b/xBF2{/sB0 ~ mBF/sB1 sB0 3 -1 $ xBF sB1}b/xMBF2{/sB0 ~ mBF
+mFM astore/sB1 sB0 3 -1 $ xMBF sB1}b/sB{: Pscript_Windows_Font currentfont get
+Ji @ S ; S}b/asB{: Pscript_Windows_Font currentfont get Ji 3 copy A ; A}b/wsB{
+: Pscript_Windows_Font currentfont get Ji 4 copy W ; W}b/awsB{:
+Pscript_Windows_Font currentfont get Ji 6 copy D ; D}b/sBT3{: @ S ; 1 1 -M S}b
+/asBT3{: 3 copy A ; 1 1 -M A}b/wsBT3{: 4 copy W ; 1 1 -M W}b/awsBT3{: 6 copy D
+; 1 1 -M D}b/mIF{iMat 4 3 -1 $ put 2 copyfont `/OrigFontType ~ |/OrigFontName
+~ | @ & E definefont iMat makefont Pscript_Windows_Font 3 1 $ put}b
+%%EndResource
+%%BeginResource: file Pscript_Win_Graphics 2.0 0
+/SavedCTM null |/CTMsave{/SavedCTM SavedCTM currentmatrix |}b/CTMrestore{
+SavedCTM setmatrix}b/mp null |/ADO_mxRot null |/GDIHMatrix null |
+/GDIHPatternDict 22 dict | GDIHPatternDict `/PatternType 1 |/PaintType 2 |
+/Reps L2?{1}{5}? |/XStep 8 Reps mul |/YStep XStep |/BBox[0 0 XStep YStep]|
+/TilingType 1 |/PaintProc{` 1 Lw[]0 setdash PaintData , exec E}b/FGnd null |
+/BGnd null |/HS_Horizontal{horiz}b/HS_Vertical{vert}b/HS_FDiagonal{fdiag}b
+/HS_BDiagonal{biag}b/HS_Cross{horiz vert}b/HS_DiagCross{fdiag biag}b/MaxXYStep
+XStep YStep gt{XStep}{YStep}? |/horiz{Reps{0 4 M XStep 0 - 0 8 +}repeat 0 -8
+Reps mul + K}b/vert{Reps{4 0 M 0 YStep - 8 0 +}repeat 0 -8 Reps mul + K}b/biag
+{Reps{0 0 M MaxXYStep @ - 0 YStep neg M MaxXYStep @ - 0 8 +}repeat 0 -8 Reps
+mul + 0 YStep M 8 8 - K}b/fdiag{Reps{0 0 M MaxXYStep @ neg - 0 YStep M
+MaxXYStep @ neg - 0 8 +}repeat 0 -8 Reps mul + MaxXYStep @ M 8 -8 - K}b E
+/makehatch{GDIHPatternDict/PaintData 3 -1 $ put CTMsave GDIHMatrix setmatrix
+GDIHPatternDict matrix mp CTMrestore ~ U ~ 2 ^ put}b/h0{/h0/HS_Horizontal
+makehatch}b/h1{/h1/HS_Vertical makehatch}b/h2{/h2/HS_FDiagonal makehatch}b/h3{
+/h3/HS_BDiagonal makehatch}b/h4{/h4/HS_Cross makehatch}b/h5{/h5/HS_DiagCross
+makehatch}b/GDIBWPatternDict 17 dict @ `/PatternType 1 |/PaintType L2?{1}{2}?
+|/RepsV L2?{1}{6}? |/RepsH L2?{1}{5}? |/BBox[0 0 RepsH 1]|/TilingType 1 |
+/XStep 1 |/YStep 1 |/Height 8 RepsV mul |/Width 8 |/mx[Width 0 0 Height neg 0
+Height]|/FGnd null |/BGnd null |/SetBGndFGnd L2?{{BGnd null ne{BGnd aload !
+sgco BBox aload ! 2 ^ sub ~ 3 ^ sub ~ rf}if FGnd null ne{FGnd aload ! sgco}if}
+}{{}}? b/PaintProc{` SetBGndFGnd RepsH{Width Height F mx PaintData imagemask
+Width 0 +}repeat E}b E |/GDIBWPatternMx null |/pfprep{save 4 1 $
+/PatternOfTheDay 4 1 $ GDIBWPatternDict `/PaintData ~ |/BGnd ~ |/FGnd ~ | E
+CTMsave GDIBWPatternMx setmatrix GDIBWPatternDict matrix mp CTMrestore ~ !}b
+/hrf null |/prf{pfprep ~ 6 1 $ 5 hrf restore}b/GraphInit{GDIHMatrix null eq{
+/SavedCTM matrix | : ADO_mxRot concat 0 0 snap + : 0.48 @ GDIHPatternDict `
+YStep mul ~ XStep mul ~ dsnap YStep V ~ XStep V ~ E +S/GDIHMatrix matrix
+currentmatrix readonly | ; : 0.24 -0.24 +S GDIBWPatternDict ` Width Height E
+dsnap +S/GDIBWPatternMx matrix currentmatrix readonly | ; ;}if}b/cirp{360 0 An
+C}b/ellp{CTMsave + +S 0.5 0 M 0 0 0.5 360 0 An C CTMrestore}b/rrp{/rad ~ |/y2
+~ |/x2 ~ |/y1 ~ |/x1 ~ | x2 x1 add 2 V y1 M x1 y1 x1 y2 rad arct x1 y2 x2 y2
+rad arct x2 y2 x2 y1 rad arct x2 y1 x1 y1 rad arct C}b/RRp{CTMsave + +S/dyS ~
+|/dxS ~ | dxS 2 V 0 M 0 0 0 dyS 0.5 arct 0 dyS dxS dyS 0.5 arct dxS dyS dxS 0
+0.5 arct dxS 0 0 0 0.5 arct C CTMrestore}b
+%%EndResource
+%%BeginResource: file Pscript_Win_Graphics_L1 2.0 0
+L2? not g{/arct{arcto ! ! ! !}b/GDIpattfill{@ ` BGnd null ne PaintType 2 eq
+and{: BGnd aload ! sgco fEOFill{O}{L}? ; FGnd aload ! U/fGray 2 ^ put{2}{4}?
+-1 $}if E @ patterncalc : 4 ^/PaintType get 2 eq{fGray{6 -1 $ sg}{8 -3 $ sco}?
+}if fEOFill{eoclip}{clip}? N patternfill ; N}b/hrf{/fGray 1 ^ 6 eq | -4 $ N rp
+C/fEOFill F | GDIpattfill}b/hfMain{/fEOFill ~ |/fGray ~ | GDIpattfill}b/hf{T
+hfMain}b/hfW{F hfMain}b/hs{currentpoint strokepath M hfW}b/pfMain{/fEOFill ~ |
+pfprep GDIpattfill restore N}b/pf{T pfMain}b/pfW{F pfMain}b/ps{currentpoint
+strokepath M pfW}b/mpstr 1 string |/mp{~ @ length 12 add dict copy `
+/PatternCTM matrix currentmatrix |/PatternMatrix ~ |/PatWidth XStep mpstr
+length mul |/PatHeight YStep |/FontType 3 |/Encoding 256 array | 3 string 0 1
+255{Encoding ~ @ 3 ^ cvs cvn put}for !/FontMatrix matrix |/FontBBox BBox |
+/BuildChar{! @ ` XStep 0 FontBBox aload ! setcachedevice/PaintProc , E : exec
+;}b & E ~ @ 3 -1 $ definefont}b/patterncalc{` : PatternCTM setmatrix
+PatternMatrix concat BBox aload ! ! ! + pathbbox ; PatHeight V ceiling 4 1 $
+PatWidth V ceiling 4 1 $ PatHeight V floor 4 1 $ PatWidth V floor 4 1 $ 2 ^
+sub cvi abs ~ 3 ^ sub cvi abs ~ 4 2 $ PatHeight mul ~ PatWidth mul ~ E}b
+/patternfill{5 -1 $ @ ` Ji PatternCTM setmatrix PatternMatrix concat 0 2 ^ 2 ^
+M 0 1 mpstr length 1 sub{1 ^ mpstr 3 1 $ put}for ! 2 ^{currentpoint 5 ^{mpstr
+S}repeat YStep add M}repeat ! ! ! ! E}b}e
+%%EndResource
+%%BeginResource: file Pscript_Win_Graphics_L2 2.0 0
+L2? g{/mp/makepattern , |/hrf{6 eq setAorABC setpattern rectfill}b/hf{
+setAorABC setpattern O}b/hfW{setAorABC setpattern L}b/hs{setAorABC setpattern
+K}b/pf{pfprep setpattern O restore N}b/pfW{pfprep setpattern L restore N}b/ps{
+pfprep setpattern K restore N}b}e
+%%EndResource
+%%BeginResource: file Pscript_Win_BW_Images 2.0 0
+/iw 0 |/ih 0 |/im_save 0 |/s 0 |/polarity 0 |/smoothflag 0 |/mystring 0 |/bpc
+0 |/setup1asciiproc{[currentfile mystring/readhexstring cvx/! cvx]cvx bind}b
+/setup1binaryproc{[currentfile mystring/readstring cvx/! cvx]cvx bind}b
+/setup2asciiproc{currentfile/ASCII85Decode filter/RunLengthDecode filter}b
+/setup2binaryproc{currentfile/RunLengthDecode filter}b/mycolorspace{colspABC}|
+/myimagedict{/myimagedict 10 dict | myimagedict @ `/ImageType 1 |
+/MultipleDataSource F | E}b/imageprocarray[/setup1binaryproc/setup1asciiproc
+/setup2binaryproc/setup2asciiproc/setup1binarydecodeproc/setup1asciidecodeproc
+]|/L2Polarity{{[1 0]}{[0 1]}?}b/Q{/im_save save | imageprocarray ~ get/s ~ , |
+L2Polarity/polarity ~ |/smoothflag ~ | snap +/dx 2 ^ |/dy 1 ^ | +S/mystring ~
+string |/bpc ~ |/ih ~ |/iw ~ |}b/X{/im_save save | imageprocarray ~ get/s ~ ,
+| L2Polarity/polarity ~ |/smoothflag ~ | snap +/dx 2 ^ |/dy 1 ^ | +S/mystring
+~ string |/bpc ~ |/ih ~ |/iw ~ |}b/Z{im_save restore}b/Y{sgco myimagedict @ `
+/Width iw |/Height ih |/Decode polarity |/ImageMatrix[iw 0 0 ih 0 0]|
+/DataSource s |/BitsPerComponent 1 |/Interpolate smoothflag | E imagemask}b
+%%EndResource
+%%BeginResource: file Pscript_Win_BW_Images_L1 2.0 0
+L2? not g{/setup2asciiproc{[/Level2ImagesError , aload ! T FatalErrorIf}b
+/setup2binaryproc/setup2asciiproc , |/L2Polarity{}|/Y{sgco iw ih polarity[iw 0
+0 ih 0 0]s imagemask}b}e
+%%EndResource
+%%BeginResource: file Pscript_Win_Co_Images_L1 2.0 0
+L2? not g{/testsystemdict{where{systemdict eq{T}{F}?}{F}?}b/c 1 |/colorimage
+where{! T}{F}?{/c 0 statusdict `/processcolors where{! ! processcolors}{
+/deviceinfo where{! deviceinfo/Colors known{!{deviceinfo/Colors get}}if}if}? E
+| c 0 ne{/colorimage testsystemdict/setcolortransfer testsystemdict
+/currentcolortransfer testsystemdict/currentcmykcolor testsystemdict and and
+and not{/c 0 |}if}if}if c @ 1 ne ~ @ 3 ne ~ 4 ne and and{/c 0 |}if c 1 eq g{
+/expandbw{expandfactor mul round cvi bwclut ~ get 255 V}b/doclutimage{!/bwclut
+~ | bpc @ 8 eq{! 255}{4 eq{15}{3}?}?/expandfactor ~ |[/expandbw ,/exec , @
+currenttransfer ~]cvx bind settransfer iw ih bpc[iw 0 0 ih 0 0]s image}b}e c @
+3 eq ~ 4 eq or g{/nullproc{{}}|/concatutil{/exec , 7 -1 $/exec ,}b/defsubclut{
+1 add getinterval |}b/spconcattransfer{/Dclut ~ |/Cclut ~ |/Bclut ~ |/Aclut ~
+|/ncompute ~ , | currentcolortransfer[{Aclut ncompute}concatutil]cvx[{Bclut
+ncompute}concatutil]cvx[{Cclut ncompute}concatutil]cvx[{Dclut ncompute}
+concatutil]cvx setcolortransfer}b/setuprgbcluts{/bit3x rgbclut length 3 sub |
+/bit1x bit3x 3 idiv |/rclut rgbclut |/gclut rclut 1 bit3x defsubclut/bclut
+rclut 2 bit3x defsubclut}b}e c 3 eq g{/3compute{~ bit3x mul round cvi get 255
+V}b/doclutimage{/rgbclut ~ | ! setuprgbcluts/3compute rclut gclut bclut @
+spconcattransfer iw ih bpc[iw 0 0 ih 0 0][s/exec ,/@ , @]cvx nullproc nullproc
+T 3 colorimage}b}e c 4 eq g{/ftoint{1 ~ sub 255 mul round cvi}b/stuffclut{
+cmykindex 3 -1 $ put}b/4compute{~ bit4x mul round cvi get 255 V}b
+/invalidcolortable? T |/computecmykclut{setuprgbcluts/bit4x rgbclut length 3
+idiv 4 mul 4 sub |/cmykclut bit4x 4 add string |/cclut cmykclut |/mclut cclut
+1 bit4x defsubclut/yclut cclut 2 bit4x defsubclut/kclut cclut 3 bit4x
+defsubclut/cmykindex 0 | 0 1 bit1x{@/cmykindex ~ bit1x ~ sub 4 mul | 3 mul @
+rclut ~ get 255 V ~ @ gclut ~ get 255 V ~ bclut ~ get 255 V setrgbcolor
+currentcmykcolor ftoint kclut stuffclut ftoint yclut stuffclut ftoint mclut
+stuffclut ftoint cclut stuffclut}for}b/doclutimage{/rgbclut ~ | !
+invalidcolortable?{computecmykclut}if/4compute cclut mclut yclut kclut
+spconcattransfer iw ih bpc[iw 0 0 ih 0 0][s/exec ,/@ , @ @]cvx nullproc
+nullproc nullproc T 4 colorimage}b}e c 0 eq g{/a{3 mul 3 getinterval
+putinterval ~ 3 add ~ 3 copy}b/8lookup/a , |/4lookup{/byte 1 ^ | -4 bitshift a
+byte 15 and a}b/2lookup{/byte 1 ^ | -6 bitshift a byte -4 bitshift 3 and a
+byte -2 bitshift 3 and a byte 3 and a}b/colorexpand{mystringexp 0 rgbclut 3
+copy 7 -1 $/mylookup , forall ! ! ! ! !}b/createexpandstr{/mystringexp ~
+mystring length mul string |}b/doclutimage{/rgbclut ~ | !/mylookup bpc 8 eq{3
+createexpandstr/8lookup}{bpc 4 eq{6 createexpandstr/4lookup}{12
+createexpandstr/2lookup}?}? , | iw ih bpc[iw 0 0 ih 0 0][s/exec ,/colorexpand
+,/exec ,]cvx F 3 colorimage}b}e/colorimage where{! T}{F}? g{/do24image{iw ih 8
+[iw 0 0 ih 0 0]s F 3 colorimage}b}DefIf_El{/rgbtogray{/str ~ |/len str length
+|/smlen len 3 idiv |/rstr str |/gstr str 1 len 1 sub getinterval |/bstr str 2
+len 2 sub getinterval | str @ 0 1 smlen 1 sub{@ 3 mul rstr 1 ^ get 0.3 mul
+gstr 2 ^ get 0.59 mul add bstr 3 -1 $ get 0.11 mul add round cvi put @}for ! 0
+smlen getinterval}b/do24image{iw ih 8[iw 0 0 ih 0 0][s/exec ,/rgbtogray ,/exec
+,]cvx bind image}b}e/doNimage{bpc 24 eq{do24image}{iw ih bpc[iw 0 0 ih 0 0]s
+image}?}b}e
+%%EndResource
+%%BeginResource: file Pscript_Win_Co_Images_L2 2.0 0
+L2? g{/doclutimage{/rgbclut ~ | ! bpc @ 8 eq{! 255}{4 eq{15}{3}?}?/hival ~ |[
+/Indexed colspABC hival rgbclut]setcolorspace myimagedict @ `/Width iw |
+/Height ih |/Decode[0 hival]|/ImageMatrix[iw 0 0 ih 0 0]|/DataSource s |
+/BitsPerComponent bpc |/Interpolate smoothflag | E image}b/doCMYKclutimage{
+/CMYKclut ~ | ! bpc @ 8 eq{! 255}{4 eq{15}{3}?}?/hival ~ |[/Indexed/DeviceCMYK
+hival CMYKclut]setcolorspace myimagedict @ `/Width iw |/Height ih |/Decode[0
+hival]|/ImageMatrix[iw 0 0 ih 0 0]|/DataSource s |/BitsPerComponent bpc |
+/Interpolate smoothflag | E image}b/doNimage{bpc 24 eq{colspABC}{colspA}?
+setcolorspace myimagedict @ `/Width iw |/Height ih |/Decode bpc 24 eq{[0 1 0 1
+0 1]}{[0 1]}? |/ImageMatrix[iw 0 0 ih 0 0]|/DataSource s |/BitsPerComponent
+bpc 24 eq{8}{bpc}? |/Interpolate smoothflag | E image}b/doCMYKimage{
+/DeviceCMYK setcolorspace myimagedict @ `/Width iw |/Height ih |/Decode[0 1 0
+1 0 1 0 1]|/ImageMatrix[iw 0 0 ih 0 0]|/DataSource s |/BitsPerComponent 8 |
+/Interpolate smoothflag | E image}b}e
+%%EndResource
+%%BeginResource: file Pscript_Win_Type3_Hdr 2.0 0
+/GreNewFont{10 dict @ 3 1 $ | @ ` 4 1 $/FontType 3 |/FontMatrix ~ |/FontBBox ~
+|/Encoding 256 array | 0 1 255{Encoding ~/.notdef put}for/CharProcs 257 dict |
+CharProcs/.notdef{}put/Metrics 257 dict | Metrics/.notdef 3 -1 $ put/BuildChar
+{/char ~ |/fontdict ~ |/charname fontdict/Encoding get char get | fontdict
+/Metrics get charname get aload ! setcachedevice fontdict ` Encoding char get
+CharProcs ~ get E exec}| E definefont !}|/AddChar{` Encoding 3 1 $ put
+CharProcs 3 1 $ put Metrics 3 1 $ put E}|
+%%EndResource
+%%BeginResource: file Pscript_Win_Type1_Hdr 2.0 0
+/FEbuf 2 string |/FEglyph 3 string |/FE{(G00)FEglyph copy ! 1 ~{@ 16 lt{
+/offset 2 store}{/offset 1 store}? @ 16 FEbuf cvrs FEglyph ~ offset ~
+putinterval 1 ^ ~ FEglyph cvn put}for}bind |/Type1Hdr{11 dict `/FontName ~ |
+/PaintType ~ |/FontType 1 |/FontMatrix[1 3 ^ V 0 0 1 6 ^ V 0 0]| !/Encoding
+256 array 0 1 255{1 ^ ~/.notdef put}for 3 ^ 3 ^ FE | ! !/FontBBox{0 0 0 0}| &
+E currentfile eexec}bind |
+%%EndResource
+/pp 1 string |/ss 1 string |/rledecodebinary{/DC 0 |/BC 0 |{DC mystring length
+ge{exit}if currentfile ss readstring ! 0 get/BC ~ | BC 127 le{/BC BC 1 add |
+DC 1 DC BC add 1 sub{mystring ~ currentfile ss readstring ! 0 get put}for}{/BC
+257 BC sub | currentfile ss readstring ! 0 get/pp ~ | DC 1 DC BC add 1 sub{
+mystring ~ pp put}for}?/DC DC BC add |}loop mystring}b/rledecodeascii{/DC 0 |
+/BC 0 |{DC mystring length ge{exit}if currentfile ss readhexstring ! 0 get/BC
+~ | BC 127 le{/BC BC 1 add | DC 1 DC BC add 1 sub{mystring ~ currentfile ss
+readhexstring ! 0 get put}for}{/BC 257 BC sub | currentfile ss readhexstring !
+0 get/pp ~ | DC 1 DC BC add 1 sub{mystring ~ pp put}for}?/DC DC BC add |}loop
+mystring}b/setup1asciidecodeproc{[/rledecodeascii cvx]cvx bind}b
+/setup1binarydecodeproc{[/rledecodebinary cvx]cvx bind}b
+%%BeginResource: file Pscript_Win_Compat 2.0 0
+userdict/Pscript_Win_Compat 13 dict dup begin/bd{bind def}bind def/ld{load def
+}bd/CB{pop pop pop pop}bind def/B{pop pop pop pop}bind def/$x matrix def/SS{
+/pagesave save def}bind def/RS{/pagesave where{pop pagesave restore}{$x matrix
+invertmatrix concat}ifelse}bind def/ANSIVec[0/grave 1/acute 2/circumflex 3
+/tilde 4/macron 5/breve 6/dotaccent 7/dieresis 8/ring 9/cedilla 10
+/hungarumlaut 11/ogonek 12/caron 13/dotlessi 39/quotesingle 96/grave 124/bar
+130/quotesinglbase 131/florin 132/quotedblbase 133/ellipsis 134/dagger 135
+/daggerdbl 136/circumflex 137/perthousand 138/Scaron 139/guilsinglleft 140/OE
+145/quoteleft 146/quoteright 147/quotedblleft 148/quotedblright 149/bullet 150
+/endash 151/emdash 152/tilde 153/trademark 154/scaron 155/guilsinglright 156
+/oe 159/Ydieresis 160/space 161/exclamdown 164/currency 165/yen 166/brokenbar
+167/section 168/dieresis 169/copyright 170/ordfeminine 171/guillemotleft 172
+/logicalnot 173/hyphen 174/registered 175/macron 176/degree 177/plusminus 178
+/twosuperior 179/threesuperior 180/acute 181/mu 182/paragraph 183
+/periodcentered 184/cedilla 185/onesuperior 186/ordmasculine 187
+/guillemotright 188/onequarter 189/onehalf 190/threequarters 191/questiondown
+192/Agrave 193/Aacute 194/Acircumflex 195/Atilde 196/Adieresis 197/Aring 198
+/AE 199/Ccedilla 200/Egrave 201/Eacute 202/Ecircumflex 203/Edieresis 204
+/Igrave 205/Iacute 206/Icircumflex 207/Idieresis 208/Eth 209/Ntilde 210/Ograve
+211/Oacute 212/Ocircumflex 213/Otilde 214/Odieresis 215/multiply 216/Oslash
+217/Ugrave 218/Uacute 219/Ucircumflex 220/Udieresis 221/Yacute 222/Thorn 223
+/germandbls 224/agrave 225/aacute 226/acircumflex 227/atilde 228/adieresis 229
+/aring 230/ae 231/ccedilla 232/egrave 233/eacute 234/ecircumflex 235/edieresis
+236/igrave 237/iacute 238/icircumflex 239/idieresis 240/eth 241/ntilde 242
+/ograve 243/oacute 244/ocircumflex 245/otilde 246/odieresis 247/divide 248
+/oslash 249/ugrave 250/uacute 251/ucircumflex 252/udieresis 253/yacute 254
+/thorn 255/ydieresis]def currentdict{dup type/operatortype eq{[exch]cvx def}{
+pop pop}ifelse}forall/initialize{currentdict exch begin begin}bind def
+/terminate{/@FL where not{pop end end}{pop}ifelse}bind def/suspend/terminate
+load def/resume/initialize load def/M/moveto load def end put/Courier findfont
+10 scalefont setfont
+%%EndResource
+end /ProcSet defineresource pop
+%%EndResource
+%%EndProlog
+
+%%BeginSetup 
+Pscript_Win_Compat dup /initialize get exec
+[ 1.000 0 0 1.000 0 0 ] false /Pscript_Win_Driver /ProcSet findresource dup /initialize get exec
+
+[{0 
+/languagelevel where{pop languagelevel}{1}ifelse 2 ge{1 dict dup/JobTimeout  4 -1 roll put setuserparams}{statusdict/setjobtimeout get exec}ifelse 
+} stopped cleartomark
+[{240 
+/languagelevel where{pop languagelevel}{1}ifelse 2 ge{1 dict dup/WaitTimeout 4 -1 roll put setuserparams}{statusdict/waittimeout 3 -1 roll put}ifelse 
+} stopped cleartomark
+[{1 
+/languagelevel where{pop languagelevel}{1}ifelse 2 ge{1 dict dup/NumCopies 4
+-1 roll put setpagedevice}{userdict/#copies 3 -1 roll put}ifelse
+
+} stopped cleartomark
+[{
+statusdict /manualfeed false put
+} stopped cleartomark
+[{
+%%BeginFeature: *InputSlot AutoSelect Tray
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *PageSize US Letter
+letter
+%%EndFeature
+} stopped cleartomark
+1 setlinecap 1 setlinejoin 
+/mysetup [ 0.240 0 0 -0.240 19.000 784.000 ] | 
+%%EndSetup
+
+[{1 
+/languagelevel where{pop languagelevel}{1}ifelse 2 ge{1 dict dup/NumCopies 4
+-1 roll put setpagedevice}{userdict/#copies 3 -1 roll put}ifelse
+
+} stopped cleartomark
+%%Page: 1 1
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (1)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F3) cvn
+0.928 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F3_83) cvn
+F3
+83 
+xF 
+F3_83
+Ji 
+686 320 M 
+0.084 0 (The Diamond2 Block Cipher)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Italic
+(F5) cvn
+0.913 
+ (Times-Italic) cvn /Type1 
+T 
+(Times-Italic) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+1730 468 M 
+-0.038 0 (by Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 574 M 
+0.013 0 (Abstract)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F7) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F7_46) cvn
+F7
+46 
+xF 
+F7_46
+Ji 
+530 574 M 
+(\227)S 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Bold
+(F9) cvn
+0.935 
+ (Times-Bold) cvn /Type1 
+T 
+(Times-Bold) cvn
+mF 
+(F9_46) cvn
+F9
+46 
+xF 
+F9_46
+Ji 
+576 573 M 
+-0.497 0 (The Diamond2 Block Cipher is a royalty-free, symmetric-key encryption algorithm)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F9_46
+Ji 
+284 629 M 
+-0.592 0 (based on a combination of nonlinear functions. This block cipher may be implemented in hardware)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F9_46
+Ji 
+284 684 M 
+-0.391 0 (or software. Diamond uses a block size of 128 bits and a variable length key. A faster variant of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F9_46
+Ji 
+284 739 M 
+-0.381 0 (Diamond2, called Diamond2 Lite, uses a block size of 64 bits.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 845 M 
+-0.061 0 (Index Terms)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+602 845 M 
+(\227)S 
+; : 0 0 2391 3229 rc 0 0 0 sco F9_46
+Ji 
+648 844 M 
+-0.395 0 (Diamond2, Diamond, encryption, cryptography, cryptanalysis, cryptology,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F9_46
+Ji 
+284 900 M 
+-0.539 0 (computer security, communications security, cipher.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F3_75) cvn
+F3
+75 
+xF 
+F3_75
+Ji 
+284 1030 M 
+87.000 0 32 0.150 0 (I. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+434 1030 M 
+-0.079 0 (INTRODUCTION)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 1170 M 
+-0.387 0 (General symmetric key block ciphers have numerous applications in computer security,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1225 M 
+-0.362 0 (communications security, detection of data tampering, and creation of message digests for authentication)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1280 M 
+-0.340 0 (purposes. The longer any one such algorithm is used, and the more use it gets, the greater the incentive to)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1335 M 
+-0.320 0 (break it, and the greater the probability that methods will be devised to break the algorithm. For example)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1390 M 
+-0.306 0 (Michael J. Wiener has shown that breaking DES is within the capabilities of many nations and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1445 M 
+-0.218 0 (corporations [1]. This sort of reduction in the relative security of DES was anticipated several years ago.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1500 M 
+-0.332 0 (One proposed solution is the International Data Encryption Algorithm \(IDEA\231\) cipher [2], which was)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1555 M 
+-0.274 0 (described in [3] and [4] as the Improved Proposed Encryption Standard \(IPES\). Another one is the MPJ)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1610 M 
+-0.413 0 (Encryption Algorithm [5], which evolved to the Diamond2 Block Cipher. In the field of cryptography, it)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1665 M 
+-0.349 0 (is good to have many strong block ciphers available.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+284 1795 M 
+66.000 0 32 0.150 0 (II. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+434 1795 M 
+-0.078 0 (DESIGN OF DIAMOND2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 1935 M 
+-0.350 0 (Diamond2 was designed to be strong enough to provide security for the foreseeable future. It was)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1990 M 
+-0.303 0 (also designed to be easy to generate keys for, and to be practical to implement in hardware, software, or)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2045 M 
+-0.485 0 (in a hybrid implementation.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F3_67) cvn
+F3
+67 
+xF 
+F3_67
+Ji 
+284 2150 M 
+-3.374 0 (A)A 
+67.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+434 2150 M 
+-0.055 0 (Strength)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 2280 M 
+-0.354 0 (Three major factors influence the strength of a block cipher: \(1\) key length \(and key setup time\), \(2\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2335 M 
+-0.250 0 (block size, and \(3\) resistance of the algorithm to attacks other than brute force \(such as differential)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2390 M 
+-0.329 0 (cryptanalysis\) [3] [6]. The key length is variable to allow you to select your own trade-off between)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2445 M 
+-0.394 0 (security and volume of keying material needed. The block size is chosen to make brute force attacks)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2500 M 
+-0.269 0 (using precomputed tables require an obviously intractable amount of data storage.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 2605 M 
+-0.230 0 (Diamond2 uses a variable length key. The use of at least a key with at least 128 bits of entropy is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2660 M 
+-0.395 0 (recommended for long term protection of very sensitive data, as a hedge against the possibility of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2715 M 
+-0.412 0 (computing power increasing by several orders of magnitudes in the coming years.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 2820 M 
+-0.268 0 (The block size for the Diamond2 Block Cipher is fixed at 128 bits, because larger block sizes are)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2875 M 
+-0.355 0 (unlikely to make any practical difference in security, and because this is a convenient binary multiple \(16)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 1 ]%%)  =
+%%PageTrailer
+
+%%Page: 2 2
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F3) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F3_46) cvn
+F3
+46 
+xF 
+F3_46
+Ji 
+284 269 M 
+-0.279 0 (bytes\). Diamond2 Lite has a block size of 64 bits because this is good enough for most applications, and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 324 M 
+-0.252 0 (because it allows a much faster total avalanche effect and greater software speed than the 128-bit block)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 379 M 
+-0.406 0 (size.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 484 M 
+-0.302 0 (The problem of making sure that there is no known attack that is more efficient than brute force is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 539 M 
+-0.348 0 (much more difficult than simply selecting sizes for keys and blocks. This is attempted by creating a)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 594 M 
+-0.369 0 (composite function of simpler nonlinear functions in such a way that the internal intermediate results)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 649 M 
+-0.322 0 (cannot be solved for and such that there is a strong dependence of every output bit on every input bit and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 704 M 
+-0.356 0 (every key bit. Another important consideration is that the author and inventor keep up with significant)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 759 M 
+-0.314 0 (developments in cryptanalysis. This last requirement is only partially met, in that a large percentage of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 814 M 
+-0.398 0 (significant cryptanalysis technology is shrouded in secrecy.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 920 M 
+-0.300 0 (An ideal 128 bit block cipher would use a )A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Bold
+(F5) cvn
+0.935 
+ (Times-Bold) cvn /Type1 
+T 
+(Times-Bold) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+1142 919 M 
+-1.424 0 (z)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1161 920 M 
+-0.362 0 ( bit key to select one of 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1615 906 M 
+-1.424 0 (z)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1634 920 M 
+-0.309 0 ( functions from the set of all)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 975 M 
+-0.268 0 (one to one and onto functions that map one input block of 128 bits to one output block of 128 bits.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1031 M 
+-0.423 0 (Ideally, these 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+557 1017 M 
+-1.424 0 (z)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+576 1031 M 
+-0.360 0 ( functions would be the most nonlinear and difficult to analyze functions out of the \(2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F3_25) cvn
+F3
+25 
+xF 
+F3_25
+Ji 
+2120 1037 M 
+-0.500 0 (128)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+2156 1031 M 
+-0.818 0 (\)!)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1087 M 
+-0.341 0 (possible functions. In practice, the key selects one of 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1270 1073 M 
+-1.424 0 (z)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1289 1087 M 
+-0.271 0 ( functions from an arbitrary selection of possible)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1142 M 
+-0.371 0 (functions.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1247 M 
+-0.375 0 (The use of purely nonlinear functions makes a large portion of mathematical tools ineffective for)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1302 M 
+-0.342 0 (cryptanalysis. The tools that remain are defeated by ensuring adequate complexity in terms of time and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1357 M 
+-0.311 0 (memory requirements that solutions are not practical.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F8) cvn
+0.925 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F8_67) cvn
+F8
+67 
+xF 
+F8_67
+Ji 
+284 1462 M 
+-0.374 0 (B)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_67
+Ji 
+434 1462 M 
+-0.188 0 (Ease of Key Generation)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1592 M 
+-0.406 0 (Key generation should be as simple as generating a random number by measuring some random)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1647 M 
+-0.356 0 (physical process. Since there is no complex or secret strong key selection process, distributed key)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1702 M 
+-0.330 0 (management protocols are practical. Distributed key management is preferable in many applications to)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1757 M 
+-0.457 0 (centralized key management because there is no single point of failure at which the whole system could)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1812 M 
+-0.445 0 (be compromised. \(This doesn\222t preclude centralized key management, of course.\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_67
+Ji 
+284 1917 M 
+-0.374 0 (C)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_67
+Ji 
+434 1917 M 
+0.041 0 (Practical in Hardware or Software)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2047 M 
+-0.360 0 (The prototype of the Diamond2 Block Cipher is implemented in a program for a personal computer)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2102 M 
+-0.450 0 (or workstation. When properly implemented in hardware, Diamond2 should not significantly slow down)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2157 M 
+-0.223 0 (any practical digital data stream. On the other hand, setting up a new key need not be as fast as the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2212 M 
+-0.373 0 (encryption and decryption operations, since \(1\) key change operations are less frequent than encryption)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2267 M 
+-0.265 0 (and decryption operations, and \(2\) a slower key setup operation discourages brute force attacks. The key)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2322 M 
+-0.358 0 (setup algorithm used by Diamond2 intentionally requires a large number of sequential steps to increase)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2377 M 
+-0.280 0 (the cost of brute force key searches.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F8_75) cvn
+F8
+75 
+xF 
+F8_75
+Ji 
+284 2507 M 
+45.000 0 32 0.150 0 (III. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_75
+Ji 
+434 2507 M 
+-0.108 0 (BASIS OF DESIGN)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2647 M 
+-0.414 0 (The thought process that went into the design of Diamond2 is based on the following ideas:)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2752 M 
+-0.315 0 (1. Linear functions and combinations of functions can often be solved analytically in ways that are)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2807 M 
+-0.356 0 (not obvious to the cipher designer, and should be avoided. This includes standard arithmetic functions,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2862 M 
+-0.421 0 (math in finite fields, and Boolean arithmetic.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 2 ]%%)  =
+%%PageTrailer
+
+%%Page: 3 3
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (3)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F3) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F3_46) cvn
+F3
+46 
+xF 
+F3_46
+Ji 
+374 270 M 
+-0.328 0 (2. Reversible block ciphers with a block size of )A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Bold
+(F5) cvn
+0.935 
+ (Times-Bold) cvn /Type1 
+T 
+(Times-Bold) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+1242 269 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1266 270 M 
+-0.278 0 ( bits can be viewed as a simple substitution cipher)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 326 M 
+-0.199 0 (on an alphabet of )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+610 325 M 
+(2)S 
+; : 0 0 2391 3229 rc 0 0 0 sco (F5_29) cvn
+F5
+29 
+xF 
+F5_29
+Ji 
+633 321 M 
+-0.124 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+649 326 M 
+-0.225 0 ( characters, with a key that selects the permutation used.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 431 M 
+-0.211 0 (3. Simple substitution ciphers can be represented with a look-up table or array, but in practice the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 486 M 
+-0.280 0 (array required is too big to fit comfortably in a computer\222s memory.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 591 M 
+-0.368 0 (4. An adequate subset of the oversized look-up table can be simulated by simply interleaving rounds)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 646 M 
+-0.291 0 (of substitution of sub-blocks with bit permutations that serve to spread functional dependencies across)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 701 M 
+-0.299 0 (sub-block boundaries.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F8) cvn
+0.933 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F8_75) cvn
+F8
+75 
+xF 
+F8_75
+Ji 
+284 831 M 
+0.150 0 (I)A 
+-0.025 0 (V)A 
+37.000 0 32 0.150 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_75
+Ji 
+434 831 M 
+-0.065 0 (DESCRIPTION OF ALGORITHM)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 971 M 
+-0.355 0 (Although I will attempt an accurate English description of the Diamond2 Block Cipher, a more)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1026 M 
+-0.459 0 (concise description may be found in the source code of the reference implementation, below. In case of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1081 M 
+-0.379 0 (conflict, believe the source code, since that is what I tested and analyzed while validating this cipher.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1186 M 
+-0.301 0 (The Diamond2 Block Cipher consists of three main parts: \(1\) key scheduling, \(2\) substitution steps,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1242 M 
+-0.281 0 (and \(3\) permutation steps. Encryption and decryption both consist of )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1541 1241 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1565 1242 M 
+-0.211 0 ( rounds of substitution operations,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1298 M 
+-0.646 0 (where )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+404 1297 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+428 1298 M 
+-0.151 0 ( is at least 10. Each substitution operation takes each of the 16 input bytes of 8 bits each, and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1353 M 
+-0.229 0 (substitutes another byte for it. This done with the contents of the substitution array for that byte position)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1408 M 
+-0.326 0 (and round number. The key scheduling operation fills the internal substitution arrays based on the key.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1463 M 
+-0.295 0 (Between each substitution, a fixed permutation step uses a bit selection process to make each output byte)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1518 M 
+-0.355 0 (a function of eight different input bytes. Unlike DES, every round alters every byte of the input block)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1573 M 
+-0.265 0 (\(instead of just half of the input block\). After 5 rounds, every bit of the output block is a nonlinear)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1628 M 
+-0.339 0 (function of every bit of the input block and every bit of the key. The additional rounds after the fifth)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1683 M 
+-0.304 0 (round serve to ensure that solving for the contents of the individual substitution arrays is more work than)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1738 M 
+-0.284 0 (a brute force attack on the cipher. They also serve to increase the number of possible functional)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1793 M 
+-0.350 0 (relationships that the key selects from, thus making this algorithm closer to the ideal block cipher, and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1848 M 
+-0.375 0 (making cryptanalysis more difficult.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F8_67) cvn
+F8
+67 
+xF 
+F8_67
+Ji 
+284 1953 M 
+-3.374 0 (A)A 
+67.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_67
+Ji 
+434 1953 M 
+-0.188 0 (Key Scheduling)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2083 M 
+-0.227 0 (There is one substitution array for each of the 16 bytes of the encryption block for each round. For a)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2138 M 
+-0.238 0 (ten round implementation of Diamond2, 160 substitution arrays are to be filled. Each of the 160 arrays)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2193 M 
+-0.305 0 (contains 256 elements of one byte each. It is convenient to look at the set of substitution arrays as one)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2248 M 
+-0.376 0 (three dimensional array, indexed by round, byte position within the 16 byte encryption block, and input)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2303 M 
+-0.302 0 (byte value. A similarly indexed inverse substitution array is used during decryption. For the substitution)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2358 M 
+-0.241 0 (to be reversible, each of the 256 possible values of an 8 bit byte must occur exactly once in the array.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2413 M 
+-0.340 0 (The process used to make this happen consists of five processes: \(1\) array filling, \(2\) element placement,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2468 M 
+-0.345 0 (\(3\) pseudorandom key expansion, \(4\) pseudorandom number normalization, and \(5\) array inversion.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2523 M 
+-0.501 0 (Although key scheduling can be done more quickly in a dedicated hardware implementation, a more)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2578 M 
+-0.464 0 (economical hybrid design would do the key scheduling in firmware and the actual encryption or)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2633 M 
+-0.354 0 (decryption in hardware.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 3 ]%%)  =
+%%PageTrailer
+
+%%Page: 4 4
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (4)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F3) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F3_46) cvn
+F3
+46 
+xF 
+F3_46
+Ji 
+374 269 M 
+-0.285 0 (Array filling is simply a nested loop where all 160 substitution arrays are filled. It is concisely)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 324 M 
+-0.453 0 (expressed in this pseudo code:)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 380 M 
+-0.059 0 (For rounds := 1 to )A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Bold
+(F5) cvn
+0.935 
+ (Times-Bold) cvn /Type1 
+T 
+(Times-Bold) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+627 379 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 435 M 
+-0.090 0 (    For byte position := 1 to 16)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 490 M 
+-0.200 0 (        For element value := 255 down to 0)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 545 M 
+-0.105 0 (            Place this element.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 650 M 
+-0.500 0 (Element placement is done by placing the current element in one of the unfilled positions in the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 705 M 
+-0.289 0 (current array. The unfilled positions of the current array are numbered from 0 to the value of the element)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 760 M 
+-0.415 0 (being placed. A number in this same range is then selected by generating a pseudorandom number)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 815 M 
+-0.321 0 (normalized to this much smaller range. This offset is used to place the current element and mark that)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 870 M 
+-0.478 0 (location as having been filled. In the trivial case where there is only one more unfilled element, no)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 925 M 
+-0.450 0 (pseudorandom number is generated.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1030 M 
+-0.468 0 (Pseudorandom key expansion uses a simple method to provide key dependent bits as needed to place)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1085 M 
+-0.190 0 (array elements. A pointer is set to the first 8-bit byte of the key. A 32 bit CRC accumulator is set to all)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1140 M 
+-0.198 0 (ones \(FFFFFFFF hexadecimal\). This initial value is used rather than all zeros so that an all zero external)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1195 M 
+-0.368 0 (key would not be weak. Every time a pseudorandom number is requested, the CRC is updated using the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1250 M 
+-0.315 0 (CCITT CRC-32 [7] using the byte in the previously filled array indexed by the key byte pointed to by the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1305 M 
+-0.279 0 (pointer. In the special case of the first array filled, the CRC is updated directly by the key byte pointed to)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1360 M 
+-0.446 0 (by the pointer. The pointer is then moved to the next key byte. After the pointer is moved beyond the end)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1415 M 
+-0.312 0 (of the last key byte, the CRC is updated with the least significant byte of the size of the key \(in bytes\),)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1470 M 
+-0.391 0 (then with the next to least significant byte of the size of the key \(in bytes\), then the pointer is moved back)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1525 M 
+-0.271 0 (to the first byte of the key. If the actual key size used is not a multiple of 8 bits, then the unused bits of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1580 M 
+-0.277 0 (the last key byte are set to 1, with the used bits occupying the least significant bits of the byte.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1685 M 
+-0.456 0 (Although no upper limit is explicitly given for key size, increasing the key size provides no)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1741 M 
+-0.260 0 (significant increase in security if more than approximately 28 672 \267 )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1513 1740 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1537 1741 M 
+-0.197 0 ( bits are used, where )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1921 1740 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1945 1741 M 
+-0.271 0 ( is the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1796 M 
+-0.347 0 (number of rounds used. This upper limit is large enough that even fictional computers [8] would have)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1851 M 
+-0.197 0 (difficulty with a brute force attack.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1957 M 
+-0.289 0 (To normalize the 32 bit accumulator value to the desired number range from 0 to )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1852 1956 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1876 1957 M 
+-0.041 0 (, first perform a)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2013 M 
+-0.321 0 (logical \223and\224 operation on the accumulator with the value 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F5_25) cvn
+F5
+25 
+xF 
+F5_25
+Ji 
+1365 2018 M 
+0.175 0 (m)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1386 2013 M 
+-0.320 0 (-1, where )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1568 2012 M 
+-2.318 0 (m)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1604 2013 M 
+-0.385 0 ( is the smallest integer value)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2071 M 
+-0.029 0 (such that 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_25
+Ji 
+483 2076 M 
+0.175 0 (m)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+504 2071 M 
+0.061 0 (-1 )A 
+; : 503 2066 76 57 rc 0 0 0 sco %%IncludeFont: Symbol
+(F8) cvn
+1.022 
+ (Symbol) cvn /Type1 
+F 
+(Symbol) cvn
+mF 
+(F8_46) cvn
+F8
+46 
+xF 
+F8_46
+Ji 
+554 2066 M 
+-0.254 0 (\263)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+579 2071 M 
+0.500 0 ( )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+591 2070 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+615 2071 M 
+-0.424 0 (. This will select the minimum number of bits required to cover the range needed. If the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2127 M 
+-0.251 0 (resulting value is less than or equal to )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+979 2126 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1003 2127 M 
+-0.227 0 (, use it. If it is not, then repeat the above process with a new)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2182 M 
+-0.264 0 (pseudorandom number. If, after 97 attempts the value is still not in range \(a very low probability)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2238 M 
+-0.286 0 (condition\), simply subtract )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+782 2237 M 
+-1.576 0 (n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+806 2238 M 
+-0.263 0 ( from the value and use it.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2343 M 
+-0.327 0 (If the decryption mode of Diamond2 is to be used, calculate the inverse substitution arrays directly)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2398 M 
+-0.266 0 (from the encryption substitution arrays as follows:)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2508 M 
+-0.106 0 (For rounds := 1 to n)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2563 M 
+-0.090 0 (    For byte position := 1 to 16)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2619 M 
+0.384 0 (        For )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+456 2618 M 
+-1.576 0 (k)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+480 2619 M 
+-0.068 0 ( := 0 to 255 do)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2675 M 
+0.126 0 (            inverse array[array[)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+790 2674 M 
+-1.576 0 (k)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+814 2675 M 
+-0.061 0 (]] := )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+906 2674 M 
+-1.576 0 (k)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2780 M 
+-0.300 0 (Note that this type of inverse substitution array computation, together with the inverse permutations)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2835 M 
+-0.330 0 (are what allow the greater effect per round than the traditional involution operation of Fiestel type block)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2890 M 
+-0.378 0 (ciphers like DES and Blowfish.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 4 ]%%)  =
+%%PageTrailer
+
+%%Page: 5 5
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (5)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F3) cvn
+0.925 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F3_67) cvn
+F3
+67 
+xF 
+F3_67
+Ji 
+284 269 M 
+-0.374 0 (B)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+434 269 M 
+0.016 0 (Substitution)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F5) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+374 399 M 
+-0.325 0 (In each substitution round, each byte of the input block is replaced with the contents of the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 454 M 
+-0.216 0 (substitution array for that round, byte position, and byte value. For decryption, the same operation is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 509 M 
+-0.343 0 (performed with the inverse substitution array. In a hardware implementation, this is can be done quickly)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 564 M 
+-0.263 0 (by simply addressing static RAM. Note that the substitution arrays used in the Diamond2 Block Cipher)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 619 M 
+-0.264 0 (are different from the S-Boxes used in ciphers like DES, in that \(1\) they are much larger, \(2\) there are)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 674 M 
+-0.357 0 (more of them, and \(3\) they are not used in conjunction with a simpler operation with a key that could be)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 729 M 
+-0.352 0 (solved for with differential cryptanalysis.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+284 834 M 
+-0.374 0 (C)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+434 834 M 
+0.011 0 (Permutation)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 964 M 
+-0.312 0 (Between each substitution round, a fixed permutation is performed. The purpose of this permutation)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1019 M 
+-0.330 0 (step is to increase the effective block size of the cipher by making each output byte a function of 8 input)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1074 M 
+-0.327 0 (bytes by simply selecting one bit from each of 8 input bytes. Every bit of the input block is used exactly)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1129 M 
+-0.272 0 (once in the output block. In a hardware, this can be done with literal wire crossings. In software,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1184 M 
+-0.341 0 (efficiency is gained by ensuring that every bit ends up in the same position relative to a byte boundary as)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1239 M 
+-0.241 0 (where it started.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 1344 M 
+-0.331 0 (The specific permutation used for encryption takes the least significant bit of each byte from the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1399 M 
+-0.356 0 (input byte in the same position. The next most significant bit is taken from the input byte indexed as one)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1454 M 
+-0.371 0 (byte higher \(mod 16\). The next most significant bit is taken from the input byte indexed as two higher)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1509 M 
+-0.324 0 (\(mod 16\), and so on. For decryption, the inverse of this operation is the same, except the byte positions)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1564 M 
+-0.401 0 (used are one byte lower \(mod 16\) instead of higher.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 1669 M 
+-0.268 0 (After 2 rounds, every output byte is a function of 8 input bytes and all key bytes \(if the key is less)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1724 M 
+-0.246 0 (than 4080 bytes, which is likely\). After 3 rounds, every output byte is a function of 15 input bytes and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1779 M 
+-0.355 0 (the key. After 4 rounds, every output byte is a function of every input byte and the key. The minimum of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1834 M 
+-0.353 0 (6 additional rounds are intended to make cryptanalysis more difficult.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F3_75) cvn
+F3
+75 
+xF 
+F3_75
+Ji 
+284 1964 M 
+-0.025 0 (V)A 
+58.000 0 32 0.150 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+434 1964 M 
+-0.083 0 (REFERENCE SOURCE CODE)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2104 M 
+-0.311 0 (The following ANSI C or C++ source code fragment is a more concise and accurate description of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2159 M 
+-0.415 0 (the Diamond2 Block Cipher than the above English description.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+284 2264 M 
+-3.374 0 (A)A 
+67.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+434 2264 M 
+-0.331 0 (DIAMOND2.H)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F8) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F8_33) cvn
+F8
+33 
+xF 
+F8_33
+Ji 
+284 2447 M 
+0.200 0 (/* diamond2.h -- program interface to the Diamond2 and Diamond2 Lite Block)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2483 M 
+0.200 0 (   Ciphers.  This file dedicated to the Public Domain by Mike Johnson, the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2519 M 
+0.200 0 (   author.*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2591 M 
+0.200 0 (extern void set_diamond2_key\(byte *external_key, /* Variable length key */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2627 M 
+0.200 0 (                        uint key_size,      /* Length of key in bytes */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2663 M 
+0.200 0 (                        uint rounds,        /* Number of rounds to use \(5 to 15)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2699 M 
+0.200 0 (                                           for Diamond, 4 to 30 for Diamond Lite\) */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2735 M 
+0.200 0 (                        boolean invert,     /* true if mpj_decrypt may be called. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2771 M 
+0.200 0 (                        int block_size\);    /* 16 for Diamond; 8 for Diamond Lite. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2807 M 
+0.200 0 (/* Call before the first call to diamond2_encrypt_block\(\) or diamond2_decrypt_block */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2879 M 
+0.200 0 (extern void diamond2_encrypt_block\(byte *x, byte *y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F8_33
+Ji 
+284 2915 M 
+0.200 0 (/* Call set_diamond2_key\(\) with a block_size of 16 before first calling)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 5 ]%%)  =
+%%PageTrailer
+
+%%Page: 6 6
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (6)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F3) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F3_33) cvn
+F3
+33 
+xF 
+F3_33
+Ji 
+284 267 M 
+0.200 0 (   diamond2_encrypt_block\(\).   x is input, y is output.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 303 M 
+0.200 0 (*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 375 M 
+0.200 0 (extern void diamond2_decrypt_block\(byte *x, byte *y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 411 M 
+0.200 0 (/* Call set_diamond2_key\(\) with a block_size of 16 before first calling)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 447 M 
+0.200 0 (   diamond2_decrypt_block\(\).   x is input, y is output.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 483 M 
+0.200 0 (*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 555 M 
+0.200 0 (extern void lite2_encrypt_block\(byte *x, byte *y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 591 M 
+0.200 0 (/* Call set_diamond2_key\(\) with a block_size of 8 before first calling)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 627 M 
+0.200 0 (   lite2_encrypt_block\(\).   x is input, y is output.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 663 M 
+0.200 0 (*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 735 M 
+0.200 0 (void lite2_decrypt_block\(byte *x, byte *y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 771 M 
+0.200 0 (/* Call set_diamond2_key\(\) with a block_size of 8 before first calling)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 807 M 
+0.200 0 (   lite2_decrypt_block\(\).   x is input, y is output.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 843 M 
+0.200 0 (*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 915 M 
+0.200 0 (extern void diamond2_done\(void\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 951 M 
+0.200 0 (/* Clears internal keys.  Call after the last call to)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 987 M 
+0.200 0 (diamond2_encrypt_block\(\) or diamond2_decrypt_block\(\) with a given key.  */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F5) cvn
+0.925 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F5_67) cvn
+F5
+67 
+xF 
+F5_67
+Ji 
+284 1075 M 
+-0.374 0 (B)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_67
+Ji 
+434 1075 M 
+-0.224 0 (DIAMOND2.CPP)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1258 M 
+0.200 0 (/* diamond2.c - Encryption designed to exceed DES in security.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1294 M 
+0.200 0 (   This file and the Diamond2 and Diamond2 Lite Block Ciphers)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1330 M 
+0.200 0 (   described herein are hereby dedicated to the Public Domain by the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1366 M 
+0.200 0 (   author and inventor, Michael Paul Johnson.  Feel free to use these)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1402 M 
+0.200 0 (   for any purpose that is legally and morally right.  The names)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1438 M 
+0.200 0 (   "Diamond2 Block Cipher" and "Diamond2 Lite Block Cipher" should only)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1474 M 
+0.200 0 (   be used to describe the algorithms described in this file, to avoid)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1510 M 
+0.200 0 (   confusion.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1582 M 
+0.200 0 (   Disclaimers:  the following comes with no warranty, expressed or)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1618 M 
+0.200 0 (   implied.  You, the user, must determine the suitability of this)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1654 M 
+0.200 0 (   information to your own uses.  You must also find out what legal)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1690 M 
+0.200 0 (   requirements exist with respect to this data and programs using)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1726 M 
+0.200 0 (   it, and comply with whatever valid requirements exist.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1762 M 
+0.200 0 (*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1798 M 
+0.200 0 (#include <stdio.h>)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1834 M 
+0.200 0 (#include <stdlib.h>)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1870 M 
+0.200 0 (#ifdef UNIX)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1906 M 
+0.200 0 (#include <memory.h>)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1942 M 
+0.200 0 (#else)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1978 M 
+0.200 0 (#include <mem.h>)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2014 M 
+0.200 0 (#endif)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2050 M 
+0.200 0 (#include "def.h")A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2086 M 
+0.200 0 (#include "diamond2.h")A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2122 M 
+0.200 0 (#include "crc.h")A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2194 M 
+0.200 0 (static byte *key = NULL;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2230 M 
+0.200 0 (static uint keysize;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2266 M 
+0.200 0 (static uint keyindex;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2302 M 
+0.200 0 (static uint roundsize;          /* Number of bytes in one round of substitution boxes. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2338 M 
+0.200 0 (static int blocksize;           /* Number of bytes in a block. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2374 M 
+0.200 0 (static unsigned long accum;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2410 M 
+0.200 0 (static uint numrounds;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2446 M 
+0.200 0 (static byte *s = NULL;             /* Substitution boxes. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2482 M 
+0.200 0 (static byte *si = NULL;            /* Inverse substitution boxes. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2554 M 
+0.200 0 (static uint keyrand\(uint max_value, byte *sbox\)    /* Returns uniformly distributed)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2590 M 
+0.200 0 (pseudorandom */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2626 M 
+0.200 0 (    {                           /* value based on key[], sized keysize */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2662 M 
+0.200 0 (    uint prandvalue, i;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+1034 2662 M 
+0.200 0 (/* Change from Diamond to Diamond 2: use of */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2698 M 
+0.200 0 (    unsigned long mask;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+1034 2698 M 
+0.200 0 (/* sbox \(previous 256-byte permutation array\)*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2770 M 
+0.200 0 (    if \(!max_value\) return 0;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2806 M 
+0.200 0 (    mask = 0L;              /* Create a mask to get the minimum */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2842 M 
+0.200 0 (    for \(i=max_value; i > 0; i = i >> 1\)    /* number of bits to cover the */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2878 M 
+0.200 0 (        mask = \(mask << 1\) | 1L;        /* range 0 to max_value. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2914 M 
+0.200 0 (    i=0;)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 6 ]%%)  =
+%%PageTrailer
+
+%%Page: 7 7
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (7)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F3) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F3_33) cvn
+F3
+33 
+xF 
+F3_33
+Ji 
+284 267 M 
+0.200 0 (    do)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 303 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+434 339 M 
+0.200 0 (if \(sbox\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+434 375 M 
+0.200 0 (    accum = crc32\(accum, sbox[key[keyindex++]]\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+434 411 M 
+0.200 0 (else)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+434 447 M 
+0.200 0 (    accum = crc32\(accum, key[keyindex++]\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 483 M 
+0.200 0 (        if \(keyindex >= keysize\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 519 M 
+0.200 0 (            {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 555 M 
+0.200 0 (            keyindex = 0;   /* Recycle thru the key */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 591 M 
+0.200 0 (            accum = crc32\(accum, \(keysize & 0xFF\)\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 627 M 
+0.200 0 (            accum = crc32\(accum, \(\(keysize >> 8\) & 0xFF\)\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 663 M 
+0.200 0 (            })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 699 M 
+0.200 0 (        prandvalue = \(uint\) \(accum & mask\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 735 M 
+0.200 0 (        if \(\(++i>97\) && \(prandvalue > max_value\)\)   /* Don't loop forever. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 771 M 
+0.200 0 (            prandvalue -= max_value;                /* Introduce negligible bias. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 807 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 843 M 
+0.200 0 (    while \(prandvalue > max_value\); /* Discard out of range values. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 879 M 
+0.200 0 (    return prandvalue;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 915 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 987 M 
+0.200 0 (static void makeonebox\(uint i, uint j, byte *sbox\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1023 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+434 1023 M 
+0.200 0 (/* Change from Diamond to Diamond 2: use of sbox. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+434 1059 M 
+0.200 0 (    /* sbox is either NULL or a p)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+1094 1059 M 
+0.200 0 (ointer to the previously filled array. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1095 M 
+0.200 0 (    int n;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1131 M 
+0.200 0 (    uint pos, m, p;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1167 M 
+0.200 0 (    boolean filled[256];)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1239 M 
+0.200 0 (    for \(m = 0; m < 256; m++\)   /* The filled array is used to make sure that */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1275 M 
+0.200 0 (        filled[m] = false;      /* each byte of the array is filled only once. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1311 M 
+0.200 0 (    for \(n = 255; n >= 0 ; n--\) /* n counts the number of bytes left to fill */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1347 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1383 M 
+0.200 0 (        pos = keyrand\(n, sbox\); /* pos is the position among the UNFILLED */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1419 M 
+0.200 0 (                                /* components of the s array that the */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1455 M 
+0.200 0 (                                /* number n should be placed.  */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1491 M 
+0.200 0 (        p=0;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1527 M 
+0.200 0 (        while \(filled[p]\) p++;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1563 M 
+0.200 0 (        for \(m=0; m<pos; m++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1599 M 
+0.200 0 (            {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1635 M 
+0.200 0 (            p++;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1671 M 
+0.200 0 (            while \(filled[p]\) p++;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1707 M 
+0.200 0 (            })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1743 M 
+0.200 0 (        *\(s + \(roundsize*i\) + \(256*j\) + p\) = n;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1779 M 
+0.200 0 (        filled[p] = true;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1815 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1851 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1923 M 
+0.200 0 (void set_diamond2_key\(byte *external_key, uint key_size, uint rounds,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1959 M 
+0.200 0 (    boolean invert, int block_size\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1995 M 
+0.200 0 (/* This procedure generates internal keys by filling the substitution box array)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2031 M 
+0.200 0 (  s based on the external key given as input.  It DOES take a bit of time. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2067 M 
+0.200 0 (  {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2103 M 
+0.200 0 (    uint i, j, k;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2139 M 
+0.200 0 (    byte *sbox;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2211 M 
+0.200 0 (    if \(s\) diamond2_done\(\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2247 M 
+0.200 0 (    numrounds = rounds;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2283 M 
+0.200 0 (    if \(block_size == 8\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2319 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2355 M 
+0.200 0 (        blocksize = 8;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2391 M 
+0.200 0 (        roundsize = 2048U;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2427 M 
+0.200 0 (        if \(numrounds < 3\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2463 M 
+0.200 0 (            {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2499 M 
+0.200 0 (            puts\("Numrounds out of range in set_diamond2_key\(\)"\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2535 M 
+0.200 0 (            exit\(10\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2571 M 
+0.200 0 (            })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2607 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2643 M 
+0.200 0 (    else if \(block_size == 16\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2679 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2715 M 
+0.200 0 (        blocksize = 16;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2751 M 
+0.200 0 (        roundsize = 4096U;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2787 M 
+0.200 0 (        if \(numrounds < 5\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2823 M 
+0.200 0 (            {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2859 M 
+0.200 0 (            puts\("Numrounds out of range in set_diamond2_key\(\)"\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2895 M 
+0.200 0 (            exit\(10\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2931 M 
+0.200 0 (            })A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 7 ]%%)  =
+%%PageTrailer
+
+%%Page: 8 8
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (8)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F3) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F3_33) cvn
+F3
+33 
+xF 
+F3_33
+Ji 
+284 267 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 303 M 
+0.200 0 (    else)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 339 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 375 M 
+0.200 0 (        puts\("Unsupported block size in set_diamond2_key\(\)"\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 411 M 
+0.200 0 (        exit\(11\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 447 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 519 M 
+0.200 0 (    if \(\(numrounds * blocksize\) > 255\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 555 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 591 M 
+0.200 0 (        puts\("Numrounds out of range in set_diamond2_key\(\)"\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 627 M 
+0.200 0 (        exit\(10\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 663 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 699 M 
+0.200 0 (    if \(BuildCRCTable\(\)\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 735 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 771 M 
+0.200 0 (        puts\("Not enough memory."\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 807 M 
+0.200 0 (        exit\(5\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 843 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 879 M 
+0.200 0 (    s=\(byte *\) malloc\(numrounds * roundsize\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 915 M 
+0.200 0 (    if \(!s\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 951 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 987 M 
+0.200 0 (        puts\("Out of memory."\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1023 M 
+0.200 0 (        exit\(5\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1059 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1095 M 
+0.200 0 (    key = external_key;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1131 M 
+0.200 0 (    keysize = key_size;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1167 M 
+0.200 0 (    keyindex = 0;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1203 M 
+0.200 0 (    accum = 0xFFFFFFFFL;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1275 M 
+0.200 0 (    sbox = NULL;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1311 M 
+0.200 0 (    for \(i = 0; i < numrounds; i++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1347 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1383 M 
+0.200 0 (        for \(j = 0; j < blocksize; j++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1419 M 
+0.200 0 (            {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1455 M 
+0.200 0 (            makeonebox\(i, j, sbox\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1491 M 
+0.200 0 (    )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+434 1491 M 
+0.200 0 (    sbox = s + \(\(roundsize * i\) + \(256 * j\)\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1527 M 
+0.200 0 (            })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1563 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1599 M 
+0.200 0 (    if \(invert\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1635 M 
+0.200 0 (        {   /* Fill the inverse substitution box array si.  It is not)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1671 M 
+0.200 0 (               necessary to do this unless the decryption mode is used.  */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1707 M 
+0.200 0 (        si=\(byte *\) malloc\(numrounds * roundsize\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1743 M 
+0.200 0 (        if \(!si\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1779 M 
+0.200 0 (            {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1815 M 
+0.200 0 (            puts\("Out of memory."\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1851 M 
+0.200 0 (            exit\(5\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1887 M 
+0.200 0 (            })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1923 M 
+0.200 0 (        for \(i = 0; i < numrounds; i++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1959 M 
+0.200 0 (            {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1995 M 
+0.200 0 (            for \(j = 0; j < blocksize; j++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2031 M 
+0.200 0 (                {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2067 M 
+0.200 0 (                for \(k = 0; k < 256; k++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2103 M 
+0.200 0 (                    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2139 M 
+0.200 0 (                    *\(si + \(roundsize * i\) + \(256 * j\) + *\(s + \(roundsize * i\) + \(256 * j\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2175 M 
+0.200 0 (k\)\) = k;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2211 M 
+0.200 0 (                    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2247 M 
+0.200 0 (                })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2283 M 
+0.200 0 (            })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2319 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2355 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2427 M 
+0.200 0 (static void permute\(byte *x, byte *y\)   /* x and y must be different.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2463 M 
+0.200 0 (  This procedure is designed to make each bit of the output dependent on as)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2499 M 
+0.200 0 (  many bytes of the input as possible, especially after repeated application.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2535 M 
+0.200 0 (  Each output byte takes its least significant bit from the corresponding)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2571 M 
+0.200 0 (  input byte.  The next higher bit comes from the corresponding bit of the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2607 M 
+0.200 0 (  next higher input byte.  This is done until all bits of the output byte)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2643 M 
+0.200 0 (  are filled.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2679 M 
+0.200 0 (*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2715 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2751 M 
+0.200 0 (    y[0] = \(x[0] & 1\) | \(x[1] & 2\) | \(x[2] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2787 M 
+0.200 0 (            \(x[3] & 8\) | \(x[4] & 16\) | \(x[5] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2823 M 
+0.200 0 (            \(x[6] & 64\) | \(x[7] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2859 M 
+0.200 0 (    y[1] = \(x[1] & 1\) | \(x[2] & 2\) | \(x[3] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2895 M 
+0.200 0 (            \(x[4] & 8\) | \(x[5] & 16\) | \(x[6] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2931 M 
+0.200 0 (            \(x[7] & 64\) | \(x[8] & 128\);)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 8 ]%%)  =
+%%PageTrailer
+
+%%Page: 9 9
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1228 3065 M 
+0.424 0 (9)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F3) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F3_33) cvn
+F3
+33 
+xF 
+F3_33
+Ji 
+284 267 M 
+0.200 0 (    y[2] = \(x[2] & 1\) | \(x[3] & 2\) | \(x[4] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 303 M 
+0.200 0 (            \(x[5] & 8\) | \(x[6] & 16\) | \(x[7] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 339 M 
+0.200 0 (            \(x[8] & 64\) | \(x[9] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 375 M 
+0.200 0 (    y[3] = \(x[3] & 1\) | \(x[4] & 2\) | \(x[5] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 411 M 
+0.200 0 (            \(x[6] & 8\) | \(x[7] & 16\) | \(x[8] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 447 M 
+0.200 0 (            \(x[9] & 64\) | \(x[10] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 483 M 
+0.200 0 (    y[4] = \(x[4] & 1\) | \(x[5] & 2\) | \(x[6] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 519 M 
+0.200 0 (            \(x[7] & 8\) | \(x[8] & 16\) | \(x[9] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 555 M 
+0.200 0 (            \(x[10] & 64\) | \(x[11] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 591 M 
+0.200 0 (    y[5] = \(x[5] & 1\) | \(x[6] & 2\) | \(x[7] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 627 M 
+0.200 0 (            \(x[8] & 8\) | \(x[9] & 16\) | \(x[10] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 663 M 
+0.200 0 (            \(x[11] & 64\) | \(x[12] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 699 M 
+0.200 0 (    y[6] = \(x[6] & 1\) | \(x[7] & 2\) | \(x[8] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 735 M 
+0.200 0 (            \(x[9] & 8\) | \(x[10] & 16\) | \(x[11] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 771 M 
+0.200 0 (            \(x[12] & 64\) | \(x[13] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 807 M 
+0.200 0 (    y[7] = \(x[7] & 1\) | \(x[8] & 2\) | \(x[9] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 843 M 
+0.200 0 (            \(x[10] & 8\) | \(x[11] & 16\) | \(x[12] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 879 M 
+0.200 0 (            \(x[13] & 64\) | \(x[14] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 915 M 
+0.200 0 (    y[8] = \(x[8] & 1\) | \(x[9] & 2\) | \(x[10] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 951 M 
+0.200 0 (            \(x[11] & 8\) | \(x[12] & 16\) | \(x[13] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 987 M 
+0.200 0 (            \(x[14] & 64\) | \(x[15] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1023 M 
+0.200 0 (    y[9] = \(x[9] & 1\) | \(x[10] & 2\) | \(x[11] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1059 M 
+0.200 0 (            \(x[12] & 8\) | \(x[13] & 16\) | \(x[14] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1095 M 
+0.200 0 (            \(x[15] & 64\) | \(x[0] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1131 M 
+0.200 0 (    y[10] = \(x[10] & 1\) | \(x[11] & 2\) | \(x[12] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1167 M 
+0.200 0 (            \(x[13] & 8\) | \(x[14] & 16\) | \(x[15] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1203 M 
+0.200 0 (            \(x[0] & 64\) | \(x[1] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1239 M 
+0.200 0 (    y[11] = \(x[11] & 1\) | \(x[12] & 2\) | \(x[13] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1275 M 
+0.200 0 (            \(x[14] & 8\) | \(x[15] & 16\) | \(x[0] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1311 M 
+0.200 0 (            \(x[1] & 64\) | \(x[2] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1347 M 
+0.200 0 (    y[12] = \(x[12] & 1\) | \(x[13] & 2\) | \(x[14] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1383 M 
+0.200 0 (            \(x[15] & 8\) | \(x[0] & 16\) | \(x[1] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1419 M 
+0.200 0 (            \(x[2] & 64\) | \(x[3] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1455 M 
+0.200 0 (    y[13] = \(x[13] & 1\) | \(x[14] & 2\) | \(x[15] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1491 M 
+0.200 0 (            \(x[0] & 8\) | \(x[1] & 16\) | \(x[2] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1527 M 
+0.200 0 (            \(x[3] & 64\) | \(x[4] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1563 M 
+0.200 0 (    y[14] = \(x[14] & 1\) | \(x[15] & 2\) | \(x[0] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1599 M 
+0.200 0 (            \(x[1] & 8\) | \(x[2] & 16\) | \(x[3] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1635 M 
+0.200 0 (            \(x[4] & 64\) | \(x[5] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1671 M 
+0.200 0 (    y[15] = \(x[15] & 1\) | \(x[0] & 2\) | \(x[1] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1707 M 
+0.200 0 (            \(x[2] & 8\) | \(x[3] & 16\) | \(x[4] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1743 M 
+0.200 0 (            \(x[5] & 64\) | \(x[6] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1779 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1851 M 
+0.200 0 (static void ipermute\(byte *x, byte *y\) /* x!=y */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1887 M 
+0.200 0 (/* This is the inverse of the procedure permute. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1923 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1959 M 
+0.200 0 (    y[0] = \(x[0] & 1\) | \(x[15] & 2\) | \(x[14] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1995 M 
+0.200 0 (            \(x[13] & 8\) | \(x[12] & 16\) | \(x[11] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2031 M 
+0.200 0 (            \(x[10] & 64\) | \(x[9] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2067 M 
+0.200 0 (    y[1] = \(x[1] & 1\) | \(x[0] & 2\) | \(x[15] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2103 M 
+0.200 0 (            \(x[14] & 8\) | \(x[13] & 16\) | \(x[12] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2139 M 
+0.200 0 (            \(x[11] & 64\) | \(x[10] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2175 M 
+0.200 0 (    y[2] = \(x[2] & 1\) | \(x[1] & 2\) | \(x[0] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2211 M 
+0.200 0 (            \(x[15] & 8\) | \(x[14] & 16\) | \(x[13] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2247 M 
+0.200 0 (            \(x[12] & 64\) | \(x[11] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2283 M 
+0.200 0 (    y[3] = \(x[3] & 1\) | \(x[2] & 2\) | \(x[1] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2319 M 
+0.200 0 (            \(x[0] & 8\) | \(x[15] & 16\) | \(x[14] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2355 M 
+0.200 0 (            \(x[13] & 64\) | \(x[12] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2391 M 
+0.200 0 (    y[4] = \(x[4] & 1\) | \(x[3] & 2\) | \(x[2] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2427 M 
+0.200 0 (            \(x[1] & 8\) | \(x[0] & 16\) | \(x[15] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2463 M 
+0.200 0 (            \(x[14] & 64\) | \(x[13] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2499 M 
+0.200 0 (    y[5] = \(x[5] & 1\) | \(x[4] & 2\) | \(x[3] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2535 M 
+0.200 0 (            \(x[2] & 8\) | \(x[1] & 16\) | \(x[0] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2571 M 
+0.200 0 (            \(x[15] & 64\) | \(x[14] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2607 M 
+0.200 0 (    y[6] = \(x[6] & 1\) | \(x[5] & 2\) | \(x[4] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2643 M 
+0.200 0 (            \(x[3] & 8\) | \(x[2] & 16\) | \(x[1] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2679 M 
+0.200 0 (            \(x[0] & 64\) | \(x[15] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2715 M 
+0.200 0 (    y[7] = \(x[7] & 1\) | \(x[6] & 2\) | \(x[5] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2751 M 
+0.200 0 (            \(x[4] & 8\) | \(x[3] & 16\) | \(x[2] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2787 M 
+0.200 0 (            \(x[1] & 64\) | \(x[0] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2823 M 
+0.200 0 (    y[8] = \(x[8] & 1\) | \(x[7] & 2\) | \(x[6] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2859 M 
+0.200 0 (            \(x[5] & 8\) | \(x[4] & 16\) | \(x[3] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2895 M 
+0.200 0 (            \(x[2] & 64\) | \(x[1] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2931 M 
+0.200 0 (    y[9] = \(x[9] & 1\) | \(x[8] & 2\) | \(x[7] & 4\) |)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 9 ]%%)  =
+%%PageTrailer
+
+%%Page: 10 10
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1215 3065 M 
+0.424 0 (10)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F3) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F3_33) cvn
+F3
+33 
+xF 
+F3_33
+Ji 
+284 267 M 
+0.200 0 (            \(x[6] & 8\) | \(x[5] & 16\) | \(x[4] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 303 M 
+0.200 0 (            \(x[3] & 64\) | \(x[2] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 339 M 
+0.200 0 (    y[10] = \(x[10] & 1\) | \(x[9] & 2\) | \(x[8] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 375 M 
+0.200 0 (            \(x[7] & 8\) | \(x[6] & 16\) | \(x[5] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 411 M 
+0.200 0 (            \(x[4] & 64\) | \(x[3] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 447 M 
+0.200 0 (    y[11] = \(x[11] & 1\) | \(x[10] & 2\) | \(x[9] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 483 M 
+0.200 0 (            \(x[8] & 8\) | \(x[7] & 16\) | \(x[6] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 519 M 
+0.200 0 (            \(x[5] & 64\) | \(x[4] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 555 M 
+0.200 0 (    y[12] = \(x[12] & 1\) | \(x[11] & 2\) | \(x[10] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 591 M 
+0.200 0 (            \(x[9] & 8\) | \(x[8] & 16\) | \(x[7] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 627 M 
+0.200 0 (            \(x[6] & 64\) | \(x[5] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 663 M 
+0.200 0 (    y[13] = \(x[13] & 1\) | \(x[12] & 2\) | \(x[11] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 699 M 
+0.200 0 (            \(x[10] & 8\) | \(x[9] & 16\) | \(x[8] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 735 M 
+0.200 0 (            \(x[7] & 64\) | \(x[6] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 771 M 
+0.200 0 (    y[14] = \(x[14] & 1\) | \(x[13] & 2\) | \(x[12] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 807 M 
+0.200 0 (            \(x[11] & 8\) | \(x[10] & 16\) | \(x[9] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 843 M 
+0.200 0 (            \(x[8] & 64\) | \(x[7] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 879 M 
+0.200 0 (    y[15] = \(x[15] & 1\) | \(x[14] & 2\) | \(x[13] & 4\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 915 M 
+0.200 0 (            \(x[12] & 8\) | \(x[11] & 16\) | \(x[10] & 32\) |)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 951 M 
+0.200 0 (            \(x[9] & 64\) | \(x[8] & 128\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 987 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1059 M 
+0.200 0 (static void CALLTYPE permute_lite2\(byte *a, byte *b\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1095 M 
+0.200 0 (  {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1131 M 
+0.200 0 (/* This procedure is designed to make each bit of the output dependent on as)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1167 M 
+0.200 0 (  many bytes of the input as possible, especially after repeated application.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1203 M 
+0.200 0 (*/)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1239 M 
+0.200 0 (    b[0] = \(a[0] & 1\) + \(a[1] & 2\) + \(a[2] & 4\) + \(a[3] & 8\) + \(a[4] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1275 M 
+0.200 0 (        \(a[5] & 0x20\) + \(a[6] & 0x40\) + \(a[7] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1311 M 
+0.200 0 (    b[1] = \(a[1] & 1\) + \(a[2] & 2\) + \(a[3] & 4\) + \(a[4] & 8\) + \(a[5] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1347 M 
+0.200 0 (        \(a[6] & 0x20\) + \(a[7] & 0x40\) + \(a[0] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1383 M 
+0.200 0 (    b[2] = \(a[2] & 1\) + \(a[3] & 2\) + \(a[4] & 4\) + \(a[5] & 8\) + \(a[6] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1419 M 
+0.200 0 (        \(a[7] & 0x20\) + \(a[0] & 0x40\) + \(a[1] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1455 M 
+0.200 0 (    b[3] = \(a[3] & 1\) + \(a[4] & 2\) + \(a[5] & 4\) + \(a[6] & 8\) + \(a[7] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1491 M 
+0.200 0 (        \(a[0] & 0x20\) + \(a[1] & 0x40\) + \(a[2] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1527 M 
+0.200 0 (    b[4] = \(a[4] & 1\) + \(a[5] & 2\) + \(a[6] & 4\) + \(a[7] & 8\) + \(a[0] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1563 M 
+0.200 0 (        \(a[1] & 0x20\) + \(a[2] & 0x40\) + \(a[3] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1599 M 
+0.200 0 (    b[5] = \(a[5] & 1\) + \(a[6] & 2\) + \(a[7] & 4\) + \(a[0] & 8\) + \(a[1] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1635 M 
+0.200 0 (        \(a[2] & 0x20\) + \(a[3] & 0x40\) + \(a[4] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1671 M 
+0.200 0 (    b[6] = \(a[6] & 1\) + \(a[7] & 2\) + \(a[0] & 4\) + \(a[1] & 8\) + \(a[2] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1707 M 
+0.200 0 (        \(a[3] & 0x20\) + \(a[4] & 0x40\) + \(a[5] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1743 M 
+0.200 0 (    b[7] = \(a[7] & 1\) + \(a[0] & 2\) + \(a[1] & 4\) + \(a[2] & 8\) + \(a[3] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1779 M 
+0.200 0 (        \(a[4] & 0x20\) + \(a[5] & 0x40\) + \(a[6] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1815 M 
+0.200 0 (  })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1887 M 
+0.200 0 (static void CALLTYPE ipermute_lite2\(byte *b, byte *a\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1923 M 
+0.200 0 (  {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1959 M 
+0.200 0 (/* This is the inverse of the procedure permute. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1995 M 
+0.200 0 (    a[0] = \(b[0] & 1\) + \(b[7] & 2\) + \(b[6] & 4\) + \(b[5] & 8\) + \(b[4] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2031 M 
+0.200 0 (        \(b[3] & 0x20\) + \(b[2] & 0x40\) + \(b[1] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2067 M 
+0.200 0 (    a[1] = \(b[1] & 1\) + \(b[0] & 2\) + \(b[7] & 4\) + \(b[6] & 8\) + \(b[5] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2103 M 
+0.200 0 (        \(b[4] & 0x20\) + \(b[3] & 0x40\) + \(b[2] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2139 M 
+0.200 0 (    a[2] = \(b[2] & 1\) + \(b[1] & 2\) + \(b[0] & 4\) + \(b[7] & 8\) + \(b[6] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2175 M 
+0.200 0 (        \(b[5] & 0x20\) + \(b[4] & 0x40\) + \(b[3] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2211 M 
+0.200 0 (    a[3] = \(b[3] & 1\) + \(b[2] & 2\) + \(b[1] & 4\) + \(b[0] & 8\) + \(b[7] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2247 M 
+0.200 0 (        \(b[6] & 0x20\) + \(b[5] & 0x40\) + \(b[4] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2283 M 
+0.200 0 (    a[4] = \(b[4] & 1\) + \(b[3] & 2\) + \(b[2] & 4\) + \(b[1] & 8\) + \(b[0] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2319 M 
+0.200 0 (        \(b[7] & 0x20\) + \(b[6] & 0x40\) + \(b[5] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2355 M 
+0.200 0 (    a[5] = \(b[5] & 1\) + \(b[4] & 2\) + \(b[3] & 4\) + \(b[2] & 8\) + \(b[1] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2391 M 
+0.200 0 (        \(b[0] & 0x20\) + \(b[7] & 0x40\) + \(b[6] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2427 M 
+0.200 0 (    a[6] = \(b[6] & 1\) + \(b[5] & 2\) + \(b[4] & 4\) + \(b[3] & 8\) + \(b[2] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2463 M 
+0.200 0 (        \(b[1] & 0x20\) + \(b[0] & 0x40\) + \(b[7] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2499 M 
+0.200 0 (    a[7] = \(b[7] & 1\) + \(b[6] & 2\) + \(b[5] & 4\) + \(b[4] & 8\) + \(b[3] & 0x10\) +)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2535 M 
+0.200 0 (        \(b[2] & 0x20\) + \(b[1] & 0x40\) + \(b[0] & 0x80\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2571 M 
+0.200 0 (  })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2643 M 
+0.200 0 (static void substitute\(uint round, byte *x, byte *y\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2679 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2715 M 
+0.200 0 (    uint i;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2787 M 
+0.200 0 (    for \(i = 0; i < blocksize; i++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2823 M 
+0.200 0 (        y[i] = *\(s + \(roundsize*round\) + \(256*i\) + x[i]\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2859 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2931 M 
+0.200 0 (static void isubst\(uint round, byte *x, byte *y\))A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 10 ]%%)  =
+%%PageTrailer
+
+%%Page: 11 11
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1215 3065 M 
+0.424 0 (11)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F3) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F3_33) cvn
+F3
+33 
+xF 
+F3_33
+Ji 
+284 267 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 303 M 
+0.200 0 (    uint i;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 375 M 
+0.200 0 (    for \(i = 0; i < blocksize; i++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 411 M 
+0.200 0 (        y[i] = *\(si + \(roundsize*round\) + \(256*i\) + x[i]\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 447 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 519 M 
+0.200 0 (void diamond2_encrypt_block\(byte *x, byte *y\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 555 M 
+0.200 0 (/* Encrypt a block of 16 bytes. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 591 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 627 M 
+0.200 0 (    uint round;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 663 M 
+0.200 0 (    byte z[16];)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 735 M 
+0.200 0 (    substitute\(0, x, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 771 M 
+0.200 0 (    for \(round=1; round < numrounds; round++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 807 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 843 M 
+0.200 0 (        permute\(y, z\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 879 M 
+0.200 0 (        substitute\(round, z, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 915 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 951 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1023 M 
+0.200 0 (void diamond2_decrypt_block\(byte *x, byte *y\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1059 M 
+0.200 0 (/* Decrypt a block of 16 bytes. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1095 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1131 M 
+0.200 0 (    int round;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1167 M 
+0.200 0 (    byte z[16];)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1239 M 
+0.200 0 (    isubst\(numrounds-1, x, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1275 M 
+0.200 0 (    for \(round=numrounds-2; round >= 0; round--\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1311 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1347 M 
+0.200 0 (        ipermute\(y, z\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1383 M 
+0.200 0 (        isubst\(round, z, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1419 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1455 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1527 M 
+0.200 0 (void lite2_encrypt_block\(byte *x, byte *y\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1563 M 
+0.200 0 (/* Encrypt a block of 16 bytes. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1599 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1635 M 
+0.200 0 (    uint round;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1671 M 
+0.200 0 (    byte z[16];)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1743 M 
+0.200 0 (    substitute\(0, x, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1779 M 
+0.200 0 (    for \(round=1; round < numrounds; round++\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1815 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1851 M 
+0.200 0 (        permute_lite2\(y, z\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1887 M 
+0.200 0 (        substitute\(round, z, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1923 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 1959 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2031 M 
+0.200 0 (void lite2_decrypt_block\(byte *x, byte *y\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2067 M 
+0.200 0 (/* Decrypt a block of 8 bytes. */)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2103 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2139 M 
+0.200 0 (    int round;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2175 M 
+0.200 0 (    byte z[8];)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2247 M 
+0.200 0 (    isubst\(numrounds-1, x, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2283 M 
+0.200 0 (    for \(round=numrounds-2; round >= 0; round--\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2319 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2355 M 
+0.200 0 (        ipermute_lite2\(y, z\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2391 M 
+0.200 0 (        isubst\(round, z, y\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2427 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2463 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2535 M 
+0.200 0 (void diamond2_done\(void\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2571 M 
+0.200 0 (    {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2607 M 
+0.200 0 (    if \(s\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2643 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2679 M 
+0.200 0 (        memset\(s, 0, numrounds * roundsize\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2715 M 
+0.200 0 (        free\(\(char *\)s\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2751 M 
+0.200 0 (        s=NULL;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2787 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2823 M 
+0.200 0 (    if \(si\))A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2859 M 
+0.200 0 (        {)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2895 M 
+0.200 0 (        memset\(si, 0, numrounds * roundsize\);)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 2931 M 
+0.200 0 (        free\(\(char *\)si\);)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 11 ]%%)  =
+%%PageTrailer
+
+%%Page: 12 12
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1215 3065 M 
+0.424 0 (12)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F3) cvn
+0.818 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F3_33) cvn
+F3
+33 
+xF 
+F3_33
+Ji 
+284 267 M 
+0.200 0 (        si=NULL;)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 303 M 
+0.200 0 (        })A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_33
+Ji 
+284 339 M 
+0.200 0 (    })A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F5) cvn
+0.933 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F5_75) cvn
+F5
+75 
+xF 
+F5_75
+Ji 
+284 452 M 
+-0.025 0 (V)A 
+37.000 0 32 0.150 0 (I. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_75
+Ji 
+434 452 M 
+-0.129 0 (CRYPTANALYSIS OF DIAMOND2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F7) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F7_46) cvn
+F7
+46 
+xF 
+F7_46
+Ji 
+374 592 M 
+-0.439 0 (The Diamond Encryption Algorithm \(the immediate predecessor of this algorithm\) suffered from a)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 647 M 
+-0.246 0 (form of weak keys. It was possible for a key to result in all of the individual 256-byte substitution arrays)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 702 M 
+-0.404 0 (to have the same contents if the position of the input key pointer and the key scheduling CRC value were)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 757 M 
+-0.279 0 (the same at the start of the second substitution array as they were at the beginning of the first one. While)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 812 M 
+-0.269 0 (the probability of this was low \(one in about 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F7_29) cvn
+F7
+29 
+xF 
+F7_29
+Ji 
+1121 807 M 
+-0.500 0 (40)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+1149 812 M 
+-0.105 0 (\), it is possible that the regular substitution structure that)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 867 M 
+-0.332 0 (resulted might have allowed a simplified analytical attack. To correct this, Diamond2 uses the contents of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 922 M 
+-0.239 0 (the substitution array just completed in filling the current substitution array \(except for the first one, of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 977 M 
+-0.342 0 (course\). This greatly increases the amount of state information in the tiny pseudorandom number)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1032 M 
+-0.422 0 (generator used in key scheduling, such that this minor weakness is eliminated.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 1137 M 
+-0.432 0 (While I considered the above mentioned flaw worth correction, it certainly doesn\222t point to any)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1192 M 
+-0.348 0 (practical attacks on the Diamond Encryption Algorithm \227 especially given the low probability that the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1247 M 
+-0.276 0 (keys in actual use are the weak ones. My sincere thanks go to Colin Plumb for pointing this out so that I)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1302 M 
+-0.261 0 (could fix it.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 1407 M 
+-0.348 0 (In the design of Diamond2, several types of cryptanalytic attacks were considered. The reasons why)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1462 M 
+-0.384 0 (I currently consider each of them to be computationally infeasible are listed below. If anyone finds an)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1517 M 
+-0.304 0 (attack on Diamond2 that is better than a brute force attack on the key, please let me know. The following)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1572 M 
+-0.317 0 (consists of rough order of magnitude estimations and hand waving, but they are of value anyway. To)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1627 M 
+-0.192 0 (construct more exact proofs, actual construction of all of the cryptanalytic attacks that your opponent)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1682 M 
+-0.324 0 (might try is required. It is conjectured that actual construction of the attacks mentioned would be much)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 1737 M 
+-0.502 0 (more complex than the following estimates indicate.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F5_67) cvn
+F5
+67 
+xF 
+F5_67
+Ji 
+284 1842 M 
+-3.374 0 (A)A 
+67.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_67
+Ji 
+434 1842 M 
+-0.091 0 (Brute Force)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 1972 M 
+-0.408 0 (Exhaustive key search can be made intractable \(beyond the reach of any likely enemy\) by choosing a)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2027 M 
+-0.346 0 (key length of around 120 bits. A loose lower bound of the cost of exhaustive key search can be placed)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2082 M 
+-0.405 0 (with the following generous assumptions. Assuming a massively parallel machine can perform a trillion)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2137 M 
+-0.394 0 (decryptions per second \(with different keys\) on each of a billion processors, then an exhaustive key)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2192 M 
+-0.302 0 (search would take an average of about 42 million years. The user may wish to use smaller key sizes in)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2247 M 
+-0.408 0 (some applications to save in key management costs, while still maintaining adequate protection for the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2302 M 
+-0.265 0 (value of the specific data. Larger keys than 128 bits probably do not contribute significantly to the over-)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2357 M 
+-0.194 0 (all security of a system of data protection, because of some other attacks on data security that are)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2412 M 
+-0.260 0 (possible. If you do want to use a much larger key, increasing the number of rounds to greater than 10 is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2467 M 
+-0.924 0 (recommended.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+374 2572 M 
+-0.297 0 (Another form of brute force attack that is available with block ciphers is the precomputed dictionary)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2627 M 
+-0.248 0 (attack. The idea here is to create a database of one very probable plain text block encrypted under all)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2682 M 
+-0.239 0 (possible keys. Sort the resulting cipher text/key pairs by cipher text value and store it in a table. Then to)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2737 M 
+-0.284 0 (attack a piece of cipher text, look up the possible key in the table and try it on the rest of the message.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2792 M 
+-0.302 0 (This may take several iterations, but would be likely to succeed if you could store so much data. The)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_46
+Ji 
+284 2847 M 
+-0.275 0 (problems here are, of course \(1\) time to generate the table, and \(2\) sorting and storing the table.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 12 ]%%)  =
+%%PageTrailer
+
+%%Page: 13 13
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1215 3065 M 
+0.424 0 (13)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F3) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F3_46) cvn
+F3
+46 
+xF 
+F3_46
+Ji 
+374 269 M 
+-0.272 0 (Note that the Diamond2 Block Cipher allows the use of key sizes that are too short for real security,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 324 M 
+-0.204 0 (because brute force attacks are practical for 4 or 5 byte keys \(for almost any kind of encryption)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 379 M 
+-0.428 0 (algorithm\).)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F5) cvn
+0.925 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F5_67) cvn
+F5
+67 
+xF 
+F5_67
+Ji 
+284 484 M 
+-0.374 0 (B)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_67
+Ji 
+434 484 M 
+-0.298 0 (Partial Dictionary Attack)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 614 M 
+-0.286 0 (This attack is the one that makes \(1\) larger block sizes better, and \(2\) chaining modes instead of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 669 M 
+-0.440 0 (Electronic Codebook \(ECB\) mode better.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 774 M 
+-0.270 0 (Given a set of known plain text and ciphertext using the same key, it is possible to create a partial)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 829 M 
+-0.325 0 (dictionary of block values. When applied to a sufficiently large body of text, the probability of block)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 884 M 
+-0.414 0 (reuse is high enough that some information from further encrypted messages with the same key \223leak.\224)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 939 M 
+-0.340 0 (This is kind of like hiding your secret text under a well-worn cloth with many holes in it. A critical part)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 994 M 
+-0.311 0 (of the plain text may or may not show through. I know of one test that demonstrated 10% to 20% leakage)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1049 M 
+-0.335 0 (of text using DES in ECB mode. This would be particularly bad in stereotyped communications, like)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1104 M 
+-0.231 0 (financial transactions and personal letters. Increasing the block size from 8 to 16 bytes helps, but use of a)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1159 M 
+-0.521 0 (good block chaining mode with random initialization vectors helps even more.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1264 M 
+-0.250 0 (Note that this attack applies to any block cipher, and it explains why I much prefer the 16-byte)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1319 M 
+-0.446 0 (block size of Diamond2 over the 8-byte block size of the most common block ciphers.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_67
+Ji 
+284 1424 M 
+-0.374 0 (C)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_67
+Ji 
+434 1424 M 
+-0.249 0 (Analytical Attack with Chosen Plain Text)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1554 M 
+-0.280 0 (An analytical attack involves solving for the contents of at least one of the substitution arrays. If one)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1609 M 
+-0.333 0 (array could be isolated by selecting carefully chosen inputs and outputs, then its contents could be solved)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1664 M 
+-0.314 0 (for. Once this was done, this knowledge could be used to solve for additional substitution arrays. The)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1719 M 
+-0.236 0 (problem with this attack is that because every output byte is a function of every input byte and at least)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1774 M 
+-0.234 0 (112 substitution arrays, this decomposition is difficult.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 1879 M 
+-0.246 0 (The only way such an attack might be practical is if all the substitution arrays were identical, which)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 1934 M 
+-0.089 0 (was rare \(with a probability of about 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F3_29) cvn
+F3
+29 
+xF 
+F3_29
+Ji 
+987 1929 M 
+-0.552 0 (-40)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1024 1934 M 
+-0.383 0 (\) for Diamond and nearly impossible for Diamond2.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2039 M 
+-0.325 0 (I conjecture that a loose lower bound on the complexity of this kind of attack is that it would take)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2094 M 
+-0.192 0 (more operations than 256 \267 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+805 2081 M 
+(x)S 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+828 2094 M 
+-0.333 0 (, where x is the number of arrays in the dependency chain for each byte.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2149 M 
+-0.248 0 (For a 10 round Diamond2 implementation, this would be an approximate total of 256 \267 16\(2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F3_25) cvn
+F3
+25 
+xF 
+F3_25
+Ji 
+1950 2155 M 
+-0.500 0 (112)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1986 2149 M 
+0.264 0 ( + 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+2059 2155 M 
+-0.417 0 (96 )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+2089 2149 M 
+0.185 0 (+ 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+2150 2155 M 
+-0.500 0 (80)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2207 M 
+0.185 0 (+ 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+345 2213 M 
+-0.417 0 (64 )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+375 2207 M 
+0.185 0 (+ 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+436 2213 M 
+-0.417 0 (48 )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+466 2207 M 
+0.185 0 (+ 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+527 2213 M 
+-0.417 0 (33 )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+557 2207 M 
+0.185 0 (+ 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+618 2213 M 
+-0.417 0 (18 )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+648 2207 M 
+0.185 0 (+ 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+709 2213 M 
+-0.417 0 (10 )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+739 2207 M 
+0.028 0 (+2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+788 2213 M 
+-0.500 0 (2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+800 2207 M 
+0.091 0 (\) )A 
+; : 776 2202 76 57 rc 0 0 0 sco %%IncludeFont: Symbol
+(F9) cvn
+1.022 
+ (Symbol) cvn /Type1 
+F 
+(Symbol) cvn
+mF 
+(F9_46) cvn
+F9
+46 
+xF 
+F9_46
+Ji 
+827 2202 M 
+-0.254 0 (\273)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+852 2207 M 
+0.286 0 ( 2 \267 10)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_25
+Ji 
+969 2213 M 
+-0.500 0 (37)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+993 2207 M 
+-0.140 0 ( operations. This is about as hard as solving for a 124 bit key with)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2262 M 
+-0.183 0 (a precomputed plain text attack, but even less practical.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_67
+Ji 
+284 2367 M 
+-0.374 0 (D)A 
+64.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_67
+Ji 
+434 2367 M 
+-0.306 0 (Differential Cryptanalysis)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 2497 M 
+-0.344 0 (Attacking Diamond2 with a form of differential cryptanalysis as described in [6] does not work)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2552 M 
+-0.398 0 (directly. A similar approach using differences in known plain text values would have some value in)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2607 M 
+-0.263 0 (reduced Diamond2 variants with 3 or fewer rounds, but would be no better than the analytical attack)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 2662 M 
+-0.273 0 (discussed above for 10 or more rounds.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 13 ]%%)  =
+%%PageTrailer
+
+%%Page: 14 14
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1215 3065 M 
+0.424 0 (14)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F3) cvn
+0.925 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F3_67) cvn
+F3
+67 
+xF 
+F3_67
+Ji 
+284 269 M 
+0.311 0 (E)A 
+67.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+434 269 M 
+-0.258 0 (Solving for the Key from an Array)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F5) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+374 399 M 
+-0.365 0 (If you could solve for one substitution array, and knew \(or guessed\) the length of the key, a method)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 454 M 
+-0.327 0 (might be constructed to directly solve for the key from the contents of one substitution array. This)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 509 M 
+-0.295 0 (reduces the strength lower bound estimate for an analytical attack on a 10 round Diamond2 system to)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 567 M 
+0.138 0 (about 256 \267 2)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F5_25) cvn
+F5
+25 
+xF 
+F5_25
+Ji 
+526 573 M 
+-0.500 0 (112)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+562 567 M 
+0.500 0 ( )A 
+; : 523 562 76 57 rc 0 0 0 sco %%IncludeFont: Symbol
+(F8) cvn
+1.022 
+ (Symbol) cvn /Type1 
+F 
+(Symbol) cvn
+mF 
+(F8_46) cvn
+F8
+46 
+xF 
+F8_46
+Ji 
+574 562 M 
+-0.254 0 (\273)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+599 567 M 
+0.167 0 ( 10)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_25
+Ji 
+657 573 M 
+-0.500 0 (36)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+681 567 M 
+0.024 0 (, or about as strong as a 120 bit key.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 672 M 
+-0.345 0 (The design of the Diamond2 Block Cipher is to make isolation of an individual substitution array)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 727 M 
+-0.385 0 (computationally infeasible, but if someone figured out how to do that anyway, this would be one of the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 782 M 
+-0.344 0 (risks. Another concern would be some kind of divide-and-conquer attack on all of the substitution arrays,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 837 M 
+-0.380 0 (one at a time. Diamond2 is stronger than Diamond in this respect because of the dependence of each)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 892 M 
+-0.172 0 (substitution array on the previous substitution array as well as the key.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+284 997 M 
+0.063 0 (F)A 
+71.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+434 997 M 
+-0.258 0 (Bypassing the Algorithm)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 1127 M 
+-0.257 0 (In any security system, care must be taken to avoid the possibility that the hardware and/or software)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1182 M 
+-0.352 0 (doing the encryption and decryption is not tampered with or replaced. For very high security applications,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1237 M 
+-0.287 0 (a hardware device that is implemented on a tamper resistant chip in a tamper resistant enclosure is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1292 M 
+-0.259 0 (preferable to a pure software implementation. Care must also be taken to ensure that the sensitive data is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1347 M 
+-0.381 0 (physically secure when in plain text form. Key management and security protocols, although they is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1402 M 
+-0.249 0 (beyond the scope of this paper, are also critical concerns that can easily make or break any security)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1457 M 
+-0.470 0 (system.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+284 1562 M 
+-0.126 0 (G)A 
+60.000 0 32 0.374 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_67
+Ji 
+434 1562 M 
+-0.144 0 (The Blessing and Curse of Novelty)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 1692 M 
+-0.312 0 (Two things happen as an encryption algorithm ages. The probability that weaknesses in the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1747 M 
+-0.408 0 (algorithm will be published increases, and in the absence of such weaknesses, confidence increases. The)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1802 M 
+-0.318 0 (probability that well-used algorithms are being subverted, )A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Italic
+(F10) cvn
+0.913 
+ (Times-Italic) cvn /Type1 
+T 
+(Times-Italic) cvn
+mF 
+(F10_46) cvn
+F10
+46 
+xF 
+F10_46
+Ji 
+1341 1802 M 
+-0.013 0 (without the knowledge of the algorithm users)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+2171 1802 M 
+0.500 0 (,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1857 M 
+-0.311 0 (by clever cryptanalysis and/or dedicated software and hardware cracking technology also increases. For)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1912 M 
+-0.296 0 (example, I would be quite surprised if at least 5 organizations didn\222t own at least one dedicated DES)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1967 M 
+-0.359 0 (cracking machine each \227 including at least one that I don\222t want reading my mail.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2072 M 
+-0.334 0 (In other words, for optimal security, avoid using encryption algorithms that are both old and widely)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2127 M 
+-0.413 0 (used. Also avoid using new encryption algorithms that have not been adequately reviewed or that you)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2182 M 
+-0.383 0 (haven\222t searched for published weaknesses for.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F3_75) cvn
+F3
+75 
+xF 
+F3_75
+Ji 
+284 2312 M 
+-0.025 0 (V)A 
+16.000 0 32 0.150 0 (II. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+434 2312 M 
+-0.027 0 (DIAMOND2 LITE)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2452 M 
+-0.198 0 (Where software speed and table space are critical, a variant of Diamond2 that has a block size of 8)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2507 M 
+-0.323 0 (bytes \(64 bits\) and a minimum of four rounds \(8 recommended\) is a reasonable compromise. This variant)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2562 M 
+-0.272 0 (has the advantage that every bit of the output is a function of every bit of the input and every bit of the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2617 M 
+-0.323 0 (key after only two rounds. At least four rounds are needed, however, to ensure that the algorithm is)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2672 M 
+-0.234 0 (strong enough to justify keys of about 64 bits. This only requires 8192 bytes of table space and offers)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2727 M 
+-0.276 0 (faster speed in software than the full Diamond2 with a 16 bit block size.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2832 M 
+-0.285 0 (It is conjectured that Diamond2 Lite with 8 rounds and a key length of 128 bits is at least equivalent)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2887 M 
+-0.322 0 (in security to the IDEA\231 and Blowfish ciphers, and more secure than the aging DES algorithm.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 14 ]%%)  =
+%%PageTrailer
+
+%%Page: 15 15
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1215 3065 M 
+0.424 0 (15)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica-Bold
+(F3) cvn
+0.933 
+ (Helvetica-Bold) cvn /Type1 
+T 
+(Helvetica-Bold) cvn
+mF 
+(F3_75) cvn
+F3
+75 
+xF 
+F3_75
+Ji 
+284 269 M 
+-0.025 0 (V)A 
+-5.000 0 32 0.150 0 (III. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+434 269 M 
+-0.094 0 (LEGAL ISSUES)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F5) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+374 409 M 
+-0.362 0 (The Diamond2 and Diamond2 Lite Block Ciphers may be used for any legal purpose without)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 464 M 
+-0.434 0 (payment of royalties to the inventor or his employer, however the names \223Diamond2 Block Cipher\224 and)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 519 M 
+-0.332 0 (\223Diamond2 Lite Block Cipher\224 are Trade Marks owned by the inventor, and may not be used in)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 574 M 
+-0.521 0 (connection with any algorithm that does not comply with the reference implementation given herein. The)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 629 M 
+-0.331 0 (Diamond2 Block Cipher is the same as the Diamond, MPJ and MPJ2 Encryption Algorithms, with the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 684 M 
+-0.374 0 (exception of the key expansion algorithm. Some governments may restrict the use, publication, or export)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 739 M 
+-0.484 0 (of strong encryption technology.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+284 869 M 
+0.150 0 (I)A 
+-0.025 0 (X)A 
+37.000 0 32 0.150 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+434 869 M 
+-0.115 0 (CONCLUSION)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 1009 M 
+-0.382 0 (Diamond2 and Diamond2 Lite are two of several alternatives to the aging and now relatively)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1064 M 
+-0.344 0 (insecure DES algorithm. Source code for a software implementation of Diamond2 in C is available in the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1119 M 
+-0.180 0 (USA and Canada on the Colorado Catacombs BBS at 303-772-1062 in the file DLOCK2.ZIP or on the)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1174 M 
+-0.262 0 (Internet as)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Courier-Bold
+(F7) cvn
+0.786 
+ (Courier-Bold) cvn /Type1 
+T 
+(Courier-Bold) cvn
+mF 
+(F7_42) cvn
+F7
+42 
+xF 
+F7_42
+Ji 
+284 1238 M 
+-0.200 0 (ftp://ftp.csn.net/mpj/I_will_not_export/crypto_???????/file/dlock2.zip)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+2034 1229 M 
+-0.483 0 (, where)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1285 M 
+-0.428 0 (the )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_42
+Ji 
+350 1294 M 
+-0.200 0 (???????)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+525 1285 M 
+-0.392 0 ( is revealed in )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F7_42
+Ji 
+787 1294 M 
+-0.200 0 (ftp://ftp.csn.net/mpj/README)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1487 1285 M 
+-0.287 0 (. Comments, questions, and reports of)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1341 M 
+-0.397 0 (possible weaknesses should be sent to the author at one of the following. I recommend that you ask me if)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1396 M 
+-0.413 0 (any weaknesses have been found in the Diamond2 Block Cipher before using it in any critical)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 1451 M 
+-0.217 0 (applications.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+434 1561 M 
+-0.366 0 (Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+434 1616 M 
+0.010 0 (PO BOX 1151)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+434 1671 M 
+0.028 0 (LONGMONT CO 80502-1151)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+434 1726 M 
+-0.667 0 (USA)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+434 1836 M 
+-0.110 0 (BBS: 303-772-1062)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+434 1891 M 
+-0.511 0 (Internet mail: m.p.johnson@ieee.org, mpj@csn.net, or mpj@netcom.com)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+434 1946 M 
+-0.227 0 (CompuServe: 71331,2332)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+284 2076 M 
+-0.025 0 (X)A 
+58.000 0 32 0.150 0 (. )D 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_75
+Ji 
+434 2076 M 
+-0.055 0 (REFERENCES)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2216 M 
+-0.212 0 ([1])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2216 M 
+-0.212 0 (Michael J. Wiener, \223Efficient DES Key Search,\224 Bell-Northern Research, PO Box 3511 Station C,)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2271 M 
+0.023 0 (Ottawa, Ontario, K1Y 4H7, Canada, 20 August 1993.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2376 M 
+-0.212 0 ([2])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2376 M 
+-0.373 0 (Theodor Br\374ggemann and Hoger B\374rk, \223Der Verschl\374sselungsalgorithmus IDEA\231,\224 Ascom Tech)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2431 M 
+-0.240 0 (AG, Fachbereich Kryptologie, Ziegelmattstrasse 1, CH - 4503 Solothurn, Switzerland.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2536 M 
+-0.212 0 ([3])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2536 M 
+-0.183 0 (Xuejia Lai and James L. Massey, \223Markov Ciphers and Differential Cryptanalysis,\224 in )A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Italic
+(F9) cvn
+0.913 
+ (Times-Italic) cvn /Type1 
+T 
+(Times-Italic) cvn
+mF 
+(F9_46) cvn
+F9
+46 
+xF 
+F9_46
+Ji 
+1962 2536 M 
+-0.051 0 (Advances in)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F9_46
+Ji 
+374 2591 M 
+-0.001 0 (Cryptology \226 EUROCRYPT '91)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+955 2591 M 
+-0.115 0 (, Springer-Verlag, pp 17-38.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+284 2696 M 
+-0.212 0 ([4])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2696 M 
+-0.259 0 (Xuejia Lai \223Detailed Description and a Software Implementation of the IPES Cipher,\224 Institut f\374r)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 2751 M 
+-0.267 0 (Signal- und Informationsverarbeitung, ETH Z\374rich.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 15 ]%%)  =
+%%PageTrailer
+
+%%Page: 16 16
+%%BeginPageSetup
+[{
+%%BeginFeature: *Resolution 300dpi
+
+%%EndFeature
+} stopped cleartomark
+[{
+%%BeginFeature: *Duplex 
+
+%%EndFeature
+} stopped cleartomark
+userdict begin /pagesave save def end mysetup concat colspRefresh : 1.000 1.000 1.000 sco 0 0 2550 3300 rf ; 
+userdict begin /savelevel1 save def end
+%%EndPageSetup
+
+: 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Helvetica
+(F0) cvn
+0.939 
+ (Helvetica) cvn /Type1 
+T 
+(Helvetica) cvn
+mF 
+(F0_33) cvn
+F0
+33 
+xF 
+F0_33
+Ji 
+1027 168 M 
+-0.402 0 (\251 1995 Michael Paul Johnson)A 
+; : 0 0 2391 3229 rc 0 0 0 sco (F0_46) cvn
+F0
+46 
+xF 
+F0_46
+Ji 
+1215 3065 M 
+0.424 0 (16)A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Roman
+(F3) cvn
+0.913 
+ (Times-Roman) cvn /Type1 
+T 
+(Times-Roman) cvn
+mF 
+(F3_46) cvn
+F3
+46 
+xF 
+F3_46
+Ji 
+284 269 M 
+-0.212 0 ([5])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 269 M 
+-0.316 0 (Michael Paul Johnson, \223Beyond DES: Data Compression and the MPJ Encryption Algorithm,\224)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 324 M 
+-0.239 0 (Master\222s Thesis at the University of Colorado at Colorado Springs, 1989. Available by anonymous)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 379 M 
+-0.117 0 (ftp to ftp.csn.net in /mpj or on the author\222s BBS at 303-772-1062.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 484 M 
+-0.212 0 ([6])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 484 M 
+-0.334 0 (Eli Biham and Adi Shamir, )A 
+; : 0 0 2391 3229 rc 0 0 0 sco %%IncludeFont: Times-Italic
+(F5) cvn
+0.913 
+ (Times-Italic) cvn /Type1 
+T 
+(Times-Italic) cvn
+mF 
+(F5_46) cvn
+F5
+46 
+xF 
+F5_46
+Ji 
+879 484 M 
+0.063 0 (Differential Cryptanalysis of the Data Encryption Standard)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1979 484 M 
+-0.370 0 (. New)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 539 M 
+-0.258 0 (York: Springer-Verlag, 1993.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 644 M 
+-0.212 0 ([7])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 644 M 
+0.002 0 (C Programmers Guide to NetBIOS)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1018 644 M 
+0.001 0 (, Howard W. Sams & Co., Inc.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 749 M 
+-0.212 0 ([8])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 749 M 
+-0.225 0 (Rick Sternbach and Michael Okuda, )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+1046 749 M 
+0.031 0 (Star Trek the Next Generation Technical Manual)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1952 749 M 
+-0.424 0 (, New York:)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 804 M 
+-0.252 0 (Pocket Books, 1991.)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+284 909 M 
+-0.212 0 ([9])A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+374 909 M 
+-0.177 0 (Xuejia Lai and James L. Massey, \223A Proposal for a New Block Encryption Standard,\224 in )A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+2007 909 M 
+-0.159 0 (Advances)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F5_46
+Ji 
+374 964 M 
+0.024 0 (in Cryptology \226 EUROCRYPT '90)A 
+; : 0 0 2391 3229 rc 0 0 0 sco F3_46
+Ji 
+1003 964 M 
+-0.047 0 (, Springer-Verlag, pp 389-404., 1990.)A 
+; 
+LH 
+savelevel1 restore 
+pagesave restore
+
+(%%[ Page: 16 ]%%)  =
+%%PageTrailer
+
+%%Trailer
+%%DocumentNeededFonts: 
+%%DocumentSuppliedFonts: 
+/Pscript_Win_Driver /ProcSet findresource dup /terminate get exec
+Pscript_Win_Compat dup /terminate get exec
+%%Pages: 16
+(%%[ LastPage ]%%)  =
+%%EOF
+

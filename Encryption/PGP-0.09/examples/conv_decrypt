@@ -1,0 +1,40 @@
+#!/usr/local/bin/perl -w -I..
+
+use FileHandle;
+use Stream::IO;
+use Crypt::MD5;
+use PGP::PacketFactory;
+use PGP::LiteralData;
+use PGP::ConvEncryptedData;
+use PGP::Armoury;
+
+my $hash = Crypt::MD5->hash("confidential");
+my $key = $hash->data();
+
+my $fis = new Stream::FileInput new FileHandle "< -";
+my $dis = new Stream::DataInput $fis;
+my ($pkt, $err);
+($pkt, $err) = PGP::Armoury::readPacket($dis);
+defined($err) && die $err;
+
+my $sis = new Stream::StringInput $pkt;
+$dis = new Stream::DataInput $sis;
+my $packet = PGP::PacketFactory::restore($dis);
+die $packet unless ref($packet);
+
+my ($plain, $err);
+($plain, $err) = $packet->decrypt($key);
+(defined($plain)) && print STDERR "Passphrase seems OK\n";
+
+#
+#	Now read in LiteralData
+#
+$sis = new Stream::StringInput $plain;
+$dis = new Stream::DataInput $sis;
+while(!$dis->eoi())
+{
+	$packet = PGP::PacketFactory::restore($dis);
+	ref($packet) || warn $packet;
+	ref($packet) && print $packet->data;
+}
+print "EOF\n";

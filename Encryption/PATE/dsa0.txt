@@ -1,0 +1,13 @@
+From pate@mindspring.com Wed Jul 14 00:26:34 1999
+Date: Tue, 13 Jul 1999 23:12:58 GMT
+From: "James Pate Williams, Jr." <pate@mindspring.com>
+Subject: Re: DSA - dsa.c (0/1)
+
+Not sure about the correctness of this algorithm. That is not to say
+that I am sure about the correctness of all other algorithms. I am
+pretty sure my block, stream, and public-key ciphers are correct
+except for perhaps padding problems with the public-key methods.
+SHA-1 gives the test vectors for short blocks. Not so sure about
+the padding used in the other hash algorithms though.
+
+

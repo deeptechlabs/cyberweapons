@@ -1,0 +1,404 @@
+ORIGIN = PWB
+ORIGIN_VER = 2.0
+PROJ = ripem
+PROJFILE = ripem.tma
+DEBUG = 0
+
+CC  = tcc
+CFLAGS_G  = -ml  -DPROTOTYPES=1
+CFLAGS_D  = /f /Od /Zi
+CFLAGS_R  = -f-  -I..\rsaref\source -Ic:\tc\include
+CXX  = tcc
+CXXFLAGS_G      = /W2 /BATCH
+CXXFLAGS_D      = /f /Zi /Od
+CXXFLAGS_R      = /f- /Ot /Oi /Ol /Oe /Og /Gs
+MAPFILE_D  = NUL
+MAPFILE_R  = NUL
+LFLAGS_G  =
+LFLAGS_D  =
+LFLAGS_R  =
+LINKER  = tlink
+ILINK  = ilink
+LRF  = echo > NUL
+ILFLAGS = /a /e
+
+FILES  = ADDUSER.C BEMPARSE.C CRACKHED.C DERKEY.C GETOPT.C GETSYS.C HEXBIN.C\
+                  KEYDER.C KEYMAN.C LIST.C MSC7.C PARSIT.C PRENCODE.C\
+                  RDWRMSG.C RIPEMMAI.C STRUTIL.C USAGE.C USAGEMSG.C\
+                  ..\rsaref\test\rsaref.lib RIPEMSOC.C PUBINFO.C
+OBJS    = ADDUSER.obj BEMPARSE.obj CRACKHED.obj DERKEY.obj GETOPT.obj GETSYS.obj\
+                  HEXBIN.obj KEYDER.obj KEYMAN.obj LIST.obj MSC7.obj PARSIT.obj\
+                  PRENCODE.obj RDWRMSG.obj RIPEMMAI.obj STRUTIL.obj\
+                  USAGE.obj USAGEMSG.obj RIPEMSOC.obj PUBINFO.obj
+LIBS_EXT  = ..\rsaref\test\rsaref.lib
+LIBS    = $(LIBS_EXT)
+
+all: $(PROJ).exe
+
+
+ADDUSER.obj : ADDUSER.C global.h ..\rsaref\source\rsaref.h ripem.h list.h\
+                  listprot.h strutilp.h keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oADDUSER.obj ADDUSER.C
+!
+!else
+
+                  @ECHO $(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oADDUSER.obj ADDUSER.C
+!
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oADDUSER.obj ADDUSER.C
+!
+!endif
+
+
+BEMPARSE.obj : BEMPARSE.C bemparse.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oBEMPARSE.obj BEMPARSE.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oBEMPARSE.obj BEMPARSE.C
+!
+!endif
+
+
+CRACKHED.obj : CRACKHED.C global.h ..\rsaref\source\rsaref.h ripem.h\
+                  ripemglo.h prcodepr.h crackhpr.h strutilp.h hexbinpr.h derkeypr.h\
+                  list.h keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oCRACKHED.obj CRACKHED.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oCRACKHED.obj CRACKHED.C
+!
+!endif
+
+
+DERKEY.obj : DERKEY.C global.h ..\rsaref\source\rsaref.h ripem.h\
+                  derkeypr.h list.h keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oDERKEY.obj DERKEY.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oDERKEY.obj DERKEY.C
+!
+!endif
+
+
+GETOPT.obj : GETOPT.C
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oGETOPT.obj GETOPT.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oGETOPT.obj GETOPT.C
+!
+!endif
+
+
+GETSYS.obj : GETSYS.C global.h ..\rsaref\source\rsaref.h ripem.h\
+                  getsyspr.h strutilp.h list.h keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oGETSYS.obj GETSYS.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oGETSYS.obj GETSYS.C
+!
+!endif
+
+
+HEXBIN.obj : HEXBIN.C
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oHEXBIN.obj HEXBIN.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oHEXBIN.obj HEXBIN.C
+!
+!endif
+
+
+KEYDER.obj : KEYDER.C global.h ..\rsaref\source\rsaref.h ripem.h\
+                  keyderpr.h list.h keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oKEYDER.obj KEYDER.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oKEYDER.obj KEYDER.C
+!
+!endif
+
+
+KEYMAN.obj : KEYMAN.C global.h ..\rsaref\source\rsaref.h\
+                  ..\rsaref\source\md5.h ripem.h ripemglo.h ddes.h keymanpr.h\
+                  strutilp.h derkeypr.h prcodepr.h hexbinpr.h getsyspr.h ripemsop.h\
+                  pubinfop.h keyderpr.h bemparse.h list.h keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oKEYMAN.obj KEYMAN.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oKEYMAN.obj KEYMAN.C
+!
+!endif
+
+
+LIST.obj : LIST.C list.h listprot.h strutilp.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oLIST.obj LIST.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oLIST.obj LIST.C
+!
+!endif
+
+
+MSC7.obj : MSC7.C
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oMSC7.obj MSC7.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oMSC7.obj MSC7.C
+!
+!endif
+
+
+PARSIT.obj : PARSIT.C
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oPARSIT.obj PARSIT.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oPARSIT.obj PARSIT.C
+!
+!endif
+
+
+
+PRENCODE.obj : PRENCODE.C prcodepr.h prencode.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oPRENCODE.obj PRENCODE.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oPRENCODE.obj PRENCODE.C
+!
+!endif
+
+
+RDWRMSG.obj : RDWRMSG.C global.h ..\rsaref\source\rsaref.h ripem.h\
+                  ripemglo.h rdwrmsgp.h strutilp.h listprot.h adduserp.h list.h\
+                  keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oRDWRMSG.obj RDWRMSG.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oRDWRMSG.obj RDWRMSG.C
+!
+!endif
+
+
+RIPEMMAI.obj : RIPEMMAI.C global.h ..\rsaref\source\rsaref.h ripem.h\
+                  ripemglo.h prcodepr.h usagepro.h getoptpr.h ripempro.h\
+                  getsyspr.h strutilp.h keyderpr.h derkeypr.h keymanpr.h listprot.h\
+                  adduserp.h ..\rsaref\source\r_random.h bemparse.h hexbinpr.h crackhpr.h rdwrmsgp.h\
+                  parsitpr.h p.h list.h keyfield.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oRIPEMMAI.obj RIPEMMAI.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oRIPEMMAI.obj RIPEMMAI.C
+!
+!endif
+
+
+STRUTIL.obj : STRUTIL.C boolean.h strutilp.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oSTRUTIL.obj STRUTIL.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oSTRUTIL.obj STRUTIL.C
+!
+!endif
+
+
+USAGE.obj : USAGE.C
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oUSAGE.obj USAGE.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oUSAGE.obj USAGE.C
+!
+!endif
+
+
+USAGEMSG.obj : USAGEMSG.C
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oUSAGEMSG.obj USAGEMSG.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oUSAGEMSG.obj USAGEMSG.C
+!
+!endif
+
+
+
+RIPEMSOC.obj : RIPEMSOC.C global.h ..\rsaref\source\rsaref.h ripem.h\
+                  ripemsop.h ripemglo.h keyfield.h protserv.h list.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oRIPEMSOC.obj RIPEMSOC.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oRIPEMSOC.obj RIPEMSOC.C
+!
+!endif
+
+
+PUBINFO.obj : PUBINFO.C boolean.h keyfield.h pubinfop.h global.h\
+                  ..\rsaref\source\rsaref.h ripem.h list.h
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -oPUBINFO.obj PUBINFO.C
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -oPUBINFO.obj PUBINFO.C
+!
+!endif
+
+
+$(PROJ).exe : $(OBJS) $(LIBS)
+!if $(DEBUG)
+                  $(LRF) @&&!$(PROJ).lrf
+$(RT_OBJS: = +^
+) $(OBJS: = +^
+)
+$@
+$(MAPFILE_D)
+$(LIBS: = +^
+) +
+$(LLIBS_G: = +^
+) +
+$(LLIBS_D: = +^
+)
+$(DEF_FILE) $(LFLAGS_G) $(LFLAGS_D);
+!
+!else
+                  $(LRF) @&&!$(PROJ).lrf
+$(RT_OBJS: = +^
+) $(OBJS: = +^
+)
+$@
+$(MAPFILE_R)
+$(LIBS: = +^
+) +
+$(LLIBS_G: = +^
+) +
+$(LLIBS_R: = +^
+)
+$(DEF_FILE) $(LFLAGS_G) $(LFLAGS_R);
+!
+!endif
+         $(LINKER)  @&&!(PROJ).lrf
+c:\tc\lib\C0L.OBJ+
+$(OBJS)
+$<
+$(PROJ).map
+$(LIBS)+
+C:\TC\LIB\CL.LIB
+!
+
+
+.c.obj :
+!if $(DEBUG)
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_D) -o$@ $<
+!
+!else
+                  @$(CC) @&&!$(PROJ).rsp
+-c $(CFLAGS_G)
+$(CFLAGS_R) -o$@ $<
+!
+!endif
+
+
+
+run: $(PROJ).exe
+                  $(PROJ).exe $(RUNFLAGS)
+
+debug: $(PROJ).exe
+                  CV $(CVFLAGS) $(PROJ).exe $(RUNFLAGS)

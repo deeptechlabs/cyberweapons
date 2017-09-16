@@ -1,0 +1,106 @@
+.\" @(#)RSAkeys.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH "Rabin FUNCTIONS" 3BM
+.SH NAME
+genRabinKeySet, getRabinPublicKey, getRabinPrivateKey, RabinEncrypt, RabinDecrypt, RabinSign, RabinVerify,
+freeRabinKeys, freeRabinSig
+randBytesNeededForRabinSet, randBytesNeededForRabinEncrypt, randBytesNeededForRabinSign
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBint randBytesNeededForRabinSet(int modbits)\fR
+.LP
+\fBint randBytesNeededForRabinEncrypt(int modbits)\fR
+.LP
+\fBint randBytesNeededForRabinSign(int modbits)\fR
+.LP
+\fBRabinKeySet *genRabinKeySet(int modulusdBits, BitInt randomStart)\fR
+.LP
+\fBBigInt RabinEncrypt(message, RabinPubKey, randomStart)\fR
+\fBBigInt message;\fR
+\fBRabinPublicKey *RabinPubKey;\fR
+\fBBigInt randomStart;\fR
+.LP
+\fBBigInt RabinDecrypt(message, RabinPrivKey)\fR
+\fBBigInt message;\fR
+\fBRabinPrivateKey *RabinPrivKey;\fR
+.LP
+\fBBigInt quantized_RabinDecrypt(message, RabinPrivKey)\fR
+\fBBigInt message;\fR
+\fBRabinPrivateKey *RabinPrivKey;\fR
+.LP
+\fBRabinSignature *RabinSign(message, RabinPrivKey, randomStart)\fR
+\fBBigInt message;\fR
+\fBRabinPRivateKey *RabinPrivKey;\fR
+\fBBigInt randomStart;\fR
+.LP
+\fBRabinSignature *quantized_RabinSign(message, RabinPrivKey, randomStart)\fR
+\fBBigInt message;\fR
+\fBRabinPRivateKey *RabinPrivKey;\fR
+\fBBigInt randomStart;\fR
+.LP
+\fBBoolean RabinVerify(message, signature, RabinPubKey)\fR
+\fBBigInt message;\fR
+\fBRabinSignature *signature;\fR
+\fBRabinPublicKey *RabinPubKey;\fR
+.LP
+\fBfreeRabinKeys(RabinKeySet)\fR
+\fBRabinKeySet *RabinKeySet;\fR
+.LP
+\fBfreeRabinSig(RabinSig)\fR
+\fBRabinSignature *RabinSig;\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+.LP
+In all of the function which have an argument, $randomStart$, if this argument
+is chosen NULL, the default, DES-based pseudo-RNG seeded with truerand() will
+be used to generate necessary random material.  If $randomStart$ is not
+NULL, the accompanying functions, \fIrandBytesNeededForEG...\fR are
+used to find out how many random bytes are expected.
+.LP
+Rabin's scheme is essentially RSA with 2 as the public exponent.  Care has been
+taken to avoid the small exponent attack (See Simmons' Contemporary Cryptology).
+Encryption, Decryption, Signature and Verification work exactly as with RSA.
+However, since squaring is the encryption process, to decrypt the square root is taken.
+This yields 4 square roots.  Thus some way to detect which if these is correct is
+needed.  The message to be encrypted is thus given "structure". From most-sig-byte to least,
+the format is: [random pad | message | msg_len (4 bytes) | digest (pad | msg | msg_len) ]
+The digest functions supported are SHS, MD{2, 4, 5}.  The functions below take as arguments
+the digest type and digest length in bytes.
+.LP
+In order to sign messages the square root must be calculated.
+Thus the message to be signed must be put into a form which is a quadratic residue
+modulo N.  It is for this reason that Rabin's signature is usually less efficient
+than doing RSASign.
+.LP
+The quantized version
+use STD_QUANTUM milliseconds as the quantum for execution to defend against
+Kocher-style timing attacks.
+STD_QUANTUM is defined in libcrypt.h and should be tuned to your environment.
+.LP
+$freeRabinKeySet$ frees the key set structure and all of its associated
+BigInts.
+.LP
+$freeRabinSig$ frees the Rabin signature (actually just a BigInt).
+
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+.BR bigPow (3BM),
+.BR fputRabinPrivateKey (3BM)
+.BR start_quantize (3BM)
+.BR end_quantize (3BM)

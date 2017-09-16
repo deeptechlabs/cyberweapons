@@ -1,0 +1,6 @@
+#!/usr/local/bin/perl -w -I.
+
+use Math::TrulyRandom;
+
+print Math::TrulyRandom::rand(), "\n";
+print Math::TrulyRandom::rand_n(10), "\n";

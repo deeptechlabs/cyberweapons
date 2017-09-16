@@ -1,0 +1,42 @@
+LIBS =  md5c.a
+CCF = -O -c
+
+PROGS = ranH ranM ranG ranA ranT
+
+all: $(PROGS)
+
+ranH: ranH.o $(LIBS)
+	gcc -o $@ $@.o $(LIBS)
+
+ranH.o: ranH.c md5.h global.h
+	gcc $(CCF) ranH.c
+
+ranG: ranG.o $(LIBS) rnd.o
+	gcc -o $@ $@.o $(LIBS) rnd.o
+
+ranG.o: ranG.c md5.h global.h
+	gcc $(CCF) ranG.c
+
+ranM: ranM.o rnd.o
+	gcc -o $@ $@.o rnd.o
+
+rnd.o: rnd.c
+	gcc $(CCF) rnd.c
+
+ranM.o: ranM.c 
+	gcc $(CCF) ranM.c
+
+ranA:  ranA.o
+	gcc -o $@ $@.o
+
+ranA.o: ranA.c
+	gcc $(CCF) ranA.c
+
+ranT:  ranT.o
+	gcc -o $@ $@.o
+
+ranT.o: ranT.c
+	gcc $(CCF) ranT.c
+
+clean: 
+	rm -f *.o $(PROGS) *~ core

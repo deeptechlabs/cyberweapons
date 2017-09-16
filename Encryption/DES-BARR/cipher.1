@@ -1,0 +1,296 @@
+.\" @(#) cipher.1 1.0  @(#)cipher.1	1.1  91/20/91  1   
+.TH CIPHER 1 
+.ds )H David A. Barrett
+.ds ]W Revision 1.0: Jan 1991
+.SH NAME
+cipher, decipher \- Fast DES-compatible encryption
+.SH SYNOPSIS
+.B cipher
+[
+.B \-de
+] [ 
+.B \-i
+.I ivec
+] [
+.B \-x
+.I hexkey
+] [
+.B \-k
+.I keystr
+]
+.SH DESCRIPTION
+.PP
+.I Cipher\^
+is an encryption program compatible with the National Bureau of
+Standards 
+.I Data Encryption Standard,
+published in 
+.I FIPS Publication 46-1 
+(January 22, 1988).
+.PP
+.ne 8
+.I Cipher
+reads from the standard input and writes
+on the standard output.
+The
+.I keystr\^
+is a character string which
+selects a particular transformation.
+The output will be unintelligible to anyone who does
+not specify the same 
+.I keystr\^
+to the
+.I decipher
+program.
+Output will contain the same number of characters and the input but
+consists of binary characters of eight-bits each.
+If no key
+is given (using the,
+.B \-k
+or 
+.B \-x
+option),
+.I cipher\^
+demands a key from the terminal and turns
+off printing while the key is typed in.
+This is recomended since
+users running the
+.I ps(1)
+can see keys specified on the command line.
+To assist in preventing typographic errors during key
+entry, each key must be entered twice.  This feature may
+be disabled by specifying the
+.B \-n 
+option.
+
+.SS Options
+.PP
+.TP 11
+.B  \-d
+Used to decipher previously ciphered text.
+.TP
+.B  \-e
+Encipher mode.  More than one
+.B \-e
+or
+.B \-d
+option forces multiple encryption.
+.TP
+.B \-n
+inhibits key verification
+.TP
+.BI \-k\ keystr
+Specifies a character string to use as the key for encryption/decryption.
+.TP
+.BI \-x\ hexkey
+Specifies the key as a hexadecimal number.  One to 16 digits may be
+specified.  This key is left-justified and zero-padded.
+.TP
+.BI \-i\ ivec
+Specifies the initialization vector for cipher-feedback mode (CFB) 
+as a one to 16-digit hexadecimal number.  This will be right-justified 
+and zero padded.
+.PP
+The
+.B \-x,
+.B \-i,
+and
+.B \-k
+options are primaraly useful for test scripts.
+.PP
+Unlike the crypt command,
+.I cipher
+is not its own inverse; you must use the
+.B \-d
+option to decipher previously encrypted text or invoke the command as
+.I decipher.
+.PP
+The security of the Data Encryption Standard has been controversial.
+In particular, the number of possible keys has
+been criticized as too small; only 56-bits are used.  To assist
+in minimizing this risk, multiple-encryption, and "random" 
+key-generation from text strings is provided.
+
+The key string may be any length other than zero.
+This string is hashed to produce the 56-bit key used for the DES.
+
+To help thwart dictionary attacks, the key should be as long as 
+convienient and contain a mix of upper-case, lower-case and 
+symbolic characters (space and control characters are permitted).
+Short sentences or phrases consisting of nonsense words are reccomended.
+
+These precautions should make it more difficult for someone
+to use
+computer(s) (or DES hardware) to guess your key by trial and
+error.  This is a very serious threat and should not be ignored.
+.PP
+For particularly sensitive information, double
+or triple encryption with independent keys should be used.
+Attempts to crack the encrypted text may be made more difficult by
+removing redundancy from the input by using the
+.I compress(1)
+command prior to enciphering and subsequent to deciphering.
+(Even further security can be obtained by specifying the
+.B \-n
+option to 
+.I compress 
+so that no header is included.)
+.ne 8
+.PP
+The following command illustrates encryption of the file
+.I clear
+to produce the file
+.I cypher.
+.PP
+.RS
+compress -n <clear | cipher \|>cypher
+.br
+Input Key:
+.br
+Verify Key:
+.br
+rm clear
+.br
+.RE
+.PP
+.PP
+This command is used to examine the previously enciphered file:
+.PP
+.RS
+cipher -d <cypher | uncompress -n | more
+.br
+Input Key:
+.br
+.RE
+.PP
+The following command may be used to accomplish multiple-encipherment:
+(The key text is shown only for illustration)
+.PP
+.RS
+cipher -e -e <plain >cipherfile
+.br
+Input Key:firsty keyzy
+.br
+Input Key:seconDzy keysy
+.br
+.RE
+.PP
+A prompt for each cipher key is shown.  When multiple-encipherment is
+selected, care should be taken to specify the keys in the reverse order
+when deciphering. All the following commands below are equivalent ways
+of deciphering the above:
+.PP
+.RS
+cipher -d -d <cipherfile >plain
+.br
+Input Key:seconDzy keysy
+.br
+Input Key:firsty keyzy
+.br
+cipher -dk "seconDzy keysy" -dk "firsty keyzy" <cipherfile >plain
+.br
+cipher -d -k "seconDzy keysy" <cipherfile \\
+.br
+| decipher -k "firsty keyzy" >plain
+.RE
+.PP
+For transmitting encrypted text though the mail system, the
+.I atob(1),
+and
+.I btoa(1),
+commands may be used.
+These programs are available as part of the
+.I compress
+4.0 package. (also included with the 
+.I cipher 
+package)
+.PP
+For example, to send a secret message, typed from the terminal:
+.PP
+.RS
+compress -n | cipher | btoa | mail user
+.RE
+.PP
+The receiver could save the message in the file
+.I secret
+and read it using the command:
+.PP
+.RS
+atob <secret | decipher | uncompress -n
+.RE
+.PP
+Notice that you did not have to worry about stripping mailer headers 
+from the text because the
+.I atob
+program does that automatically.
+.PP
+Since the Data Encryption Standard is, by definition, implemented 
+only in hardware, this algorithm should not be considered as a DES
+implementation. However, it should yield the same results as
+DES hardware using 64-bit Cipher-Feedback Mode (CFB). (See
+FIPS Publications 81 and 74).
+.PP
+The key used as input to the DES is generated as follows:
+The keystring is padded with blank characters to a positive multiple of 
+eight.
+A secondary key is generated from the first eight characters of
+.I keystr
+by shifting each character left by one (discarding each high-order bit). 
+This secondary key is used to produce a 64-bit authentication code by
+enciphering the rest of
+.I keystr
+using DES in cipher-block-chaining (CBC) encryption mode with
+an initialization vector of zeros.
+This 64-bit authentication code is used as the encryption key.
+This is the same method used by FIPS publication 112 except the 
+authentication code is not converted into printable form.
+This is also identical to FIPS publication 113 with the input padded with
+blanks instead of zeros.
+
+The initialization vector is generated from a string of all zeros.
+.PP
+.SH WARNINGS
+If output is piped to
+.IR nroff (1)
+and the encryption key is
+.I not\^
+given on the command line,
+.I cipher\^
+can leave terminal modes with echoing disabled.
+(see
+.IR stty (1)).
+.PP
+If two or more files encrypted with the same key are concatenated
+and an attempt is made to decrypt the result, only the
+contents of the first of the original files will be decrypted correctly.
+.SH ACKNOWLEDGEMENTS
+The author has made every attempt to produce the fastest, portable
+DES-compatible program possible, but considerable speed improvements 
+remain.  Comments and improvements
+will be greatly appreciated and should be directed to the author:
+.PP
+David A. Barrett (barrett%asgard@boulder.Colorado.EDU)
+.PP
+This program is not to be distributed for profit.
+.SH FILES
+.ta 1i
+/dev/tty	for typed key
+.DT
+.SH SEE ALSO
+crypt(1),
+compress(1),
+btoa(1),
+atob(1),
+makekey(1), 
+des(3),
+desCFB(3),
+crypt(3),
+stty(1).
+.\" index	\fIcrypt\fR \- encode/decode files 	 \s-2CRYPT\s+1(1)\s+1
+.\" index	decode/encode files 	 \s-2CIPHER\s+1(1)\s+1
+.\" index	encode/decode files 	 \s-2CIPHER\s+1(1)\s+1
+.\" index	decrypt/encrypt files 	 \s-2CIPHER\s+1(1)\s+1
+.\" index	encrypt/decrypt files 	 \s-2CIPHER\s+1(1)\s+1
+.\" index	files: encrypt/decrypt files 	 \s-2CIPHER\s+1(1)\s+1
+.\"
+.\" toc	\s-2CIPHER\s+1(1)\s+1:\0\0\fIcipher\fR 	 encode/decode files

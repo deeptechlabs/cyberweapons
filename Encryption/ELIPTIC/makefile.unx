@@ -1,0 +1,33 @@
+#  simple makefile for elliptic curve stuff for UNIX
+
+# generic UNIX with gcc
+CC = gcc -DANSI_MODE
+LD = gcc
+# SUNOS v4 with gcc
+#CC = gcc -DANSI_MODE -DSUNOS
+#LD = gcc
+# SUNOS v4 with SunPro ANSI C v2.0(acc)
+#CC = acc -DANSI_MODE -DSUNOS
+#LD = acc
+# SUNOS v4 with the default non-ANSI compiler(cc)
+#CC = cc -DSUNOS
+#LD = ld
+
+test: eliptic.o bigint.o support.o krypto_knot.o
+	${LD} -o eliptic krypto_knot.o support.o eliptic.o bigint.o -lc
+
+krypto_knot.o:	eliptic.h bigint.h eliptic_keys.h
+	${CC} -c -g krypto_knot.c
+
+support.o:	eliptic_keys.h eliptic.h bigint.h support.c
+#	${CC} -c -O support.c
+	${CC} -c -g support.c
+
+eliptic.o:	eliptic.h bigint.h eliptic.c
+#	${CC} -c -O eliptic.c
+	${CC} -c -g eliptic.c
+
+bigint.o:	bigint.h bigint.c
+	${CC} -c -O bigint.c
+	${CC} -c -O bigint.c
+

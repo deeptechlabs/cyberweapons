@@ -1,0 +1,41 @@
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+# Additional restrictions due to national laws governing the use, import or
+# export of cryptographic software is the responsibility of the software user,
+# importer or exporter to follow.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+    MAN1 = desbench.1 deskey.1 descrypt.1 destest.1
+    MAN3 = des.3
+
+ INSTALL = install -c
+
+  MANDIR =
+
+
+all	:
+
+install	: 
+	@if [ "${MANDIR}" ]; then \
+		${INSTALL} ${MAN1} ${MANDIR}/man1; \
+		${INSTALL} ${MAN3} ${MANDIR}/man3; \
+	else \
+		echo 'Define destination directory (MANDIR = destination)'; \
+		exit 1; \
+	fi
+
+
+clean	:
+	rm -f *.o core a.out
+
+depend	:
+	echo 'Nothing to depend'
+
+
+# DEPEND

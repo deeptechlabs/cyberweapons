@@ -1,0 +1,229 @@
+#
+# Copyright (C) 1995, 1996 Systemics Ltd (http://www.systemics.com/)
+# All rights reserved.
+#
+
+=head1 NAME
+
+Math::BigInteger - Arbitrary length integer extension module for Perl
+
+=head1 SYNOPSIS
+
+ use Math::BigInteger;
+
+=head1 DESCRIPTION
+
+The Math::BigInteger extension module gives access to Eric Young's bignum library.
+This provides a faster alternative to the Math::BigInt library.
+
+The basic object in this library is a Math::BigInteger.
+It is used to hold a single large integer.
+
+=head1 FUNCTIONS
+
+Many of the following functions can be used in two styles,
+by calling the function on an object, or by calling
+the function explicitly; for example, here are two ways
+of assigning to $a the sum of $b and $c:
+
+	$a->add($b, $c);
+or
+
+	Math::BigInteger::add($a, $b, $c);
+
+
+=head2 Creation/Destruction routines.
+
+=over 4
+
+=item new
+
+	my $bi = new Math::BigInteger;	# Create a new Math::BigInteger object.
+
+=item clone
+
+	my $b = $a->clone();
+
+Create a new Math::BigInteger object from another Math::BigInteger object.
+
+=item copy
+
+	Math::BigInteger::copy($a, $b);
+
+Copy one Math::BigInteger object to another.
+
+=item save
+
+	my $data = $bi->save();
+
+Save a Math::BigInteger object as a MSB-first string.
+
+=item restore
+
+	my $bi = restore Math::BigInteger $data;
+
+Create a new Math::BigInteger object from a MSB-first string.
+
+=back
+
+
+=head2 Comparison functions
+
+=over 4
+
+=item ucmp
+
+	Math::BigInteger::ucmp($a, $b);
+
+Return -1 if $a is less than $b, 0 if $a and $b are the same
+and 1 is $a is greater than $b.  This is an I<unsigned> comparison.
+
+=item cmp
+
+	Math::BigInteger::cmp($a, $b);
+
+Return -1 if $a is less than $b, 0 if $a and $b are the same
+and 1 is $a is greater than $b.  This is a I<signed> comparison.
+
+=back
+
+
+=head2 Arithmetic Functions
+
+=over 4
+
+=item inc
+	$bi->inc();
+
+Increment $bi by one:
+
+=item dec
+	$bi->dec();
+
+Decrement $bi by one:
+
+=item add
+
+	$r->add($a, $b);
+
+Add $a and $b and return the result in $r.
+
+=item mul
+
+	$r->mul($a, $b);
+
+Multiply $a by $b and return the result in $r.
+Note that $r must not be the same object as $a or $b.
+
+=item div
+
+	div($dv, $rem, $m, $d);
+
+Divide $m by $d and return the result in $dv and the remainder
+in $rem.  Either of $dv or $rem can be C<undef>, in which case
+that value is not returned.
+
+=item mod
+
+	$rem->mod($m, $d);
+
+Find the remainder of $m divided by $d and return it in $rem.
+This function is more efficient than C<div>.
+
+
+=item lshift
+
+	$r->lshift($a, $n);
+
+Shift $a left by $n bits.
+
+=item lshift1
+
+	$r->lshift1($a);
+
+Shift $a left by 1 bit.  This form is more efficient than C<lshift($r, $a, 1)>.
+
+=item rshift
+
+	$r->rshift($a, $n);
+
+Shift $a right by $n bits.
+
+=item rshift1
+
+	$r->rshift1($a);
+
+Shift $a right by 1 bit.  This form is more efficient than C<rshift($r, $a, 1)>.
+
+=item mod_exp
+
+	$r->mod_exp($a, $p, $mod);
+
+Raise $a to the $p power and return the remainder into $r when divided by $m.
+
+=item modmul_recip
+
+	Math::BigInteger::modmul_recip($r, $x, $y, $m, $i, $nb);
+
+This function is used to perform an efficient C<mod_mul> operation.
+If one is going to repeatedly perform C<mod_mul> with the same modulus
+is worth calculating the reciprocal of the modulus and then using this
+function.  This operation uses the fact that a/b == a*r where r is the
+reciprocal of b.  On modern computers multiplication is very fast and
+big number division is very slow.  $x is multiplied by $y and then
+divided by $m and the remainder is returned in $r.  $i is the reciprocal
+of $m and $nb is the number of bits as returned from C<reciprocal>.
+This function is used in C<mod_exp>.
+
+=item mul_mod
+
+	$r->mul_mod($a, $b, $m);
+
+Multiply $a by $b and return the remainder into $r when divided by $m.
+
+=item reciprical
+
+	$r->reciprical($m);
+
+Return the reciprocal of $m into $r.
+
+=back
+
+=head2 Miscellaneous Routines
+
+=over 4
+
+=item num_bits
+
+	my $size = $bi->numbits();
+
+Return the size (in bits) of the Math::BigInteger.
+
+=item gcd
+
+	$r->gcd($a, $b);
+
+$r has the greatest common divisor of $a and $b.
+
+=item inverse_modn
+
+	$r->inverse_modn($a, $n);
+
+This function creates a new Math::BigInteger and returns it in $r.  This number
+is the inverse mod $n of $a.  By this it is meant that the returned value
+$r satisfies (a*r)%n == 1.  This function is used in the generation of RSA keys.
+
+=back
+
+=head1 BUGS
+
+Negative numbers cannot be saved or restored.
+To fix this requires modification of Eric Young's library.
+
+The documentation.
+
+=head1 COPYRIGHT
+
+Systemics Ltd ( http://www.systemics.com/ ).
+
+Portions copyright Eric Young (eay@mincom.oz.au).

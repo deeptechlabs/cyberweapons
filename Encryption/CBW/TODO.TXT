@@ -1,0 +1,60 @@
+Suggested Improvements to CBW
+
+	See cbw.log for things that have been done.
+
+- Most terminals can be in both inverse video and graphics mode, but
+  the graphics variable format cannot reflect this.
+  - need new mode 'B' meaning both.
+
+- Program doesn't handle blocks less than 256 chars, which
+  makes it hard to decode very short messages.  -- Hard to fix.
+
+- Add window done proc that can cleanup state before
+  a window is replaced.  This would fix the bug in the
+  knitting window which causes it to accept the currently
+  displayed guess.
+
+- Add a decode block command.
+- Make the help window two line tall.
+- Add a command that allows guess words from the keyboard
+  rather than a file.  -- NO better to build vocabulary files.
+
+- Make the propagate command take a range of destination
+  blocks.  E.G. "propagate block 0 to blocks 1 thru 5".
+
+- Make C-U multiply cursor motion commands as in emacs.
+- The command "q<retrun>" should expand into a quit, instead
+  of typing "q<space><return>".
+
+- Add batch mode that applies a sequence of command to all
+  the blocks in a file.
+  -- The driver routines do this, so it should be easy.
+
+- Document the statistics file format.
+- Write a C program for gathering statistics
+  -- The original was written in CLU.
+
+- Add a confirm request to the load command.
+
+- Add a better indicator that the program is busy
+  - especially for the knit command.
+
+- Need better explaination on knitting.
+
+- Add an automatic C-T mode to help verify correct characters.
+- Add command to identify weak characters in the block
+  - i.e., chars that don't deduce anything else.
+
+- Add a save command with a default name that the user can change.
+  - It should default to the load file name.
+
+- If 127 out of 128 wires are known, set the 128th.
+
+- Document the zeecode program.
+
+- Add a command to goto a specific block number.
+- Need better explaination of the pword command.
+
+- Add command that search a dictionary for a word that will
+  fit at a given place.
+  - Worry about case and endings.

@@ -1,0 +1,21 @@
+BIN = $(HOME)/bin/
+BBC = $(BIN)bbc
+
+all: $(BBC)
+	@echo "$(BBC) complete."
+
+$(BBC): bbc.o main.o
+	cc -s -o $(BBC) -O4 bbc.o main.o
+
+main.o: main.c
+	cc -O4 -c main.c
+
+bbc.o: bbc.c
+	cc -O4 -c bbc.c
+
+test:
+	gcc -g -Wall main.c bbc.c -o $(BBC)
+	$(BBC) $(BBC) bbc.bbc -e
+	$(BBC) bbc.bbc bbc.pln -d
+	cmp $(BBC) bbc.pln
+	rm -f bbc.pln bbc.bbc *.o

@@ -1,0 +1,17 @@
+#!/usr/local/bin/perl -w -I.
+
+use strict;
+
+use Crypt::DES;
+
+#
+#	These should be chosen randomly, but we're testing DES, not Random.
+#
+my $i = 0;
+my $cipher;
+while ($i < 10000)
+{
+	$cipher = new Crypt::DES "12345678";
+	$cipher->encrypt("12345678");
+	$i++;
+}

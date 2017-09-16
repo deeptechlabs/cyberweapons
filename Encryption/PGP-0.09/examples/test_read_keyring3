@@ -1,0 +1,21 @@
+#!/usr/local/bin/perl -w -I..
+
+use PGP::SecretKeyRing;
+
+
+my $name = "Billy boy";
+
+my $pkr = restoreFromFile PGP::SecretKeyRing "secring.pgp";
+
+print $pkr->getKey($name);
+print "\n";
+
+__END__
+foreach (@{$pkr->allKeysByUserID()})
+{
+	my $id = $_->[0];
+	my $key = $_->[1]->key();
+
+	($id =~ m/$name/g) && print "$id\n$key\n";
+}
+

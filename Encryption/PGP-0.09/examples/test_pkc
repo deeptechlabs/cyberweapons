@@ -1,0 +1,8 @@
+#!/usr/local/bin/perl -w
+
+use PGP::PublicKeyRing;
+
+my $pkr = restoreFromFile PGP::PublicKeyRing "pubring.pgp";
+my $pkc = $pkr->getKey('joe');
+print $pkc->asString(), "\n";
+

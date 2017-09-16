@@ -1,0 +1,25 @@
+
+  ==========================
+   logi.crypto java package
+  ==========================
+
+This file should be distributed with four other files:
+
+  logi.crypto.jar  A jar file containing the logi.crypto package
+  
+  src.zip          The complete source code for the package
+  
+  doc.zip          Documentation, including javadocs for the package
+  
+  fingerprint      Fingerprints of the above fies gneerated with
+                   the org.logi.crypto.test.hash utility
+
+Most likely you will want to place cryptonite.jar in your classpath and
+unzip doc.zip. Then use your web-browser to read doc/index.html.
+
+Updates will be available on http://www.logi.org/logi.crypto
+
+Send any questions or suggestions to logir@logi.org
+
+Thank you,
+Logi Ragnarsson

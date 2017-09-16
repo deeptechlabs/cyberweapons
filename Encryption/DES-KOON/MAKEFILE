@@ -1,0 +1,60 @@
+# 
+.SUFFIXES: .prt  .vw .1 .3
+SRCS = des.h des.c fdes.h fdes.c hex.c diag.c getopt.c
+PROD_SRCS = key.c sbox.c init_perm.c inv_perm.c
+UNDER_RCS = $(SRCS) $(PROD_SRCS) des.test des.1 des.3 Makefile 
+PROGRAMS  =  des
+PRODUCTS  = key.h s_p.h ip.h iip.h
+PROD_PROGS = key sbox init_perm inv_perm
+
+all:	$(PROGRAMS)
+
+neat:
+	-rm -f *.o *CKP *BAK .emacs* 
+
+clean: neat
+	-rm -f $(PROGRAMS) $(PRODUCTS) $(PROD_PROGS)
+ci:
+	ci -f -u $(UNDER_RCS)
+
+firstci: rcsdir ci
+	rcs -q -U $(UNDER_RCS)
+	chmod u+w $(UNDER_RCS)
+rcsdir:
+	mkdir RCS
+
+des: des.o fdes.o hex.o diag.o getopt.o
+	cc -o des  des.o fdes.o hex.o diag.o getopt.o
+	strip des
+
+des.o: des.h des.c
+	cc -c -O  des.o des.c 
+
+fdes.o: fdes.c fdes.h $(PRODUCTS)
+	cc -c -O fdes.o fdes.c
+
+iip.h: inv_perm.c
+	cc -o inv_perm inv_perm.c
+	strip inv_perm
+	inv_perm > iip.h
+
+ip.h: init_perm.c
+	cc -o init_perm init_perm.c
+	strip init_perm
+	init_perm > ip.h
+
+key.h: key.c
+	cc -o key key.c
+	strip key
+	key > key.h
+
+s_p.h: sbox.c
+	cc -o sbox sbox.c
+	strip sbox
+	sbox > s_p.h
+
+des.1.prt:
+	tbl des.1 | psroff -man -h 
+
+des.3.prt:
+	tbl des.3 | psroff -man -h 

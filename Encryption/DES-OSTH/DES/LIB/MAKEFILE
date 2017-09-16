@@ -1,0 +1,114 @@
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+# Additional restrictions due to national laws governing the use, import or
+# export of cryptographic software is the responsibility of the software user,
+# importer or exporter to follow.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+# All make programs dont have the .h suffix defined
+#
+.SUFFIXES: .h
+
+#      CC = gcc
+ DEFINES =
+INCLUDES = -I. -I../include -I../fips -I../util
+#   CCOPT = -g
+   CCOPT = -O
+  CFLAGS = ${CCOPT} ${DEFINES} ${INCLUDES}
+ LDFLAGS =
+
+ INSTALL = install -c
+  RANLIB = ranlib
+
+LIBDIR = 
+
+
+ SRCS = des_cbc.c des_cfb8.c des_cksum.c des_dea.c des_ecb.c \
+	des_ecb2.c des_hexblock.c des_issweak.c des_isweak.c des_key.c \
+	des_nkey.c des_ofb8.c des_passwd.c des_pcbc.c des_print.c \
+	des_rblock.c des_readhex.c des_rkey.c des_setkey.c des_setkp.c \
+	des_strkey.c des_testkp.c ivec.c parity_tab.c prompt_key.c \
+	quad_cksum.c read_line.c sig_ctrl.c tty_ctrl.c
+
+
+ OBJS = des_cbc.o des_cfb8.o des_cksum.o des_dea.o des_ecb.o des_ecb2.o \
+	des_hexblock.o des_issweak.o des_isweak.o des_key.o des_nkey.o \
+	des_ofb8.o des_passwd.o des_pcbc.o des_print.o des_rblock.o \
+	des_readhex.o des_rkey.o des_setkey.o des_setkp.o des_strkey.o \
+	des_testkp.o ivec.o parity_tab.o prompt_key.o quad_cksum.o \
+	read_line.o sig_ctrl.o tty_ctrl.o
+
+
+TSRCS = tab_parity.c tab_E.c tab_IP.c tab_IPinv.c \
+	tab_PC1.c tab_PC2.c tab_S_and_P.c
+
+TOBJS = tab_parity.o tab_E.o tab_IP.o tab_IPinv.o \
+	tab_PC1.o tab_PC2.o tab_S_and_P.o
+
+TPROG = tab_parity tab_E tab_IP tab_IPinv \
+	tab_PC1 tab_PC2 tab_S_and_P
+
+ THDR = tab_parity.h tab_E.h tab_IP.h tab_IPinv.h \
+	tab_PC1.h tab_PC2.h tab_S_and_P.h
+
+
+DESLIB = libdes.a
+
+REMOVES = ${TPROG} ${THDR}
+
+# This rule should be defined in all make programs.
+#
+#.c.o:
+#	${CC} ${CFLAGS} -c $* $<
+
+.c.h:
+	${CC} ${CFLAGS} -o $* $< ${LDFLAGS}
+	./$* > $@
+
+
+all	: ${THDR} ${DESLIB}
+
+
+${DESLIB} : ${OBJS}
+	ar r $@ $?
+	ranlib $@
+
+
+install	: all
+	@if [ "${LIBDIR}" ]; then \
+		${INSTALL} ${DESLIB} ${LIBDIR}; \
+		${RANLIB} ${LIBDIR}/${DESLIB}; \
+	else \
+		echo 'Define destination directory (LIBDIR = destination)'; \
+		exit 1; \
+	fi
+
+
+clean	:
+	rm -f ${DESLIB} ${REMOVES} *.o core a.out
+
+
+depend  : ${THDR}
+	../util/mkdepend -CC '${CC}' -CFLAGS '${CFLAGS}' ${SRCS}
+
+tab_parity.h	: tab_parity.c ../include/des.h ../util/compile.h
+tab_E.h		: tab_E.c ../util/compile.h ../fips/fips_E.h
+tab_IP.h	: tab_IP.c ../include/des.h ../util/compile.h ../fips/fips_IP.h
+tab_IPinv.h	: tab_IPinv.c ../include/des.h ../util/compile.h \
+		  ../fips/fips_IPinv.h
+tab_PC1.h	: tab_PC1.c ../include/des.h ../util/compile.h \
+		  ../fips/fips_PC1.h
+tab_PC2.h	: tab_PC2.c ../util/compile.h ../fips/fips_PC2.h
+tab_S_and_P.h	: tab_S_and_P.c ../util/compile.h ../fips/fips_S.h \
+		  ../fips/fips_P.h
+
+# DEPEND
+#
+# Don not change the lines below, run make depend
+#

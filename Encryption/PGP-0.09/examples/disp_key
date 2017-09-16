@@ -1,0 +1,65 @@
+#!/usr/local/bin/perl -w -I/home/TheCrypt/perlmod2
+
+use strict;
+
+use PGP::UserId;
+use PGP::RandomStream;
+use PGP::PublicKeyRing;
+use PGP::SecretKeyRing;
+use PGP::PublicKeyRingEntry;
+use PGP::SecretKeyRingEntry;
+use PGP::SecretKeyCertificate;
+
+
+mkdir("keys", 0700);
+mkdir("accounts", 0700);
+mkdir("info", 0700);
+
+my $size = 640;
+my $name = "shop";
+my $public_file = "keys/pubring.pgp";
+my $secret_file = "keys/secring.pgp";
+my $passphrase = "secret";
+
+print "Generating a PGP key.  This may take some time ...\n";
+
+#
+#	Create a random input stream
+#
+my $ris = new PGP::RandomStream;
+ref($ris) || die $ris;
+$ris->goodSeed();
+
+
+my $skc = generate PGP::SecretKeyCertificate(
+			-size => $size,
+			-ris => $ris
+		);
+ref($skc) || die $skc;
+
+$skc->encrypt($passphrase, $ris);
+
+
+my $id = new PGP::UserId "$name";
+ref $id || die $id;
+my $key = new PGP::SecretKeyRingEntry $skc;
+ref $key || die $key;
+$key->addId($id);
+
+my $kr = PGP::SecretKeyRing->open($secret_file);
+ref $kr || die $kr;
+$kr->add($key);
+$kr->update($secret_file);
+
+
+my $pkc = $skc->publicKeyCertificate();
+ref $pkc || die $pkc;
+
+my $key = new PGP::PublicKeyRingEntry $pkc;
+ref $key || die $key;
+$key->addId($id);
+
+$kr = PGP::PublicKeyRing->open($public_file);
+ref $kr || die $kr;
+$kr->add($key);
+$kr->update($public_file);

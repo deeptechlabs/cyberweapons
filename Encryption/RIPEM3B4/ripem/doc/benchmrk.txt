@@ -1,0 +1,39 @@
+benchmrk.txt    Mark Riordan    mrr@scss3.cl.msu.edu
+
+This is a list of timings for the generation of a particular
+516-bit key by RIPEM.  This benchmark is run automatically by 
+"make" when you generate the UNIX version of RIPEM.  It can also
+be run by "make benchmark" from UNIX, or by running
+test\testgen.bat from Microsoft operating systems.
+In any case, the command line used is:
+   ripem -g -H . -k test1pw -u test -R c -C b
+which generates a particular 516-bit key.
+
+This file contains only RIPEM version 2.0 and higher benchmarks.
+The x86 version of RIPEM has assembly code in a crucial routine
+in RSAREF, which benefits the Intel platforms.
+
+Times are in seconds; user time + system time for UNIX,
+or elapsed time for MS operating systems.
+
+
+Machine                     Time    Notes (see #'s at bottom)
+                            secs 
+DEC Alpha 400MHZ             0.4    #02: Digital UNIX V4.0C gcc, RIPEM 3.0b4
+IBM/RS6000 43P133            0.53   #04: AIX 4.1.5, IBM's xlc -O3, RIPEM 3.0b4
+Pentium 133, 512K cache      0.931  #03: WinNT 5.0b1, MSVC 11.00.7022, R 3.0b4
+SGI Challenge L              1.005  #06: IRIX 6.2, RIPEM 3.0b3?
+Sun UltraSPARC-II-248        1.5    #02: Solaris 2.6 gcc, RIPEM 3.0b4
+Sun Ultra-1                  2.1    #07: SunOS 5.5.1, Sun sc 4.0, RIPEM 2.1
+Sun UltraSPARC 1 170         2.4    #01: Solaris 2.5.1, GCC 2.7.0, RIPEM 3.0b4
+Sun ELC (33MHz SPARC)       13.8    #05: Solaris 2.5.1, gcc 2.7.2.1. R. 3.0b4
+
+Notes on specific results, including the person who ran them:
+
+#01: Matt Curtin, 1997-12-02
+#02: Randall S. Winchester, 1997-12-04
+#03: Mark Riordan, 1997-12-07, elapsed time from NTIMER.EXE.
+#04: Michael Gruber, 1997-10-08
+#05: Mark Riordan, 1997-12-07
+#06: Jeff Peterson, 1997-03-26.  Not sure if processor 200 or 250 MHz.
+#07: Doug Royer, 1996-05-03.  This is Solaris 2.5.x.  Not sure of CPU MHz.

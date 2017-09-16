@@ -1,0 +1,30 @@
+README    Mark Riordan  mrr@scss3.cl.msu.edu   
+
+This is a distribution of the public key encryption program RIPEM.
+It is oriented towards use with electronic mail, and provides a
+subset of the capabilities described in Internet RFC 1113.
+
+To install:
+   On Unix, type  make  and follow the directions.
+   On MS-DOS Microsoft C, type  makedos. 
+   On MS-DOS Borland C++ 4.0, use ripem/main/ripem.ide
+
+Binaries (and source) are available on ripem.msu.edu.
+
+All the code *I* wrote is in the public domain, and the code by 
+other private contributors is also essentially in the public domain.  
+However, the cryptographic smarts all come from the RSAREF toolkit, 
+found in the rsaref/ directory tree.
+RSAREF is licensed free of charge from RSA Data Security, but it is 
+not in the public domain--see the license agreement in doc/.
+
+For more information, see the files in doc/.
+
+Please do not export the cryptographic code in this distribution
+outside of the USA or Canada.  This is a personal request from me,
+the author of RIPEM, and a condition of your use of RIPEM.
+I don't agree with US export restrictions, but I intend to comply.
+
+Thank you.
+
+Mark R.

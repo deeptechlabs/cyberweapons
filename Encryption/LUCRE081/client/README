@@ -1,0 +1,71 @@
+This is s-lc, a sample -lucre client, provided as a wrapper to -lucre;
+it is here just so you can see how to call the functions in the library.
+
+To use it, first choose a wallet ID.  This is a subdirectory of your home
+directory (or a full path name) where your coins will be stored.  The
+default is ".ecwallet", or whatever $ECWALLET is set to.  The directory
+you choose should _not_ yet exist.
+
+Create the wallet by running:
+
+    s-lc -o
+
+This will ask for the account name and account password you got when you
+opened your account with MT Bank.  If you want a different wallet id, use
+
+    s-lc -w walletid -o
+
+After you have created the wallet, just run the program as
+
+    s-lc
+
+or 
+
+    s-lc -w walletid
+
+Within the program, "?" will get you help.  Note that all amounts used by
+the client are measured in _cents_.
+
+We don't know how well the standard ecash client will react after you use your
+account with this client (We think it gets confused when the bank reports a
+higher message sequence number than it has sent).  If you have problems,
+try copying the "status" file from your -lucre wallet to your ecash
+directory (probably ~/.mtecash).  Success/failure stories are welcome,
+along with ecash donations. :-) Suggestions for improvements to the
+client will be very low on the priority list, as the client is primarily
+for demonstration purposes.
+
+Please read the README file in the -lucre directory for legal-type information,
+especially regarding appropriate use of this software.
+
+You can reach us, the development team for -lucre, at either of the
+addresses below (in fact, use both, as the nym servers seem to be flaky).
+Better yet, there is a mailing list to discuss the library; send mail
+to majordomo@c2.org with body "subscribe dev-lucre" to subscribe.
+
+Type bits/keyID    Date       User ID
+pub  1024/E9E2AC75 1996/06/13 Development team for -lucre <lucre@alpha.c2.org>
+          Key fingerprint =  63 94 0D F7 D9 6F 2D E5  08 0F EE 19 CB 6B A9 17 
+sig       E9E2AC75             Development team for -lucre <lucre@alpha.c2.org>
+                              Development team for -lucre <lucre@nym.jpunix.com>
+sig       E9E2AC75             Development team for -lucre <lucre@alpha.c2.org>
+
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.2
+
+mQCNAzHANI0AAAEEANYAvtkmYoH/Mav1A8fuwm+ZsDD4t3NY7nYd6zBKkepLLHWd
+Ue1Wnyr3mFHcrQBbJshwOJOCCUvYwDHST1TOqssaK/vAVavvubD8kRam+SET04b/
+477krJbCycnbBJ5FSugR4kKKs3S3BkrFWIJaBVTSzsocp+eGrrpcpsjp4qx1AAUR
+tDBEZXZlbG9wbWVudCB0ZWFtIGZvciAtbHVjcmUgPGx1Y3JlQGFscGhhLmMyLm9y
+Zz6JAJUDBRAxwDTfulymyOnirHUBAeqmBACfy2V57n/kAWMaUT5cFjW/C9ErL9JD
+2ej5xr2vXNsYqXVIGGAc1ZNWIRKdxIp5fs+eBwf6mPRcwHe62a50hp9nTmhNnNCr
+HLLr6g4KkIgNslYtIma+U7ojysAWrcU0Ng8dse8bheO6OiXPoBVI+stp9Uijl60f
+tTOCPEP9ldY34LQyRGV2ZWxvcG1lbnQgdGVhbSBmb3IgLWx1Y3JlIDxsdWNyZUBu
+eW0uanB1bml4LmNvbT6JAJUDBRAxxegrulymyOnirHUBAb+MBADErPAtQdo4X8UU
+8uGrFsDvSIfzRVgaz+HarEB1PNW5gsEiw9xhHizT6cKM0L9F7BCJWye2jHDm8DSP
+a5GdQNEmg+siFOw7+97hELqOzJsOjTBrF+mZ5flEeGQJHKub1D5hRChIqI/bwa5A
+6e8AKbLB+mfaO2hfXJtnlroUx9foTg==
+=GvP2
+-----END PGP PUBLIC KEY BLOCK-----
+

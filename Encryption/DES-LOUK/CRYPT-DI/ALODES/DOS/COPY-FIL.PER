@@ -1,0 +1,68 @@
+#! /usr/bin/perl
+
+@n = ();
+
+while ($x = <stdin>) {
+    chop($x);
+
+    if ($x =~ m;^(.*)/([^/]+)$;) {
+	($dir,$n) = ($1,$2);
+    } else {
+	($dir,$n) = (".",$x);
+    }
+    $dn = $n;
+    $dn =~ s/des-/d-/;
+    $dn =~ s/test-/t-/;
+    $dn =~ s/-encrypt/-encr/;
+    $dn =~ s/[-_]//g;
+    if ($dn =~ m;^([^\.]*)\.([^\.]*)$;) {
+	($bn,$ext) = ($1,$2);
+	if (length($bn) > 8) {
+	    $bn = substr($bn,0,8);
+	}
+	$dosname = $bn . "." . $ext;
+	$fulldosname = $dir . "/" . $dosname;
+	if (!$dirs{$dir}) {
+	    if (!-d $dir) {
+#		printf "mkdir $dir\n";
+		mkdir($dir,0666);
+	    }
+	    $dirs{$dir} = 1;
+	}
+	if ($dn{$fulldosname}) {
+	    printf "Conflict %s\n";
+	} else {
+	    $dn{$fulldosname} = 1;
+	}
+    } else {
+	$dosname = "";
+    }
+#    printf "%-8s %-20s %s\n",$dir,$n,$dosname;
+    $dosname{$x} = $dosname;
+    $dosname{$n} = $dosname;
+    $fulldosname{$x} = $fulldosname;
+    push(@n,$x);
+}
+
+while ($n = shift(@n)) {
+    open(infile,"../$n");
+    $fulldosname = $fulldosname{$n};
+    open(outfile,">$fulldosname");
+#    printf "%-20s --> %s\n",$n,$fulldosname;
+    while ($l = <infile>) {
+	chop($l);
+#	printf "%s",$l;
+	if ($l =~ m;^[ 	]*#[ 	]*include;) {
+#	    printf ". %-20s: %s\n",$n,$fn;
+	    if (($l =~ m;^(.*<)([^>]+)(>.*)$;) ||
+		($l =~ m;^(.*\")([^\"]+)(\".*)$;)) {
+		($s1,$fn,$s2) = ($1,$2,$3);
+		if ($nn = $dosname{$fn}) {
+		    $l = $s1 . $nn . $s2;
+		}
+#		printf "  %-20s: %-20s --> %s\n",$n,$fn,$nn;
+	    }
+	}
+	printf outfile "%s\n",$l;
+    }
+}

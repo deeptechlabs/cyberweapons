@@ -1,0 +1,25 @@
+PROG = enc64 dec64
+
+all: $(PROG)
+
+cod64.o: cod64.c
+	gcc -O -c cod64.c
+
+enc64.o: enc64.c
+	gcc -O -c enc64.c
+
+dec64.o: dec64.c
+	gcc -O -c dec64.c
+
+dec64: dec64.o cod64.o
+	gcc -o dec64 dec64.o cod64.o
+
+enc64: enc64.o cod64.o
+	gcc -o enc64 enc64.o cod64.o
+
+mktab: mktab.c
+	gcc -O mktab.c -o mktab
+
+clean:
+	rm -f *.o $(PROG) mktab core *~
+

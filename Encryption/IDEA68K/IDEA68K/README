@@ -1,0 +1,76 @@
+This is a hacked-up verion of the distribution of the IDEA cipher
+system retrieved from  isibee.ethz.ch:pub/simpl/idea.V1.0.tar.Z
+(129.132.38.1).  It's been ported to the Amiga (only the makefile needed
+changing), the C in crypt.c cleaned up, and assembler versions of all
+the functions in crypt.c added.
+
+The default make produces both "idea", and "idea1", the slower C
+version that you can check against.
+
+This is reasonably fast on a 68000 (the -T option does a timing test.
+If you can figure out the "raster file" part, please add it; the
+pixrects confuse me) and is *not* based on DES.  It has not withstood
+the years of attack DES has (point against), but the NSA had nothing to
+do with its creation (point for, unless they were being sneaky).  Read
+the caveat by the original authors in idea.c:
+
+# BUGS
+#      This program is at most as strong as  IDEA  itself.  So,  we
+#      urge  the user to use this program only after he has assured
+#      himself that IDEA is strong  enough  AND  he  has  read  the
+#      source  code  of  this  program and its libraries AND he has
+#      compiled the program himself with a trojan-free compiler. WE
+#      DO  NOT  GUARANTEE  THAT THIS PROGRAM IS A DECENT ENCRYPTION
+#      PROGRAM.
+
+If you use this code without verifying the algorithm, you're trusting
+me not to have weakened it.  (Note that, if you trust the code enough to
+believe it's not doing anything very sneaky, running a few known test
+vectors through will give a reasonable guarantee it works.)
+
+Anyway, enjoy!
+
+Everything below the INSTALLATION line below is the original Unix README.
+I have rewritten all of the core algorithms in crypt.c in optimised
+68000 assembler (well, I think InvertIdeaKey could be improved, but
+it's already optimised past the point of rationality).
+In particular, the central "Idea" function does 64 bits (8 bytes) in
+3686 cycles, or 460.75 cycles per byte.
+
+If you "make debug", you'll make five debugging drivers, foo, bar, baz,
+quux and garply, which test various parts of crypt2.asm against the
+originals in crypt1.c.  If you want to hack crypt.asm, make sure the
+result still passes these tests (cryptographic checksums, idea -h,
+check the Idea() function quite sufficiently).
+
+The drivers are not documented, and certainly don't say what they're doing
+in any detail.  Use the Source, Luke!  For non-development work, throw
+them away.
+
+Each of the functions exports two names from crypt2.asm, Foo and Foo2.
+The debugging drivers link crypt1.o and crypt2.o, and use the second name
+to get the crypt2.o versions.  Ignore the redefined symbol warnings when
+linking.
+
+Anyway, no copyright is claimed on the code that I wrote, although it would
+be appreciated if you'd give credit where it's due.  Not required, just
+requested.
+
+The makefile and assembler code were developed for Manx Aztec C 5.2, but
+should compile under SAS just fine.  Screw around, enjoy.  The original
+README file follows.
+
+INSTALLATION
+============
+
+Change the type definitions in 'crypt.h' to the representations in your computer
+  typedef int            int32;      /* signed 32-bit integer   */
+  typedef unsigned int   u_int32;    /* unsigned 32-bit integer */
+  typedef unsigned short u_int16;    /* unsigned 16-bit integer */
+  typedef char           u_int8;     /* unsigned 8-bit integer  */
+
+Execute the following commands:
+  man -M . idea                      display the man page of idea
+  man -t -M . idea                   print the man page of idea
+  cp manl/idea.l /usr/man/manl       copy the man page to your man directory
+  make                               compile and link the application

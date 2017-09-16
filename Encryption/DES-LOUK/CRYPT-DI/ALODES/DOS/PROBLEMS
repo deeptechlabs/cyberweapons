@@ -1,0 +1,45 @@
+Antti,
+
+     Ken is organizing a co-operative group to collect and analyze
+computer viruses, starting with the people in the anti-virus industry
+(like us) who are already doing this informally.  Ken is concerned (and
+rightly so!)  with transmitting virus samples over the Internet in
+plaintext.  So, we're looking for a DES implementation that we can use.
+Since most of the viruses we're concerned about right now are DOS
+viruses, we're looking for a DOS-based DES program.  We need to have
+a DOS DES program available to all the participants in the co-op
+before we can get started.  So we're *very* interested in your programs!
+
+     We wanted to contact you before spending a lot of time
+understanding what needs to be changed in your code for DOS.  (We didn't
+want to do the work and write it up if you weren't going to be
+interested, after all!)  Here are the things we've run into so far:
+
+- DOS filenames must be 8 or fewer characters long.  So, many
+  of the filenames you use need to be abbreviated, and references
+  to them in INCLUDE statements must also be abbreviated.
+
+- Most DOS MAKE facilities only implement a subset of the usual
+  Unix MAKE language.  We're using the IBM C/2 compiler, and
+  had to write our own MAKE file for your programs.  I think
+  we could just provide that to you directly?
+
+- Our compiler didn't like one of the constant definitions /
+  initializations that you used (I don't have my notes with
+  me right now, so I can't tell you which one).  That's
+  easily fixed.
+
+     You're right that endian stuff needs to be looked at.  What are the
+function return types that you're worried about?
+
+     Anyway, we would be happy to help you make a DOS version available.
+If you are interested, we can start writing a list of the changes that
+would be needed.  Should we go ahead?
+
+                          Thanks,
+
+                           Steve
+
+P.S.  What convention did you use for the "last block rule" in CBC mode?
+      Did you use the ANSI X9 convention?
+

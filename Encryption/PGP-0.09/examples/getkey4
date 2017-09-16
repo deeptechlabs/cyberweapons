@@ -1,0 +1,12 @@
+#!/usr/local/bin/perl -w -I. -I.. -I/home/TheCrypt/perlmod2
+
+use strict;
+use POSIX;
+
+use PGP::PublicKeyRing;
+
+my $kr = PGP::PublicKeyRing->open("/home/gary/pgp/pubring.pgp");
+ref $kr || die $kr;
+
+my $key = $kr->getByHexId("d33edf4bc001d00d");
+print $key->asString(), "\n";

@@ -1,0 +1,12 @@
+conv_crack		- try to crack a conventionally encrypted file
+conv_decrypt	- decrypt a conventionally encrypted file
+conv_encrypt	- encrypt a file conventionally 
+decrypt			- decrypt a public key encrypted file
+encrypt			- encrypt a file using a public key
+keygen			- generate a key pair
+keyserver/      - the start of a keyserver
+vanity_keygen	- generate a vanity key pair
+view			- View packets in a .pgp file
+view_asc		- View packets in a .asc pgp file
+
+Other files in this directory are not of much use

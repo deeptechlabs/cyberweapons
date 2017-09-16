@@ -1,0 +1,30 @@
+# vt100 terminal info file for CBW.
+#
+# Set the termcap explicitly since many sites have weak /etc/termcap files.
+setenv TERMCAP 'd1|vt100v|vt100 in vt52 mode:\
+	:ce=3\EK:sf=2\n:sr=2\EI:cs=\E<\E[%i%2;%2r\E[?2l:\
+	:so=2\E<\E[7m:se=2\E[m\E[?2l:us=2\E<\E[4m:ue=2\E[m\E[?2l:\
+	:is=\E<\E[m\E>\E[?3;4;6;7l\E[?2l\200\200\200\200\200\200\200\200:\
+	:dN#4:\
+	:cr=^M:do=^J:nl=^J:bl=^G:\
+	:le=^H:bs:cd=\EJ:ce=\EK:cl=\EH\EJ:cm=\EY%+ %+ :co#80:li#24:nd=\EC:\
+	:ta=^I:pt:sr=\EI:up=\EA:ku=\EA:kd=\EB:kr=\EC:kl=\ED:kb=^H:\
+	:as=\EF:ae=\EG:ks=:ke=:k1=\EP:k2=\EQ:k3=\ER:k4=\ES:'
+
+#
+# Keystroke command map.
+# No need to set this.
+#
+# setenv KEYMAP ''
+
+#
+# For GRAPHICSMAP, the first char must be one of the following:
+# \G - graphics mode
+# \N - normal mode
+# \S - standout (inverse) mode
+# The remaining positions use the regular slash codes.
+#
+setenv GRAPHICSMAP 'tb=\Gb:lf=\Ge:cr=\Gd:\
+		   :na=\G'\`':ff=\Gc:cc=\Gf:uk=\G~:ul=\Go:\
+		   :hb=\Gq:vb=\Gx:ll=\Gm:'
+

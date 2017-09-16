@@ -1,0 +1,23 @@
+Key:    01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
+Input:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Cipher: a2 01 fc 18 d6 2c 85 ef 59 65 a5 82 95 bb f6 09
+
+Key:    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Input:  01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
+Cipher: 9d 14 fe 43 77 aa 87 dd 07 cc 8a 14 52 2c 21 ed
+
+Key:    01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
+Input:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+Cipher: 97 f1 c1 04 b0 f1 20 d1 94 c0 70 24 f1 48 15 ed
+
+Key:    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+Input:  01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
+Cipher: d4 42 a3 4d d7 0e 2b 41 56 eb 0f 2a 8a de d1 a7
+
+Key:    01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
+Input:  01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
+Cipher: cf 46 62 2f a9 85 46 bb 9a 5b c0 02 39 eb 0c 92
+
+Key:    fe dc ba 98 76 54 32 10 01 23 45 67 89 ab cd ef
+Input:  01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
+Cipher: 7f af 65 bf c5 45 8f d2 dc 9c c2 26 60 12 ef 44

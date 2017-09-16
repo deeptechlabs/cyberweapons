@@ -1,0 +1,285 @@
+DLOCK.TXT -- DOCUMENTATION FOR DLOCK2.EXE AND ITS SOURCE FILES
+
+
+INTRODUCTION
+
+DLOCK2 is a Data LOCK program that uses the Diamond2 Block Cipher.  It also
+tests the correct implementation of the Diamond2 and Diamond2 Lite encryption
+algorithms in the enclosed library files.
+
+Although DLOCK2 is useful as it stands, it is probably of more use as a
+library of source code to use to build encryption into other applications. 
+Diamond2 and Diamond2 Lite are 100% roylty free algorithms, derived from the
+MPJ, MPJ2, and Diamond encryption algorithms.
+
+I've studied too much cryptography to make a brash claim of security for any
+algorithm, but my confidence level in Diamond2 and Diamond2 Lite is very high
+because of the failure of anyone I've dared to break MPJ or Diamond to do so
+for several years.  See the challenge section below.
+
+When used to encrypt or decrypt files, DLOCK2 places no special headers or
+other identification on the ciphertext files.  This is good for security, but
+bad for user friendliness.  It always processes from one file to another, so
+that you can verify that the encryption or decryption is good before deleting
+the original.  This is very important, since a single character typo in the
+pass phrase is enough to render a file total garbage.
+
+
+LEGAL NOTICES
+
+Documentation files, executable files, and source code files not marked
+otherwise are Copyright (C) 1994-1995 Michael Paul Johnson.  All rights
+reserved. There is NO WARRANTY expressed or implied for any of this. 
+Diamond2 and Diamond2 Lite are Trade Marks of Michael Paul Johnson.  Other
+trade marks mentioned herein belong to their owners and are mentioned for
+identification purposes only.
+
+Some cryptographic, cryptanalytic, and key management software and technical
+data is subject to export controls and other legal restrictions.  Contact
+competent legal authority for more information.  It is your responsibility to
+comply with all currently valid laws and treaties that apply to you.  Do not
+use this software or technical data for any illegal activity.
+
+As far as is permitted by law, permission is hereby granted to copy and use
+the copyrighted portions of this distribution for any legal use, provided
+that you don't misrepresent its source or modify the documentation without my
+permission.
+
+CRC.H, CRC.CPP, DIAMOND.H, and DIAMOND.CPP are in the Public Domain.
+
+
+SYSTEM REQUIREMENTS
+
+An MS-DOS executable is supplied.  To use this code on a Unix system,
+recompile it.
+
+
+COMMAND LINE SYNTAX
+
+To test Diamond2 and Diamond2 Lite against the validation data in
+DIAMOND2.DAT:
+  DLOCK2 /T
+
+To encrypt a file:
+  DLOCK2 /E [/S] infilename outfilename [/Ppass phrase | /Kkeyfile]
+
+/E = Encrypt.
+
+/S = Silent mode (minimal screen output).
+
+/P = Pass phrase follows on the command line.  The pass phrase is case
+sensitive, and every character counts.  Embedded spaces are OK.  /P, if used,
+MUST be the lase command line parameter, since all characters after it are
+considered to be part of the passphrase.
+
+/K = Get the pass phrase from the file name provided.  The passphrase in a
+key file may include ANY binary data, up to 256 bytes.
+
+Note that if /P or /K is not used, then DLOCK2 looks for the passphrase in
+the environment variable DLOCK_KEY.  If no passphrase is found there, then
+DLOCK2 will prompt you to enter the passphrase at the keyboard.  Spaces and
+other special characters are allowed in the passphrase.  If you are
+encrypting and entering a passphrase at the keyboard, you will be asked to
+type the passphrase twice to ensure that you actually typed what you thought
+you typed.  This is because it is not fun trying to figure out what you
+mis-typed when you are trying to decrypt the file, later.
+
+For example,
+DLOCK2 /E MARCH.WK1 MARCH.ENC /PNone of YoUr BuSiness! Really!
+encrypts MARCH.WK1 with the passphrase "None of YoUr BuSiness! Really!",
+placing the results in MARCH.ENC.  If you wish to get rid of the plain text
+version, use another utility to overwrite and delete the original, such as my
+secure delete utility in del102.zip.
+
+To decrypt a file:
+  DLOCK2 /D [/S] infilename outfilename [/Ppass phrase | /Kkeyfile]
+
+Switches used here are the same as for encryption, except that the /D (for
+Decrypt) replaces /E.
+
+For example,
+DLOCK2 /D MARCH.ENC MARCH.WK1 /PNone of YoUr BuSiness! Really!
+decrypts the file encrypted above.
+
+Command line switches are not case sensitive, and may start with - or /. 
+There should be a space or tab between adjacent switches.  Except for /P,
+which must be last, the switches may occur in any order (before, between, or
+after the file names).
+
+
+HOW DLOCK2 WORKS
+
+When encrypting or decrypting files, DLOCK2 uses a 10-round Diamond2 Block
+Cipher in cipher block chaining with ciphertext feedback mode (CBC).  This
+means that any regularities in the plain text are completely obscured in the
+cipher text.  The original file length is exactly preserved.  See the source
+code and the accompanying documents for details.
+
+
+ADVANTAGES OF DLOCK2
+
+1.  To the best of my knowledge, no one has broken Diamond2 (or its
+predecessors, MPJ and MPJ2), yet.  See the US$314.16 challenge, below.
+
+2.  The block chaining mode is time-tested and well respected.
+
+3.  Complete source code is included for your examination and to facilitate
+porting to other platforms.
+
+4.  The cipher text is the same size as the plain text.
+
+5.  It is free.
+
+6.  You are free to use the algorithms and/or code in this distribution to
+incorporate encryption into your own applications, without payment of
+royalties or delays.
+
+7.  Diamond2 and Diamond2 Lite, when incorporated into a system that weakens
+the effective key length and resists modification by the user to the
+satisfaction of the NSA, may be exportable.  Contact the Department of State
+and the NSA for details and additional requirements.
+
+8.  DLOCK2 allows easy validation of implementations of Diamond2 and Diamond2
+Lite.
+
+9.  If you don't like the way DLOCK2 works and you can program in C or C++,
+you can fix it to your liking.
+
+10.  The author is easy to contact via email (m.p.johnson@ieee.org).
+
+11.  The encryption is too strong to be generally exportable.  There are no
+intentional weaknesses or trap doors in the algorithm or the program.
+
+12.  Identical files, encrypted with identical keys, always yield identical
+ciphertext.  This is good for validating algorithms.
+
+
+DISADVANTAGES OF DLOCK2
+
+1.  Key management is all manual.
+
+2.  Encryption of multiple files is cumbersome unless you use an archiving
+utility (like PKZIP, LHA, ARJ, etc.) first.
+
+3.  No one is getting rich on your purchase of this product, so it doesn't
+help the economy, much.
+
+4.  The ciphertext reveals the size of the plain text (but not its contents).
+
+5.  Identical files, encrypted with identical keys, always yield identical
+ciphertext.  This is bad for resistance to traffic analysis.
+
+6.  No 7-bit ASCII armoring (uuencoding or radix-64 encoding) is built in for
+EMAIL purposes -- use another utility to do that.
+
+7.  The encryption is too strong to be exportable without a lot of hassles
+and controls on the destinations.
+
+8.  If you forget your passphrase, your encrypted data is as good as gone.  I
+can't get it back, no matter how important it was.
+
+
+DATA COMPRESSION
+
+DLOCK2 doesn't compress data, but if you compress your data before encrypting
+it (i.e. with PKZIP, ARJ, etc.), you will decrease the size of the ciphertext
+and improve security.  Attempted compression after encryption does neither.
+
+
+RECOMPILING DLOCK2
+
+You don't really need to recompile DLOCK2 unless you want to modify it or
+port it to another platform.  I compiled DLOCK2.EXE with Borland C++ 4.0,
+using the commands in MAKDLOCK.BAT.  This batch file also applies PKLITE
+compression, but that is optional.  I compiled the Unix version of DLOCK2 on
+a Netcom interactive host machine with the command:
+
+c++ -DUNIX -o dlock2 dlock2.C diamond2.C crc.C
+
+
+VERIFYING THAT YOUR VERSION HASN'T BEEN TAMPERED WITH
+
+You can verify that the files listed in DLOCK2.ASC have not been tampered
+with by issuing the command 
+
+md5sum -cv dlock2.asc
+
+Where md5sum.exe is the same utility distributed with Pretty Good Privacy
+(PGP) and QCRYPT11.ZIP, as well as with this set of files.  If a file has
+been altered, it will print an error message.  You can check to see if
+DLOCK2.ASC has been altered by adding my public key (MPJ8.ASC) to your PGP
+key ring and using PGP to check the digital signature on that file with the
+command
+
+pgp dlock.asc
+
+If you don't have a copy of PGP, you can buy a copy from Viacrypt or get the
+freeware version from numerous sites, including the Colorado Catacombs BBS
+(303-772-1062) or on the Internet, see ftp://ftp.csn.net/mpj/getpgp.asc or
+send mail to mpjohnso@nyx.cs.du.edu for an automatic list of sites where PGP
+can be found.
+
+
+OTHER DOCUMENTATION
+
+DIAMOND2.DOC Explains the Diamond2 Encryption Algorithm (Microsoft Word for
+             Windows 6 format).
+DIAMOND2.PS  Same as Diamond2.DOC, but in PostScript format.
+THESIS.TXT   Is my Master's Thesis, and explains the MPJ encryption algorithm,
+             the predecessor of Diamond2.
+
+
+THE US$314.16 CHALLENGE
+
+OK, US$314.16 is not enough to pay for the time it would take to do serious
+cryptanalysis of the Diamond2 Encryption Algorithm, but it is enough to prove
+that data encrypted with DLOCK2 is secure against the average hacker.  The
+file 31416.ENC was encrypted with DLOCK2.EXE.  If you are the first person to
+(1) decrypt 31416.ENC and (2) follow the instructions in the decrypted file
+to claim your prize before noon UTC, 20 September 2000, then you will get
+US$314.16 of my hard-earned money.  To claim this prize, you must reveal how
+you deciphered the ciphertext.  You must also not break the law (including
+any currently valid export laws) in the process of earning this prize.  If
+the ciphertext is not broken, I get to keep my money.
+
+The plain text that 31416.ENC was encoded from is plain, uncompressed,
+7-bit ASCII with both CR and LF at the ends of lines.  It contains English
+text, including instructions on how to claim the prize and contact the
+author.
+
+
+THE FAIR CHALLENGE
+
+The US$314.16 challenge given above is probably unfair, unless I really
+goofed badly in the implementation of DLOCK2 or the invention of the Diamond2
+Encryption Algorithm.  On the other hand, if you find what you think is a
+weakness or error in either DLOCK2 or Diamond2 (other than the disadvantages
+listed above), please let me know.  There is no cash reward for such
+information, but I will use the information to help improve the encryption
+programs that I write.
+
+
+CONTACTING THE AUTHOR
+
+You can reach me by email at m.p.johnson@ieee.org, CompuServe 71331,2332, or
+at Mike Johnson, PO BOX 1151, LONGMONT CO 80502-1151, USA.
+
+Check for the latest version of this program and Mike Johnson's other
+shareware, (and some freeware) on the Colorado Catacombs BBS,
+303-772-1062, or see ftp://ftp.csn.net/mpj/README or
+ftp://ftp.netcom.com/pub/mp/mpj/README.
+
+
+REGISTRATION
+
+This program is free, so registration is not required.  However, if you would
+like to be added to my list of users to be notified of upgrades and related
+products, or if you would like to make a donation to advance the cause of
+free privacy protection software, feel free to contact me at the above
+address.  I also charge $20.00 for disk, time, and shipping if you want me to
+send you a copy of DLOCK2 by mail.  I regret that I cannot mail copies of
+DLOCK2 destinations in any country except the USA and Canada under current
+export regulations.
+
+
+

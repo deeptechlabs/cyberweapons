@@ -1,0 +1,922 @@
+/*
+crp.c - pass-phrase stream cipher
+Author Peter K. Boucher
+Copyright 1992
+*/
+
+#include <stdio.h>
+#include <string.h>
+
+#if defined(__MSDOS__) || defined(_MSDOS)
+#define MSDOS
+#endif
+
+#ifdef MSDOS
+#include <time.h>
+#include <string.h>
+#include <dos.h>
+#ifdef __TURBOC__
+#include <alloc.h>
+#else
+#include <memory.h>
+#ifndef IBMRT
+#include <malloc.h>
+#endif
+#include <conio.h>
+#endif
+#endif
+
+#ifdef UNIX
+#include <sys/types.h>
+#include <sys/time.h>
+#include <termios.h>
+#include <time.h>
+#include <sys/resource.h>
+#include <unistd.h>
+#include <pwd.h>
+#endif
+
+#ifdef MSDOS
+#ifndef OS2
+#define TIMER_OK
+#endif
+#define TIMER_PORT                     0x40
+#define TIMER_MODE_OFFSET              3
+#define TIMER_SHIFT_SELECT_COUNTER     6
+#define TIMER_SHIFT_READ_LOAD          4
+#define TIMER_SHIFT_MODE               1
+#endif
+
+#define MIN_KLEN 13
+
+#define KLEN1 653
+#define KLEN2 769
+#define KLEN3 887
+#define KLEN4 991
+
+#define uchar unsigned char
+#define uint unsigned short
+#define rint register short
+#define ruint register uint
+#define ruchar register uchar
+#define ulong unsigned long
+
+#define PRM_ARR_SIZE 2048
+#define PRM_ARR_MASK 2047
+#define SUB_ARR_SIZE 256 /* 6 sub-arrays of 256 primes */
+#define SUB_ARR_MASK 255
+
+#define MIXEMUP(x) (((x)%64)>7)
+#define PRIME(x) ((ulong)(P[((uint)(x)&PRM_ARR_MASK)]))
+#define PRIM1(x) (P[((uint)(x)&SUB_ARR_MASK)])
+#define PRIM2(x) (P2[((uint)(x)&SUB_ARR_MASK)])
+#define PRIM3(x) (P3[((uint)(x)&SUB_ARR_MASK)])
+#define PRIM4(x) (P4[((uint)(x)&SUB_ARR_MASK)])
+#define PRIM5(x) (P5[((uint)(x)&SUB_ARR_MASK)])
+#define PRIM6(x) (P6[((uint)(x)&SUB_ARR_MASK)])
+#define PRIM7(x) (P7[((uint)(x)&SUB_ARR_MASK)])
+#define PRIM8(x) (P8[((uint)(x)&SUB_ARR_MASK)])
+
+#define R1 ((ulong)((PRIM1(i)+PRIM2(j)-PRIM3(k)) ^ (PRIM4(l)&seed)))
+#define R2 ((ulong)((PRIM2(i)|PRIM3(j)) ^ (PRIM4(k)+PRIM5(seed)-l)))
+#define R3 ((ulong)(PRIM3(i) ^ ((PRIM4(j)&PRIM5(seed))|PRIM6(l)) ^ k))
+#define R4 ((ulong)((PRIM4(i)+PRIM5(seed)-PRIM6(k)) ^ (PRIM7(l)&j)))
+#define R5 ((ulong)((PRIM5(seed)|PRIM6(j)) ^ (PRIM7(k)+PRIM8(l)-i)))
+#define R6 ((ulong)(PRIM6(i) ^ ((PRIM7(j)&PRIM8(k))|PRIM1(l)) ^ seed))
+#define R7 ((ulong)((PRIM7(i)+PRIM8(j)-PRIM1(k)) ^ (PRIM2(seed)&l)))
+#define R8 ((ulong)((PRIM8(i)|PRIM1(j)) ^ (PRIM2(seed)+PRIM3(l)-k)))
+#define R9 ((ulong)(PRIME(i+j+k+l+seed)*PRIME(i+j+k+l+seed+512)*PRIME(i+j+k+l+seed+1024)))
+
+#define KRAND (((ulong)((((j+1)*(R1))|R2)^((i+R3)*R4)^((k^R5)|R6)^(((seed+l)^R7)+R8)))%R9)
+
+static uint ENCRYPT = 1;
+static uchar key1[KLEN1+1];
+static uchar key2[KLEN2+1];
+static uchar key3[KLEN3+1];
+static uchar key4[KLEN4+1];
+static uint P[] = { /* 2048 prime numbers.
+
+If you change the size of this array, change PRM_ARR_SIZE, above.
+Also, check SUB_ARR_SIZE, PRIM2(x), PRIM3(x), PRIM4(x), PRIM5(x),
+PRIM6(x), PRIM7(x), PRIM8(x), above, and P2, P3, P4, P5, P6, P7,
+P8, below.
+
+*/
+ 12251,    547,   2437,   4261,   1093,  15767,   8461,  16111,   4111,   9209, 
+ 11243,   5167,   2689,   3049,  10499,    569,   8969,    593,   3929,  10853, 
+ 10691,  15307,  12821,  11549,   4139,  13103,   7669,   1741,   3343,  10141, 
+ 16103,   4457,   6301,  17047,   4657,    367,  14813,  16069,   6353,  17183, 
+ 15077,  13829,  12163,   5639,   6571,   8419,   6577,  10501,  10321,   4583, 
+ 17299,  11731,   8501,   7297,  15173,  12689,   1289,  10949,    677,  15527, 
+  9679,   8311,   6733,   6361,   5711,  17509,  16001,    503,   4561,   8363, 
+  4423,   8753,   1117,  11177,  15187,    383,   3359,   7129,  11719,   5689, 
+   433,   9391,  11171,  17393,  16447,  10559,   3677,   1039,  12829,   7867, 
+  3457,   7027,  11831,   7583,  13001,   5521,  11093,   8377,   2221,  15959, 
+ 16433,   2113,   3467,  16831,   1103,   9419,  11551,   1613,   1229,   6469, 
+  7243,  15427,  12281,  10177,  11251,   1279,  12391,   4969,  13009,   8009, 
+  7603,  12437,  16603,   7883,  16883,    373,   4177,   3581,   2029,  16981, 
+  1069,  17581,   3191,   3347,  11681,   6547,   6323,   7741,  12589,  15227, 
+ 12037,  11909,   1721,  17359,  17123,  14551,   5323,    727,    283,   4547, 
+  2459,  12577,    877,   1303,    499,   7283,   1933,  11503,   2089,   2837, 
+ 13619,   3181,   3739,  12541,   2381,   9479,  14447,   7907,   5021,  10529, 
+  3697,  14249,  12583,   3499,  14957,  11117,   3701,  15923,  17053,   8831, 
+ 11273,   3037,  12263,  11299,  15013,   5581,   2351,   6679,   4253,  17431, 
+ 12539,   8713,   9343,   7993,   2791,   3167,  12911,   3607,    127,   6269, 
+ 12073,   2179,   8689,   1597,  15241,     59,   5347,  17839,  14771,    947, 
+  9227,   7237,  14759,   3637,  17761,  12547,   2713,   1063,   9461,  10733, 
+  8513,  14561,   9689,   8237,  10429,   8599,  10607,  13451,  16829,     23, 
+  2843,   4751,   2749,  15451,    919,  12659,   2687,  17729,  11423,   3803, 
+  4013,   8233,   4129,  16481,   9127,   5107,    199,  10433,   5381,   3793, 
+ 11633,    997,    571,  17467,   4157,   1987,  13831,   9677,   9859,  12553, 
+ 12983,   7529,    463,    149,  13313,   5189,   2311,   6091,   9349,  17293, 
+  9413,   5693,  11087,  10103,  14081,   8147,   6067,  13241,  11827,  11383, 
+ 13873,   4091,   4603,   9817,   3041,   2423,   6113,   5821,    953,  16139, 
+  8677,  14083,     79,  10883,  10799,  13913,  17579,   1459,  17011,   9547, 
+  1399,  10909,  14033,   9151,  10613,    101,   1867,   9239,  15791,  12197, 
+  3169,  10861,  14369,  13367,   4003,   6247,   2789,   3067,  15073,   4153, 
+  7039,   7523,  13751,   3923,   2917,   2339,  10723,   1493,  17681,   1979, 
+  9293,  14653,   1657,  14347,    491,  17863,  16843,   4733,   6529,  15679, 
+   787,   3623,   4519,   2939,   5953,  16451,   6053,  10163,   7013,   4951, 
+ 13049,   1451,  11597,   7211,   5741,   4783,  11863,   7193,  17789,   3491, 
+  3691,   9719,     83,  14323,   2251,   1031,  14669,  16879,  10687,   7639, 
+ 12841,   6367,   7307,   5273,  15913,   6977,  13679,   8443,  17377,  16927, 
+   457,   5939,  12511,   2677,   4481,   5419,    557,   1931,   8761,  11047, 
+  5171,  16889,    131,  10181,   1549,  11161,   8887,  15107,   7757,  15661, 
+ 15467,   2903,   4621,   7019,   5651,   1381,  16553,  15329,   2861,   2797, 
+  9403,   2591,  10133,  15551,   2897,  13099,   4973,   4229,  10303,  10973, 
+  9907,  15193,   5857,   4001,     37,  14489,   9041,  15601,  14153,   9949, 
+  3877,    827,  11059,   1607,    241,  12907,   9133,  12823,  10079,   7457, 
+ 10039,  13217,   4363,   2053,  17093,   5119,   5209,  12277,   7417,   5749, 
+  3217,  11987,    809,   2161,   4327,  14537,   3761,   4051,   8663,  16649, 
+ 17569,    607,  12149,    479,   5867,     17,  16993,   1889,   9337,    743, 
+ 17209,  17027,  12301,   6389,    421,  10391,   2203,   7069,  14221,   7829, 
+  3709,   3943,    821,   2309,   8933,   3727,   5227,   9187,   4643,   3329, 
+  4273,   3449,   9371,  14767,   6967,   4099,  13327,   8353,   9007,  17077, 
+ 12107,  16369,  15233,  13397,   2879,  15259,   8693,  16267,  13807,  15559, 
+ 16529,   6073,   1171,   5261,   6373,  15289,   8737,   2137,   8863,  10667, 
+  1669,  15131,   1733,      2,   6619,   9091,   9257,   8369,   4703,   7451, 
+ 16057,   6761,  10457,   2267,   2729,  16063,    823,   7541,  15473,  15667, 
+   911,  15359,  13681,   8819,   7933,   1367,   9931,   6563,   1747,   8287, 
+  6277,  13259,  17107,     43,  15511,  15263,   9341,  14281,    857,  10837, 
+   311,   4493,   3989,   7573,   7489,   8627,   2063,   8581,  10273,   8089, 
+  4943,   5309,   6101,   9967,  11057,   5653,    211,  10753,  11287,  15583, 
+  5233,   5923,   5437,   3301,    691,   6883,  12703,  13649,   3593,    409, 
+ 13417,  11083,     61,    811,   6653,  14293,    971,   3061,   3083,   3631, 
+  8629,  11813,   8731,   1567,  14563,   1409,   2741,  13093,   6691,   3557, 
+  7057,   2753,  10781,   2281,   3833,   4679,  10093,   8117,   7433,  13177, 
+  2111,   4787,   1201,   2617,  13841,  12889,   8263,  15439,  13963,  15919, 
+ 13309,   4133,   1789,  10427,  10399,   7103,  11027,   3541,  13757,  16763, 
+  9281,  15331,  12401,  14683,  17117,   7919,   3089,  13597,   1231,   3947, 
+  3571,  14969,  16691,    271,     47,  10789,   8209,  10771,   6491,  12347, 
+  8101,   5059,    977,   5839,  16349,  16061,   7507,   8971,   3907,   3229, 
+  6737,    233,   5501,  11927,  14731,  12241,  17597,   6899,    151,   6379, 
+  9871,  16561,  12097,  13121,   8291,  10891,  12143,    523,  12527,  10987, 
+  9431,   8999,    683,   8429,     13,  14887,   1433,    467,  10889,  11119, 
+  9631,   2851,   8807,  13163,   8641,  14621,   4079,   1621,   1861,   5779, 
+ 17683,  12799,   1091,   2693,   6451,  14627,   4957,  11113,  15643,  15641, 
+  2417,   6199,   1489,   6661,   6997,   5009,   6553,   3617,   1693,   9601, 
+ 15121,   5879,   3331,   5783,   5471,    347,    761,   5417,  16453,   5573, 
+ 15877,   9833,   4931,   5231,   9839,  14983,  15817,  17657,   9739,  15761, 
+  1879,  15809,   9377,   2273,  14107,   5483,  15823,   9973,  12959,  12809, 
+ 14419,  11519,   2927,   3373,  11677,   5077,  10301,  10267,    673,   5849, 
+  7703,  10657,    109,   9649,   9857,  12569,    797,   2447,   8467,  16231, 
+  5099,  13901,   4877,  10007,  12071,  17333,    881,  15971,  17207,   4217, 
+   263,   8867,    829,  15749,   5303,  12041,  14851,   8537,   2803,   2473, 
+  2543,   2269,   4597,    719,   2699,  16901,  11329,   2411,  16987,   1601, 
+ 11783,   4649,   8011,   1499,   2341,  14923,   5851,   8923,  15443,  14321, 
+  1583,  12853,   6793,   1697,   8893,   6151,   1277,  15907,    907,  14009, 
+   173,  11789,  10061,    359,    167,  12413,   5479,  17341,   5869,  12491, 
+   461,    739,   9697,  11969,   6947,   6709,  16567,   4637,  17191,   9929, 
+ 13669,  16141,   2711,   1217,   7547,   7219,   6581,   8521,  14843,  10831, 
+ 16333,  12161,  11489,  14951,  10711,  11941,  14831,   6359,   8231,   9103, 
+ 10487,   8069,  11321,  12653,   6833,  15683,  14449,   2027,  14479,   7459, 
+  1019,   5843,  12917,  14699,  17827,   4523,  10663,   8803,   3919,   1087, 
+  8821,    317,    281,  14341,     19,   2141,   2357,   9803,   7727,   6871, 
+  1009,   8849,   8783,  16573,   3769,   7877,  16273,  11069,   9463,   1327, 
+  2671,  13613,  10903,  10009,   7079,    967,   4507,   5237,  14797,  13577, 
+   277,   4513,   7121,   5011,   2441,   2131,   4241,   9421,  15937,   6421, 
+ 15313,  11399,   8431,   7159,  16699,   2083,  12323,   8573,  10597,  15737, 
+  6257,   4027,  17257,  12647,     41,  10729,  16007,   7187,   7643,    107, 
+  3671,   2777,   2539,  12377,  17627,   8317,  16979,   6203,   4817,   5701, 
+ 15671,  11443,   4007,  15647,   1483,  10601,    757,   5519,    379,  15889, 
+   313,  11447,   2663,   2971,    163,   6343,  11317,    137,   2801,   4813, 
+  9533,   5443,   4937,  15137,  12109,  17551,   3613,   1543,   8389,   3121, 
+ 10867,  10159,   1873,  16487,   4483,  13931,   3203,   4409,   4871,   9619, 
+  3391,   9241,  14639,  13249,   2707,  16903,  10979,   1319,   7549,  14591, 
+   619,   4933,   2999,   1453,   2287,  12763,   5527,   3319,  17383,  15139, 
+ 17203,   8017,   6949,   5507,   8597,  12641,  16319,  11903,  17539,   9439, 
+  2243,   8647,     11,   5503,  10369,   2239,  10739,   9901,  13691,   6857, 
+  2521,  17099,   7589,  10289,   2011,  15373,    239,  14543,   3931,   7621, 
+ 15887,   1051,   4421,  11897,   5051,   3407,  11159,  10651,   3539,  15727, 
+ 10223,   1871,   6007,   1193,   6047,  15319,  16127,  16189,  16937,   3251, 
+  3917,  15217,  12743,   1151,    439,  11351,   6011,  12919,    769,    179, 
+ 10531,   2657,  13411,   6337,    653,    587,   4349,   6173,   8219,  14071, 
+ 13997,   8171,   3137,   7127,   1901,   7333,   3119,  13033,   9013,   7591, 
+  9851,  17389,    937,   2143,   1637,   4967,  17669,   6311,   3517,   8563, 
+  7853,  14051,  13763,   7879,  16493,   9161,  17707,   1097,  16871,   4231, 
+ 14897,   9467,   4793,  14929,  15269,  13109,  10091,   5737,  15731,   2683, 
+ 17851,  15569,   1801,  13627,   1223,   6869,   5413,  13789,    929,   5861, 
+  2659,   5659,  11779,  10331,   2633,  12619,   4451,  13487,  11003,    331, 
+  6221,   5897,  10939,  11821,  10169,   5179,  13331,   2003,  15149,  10957, 
+  7607,  17837,   7681,  10253,  16073,   5039,  11071,   7937,  11971,  14423, 
+  6637,   8297,   4831,  14207,  14197,  11353,   8087,  11261,   6197,   5393, 
+  9883,   6607,  12203,  11467,   1321,     29,   5927,  10259,   6229,   5387, 
+  3511,   4397,   1709,   7577,   7673,    521,   3361,  14461,  17029,   2383, 
+  2389,   4567,   2017,  16067,   9787,   7753,   5449,   2621,  16519,   7723, 
+ 10037,  14303,    577,  13537,  13297,   1033,   1307,  11369,   8191,  16183, 
+   487,   4999,   4549,   7331,   3299,   5881,  15497,  10067,   3371,   6299, 
+  1439,  11939,  12119,  13043,   3719,  10193,    733,   6829,  15803,  13967, 
+ 17497,   8387,  13441,  15161,   5113,   5669,   1559,  17401,    193,  11393, 
+ 16931,   2069,  11959,   1511,   2477,   4463,   9173,   6911,  16417,  11833, 
+     5,  14939,   6599,   6029,   9613,  16427,  13219,   4861,   7901,   7487, 
+  2297,   7927,   1249,   9203,  13187,  14723,   1423,   5623,  14159,   9511, 
+  3823,  12781,   7393,   6143,  12503,   4789,   1237,  11657,  16729,  10099, 
+  3163,  10271,  13633,  16223,   6827,   1999,   2609,  15797,   7841,   8669, 
+  7817,   7207,  12011,  15383,   3323,  15271,  13523,   9043,   9491,   8539, 
+ 17599,   6959,   3389,  10567,    751,  14327,    941,   4591,   4019,  10993, 
+    97,   3433,  11131,  14633,   5399,   9109,  14401,   4243,  17659,  16361, 
+  9497,  12007,   2393,   3307,   8329,   2549,   8681,  14503,   6803,  11497, 
+ 17519,  16087,  14243,  16633,   8269,  16921,   2833,   6481,  11617,   1759, 
+ 16033,   2293,   8699,   5647,  14431,   5717,   6569,    139,  13513,  11239, 
+  7253,     71,  13159,  11777,   7649,   6983,  10453,   7309,   9941,   9433, 
+  3109,  16477,  17321,  17239,  13469,  11923,   6781,   6317,  15101,    443, 
+   227,  12899,  13037,   3643,   2377,  13171,    859,  13183,   9319,  11279, 
+ 11491,   7717,  11527,  16747,  11839,   9311,  17749,  16607,   3019,   1627, 
+ 14779,   9767,   3527,   7351,  16421,  15901,  12457,   7517,   6079,   8839, 
+  6037,  12451,  13337,   2399,  11953,   2647,   7369,  10111,  10243,   9661, 
+ 16661,    389,  17491,  14741,  11257,   3821,   1301,  17609,  13883,  15649, 
+ 13781,    197,   6263,   3461,  16253,  15377,  17231,  10151,    509,  10313, 
+  4391,   3851,   7477,   3271,   5297,   2087,  10937,   8221,   9551,   7481, 
+ 15629,    251,  14557,  16217,   8093,   7793,   2953,  12253,   6131,   5981, 
+ 13709,   8741,   6473,   9001,  14519,  13759,   1061,   4447,    659,   8861, 
+  7213,  11149,  14717,   7229,   3847,  12101,  16693,  10343,    643,  17573, 
+  6961,   1361,  16741,   4201,  14387,   1753,   4073,  13711,   9049,   3733, 
+  1811,  17737,    229,  14411,  11197,     53,  16193,   8273,  17791,  12757, 
+    89,   1259,    293,   4339,    883,  12409,   1163,   1951,  10139,   1609, 
+ 14087,   8161,  10627,   2081,  16787,   1913,  17783,  12697,  12713,   5333, 
+  5557,   1553,   2039,   9181,  10459,   6907,   4357,  11801,   8053,    863, 
+ 13567,    349,   5281,   6659,   5827,  12379,   7873,   3259,  15053,   2957, 
+  9769,   2719,   7349,   4093,    701,   3529,  14389,  12613,  15541,   4759, 
+ 15091,   2467,  15859,  16411,   4723,  12517,  11213,    157,  11483,  14869, 
+  9011,  10631,   4127,   5147,   5743,  13729,  12739,  14011,   9397,  11587, 
+  3463,   1877,  16249,  15199,   6823,  16547,   1049,  17041,   8423,  14783, 
+  4903,   6427,    613,   9743,  12941,   3863,  12979,   9221,  13063,  11867, 
+  9791,   1447,   1481,  15607,    191,   9521,   1471,    103,  14407,    563, 
+ 15787,   5987,  16363,   4889,   2731,   7411,   7151,   2557,   6163,   4289, 
+  1949,  15299,  16097,   5791,   1783,  17483,   9277,  17477,   8719,   2551, 
+  5563,  10709,  13229,   5807,  14029,   5813,  13267,   8081,   1699,  15277, 
+ 11689,   1847,  16631,   7951,  13591,  12227,   1213,  11411,   1283,   9029, 
+  4919,    617,   2503,   6551,   6863,   9137,  13907,  13399,     31,   5903, 
+  1723,   2963,   4909,   5591,  15061,  12973,  14173,   6701,  17419,   8167, 
+  3187,  13127,  12497,  16339,   3881,  11699,  12953,  11981,   1907,   1427, 
+  8179,   1667,   1487,   1181,  12113,   4663,  16619,  10859,   4987,   4801, 
+ 16759,  13859,  13151,  12433,   5657,   3547,  10337,   9539,   9887,   8609, 
+   853,  15083,  12923,   6211,   4211,  14177,  17387,  12473,   6719,  16811, 
+  6841,  13339,  13799,    541,   8447,   3767,   9587,   8747,    709,   8837, 
+ 12211,  14713,  14593,   9733,  15733,  12049,   2593,  11173,  17159,   2969, 
+ 15391,   9781,   3779,   3533,   1777,     67,   3011,   7759,    337,   8707, 
+  3797,  12269,    641,   1823,   2333,    449,  17351,   9059,  13477,   5081, 
+ 16823,   5431,  15881,  11887,  15991,   2579,  16943,   9157,  15361,  17317, 
+  1531,   3911,  16187,    647,  12157,   1571,   4021,   4673,   1123,   9829, 
+  9811,   1663,   8243,    661,   9749,   6917,    269,  11311,   2767,  12601, 
+ 17137,   7789,     73,   7823,   5801,   4729,  16673,  12611,   3853,   5003, 
+ 14737,   9437,  14533,   2819,  12289,   8623,  13147,  11807,   7001,   3559, 
+  2371,  17189,   1831,   2213,  13421,   1973,   1997,   9623,   7699,  10247, 
+  8293,  13903,      7,    257,  17443,  12373,   6791,   7499,   3967,  10069, 
+  1523,  13933,  11717,  13687,   1619,   3209,  13877,  15031,   5351,   8929, 
+ 15413,  14549,   7691,  13723,   3253,   1153,   9067,  15493,   3583,  11621, 
+  9721,  11743,   4691,    419,   4441,  15973,   7177,   4799,   2153,  17713, 
+  6329,   4337,  11933,  17021,   8123,  15349,  14747,  15739,  14821,   9473, 
+ 14867,    887,  13721,  10463,  14143,   4159,  13693,   5569,  17291,  14879, 
+  5531,   8779,   2237,  11437,   1429,  10847,  14149,   4639,   3079,   1021, 
+  8963,  10639,    353,  13007,   5197,   7537,   6703,    601,    223,   4049, 
+  4651,   2129,  15461,   5683,  12487,  13457,   5087,  10513,  13921,   6971, 
+ 17449,    773,   6089,    991,   4517,   9643,  12043,  15619,   1579,    181, 
+  4373,  17327,  13291,  15401,  14657,   9629,    631,   9923,  11593,   8059, 
+ 17167,   2531,  14057,  15581,   1109,    307,   7559,   4057,  12479,    397, 
+  4259,  13999,  14629,   3221,  16703,   1373,   2099,  16301,  13463,   4721, 
+  5641,   1129,   3469,   6133,   6271,   4219,  12421,   6991,  13553,  12791, 
+     3,  16381,   5279,  16657,   6043,   6779,  17033,  10333,  12239,   3313, 
+  6689,   1013,  12967,    599,    401,   7109,   8941,  13697,  12637,    431, 
+ 15017,   3659,  14437,   2347,    983,  13879,   8527,   5441,  11471,  11579, 
+  6121,  12721,   5407,   2909,   5101,   8039,  17417,   4993,  10589,  16091, 
+  3673,   6217,   6673,  11701,  12671,   1297,  16651,   3023,    839,  12893, 
+ 13003,   6521,  17807,  16963,   3257,   1787,  14753,  17489,   9283,   9323, 
+  5477,   9199,   4297,   4283,  14947,   7963,  12329,  17747,   1291,   3413, 
+  3001,   6763,   6287,  17623,    113,  14251,   8543,  15773,   2887,   7561, 
+ 16229,  13381,  10211,   7687,   2857,   7247,   3889,  13499,   1187,   1993, 
+  8951,  12343,   5153,  17471,   8111,  15287,   7949,  14891,   4271,  14827, 
+  7321,   5023,   6449,  10477,   6397,  10357,   2207,   7043
+};
+
+static uint *P2 = &(P[SUB_ARR_SIZE]);
+static uint *P3 = &(P[2*SUB_ARR_SIZE]);
+static uint *P4 = &(P[3*SUB_ARR_SIZE]);
+static uint *P5 = &(P[4*SUB_ARR_SIZE]);
+static uint *P6 = &(P[5*SUB_ARR_SIZE]);
+static uint *P7 = &(P[6*SUB_ARR_SIZE]);
+static uint *P8 = &(P[7*SUB_ARR_SIZE]);
+
+static FILE  *inf, *outf;
+
+uint get_keys();
+void fill_key();
+void scramble();
+void keycat();
+void revcpy();
+void revkey();
+uint zipkeys();
+uint get_pass_phrase();
+void get_user_input();
+
+/*
+
+*/
+int main(argc, argv)
+int  argc;
+char **argv;
+{
+    uint seed;
+
+    if ((argc < 3) ||
+	(argc > 4) ||
+	((argc == 4) && strcmp(argv[3],"-d") && strcmp(argv[3],"-D")))
+    {
+        fprintf(stderr, "Usage:  %s infile outfile [-d]\n", argv[0]);
+        exit(1);
+    }
+
+    if (!(strcmp(argv[1], argv[2])))
+    {
+        fprintf(stderr, "Error:  infile must differ from outfile\n");
+        exit(1);
+    }
+
+    if ((inf=fopen(argv[1], "rb")) == NULL)
+    {
+        fprintf(stderr, "Error:  %s couldn't read '%s'\n", argv[0], argv[1]);
+        exit(1);
+    }
+
+    if ((outf=fopen(argv[2], "wb")) == NULL)
+    {
+        fprintf(stderr, "Error:  %s couldn't write '%s'\n", argv[0], argv[2]);
+        fclose(inf);
+        exit(1);
+    }
+
+    if (argc == 4)
+    {
+        ENCRYPT = 0;
+    }
+
+    seed = get_keys();
+    scramble(seed);
+
+    fclose(inf);
+    fclose(outf);
+
+    exit(0);
+}
+
+/*
+
+*/
+uint get_keys()
+{
+
+
+    uchar pass_phrase[KLEN1+1];
+    uint  inc;
+    uint  seed1 = 0x5a;
+    uint  seed2 = 0xa5;
+    uint  klen;
+    uint  i1, i2, i3, i4, i5, i6, i7, i8, i9;
+    uint  init_vect1 = 0x10, init_vect2 = 0x20, init_vect3 = 0x40,
+          init_vect4 = 0x80, init_vect5 = 0x01, init_vect6 = 0x02,
+          init_vect7 = 0x04, init_vect8 = 0x08, init_vect9 = 0xff;
+
+    klen = get_pass_phrase(pass_phrase,
+			   &init_vect1, &init_vect2, &init_vect3, &init_vect4);
+
+    /* fprintf(stderr, "typing init_vect = %2x, %2x, %2x, %2x\n",
+	    init_vect1, init_vect2, init_vect3, init_vect4); */
+
+    fill_key(pass_phrase, klen, KLEN1, &seed1, &seed2, key1);
+    fill_key(key1, KLEN1, KLEN2, &seed2, &seed1, key2);
+    fill_key(key2, KLEN2, KLEN3, &seed1, &seed2, key3);
+    fill_key(key3, KLEN3, KLEN4, &seed2, &seed1, key4);
+
+    seed1 = zipkeys(seed1^seed2);
+    seed2 = zipkeys(seed1^seed2);
+    i1 = PRIM1(seed1) % KLEN4;
+    i2 = PRIM2(seed1) % KLEN4;
+    i3 = PRIM3(seed1) % KLEN4;
+    i4 = PRIM4(seed1) % KLEN4;
+    i5 = PRIM5(seed1) % KLEN4;
+    i6 = PRIM6(seed1) % KLEN4;
+    i7 = PRIM7(seed1) % KLEN4;
+    i8 = PRIM8(seed1) % KLEN4;
+    i9 = PRIM1(seed2) % KLEN4;
+
+    if (ENCRYPT) 
+    {
+	time_t time_of_crpt;
+
+	init_vect5 ^= (uint)time(&time_of_crpt);
+	init_vect6 ^= (uchar)(init_vect5 >> 8);
+	init_vect7 ^= (uint)getpid();
+	init_vect8 ^= (uchar)(init_vect7 >> 8);
+
+	init_vect5 = (uchar)init_vect5;
+	init_vect7 = (uchar)init_vect7;
+
+	inc = fgetc(inf);
+	init_vect9 ^= (uchar)inc;
+	ungetc(inc, inf);
+
+    /* fprintf(stderr, "system init_vect = %2x, %2x, %2x, %2x, %2x\n",
+	    init_vect5, init_vect6, init_vect7, init_vect8, init_vect9); */
+
+	{
+	    uchar tmp1 = init_vect1^init_vect2^init_vect3^init_vect4,
+		  tmp2 = init_vect5^init_vect6^init_vect7^init_vect8,
+		  tmp3 = init_vect9;
+
+	    init_vect1 ^= (uchar)((PRIM1(init_vect9)*PRIM2(tmp1))^tmp2^tmp3);
+	    init_vect2 ^= (uchar)((PRIM3(init_vect8)*PRIM4(tmp1))^tmp2^tmp3);
+	    init_vect3 ^= (uchar)((PRIM5(init_vect7)*PRIM6(tmp1))^tmp2^tmp3);
+	    init_vect4 ^= (uchar)((PRIM7(init_vect6)*PRIM8(tmp1))^tmp2^tmp3);
+	    init_vect5 ^= (uchar)((PRIM7(init_vect5)*PRIM6(tmp2))^tmp1^tmp3);
+	    init_vect6 ^= (uchar)((PRIM5(init_vect4)*PRIM4(tmp2))^tmp1^tmp3);
+	    init_vect7 ^= (uchar)((PRIM3(init_vect3)*PRIM2(tmp2))^tmp1^tmp3);
+	    init_vect8 ^= (uchar)((PRIM1(init_vect2)*PRIM8(tmp2))^tmp1^tmp3);
+	    init_vect9 ^= (uchar)((PRIM3(init_vect1)*PRIM6(tmp3))^tmp2^tmp1);
+
+    /* fprintf(stderr, "init  init_vect = %2x, %2x, %2x, %2x, %2x, %2x, %2x, %2x, %2x\n",
+	    init_vect1, init_vect2, init_vect3, init_vect4,
+	    init_vect5, init_vect6, init_vect7, init_vect8, init_vect9); */
+
+	    init_vect1 ^= (uchar)(PRIM1(init_vect3)^(PRIM2(init_vect7)*PRIM3(init_vect1)));
+	    init_vect2 ^= (uchar)(PRIM2(init_vect4)^(PRIM3(init_vect8)*PRIM4(init_vect2)));
+	    init_vect3 ^= (uchar)(PRIM3(init_vect5)^(PRIM4(init_vect9)*PRIM5(init_vect3)));
+	    init_vect4 ^= (uchar)(PRIM4(init_vect6)^(PRIM5(init_vect1)*PRIM6(init_vect4)));
+	    init_vect5 ^= (uchar)(PRIM5(init_vect7)^(PRIM6(init_vect2)*PRIM7(init_vect5)));
+	    init_vect6 ^= (uchar)(PRIM6(init_vect8)^(PRIM7(init_vect3)*PRIM8(init_vect6)));
+	    init_vect7 ^= (uchar)(PRIM7(init_vect9)^(PRIM8(init_vect4)*PRIM1(init_vect7)));
+	    init_vect8 ^= (uchar)(PRIM8(init_vect1)^(PRIM1(init_vect5)*PRIM2(init_vect8)));
+	    init_vect9 ^= (uchar)(PRIM1(init_vect2)^(PRIM2(init_vect6)*PRIM3(init_vect9)));
+	}
+	{
+	    uint i = i1 + i6;
+	    uint j = i2 + i7;
+	    uint k = i3 + i8;
+	    uint l = i4 + i9;
+	    uint seed = i5 << 1;
+	    uint x;
+	    uint y = (i1^i3^i5^i7^19)&0x3f;
+	    uint z = i2^i4^i6^i8;
+
+	    for (x = 0; x < y; x++)
+	    {
+		i += key1[i%KLEN1];
+		j += key2[j%KLEN2];
+		k += key3[k%KLEN3];
+		l += key4[l%KLEN4];
+		seed += (uint)PRIME(seed);
+		fputc((uchar)KRAND, outf);
+	    }
+	    fputc(init_vect1^key4[i1], outf);
+	    fputc(init_vect2^key4[i2], outf);
+	    fputc(init_vect3^key4[i3], outf);
+	    fputc(init_vect4^key4[i4], outf);
+	    fputc(init_vect5^key4[i5], outf);
+	    fputc(init_vect6^key4[i6], outf);
+	    fputc(init_vect7^key4[i7], outf);
+	    fputc(init_vect8^key4[i8], outf);
+	    fputc(init_vect9^key4[i9], outf);
+
+	    z = (z^(init_vect1+init_vect2+init_vect3+init_vect4+i+j+k+l+seed))&0x3f;
+	    while ((y+z) < 32) z = (z+key4[(++z)%KLEN4])&0x3f;
+	    for (x = 0; x < z; x++)
+	    {
+		i += init_vect5;
+		j += init_vect6;
+		k += init_vect7;
+		l += init_vect8;
+		seed += init_vect9;
+		fputc((uchar)KRAND, outf);
+	    }
+	}
+    } else
+    {
+	uint i = i1 + i6;
+	uint j = i2 + i7;
+	uint k = i3 + i8;
+	uint l = i4 + i9;
+	uint seed = i5 << 1;
+	uint x;
+	uint y = (i1^i3^i5^i7^19)&0x3f;
+	uint z = i2^i4^i6^i8;
+
+	for (x = 0; x < y; x++)
+	{
+	    i += key1[i%KLEN1];
+	    j += key2[j%KLEN2];
+	    k += key3[k%KLEN3];
+	    l += key4[l%KLEN4];
+	    seed += (uint)PRIME(seed);
+	    fgetc(inf);
+	}
+	init_vect1 = ((uchar)fgetc(inf))^key4[i1];
+	init_vect2 = ((uchar)fgetc(inf))^key4[i2];
+	init_vect3 = ((uchar)fgetc(inf))^key4[i3];
+	init_vect4 = ((uchar)fgetc(inf))^key4[i4];
+	init_vect5 = ((uchar)fgetc(inf))^key4[i5];
+	init_vect6 = ((uchar)fgetc(inf))^key4[i6];
+	init_vect7 = ((uchar)fgetc(inf))^key4[i7];
+	init_vect8 = ((uchar)fgetc(inf))^key4[i8];
+	init_vect9 = ((uchar)fgetc(inf))^key4[i9];
+
+	z = (z^(init_vect1+init_vect2+init_vect3+init_vect4+i+j+k+l+seed))&0x3f;
+	while ((y+z) < 32) z = (z+key4[(++z)%KLEN4])&0x3f;
+	for (x = 0; x < z; x++)
+	{
+	    fgetc(inf);
+	}
+    }
+
+    /* fprintf(stderr, "final init_vect = %2x, %2x, %2x, %2x, %2x, %2x, %2x, %2x, %2x\n",
+	    init_vect1, init_vect2, init_vect3, init_vect4,
+	    init_vect5, init_vect6, init_vect7, init_vect8, init_vect9); */
+
+    seed1 = zipkeys(init_vect1);
+    seed2 = zipkeys(init_vect2^seed1);
+    seed1 = zipkeys(init_vect3^seed2);
+    seed2 = zipkeys(init_vect4^seed1);
+    seed1 = zipkeys(init_vect5^seed2);
+    seed2 = zipkeys(init_vect6^seed1);
+    seed1 = zipkeys(init_vect7^seed2);
+    seed2 = zipkeys(init_vect8^seed1);
+    seed1 = zipkeys(init_vect9^seed2);
+
+    return(seed1^seed2);
+}
+
+/*
+
+*/
+void fill_key(key_in, klen, max_klen, seed1, seed2, key_out)
+uchar *key_in;
+uint klen;
+uint max_klen;
+uint *seed1;
+uint *seed2;
+uchar *key_out;
+{
+    uchar tmp_key[KLEN4+1];
+    uint  i, j, k, l;
+    uint  seed;
+
+    seed = *seed1;
+    j = *seed2;
+    for(i=0; i < max_klen; i += klen)
+    {
+        for (k=0; k < klen; k++)
+        {
+	    l = i + j + k + seed;
+            j = KRAND;
+            key_in[k] = (seed ^= ((uchar)j^key_in[k]));
+        }
+	revcpy(&tmp_key[i], key_in, klen, max_klen-i);
+    }
+    revcpy(key_out, tmp_key, max_klen, max_klen);
+    *seed1 = seed;
+    *seed2 = (uchar)j;
+}
+
+/*
+
+*/
+void keycat(target, t_end, source, length, max_length)
+uchar	*target;
+uchar	*source;
+uint	length;
+uint	max_length;
+{
+    uint i;
+
+    for (i=0; ((i<length) && (i<(max_length-t_end))); i++)
+    {
+	target[t_end+i] = source[i];
+    }
+}
+
+/*
+
+*/
+void revcpy(target, source, length, max_length)
+uchar	*target;
+uchar	*source;
+uint	length;
+uint	max_length;
+{
+    uint i;
+
+    for (i=0; ((i < length) && (i < max_length)); i++)
+    {
+	target[i] = source[length-(i+1)];
+    }
+}
+
+/*
+
+*/
+void scramble(seed)
+ruchar seed;
+{
+    rint   inc;
+    ruint  outc;
+    ruint  i = (PRIM1(seed)*(seed+1)) % KLEN1; /* index into key1 */
+    ruint  j = (PRIM2(j)*(j+1))       % KLEN2; /* index into key2 */
+    ruint  k = (PRIM3(k)*(k+1))       % KLEN3; /* index into key3 */
+    ruint  l = (PRIM4(i)*(i+1))       % KLEN4; /* index into key4 */
+    ruchar feedback = KRAND;
+
+    while ((inc=fgetc(inf)) != EOF)
+    {
+	l = (i+j+k+l+seed+feedback) % KLEN4;
+
+	if (!i && !j)
+	{
+	    seed ^= zipkeys(feedback);
+	} else
+	{
+	    seed ^= feedback;
+	}
+
+	if (!(key1[i]^key2[j]^key3[k]^key4[l]))
+	{
+	    /* The output character would have equalled the input. */
+	    outc = inc ^ KRAND;
+	} else
+	{
+	    outc = inc ^ key1[i++] ^ key2[j++] ^ key3[k++] ^ key4[l];
+	    if (i >= KLEN1) i = 0;
+	    if (j >= KLEN2) j = 0;
+	    if (k >= KLEN3) k = 0;
+	}
+
+        feedback = ((ENCRYPT) ? outc : inc);
+
+        fputc(outc, outf);
+    }
+}
+
+/*
+
+*/
+void revkey(key, length)
+uchar *key;
+uint length;
+{
+    uchar tmp_key[KLEN4+1];
+
+    keycat(tmp_key, 0, key, length, length);
+    revcpy(key, tmp_key, length, length);
+}
+
+/*
+
+*/
+uint zipkeys(seed)
+ruint seed;
+{
+    ruint i, j, k, l, m;
+
+    k = (seed^PRIM5(seed))%KLEN1;
+    j = (seed^PRIM6(k))%KLEN2;
+    i = (seed^PRIM7(j))%KLEN3;
+    l = (seed^PRIM8(i))%KLEN4;
+
+    for (m = 1; m <= KLEN4; m++)
+    {
+	seed ^= (key1[k++] ^= KRAND);
+	if (k >= KLEN1) k = 0;
+	seed ^= (key2[j++] ^= KRAND);
+	if (j >= KLEN2) j = 0;
+	seed ^= (key3[i++] ^= KRAND);
+	if (i >= KLEN3) i = 0;
+
+	if MIXEMUP(seed*i)
+	{
+	    seed ^= (key1[k] = ~key1[k++] ^ KRAND);
+	    if (k >= KLEN1) k = 0;
+	} 
+	if MIXEMUP(seed*k)
+	{
+	    seed ^= (key2[j] = ~key2[j++] ^ KRAND);
+	    if (j >= KLEN2) j = 0;
+	} 
+	if MIXEMUP(seed*l)
+	{
+	    seed ^= (key3[i] = ~key3[i++] ^ KRAND);
+	    if (i >= KLEN3) i = 0;
+	} 
+	if MIXEMUP(seed*j)
+	{
+	    seed ^= (key4[l] = ~key4[l++] ^ KRAND);
+	    if (l >= KLEN4) l = 0;
+	} 
+	if MIXEMUP(seed*m)
+	{
+	    seed ^= (key1[k++] ^= KRAND);
+	    if (k >= KLEN1) k = 0;
+	    seed ^= (key2[j++] ^= KRAND);
+	    if (j >= KLEN2) j = 0;
+	    seed ^= (key3[i++] ^= KRAND);
+	    if (i >= KLEN3) i = 0;
+	    seed ^= (key4[l++] ^= KRAND);
+	    if (l >= KLEN4) l = 0;
+	}
+    }
+
+    switch (seed % 3)
+    {
+	case 1:
+	    revkey(key3, KLEN3);
+	    break;
+	case 2:
+	    revkey(key2, KLEN2);
+	    break;
+	default:
+	    revkey(key1, KLEN1);
+    }
+
+    return(seed);
+}
+
+uint get_pass_phrase(pass_phrase, time_seed1, time_seed2, time_seed3, time_seed4)
+uchar *pass_phrase;
+uint *time_seed1;
+uint *time_seed2;
+uint *time_seed3;
+uint *time_seed4;
+{
+    uchar timebytes[4];
+    uint num_timebytes=4;
+    uint num_userbytes;
+    uchar pass_verify[KLEN1+1];
+
+        do
+	{
+	    num_userbytes = KLEN1;
+	    fprintf(stderr, "Enter pass phrase (min %d chars): ", MIN_KLEN);
+	    get_user_input(pass_phrase,&num_userbytes,timebytes,&num_timebytes);
+	    if (num_userbytes < MIN_KLEN)
+	    {
+		fprintf(stderr, "Pass phrase too short.\n");
+	    } else 
+	    {
+		fprintf(stderr, "Verify pass phrase: ");
+		get_user_input(pass_verify,&num_userbytes,timebytes,&num_timebytes);
+		if (strcmp(pass_phrase, pass_verify))
+		{
+		    fprintf(stderr, "Pass phrase not verified.\n");
+		    num_userbytes = 0;
+		}
+	    }
+        } while(num_userbytes < MIN_KLEN);
+
+	*time_seed1 ^= timebytes[0];
+	*time_seed2 ^= timebytes[1];
+	*time_seed3 ^= timebytes[2];
+	*time_seed4 ^= timebytes[3];
+
+        return num_userbytes;
+}
+
+
+void get_user_input(userbytes,num_userbytes,timebytes,num_timebytes)
+uchar userbytes[];
+uint *num_userbytes;
+uchar timebytes[];
+uint *num_timebytes;
+{
+
+   int max_user = *num_userbytes, max_time = *num_timebytes;
+   int done = 0;
+   uchar *userby = userbytes;
+   uchar *timeby = timebytes;
+   int ch;
+   uint counter = 1;
+#ifdef TIMER_OK
+   uchar byte1, byte2;
+   int databyte;
+#endif
+
+#ifdef UNIX
+        struct termios mytty, origtty;
+   FILE *userstream;
+        int in_file_num;
+#endif
+
+#ifdef TIMER_OK
+   /* Set the timer to its highest resolution.
+    * This gives 65536*18.2 ticks/second--pretty high resolution.
+    * There *are* some things
+    * that a PC can do that a multiuser system can't!
+    */
+
+   databyte = (2<<TIMER_SHIFT_SELECT_COUNTER) |
+              (3<<TIMER_SHIFT_READ_LOAD) |
+              (3<<TIMER_SHIFT_MODE);
+        outp(TIMER_PORT+TIMER_MODE_OFFSET,databyte);
+   outp(TIMER_PORT+2,0xff&counter);
+   outp(TIMER_PORT+2,counter>>8);
+   byte1 = (uchar) inp(TIMER_PORT);
+   byte2 = (uchar) inp(TIMER_PORT);
+   if(max_time > 0) {
+      *(timeby++) = byte2;
+      max_time--;
+   }
+#endif
+
+#ifdef UNIX
+   if ((userstream = fopen("/dev/tty","r")) == NULL)
+   {
+      fputs("Unable to read from terminal\n",stderr);
+      fclose(inf);
+      fclose(outf);
+      exit(1);
+   }
+        in_file_num = fileno(userstream);
+        /* Turn off echoing. */
+	tcgetattr(in_file_num, &origtty);
+	memcpy(&mytty,&origtty,sizeof mytty);
+	mytty.c_lflag &= ~(ECHO);
+	mytty.c_lflag |= ICANON;
+	tcsetattr(in_file_num, TCSANOW, &mytty);
+#ifndef TIMER_OK
+        if(max_time > 0)
+	{
+	    *(timeby++) = (uchar)userstream;
+	    max_time--;
+        }
+        if(max_time > 0)
+	{
+	    *(timeby++) = (uchar)in_file_num;
+	    max_time--;
+        }
+        if(max_time > 0)
+	{
+	    *(timeby++) = (uchar)(((uint)userstream)>>8);
+	    max_time--;
+        }
+        if(max_time > 0)
+	{
+	    *(timeby++) = (uchar)(~(((uint)userstream)>>16));
+	    max_time--;
+        }
+#endif
+#endif
+
+   while(!done) {
+#ifdef MSDOS
+      ch = getch();
+#ifdef TIMER_OK
+      byte1 = (uchar)inp(TIMER_PORT);
+      byte2 = (uchar)inp(TIMER_PORT);
+#endif
+#else
+      ch = fgetc(userstream);
+#endif
+      done = (ch=='\r') || (ch=='\n');
+      if(!done) {
+         if(max_user > 0) {
+            *(userby++) = (uchar)ch;
+            max_user--;
+         }
+#ifdef TIMER_OK
+         if(max_time > 0) {
+            *(timeby++) = byte2;
+            max_time--;
+         }
+#endif
+                }
+   }
+   fputc('\n',stderr);
+
+   *num_userbytes = userby - userbytes;
+   *num_timebytes = timeby - timebytes;
+
+   userbytes[*num_userbytes] = '\0';
+
+#ifdef UNIX
+   /* Turn echoing back on */
+   tcsetattr(in_file_num, TCSANOW, &origtty);
+
+   fclose(userstream);
+#endif
+}
+

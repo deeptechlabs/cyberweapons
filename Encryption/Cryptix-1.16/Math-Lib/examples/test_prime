@@ -1,0 +1,15 @@
+#!/usr/local/bin/perl -w -I.
+
+use Math::BigInteger;
+use Math::TestPrime;
+
+my $i = new Math::BigInteger 1234;
+$i = $i *  $i;
+$i = $i *  $i;
+$i = $i *  $i;
+for (;;)
+{
+	print "$i is prime\n" if (Math::TestPrime::isPrime($i));
+	print "$i is not prime\n" unless (Math::TestPrime::isPrime($i));
+	$i++;
+}

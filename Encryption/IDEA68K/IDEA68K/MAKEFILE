@@ -1,0 +1,52 @@
+CC = gcc
+CFLAGS = -g
+
+all: idea idea1
+
+debug: foo bar baz quux garply
+
+crypt1.o: crypt.h crypt1.c
+	$(CC) -O -c -o crypt1.o crypt1.c
+
+idea.o:	idea.c crypt.h
+	$(CC) -DTIME -g -c -o idea.o idea.c
+
+crypt2.o: crypt2.asm
+	as crypt2.asm
+
+foo.o: foo.c
+
+bar.o: bar.c
+
+baz.o: baz.c
+
+quux.o: quux.c
+
+garply.o: garply.c
+
+idea:	idea.o crypt2.o
+	$(CC) -g -o idea idea.o crypt2.o -lc
+
+idea1: idea.o crypt1.o
+	$(CC) -g -o idea1 idea.o crypt1.o -lc
+
+foo: foo.o crypt1.o crypt2.o
+	$(CC) -g -o foo foo.o crypt1.o crypt2.o -lc
+
+bar: bar.o crypt1.o crypt2.o
+	$(CC) -g -o bar bar.o crypt1.o crypt2.o -lc
+
+baz: baz.o invkey.o crypt1.o crypt2.o
+	$(CC) -g -o baz baz.o crypt1.o crypt2.o -lc
+
+quux: quux.o crypt1.o crypt2.o
+	$(CC) -g -o quux quux.o crypt1.o crypt2.o -lc
+	
+garply: garply.o crypt1.o crypt2.o
+	$(CC) -g -o garply garply.o crypt1.o crypt2.o -lc
+
+#
+#	if you use 'pixrect' (for raster files), add 'RASTER'
+#	definition in idea.c
+#
+#	-cc -o idea idea.o crypt.o -lpixrect

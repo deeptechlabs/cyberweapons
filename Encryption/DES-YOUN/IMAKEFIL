@@ -1,0 +1,26 @@
+# This Imakefile has not been tested for a while but it should still
+# work when placed in the correct directory in the kerberos v 4 distribution
+
+SRCS=	cbc_cksum.c cbc_encrypt.c ecb_encrypt.c pcbc_encrypt.c \
+	quad_cksum.c random_key.c read_password.c set_key.c string_to_key.c \
+	enc_read.c enc_write.c
+
+OBJS=	cbc_cksum.o cbc_encrypt.o ecb_encrypt.o pcbc_encrypt.o \
+	quad_cksum.o random_key.o read_password.o set_key.o string_to_key.o \
+	enc_read.o enc_write.o
+
+CODE=	$(SRCS) Imakefile COPYRIGHT README VERSION \
+	des.h des_local.h ksp.h makesh podd.h sp.h destest.c \
+	rpw.c
+
+DBG= -O4
+CC= cc
+
+SRCDIR=$(SRCTOP)/lib/des
+
+library_obj_rule()
+
+install_library_target(des,$(OBJS),$(SRCS),)
+
+test(destest,libdes.a,)
+test(rpw,libdes.a,)

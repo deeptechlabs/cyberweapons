@@ -1,0 +1,214 @@
+server.txt   Mark Riordan   September 1992   
+
+RIPEM KEY SERVER
+
+
+PHILOSOPHY
+
+The RIPEM key server is intended to be a poor-man's substitute for
+a full-blown PEM certificate service.  It is simply a way for users
+to publish the public components of their keys.  The RIPEM key
+server is a step up from simply putting a bunch of key
+files on a host for access via anonymous FTP, but it provides
+minimal security and should not be relied upon for serious
+authentication purposes.  The key server is a convenient repository
+of "everyone's" keys; it is not a service that provides added
+security.
+
+The key server accepts requests to store public keys for one or
+more users.  It also responds, in real time, to requests for keys
+of particular users via the UDP IP protocol over the Internet.  
+It can also respond to an email request for
+the entire key database, for the benefit of users who do not have 
+direct Internet access.
+
+The biggest shortcoming of the current scheme is that there is no
+real way of running multiple servers, at least for the role of registering
+keys.  It would be possible to run multiple lookup-only servers, but
+currently there is no way of automatically updating the slave servers.
+
+USING THE RIPEM KEY SERVER
+
+A copy of the RIPEM key server is currently running on rpub.cl.msu.edu,
+port 1611.  This key server may not be permanent; I may have to 
+stop running it at any time.
+
+You can "register" your public key by emailing the <filename> results of a 
+"ripem -g -P <filename> ..." command to the address 
+
+   ripem-register-keys@rpub.cl.msu.edu
+
+Key registration requests are handled in an insecure,
+first-come-first-served fashion. 
+
+Key deletion is handled by having the user sign a fixed message
+("RemoveKey") and sending it to the address
+
+   ripem-remove-keys@rpub.cl.msu.edu
+
+The RIPEM server decrypts the message and checks its signature;
+if the signature is verified, the key is deleted from the key
+database.  Note that since all 3 encryption modes of RIPEM 
+(encrypted, mic-only, and mic-clear) sign the message, any can
+be used for this purpose.
+
+Similarly, a user's key can be changed by signing the new key
+with the old key and mailing the result to
+
+   ripem-change-keys@rpub.cl.msu.edu
+
+I have also implemented a process whereby an ASCII 
+flat file containing public keys is automatically created
+on an FTP server.  Look in rpub.cl.msu.edu, under pub/ripem/pubkeys.txt.
+
+A copy of this file can be obtained by email by sending any message to:
+
+   ripem-get-keys@rpub.cl.msu.edu
+
+
+OVERVIEW OF CURRENT IMPLEMENTATION
+
+The current key server accepts key registry requests by email.
+The public keys embedded in the email messages are periodically
+added to a random-access database.  A UDP socket-based server sits
+on an Internet socket, waiting for requests to lookup a public key
+for a user.  The server responds to requests by looking up keys in
+the database and responding via another datagram.  Periodically,
+the server dumps the entire database to an ASCII file in a format
+that can be read directly by RIPEM.
+
+The current process consists of the following pieces:
+
+-- copymail, a program which simply copies incoming messages to
+separate files in an "incoming" directory.  This program receives
+public key registry requests.  I chose email as a means of registry
+because more users have access to email than have access to full-blown
+Internet (live TCP and UDP access).  Also, a simple program handling
+the incoming requests is less likely to screw up, lose incoming
+requests, and generally annoy users.  copymail is run on demand:
+you place an entry like
+
+ripem-keys:|/usr/local/bin/ripem/server/mailserv
+
+in /etc/aliases; whenever a message arrives for "ripem-keys",
+copymail is run.
+
+-- rkeyreg, the key registration program.  rkeyreg runs in the
+background, periodically waking up to scan copymail's "incoming"
+directory.  When a new file has arrived, rkeyreg sends a signal to
+rkeyserv, asking it to grant access to the real, random-access key
+database.  rkeyreg then reads through the incoming files, extracting
+keys and adding them to the key database.  It then sends a message
+to the sender of each file (not necessarily the owner of the keys
+in the file), reporting on the success or failure of the attempt
+to register the key(s).
+
+-- rkeyserv, the main server.  This program runs in the background,
+waiting for UDP requests for key lookup.  It responds by looking
+up the key in the database and sending back a UDP packet containing
+the key.  The server is stateless, as UDP-based servers ought to
+be.  It normally has the key database open read-only, but closes 
+the database upon request by rkeyreg.
+
+-- db2flat, a program to convert key database (which is kept in
+GDBM format) to a flat file that can be read directly by RIPEM.
+I run this nightly as a cron job to create the key file that is
+distributed via anonymous FTP and by email.
+
+-- givepubs, a program to respond to email requests by mailing back
+a file.  Written to provide the service of distributing the RIPEM
+public key database by email.
+
+I include the full source of the current server, but I haven't put much
+effort into documenting it or making the Makefile easy-to-use, because I
+don't expect other people to run their own servers yet.  Feel free to 
+play with the current server if you like, though.
+
+
+FUTURE DIRECTIONS
+
+I feel that RIPEM might benefit from a more sophisticated key
+distribution service that allows for multiple servers, for load
+balancing and reliability purposes.  Two contenders for the general
+model are:
+
+--  The "domain name service" model, in which one or two servers
+are the sole source of public keys for a subset of users.  The
+users could be subsetted by performing some string matching on the
+domain name portion of their email address.  (For instance, all
+.caltech.edu, .berkeley.edu, and .ucsd.edu addresses are handled
+by a certain server.)  Personally, I don't like this approach.  It
+works well for domain name servers, but that's because the name
+servers are run by full-time professionals who promptly repair any
+problems with the servers.  With our unofficial, experimental key
+service, we can't expect that type of attention if a key server
+goes down.  Greater redundancy is therefore needed.  (Also, the
+question of mapping a large number of domain names to what is
+expected to be a small number of key servers is problematic.)
+
+-- The "Usenet News" model, in which each key server has a reasonably
+up-to-date copy of the entire global public key database.  This
+provides the redundancy and reliability we'd need to make to make
+the key service anything more than a toy. It also provides better
+performance, as any given user is more likely to be close to a key
+server.  This is the model that appeals to me.  Unfortunately, this
+approach raises the question of synchronization of the databases.
+
+
+KEY DATABASE SYNCHRONIZATION
+
+One proposed scheme involves key servers are organized in a tree
+structure.  All key registration requests from live users are sent
+to the root machine, which enters them into the database and also
+records them in a time-stamped transaction log.  Periodically, the
+servers one level removed from the root (second-level servers)
+contact the root server, probably by establishing a TCP session
+with some daemon.  Somehow the two computers decide how up-to-date
+the second-level's database is.  Perhaps the root machine would
+keep track of this in a date-stamped file, one file per machine.
+At any rate, the root machine proceeds to update the other by
+sending all keys that have been registered since the last update
+to the second-level server.
+
+Similarly, second-level servers update third-level servers, and so
+on.
+
+This idea has an appealing simplicity, but it may be *too* simple.
+One break in the chain screws all servers downstream from the failed
+server.  Plus, there may be performance problems associated with
+one computer receiving all key registration requests.
+
+An alternative to this pleasing tree structure is a "network" (in
+the database sense of the word) structure in which a given server
+may receive keys from several other servers.  Avoiding infinite
+loops, and properly dealing with key revocations in this scenario
+gives me the willies.
+
+
+MISCELLANEOUS OTHER IDEAS AND CONSIDERATIONS
+
+I think that using UDP for key lookups and TCP for updates between
+servers is the right way to go, but I'm not positive.  If RIPEM users
+routinely send messages to many recipients, each of whom needs a
+key to be looked up on the server, TCP actually may be more efficient.
+
+The current file-sharing scheme between the key server (which responds
+to lookup requests) and the registration server (which enters keys
+into the database) is crude.
+
+There probably also ought to be a convenient way to find out who has keys 
+registered, to satisfy people's curiousity, if nothing else.
+Perhaps a Gopher server?  
+
+Perhaps other fields ought to be added to the records being registered
+with the key server.  We can really get carried away here, though.
+
+Note that the key field MD5OfPublicKey is currently unused.  I could
+start checking this.
+
+The current key server, rpub.cl.msu.edu, is not a production service
+in any sense.  It may have to be removed from service at any time,
+so I may be looking for volunteers to run RIPEM key servers.
+
+
+Mark Riordan     mrr@scss3.cl.msu.edu

@@ -1,0 +1,184 @@
+          PEM Extensions for Non-Hierarchical (Direct) Trust
+
+The Privacy Enhanced Mail standards (described in RFCs 1421-1424)
+define the format of signed and authenticated messages.  It is
+assumed the reader is somewhat familiar with this format.  For a
+quick introduction, see "RIPEM Message and File Formats", section
+entitled "PEM-Mode Messages".  (This is in the file ripemfmt.doc in
+the RIPEM distribution.)
+
+The PEM standards assume that there is one certificate hierarchy
+and that a user must be certified in this hierarchy before they can
+do anything.  There are two problems with this: hierarchies are not
+well established right now; and users may want to use privacy
+enhancement without having to hassle with a hierarchy.  Therefore,
+this document describes how the PEM standards can be extended to
+allow non-hierarchical (or "direct") trust between communicating
+users.
+
+The main problem to overcome is how to identify users outside of a
+hierarchy.  In the PEM standards, users are identified by their
+certificate issuer and serial number.  However, in environments
+without an established certificate hierarchy, or with multiple
+independent hierarchies, specifying an issuer name and serial number
+cannot be relied on to uniquely identify a user.  The following
+describes how to identify users in non-hierarchical trust.
+
+Signed Messages.
+
+According to RFC 1421, the originator of a signed message is
+identified either by an issuer name and serial number or by a
+certificate from the issuer.  The problem in non-hierarchical trust
+is that the recipient doesn't know (or trust) the originator's issuer.
+
+In essence, this has already been solved by RFC 1424's certification
+request syntax.  Here, a user who does not have an issuer prepares a
+signed message by supplying a self-signed certificate.  The following
+example is from RFC 1424 (substituting "requestor" with "originator"):
+
+   -----BEGIN PRIVACY-ENHANCED MESSAGE-----
+   Proc-Type: 4,MIC-ONLY
+   Content-Domain: RFC822
+   Originator-Certificate: <originator's self-signed certificate>
+   MIC-Info: RSA,RSA-MD2,<originator's signature on text>
+
+   <text>
+   -----END PRIVACY-ENHANCED MESSAGE-----
+
+NOTES:
+
+* The originator's self-signed certificate contains the subject's
+distinguished name and public key.  How the recipient trusts the
+binding between these in non-hierarchical trust is a "local matter."
+(A proposal for how to implement this trust is discussed below.)
+
+* At first contact, the recipient may perform some out-of-bands
+authentication, such as calling the originator on the phone and
+asking to be read the digest of the self-signed certificate.
+
+* As with a certification request, the signature on the self-signed
+certificate has the cryptographic purpose of preventing an originator
+from supplying another party's public key and pretending to be the
+originator of any message signed by the other party.
+
+* PEM implementations can already prepare messages with this syntax.
+
+* For hierarchical compatibility, the recipient of the signed message
+may still trust the originator's public key through a certificate
+chain.  Most chain-checking code will probably work "as is" by
+finding a chain for the "issuer" of the self-signed cert, which
+would be the normal hierarchical chain of trust for the originator.
+
+* Also, the sender of a signed message may include Issuer-Certificate
+fields if the sender knows which hierarchy the recipient will trust.
+
+Encrypted Messages.
+
+According the RFC 1421, the recipient of an encrypted message is
+identified by an issuer name and serial number.  The problem in
+non-hierarchical trust is that the sender doesn't know (or trust) the
+recipient's issuer.  Also, the recipient may not recognize the same
+issuer by which the sender knows the recipient.
+
+This can be solved by replacing the Recipient-ID-Asymmetric field
+with a Recipient-Key-Asymmetric field which identifies the
+recipient's public key.  The following is a modified example from RFC
+1421:
+
+   -----BEGIN PRIVACY-ENHANCED MESSAGE-----
+   Proc-Type: 4,ENCRYPTED
+   Content-Domain: RFC822
+   DEK-Info: DES-CBC,BFF968AA74691AC1
+   Originator-Certificate: <originator's self-signed certificate>
+   MIC-Info: RSA,RSA-MD2,<originator's signature on text>
+   Key-Info: RSA,<DEK encrypted with originator's public key>
+   MIC-Info: RSA,RSA-MD2,<originator's signature on text>
+   Recipient-Key-Asymmetric:<recipient's public key>
+   Recipient-ID-Asymmetric:<recipient's issuer name/serial number
+                            (Optional. See below.)>
+   Key-Info: RSA,<DEK encrypted with recipient's public key>
+
+   <encrypted text>
+   -----END PRIVACY-ENHANCED MESSAGE-----
+
+NOTES:
+
+* It is better to identify the recipient by public key rather than by
+distinguished name, email address, etc.  The recipient may have
+multiple public keys, but only one of them is used when encrypting the
+message.
+
+* There is no cryptographic significance to including the recipient's
+name, email address, etc. along with the public key.  It could be
+altered with no way of detecting it since it is not cryptographically
+protected.
+
+* The Recipient-Key-Asymmetric would be DER encoded and also ASCII
+encoded as with certificate and distinguished name fields.  It is
+easy for the recipient to run a comparison and find their own public
+key among the recipient fields.
+
+* For compatibility with the RFCs, the sender can also include a
+Recipient-ID-Asymmetric field giving the recipient's issuer name and
+serial number if that is known.  In the case of multiple recipient
+identifiers, if a recipient recognizes any Recipient-ID-Asymmetric or
+Recipient-Key-Asymmetric field, the following Key-Info is for that
+recipient.  Note that if a strict PEM-compliant implementation
+ignores unrecognized fields (just like in an 822 mail header) then it
+will ignore the Recipient-Key-Asymmetric and use the
+Recipient-ID-Asymmetric.
+
+Setting Up Trust in Another User.
+
+In the model described above, a signed message has a self-signed
+certificate in the Originator-Certificate field.  This gives the
+sender's name and public key, but provides no intrinsic means of
+trusting that the public key belongs to the stated name.  Here is a
+way of setting up this trust:
+
+The first time Alice receives a signed message from Bob, her
+application informs her that Bob's key is not trusted and the
+application displays the digest of Bob's self-signed certificate.
+Alice calls Bob on the phone (or looks at his business card, or
+"fingers" him) and independently obtains his stated self-signed
+certificate digest.  This assures her that it really is Bob's
+self-signed certificate.  (Note that this is exactly the digest
+which Bob encrypted with his private key when making his self-
+signed certificate.)
+
+Then Alice uses her own private key to create a certificate with
+Bob's name and public key and herself as the issuer. She keeps
+this certificate in her own local cache.  From now on she uses
+this certificate to verify signed messages from Bob.
+
+Furthermore, Alice can use this certificate when she wants to send
+encrypted mail to Bob.  When preparing an encrypted message, Alice's
+application finds the certificate for Bob in the local cache, uses
+Alice's implicitly trusted public key to verify the certificate
+(since the cache is not trustworthy), then extract Bob's public key
+and uses it to encrypted the message.  It is Bob's public key that
+goes in the Recipient-Key-Asymmetric field (see above).
+
+Note that this model places Alice herself at the "root" of her own
+certificate hierarchy.  This is in contrast to the PEM model which
+places someone else - some centrally trusted authority - at the root.
+Now, if Alice wishes to trust the central root of another hierarchy,
+she can create a certificate from herself to that other root and
+designate in her preferences that she trusts certificate chains of
+any length from this user.  (For this to be secure, this preference
+setting must be authenticated by Alice.  This is a wise precaution
+for any preference settings in a security application.)  Thus, this
+model "hooks in" well to big hierarchies.
+
+Also, if Alice wishes to trust the people which Bob trusts directly
+(but not the people they trust), she may set her preferences to allow
+a certificate chain of length one from Bob.  Now Bob can send Alice
+all the certificates he has made directly for other users in the
+course of his correspondence and Alice can also correspond with them.
+
+Summary.
+
+By using a self-signed certificate in the Originator-Certificate
+field and using the new Recipient-Key-Asymmetric field, the PEM
+model can be extended to support privacy enhanced mail without
+the need for a pre-established certificate hierarchy.

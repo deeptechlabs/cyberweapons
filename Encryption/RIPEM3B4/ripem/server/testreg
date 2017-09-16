@@ -1,0 +1,1 @@
+rkeyreg -a /home/mrr/cip/ripem-dirs/add -r /home/mrr/cip/ripem-dirs/remove -c /home/mrr/cip/ripem-dirs/change -l /home/mrr/cip/ripem-dirs/log -p pidfile -o pubkeys.gdbm -D 5 -t 1 -s 1

@@ -1,0 +1,103 @@
+therefore, each IPC message from an Eject to the Eden kernel, and vice
+versa, involves at least a Unix process switch and copying the IPC
+message into and out of the Unix kernel.
+
+The first versions of Eden required 14 IPC messages to be sent per
+local invocation.  A local invocation occurs when the invoking Eject
+and the target Eject reside on the same physical machine.
+What was 2-process kernel's role in this setup?
+
+The 2-process Eden kernel was finally replaced by a 1-process Eden
+kernel, immediately reducing the number of messages required for an
+invocation by eliminating the IPC messages between the two kernel
+processes.
+
+The final reduction in IPC messages sent per invocation occurred
+during the summer of 1984.  Two more IPC messages were eliminated.
+One of the messages eliminated was the IPC message from the Eden
+kernel to the invoking Eject that communicated the {\it invocation
+handle} assigned to that particular call.  It was replaced by a scheme
+where the invoking Eject was allowed to generate its own {\it local
+invocation handle} to communicate with the Eden kernel, and the Eden
+kernel would generate its own unique handle in order to communicate
+with another Eden kernel or the target Eject.  The Eden kernel
+guarantees that the reply message to an invocation will be stamped
+with the invoking Eject-generated handle.  The other IPC message
+eliminated was the status message from the Eden kernel to the target
+Eject confirming the kernel's approval of the reply message (format,
+or contents if capabilities were contained in the reply).  The more
+logical scheme of notifying the invoking Eject of the failure status
+of the reply, or the actual reply if the status was success, is now
+being used.  The result of all these improvements is shown in figure
+\ref{oldfig}.  (See section \ref{oldexp} for an explanation of figure
+\ref{oldfig}.)
+
+\section{Related Work}\label{introrel}
+
+Nelson's thesis thoroughly examines remote procedure calls.  He
+studies a number of implementations, and proposes a design for
+Emmisary(?), a new RPC mechanism with excellent transparency and
+exceptional performance.  To attain exceptional performance, Nelson
+gives a list of "lessons" that an RPC mechanism must have.  The
+lessons are summarized here for the reader:
+
+\begin{itemize}
+\end{itemize}
+
+In designing an RPC mechanism, it is convenient to use a layer model.
+However, strict adherance to the layer model often results in poor
+implementations.  There is a prohibitive cost associated with highly
+modular implementations that cannot be tolerated in RPC
+implementations.  In proposing a solution to the asynchrony
+problem, Cooper\cite{soft} advocates "soft layering".  The idea of soft
+layering may be applied to any naturally layered system whose layers
+must work well together.
+
+\section{Structure of Thesis}\label{introstruct}
+
+Chapter \ref{old} examines the deficiencies of the current Eden
+invocation mechanism.  The reader is taken on a tour through the
+process of initiating an invocation and receiving its reply, and
+receiving a new invocation and replying to the invocation.
+
+Chapter \ref{new} proposes restructuring the dispatcher module for
+synchronous invocations (by far the most heavily used form of
+communication within Eden) and breaking down the "hard layering" that
+currently exists between the various layers that support invocations,
+from the Eject's point of view, in order to obtain significant
+performance gains.
+
+\chapter{A Closer Look at the Eden Invocation Mechanism}\label{old}
+
+\section{The Dispatcher -- Interface and Internals}\label{olddis}
+
+\section{Flow of Data -- CIP, Stub, and ESCII}\label{olddat}
+
+\section{Summary}\label{oldsum}
+
+\chapter{An Alternative Synchronous Invocation Mechanism}\label{new}
+
+\section{Assumptions and Limitations}\label{newass}
+
+\section{The Dispatcher -- Interface and Internals}\label{newdis}
+
+\section{A Word About Buffer Management}\label{newbuf}
+
+\section{Flow of Data -- CIP, Stub, and ESCII}\label{newdat}
+
+\section{Results and Timings}\label{newres}
+
+\section{Summary}\label{newsum}
+
+\chapter{Conclusions and Further Work}\label{concl}
+
+\section{Lessons Re-learned}\label{conles}
+
+\section{Soft Layering}\label{conlay}
+
+\section{Modularization and Interfaces}\label{conmod}
+
+\section{Further Work}\label{confur}
+
+\end{document}
+

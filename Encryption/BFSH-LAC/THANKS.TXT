@@ -1,0 +1,18 @@
+
+    BLOWFISH IN CBC MODE v1.5a is a T-Pascal 7.0 implementation of the
+    Blowfish cipher algorithm as described in Dr Dobb's, April 1994.
+    This Archive includes sources of the Blowfish  Unit,  BlowFish-CBC
+    Unit sources, and an BLW-CBC Unit usage programing demo.
+    Thanks go to Bruce Schneier, author of the algorithm.
+
+    Thanks, also, to all the Orwellian anonymous bureaucrats that  put
+    our privacy at risk.
+    They are a sign that we dismiss our civil responsibilities.
+
+    Thanks to all  despotic personalities  who use  *OUR* institutions
+    to stay in control...
+    They are a sign that something very important is missing.
+
+    All contributed to this work.
+    컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+    From Portugal at 27/Aug/1996                     Cordially, DuLac.

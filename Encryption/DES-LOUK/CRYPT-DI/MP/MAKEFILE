@@ -1,0 +1,6 @@
+SUBDIRS=lib prog
+all:	FORCE
+	for j in $(SUBDIRS); do ( cd $$j; make ); done
+clean::	FORCE
+	for j in $(SUBDIRS); do ( cd $$j; make clean ); done
+FORCE:

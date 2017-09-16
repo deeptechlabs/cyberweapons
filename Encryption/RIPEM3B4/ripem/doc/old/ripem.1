@@ -1,0 +1,677 @@
+.\" ripem.1 0.1 92/05/10 MRR
+.\" Definition of "ip", hanging indent macro
+.nh
+.TH RIPEM 1 "January 1994"
+.SH NAME
+ripem \- RSAREF-based Internet Privacy Enhanced Mail,
+version 1.2.
+Enciphers and deciphers messages
+using a public key encryption system, and formats them
+for embedding in electronic mail messages.  Also generates RSA public keys.
+.SH SYNOPSIS
+.B ripem
+.\" Encryption-only arguments:
+{
+.B \-e
+|
+.B -d
+|
+.B -g
+|
+.B -c
+}
+.if n .ti +.5i
+[
+.B -b
+.I #_of_bits
+]
+[
+.B -v
+.I #_of_months
+]
+.if n .ti +.5i
+[
+.B \-r
+.I recipient(s)
+]
+[
+.B -A
+.I enc-alg
+]
+.if n .ti +.5i
+[
+.B -m
+{
+.I encrypted
+|
+.I mic-only
+|
+.I mic-clear
+}
+]
+.if n .ti +.5i
+[
+.B \-u
+.I myusername
+]
+[
+.B -h
+ipr
+]
+[
+.B -T
+amn
+]
+.if n .ti +.5i
+[
+.B \-p
+.I publickey_infile
+]
+[
+.B \-s
+.I privatekey_infile
+]
+.if n .ti +.5i
+[
+.B \-H
+.I home_directory
+]
+.if n .ti +.5i
+[
+.B \-k
+.I {key_to_private_key|-}
+]
+[
+.B \-K
+.I {new_key}
+]
+.if n .ti +.5i
+[
+.B -P
+.I publickey_outfile
+]
+[
+.B -S 
+.I privatekey_outfile
+]
+.if n .ti +.5i
+[
+.B -y 
+.I pub_key_server_name
+]
+[
+.B -Y 
+.I fs
+]
+.if n .ti +.5i
+[
+.B \-i
+.I infile
+]
+[
+.B -o
+.I outfile
+]
+.if n .ti +.5i
+[
+.B \-D
+.I debug_level
+]
+[
+.B -Z
+.I debug_file
+]
+.if n .ti +.5i
+[
+.B -R
+.I cfkms
+]
+[
+.B -F
+.I random_file
+]
+.\".if n .ti +.5i
+[
+.B -C
+.I random_string
+]
+.if n .ti +.5i
+.I <in
+.I >out
+.SH RIPEM Execution Mode Options
+
+.TP
+.B \-e
+.I (encipher)
+means apply the transformations specified by the "-m" option to the
+input, writing to output an encapsulated message suitable for
+inclusion in an electronic mail message.
+.TP
+.B \-d
+.I (decipher)
+means produce plaintext from the input file, which is expected
+to contain an encapsulated PEM-style message.  Depending upon
+the headers in the message, this may not actually require decryption.
+Also check the message signature, if present.
+.TP
+.B \-g
+.I (generate)
+means generate an RSA key.  The private component will be written
+to the file specified by the "-S" option.
+The public component will be written to the file specified
+by the "-P" option.  If -P is not specified, the key
+is written to a file in the RIPEM home directory.
+Take care not to accidentally overwrite
+your public key database.  Note: key generation can be a
+time-consuming process.
+.TP
+.B \-c
+.I (change)
+means change the key to your private key.
+The reencrypted private component will be written 
+to the file specified by the "-S" option.
+If -S is not specified, the key
+is written to a file in the RIPEM home directory.
+The public component is not touched.
+.SH Other RIPEM Options
+
+.\" --------   -A    --------
+.TP 
+.B -A
+.I (Algorithm)
+specifies the data encryption algorithm.  Used only with "-e".
+The legal values are "des-cbc", which is the default well-known
+DES in Cipher Block Chaining mode, and "des-ede-cbc".
+The latter specifies Encrypt-Decrypt-Encrypt "Triple-DES"
+as suggested by IBM a few
+years ago.  Each 64-bit block is enciphered with one 56-bit key,
+deciphered with a second 56-bit key, and enciphered again with the
+first 56-bit key.  Cipher Block Chaining is applied only after all
+three operations have been done.  The result is effectively 
+a 112-bit key, much more difficult to exhaustively search
+than single-DES.
+
+Note that EDE-CBC mode is not widely used, and that there is 
+even some disagreement as to just what cryptographic operations
+should be implied by this appellation.  Use EDE-CBC mode only when
+data security is much more important than compatibility, as
+EDE-CBC is not yet a PEM standard.
+.\" --------   -b    --------
+.TP
+.B -b
+.I (bits)
+specifies the number of bits desired in the public key
+being created.  Used only with the "-g" option.
+Must be in the range 508 to 1024.
+The default is a pseudorandom number of bits between 512 and 523.
+.\" --------   -C    --------
+.TP
+.B -C
+.I (command line)
+specifies that the remainder of the command line
+consists of pseudo-random strings to be used to construct
+message keys and so on.  This option must be the last
+option on the command line, as any arguments following it
+will be used only as pseudo-random data.
+
+The "-C" option should be used, when possible, with the
+command substitution capabilities of command shells such as
+Unix's C Shell.  The sequence "-C `ps -aux` `finger` `df`" would
+generate a reasonable amount of pseudo-random data on many
+Unix systems.
+.\" --------   -D    --------
+.TP
+.B -D
+.I (debug)
+specifies the debug level.  0 disables debug output; larger values
+(up to about 4) specify increasing amounts of debug output.
+The output is written to the destination specified by the "-Z" option.
+The default level is 1, which gives
+you only messages regarding the key status of recipients and senders.
+.\" --------   -F    --------
+.TP
+.B -F
+.I (file)
+specifies the name of a file containing pseudo-random information.
+Used only for the "-e" and "-g" options.
+A pseudo-random amount of data from this file, selected from
+pseudo-random locations in the file, will be used as a source
+of pseudo-random initializing data for message keys and so on.
+The file is used only if the "f" suboption of the "-R" option
+is specified.
+ 
+If -F is not given on the
+command line, RIPEM uses the file randomin in the RIPEM home directory.  
+The random input file is checked for in this
+order: -F in RIPEM_ARGS, -F on the command line, randomin in the RIPEM
+home dir, and finally RIPEM_RANDOM_FILE environment variable.
+.\" --------   -H   ---------
+.TP
+.B -H
+.I (home directory)
+specifies 
+the RIPEM home directory where all the user's "local" data is kept,
+including the private key and certificates created by the user.  
+The public
+and private keys files in the RIPEM home directory are searched before
+files given by -p and -s.
+
+If -H is not specified, the value of the environment variable 
+RIPEM_HOME_DIR is used.
+.\" --------   -h   ---------
+.TP
+.B -h
+.I (header)
+specifies options for enciphering messages that contain mail headers.
+Used only with the "-e" option.
+Following -h must be a string of option letters selected from below:
+.in 10  
+.\".TP 
+i
+.in 15
+(include)
+means include the message headers as part of the plaintext message--that
+is, enciper them.
+.in 10
+p
+.in 15
+(prepend)
+means place the unenciphered message headers at the beginning of the
+enciphered output, before the first Privacy Enhance Message Boundary.
+This option is useful when using RIPEM as a filter for messages
+that will be fed directly to a mailer.
+.in 10
+r
+.in 15
+(recipients)
+means scan the message headers for 
+"To:" and "cc:" lines, and add these recipients to 
+the recipient list.  
+.in -.5
+.\" --------   -i    --------
+.TP
+.B -i
+.I (input)
+specifies input file.  Used by the "-e" and "-d" options.
+Default is standard input.
+.\" --------   -K    --------
+.TP
+.B -K
+.I (new key)
+specifies the new key used when changing the key to the private key.
+Normally, RIPEM prompts the user interactively for the new key.
+-K is intended to be used by wrapper programs that invoke RIPEM.
+Use care with the -K and -k options, as you may inadvertantly
+reveal the key to your private key to individuals snooping 
+on your computer.
+.\" --------   -k    --------
+.TP
+.B -k
+.I (key)
+specifies the key used to encrypt the RSA private key
+that resides in the file referenced by the "-s" option.
+If the "-k" option is not used, RIPEM looks for a non-empty
+environment variable named "RIPEM_KEY_TO_PRIVATE_KEY"; if
+it is found, its value is used as the key to decrypt the
+private component of the user's public key.
+If neither the "-k" option nor the environment variable
+can be found, RIPEM prompts the user interactively
+for the private key.  Use of the "-k" option on a multiuser
+system is discouraged, as it increases the chances that another
+user can discover the key to your private key.
+
+As a special case, if the key is specified as "-", RIPEM will
+read the first line from standard input and use it as the key the
+the private key.
+This capability is intended for use by programs that invoke
+RIPEM.
+.\" --------   -m    --------
+.TP
+.B -m
+.I (mode)
+specifies the mode of the outgoing encrypted message.
+Used only with the "-e" option.
+
+"encrypted" specifies that the message is to be encrypted
+using DES in CBC mode, and that the message is to be
+"signed" computing a message digest of the input message,
+encrypting the digest with the sender's private key, and
+including the result in the outgoing message.  The
+encrypted text of the message is encoded in RFC 1421 printable
+form and included in the output.  (RFC 1421 printable form
+is similar to the well-known "uuencoding" format, but differs
+in a few details.)  The MD5 message digest is always used
+upon output, but incoming messages using the MD2 algorithm
+can be processed correctly.
+
+"mic-only" specifies that the message is to be signed as
+described above, but not encrypted.  The text of the message
+is encoded in RFC 1421 form.  This option provides authentication
+but no confidentiality.
+
+"mic-clear" specifies that the message is to be signed as
+described above.  The text of the message is neither encrypted
+nor printably encoded, so the text of the message can be
+read by anyone with any standard mail program.
+.\" --------   -o    --------
+.TP
+.B -o
+.I (output)
+specifies output file.  Used by the "-e" and "-d" options.
+Default is standard output.
+.\" --------   -P    --------
+.TP
+.B -P
+.I (public key output)
+specifies the file name to which a public key should be written.
+Used by the "-g" option, and by "-d" when RIPEM extracts public keys
+from the headers of messages being decrypted.  (It does this only when
+it cannot find a record of the public key elsewhere.)
+To prevent inadvertant
+overwriting of existing files, there is no default for this argument.
+When this file is written to in "-d" mode, it is appended to;
+in "-g" mode, it is overwritten.
+.\" --------   -p    --------
+.TP
+.B -p
+.I (public key)
+specifies a file containing the public components of users' RSA
+public keys,
+indexed by user name. Read when the "-e" or "-d" options
+are used.
+If -p is not specified, the program looks for an environment
+variable named RIPEM_PUBLIC_KEY_FILE; if found, its value is used
+as the file name; otherwise, the name defaults to
+"/usr/local/etc/rpubkeys" for Unix, or \RIPEMPUB for MS-DOS.
+
+Multiple values can be specified; RIPEM will search these public
+key files in the order specified until a desired key is found.
+.\" --------   -R    --------
+.TP
+.B -R
+.I (random)
+specifies the source(s) of pseudo-random input used by RIPEM
+to generate message keys, initialization vectors, and RSA keys.
+Used only with the "-e" and "-g" options.
+Following -R must be a string of option letters selected from below:
+.in 10  
+.\".TP 
+c
+.in 15
+(command)
+means use information from the command-line
+"-C" option.
+.in 10  
+.\".TP 
+e
+.in 15
+(entire)
+means use information from the entire command line.
+.in 10
+f
+.in 15
+(file)
+means read information from a file; see the
+"-F" option.
+.in 10
+k
+.in 15
+.ti +0i
+(keyboard) means prompt the user for a string typed
+at the keyboard.
+.in 10
+m
+.in 15
+.ti +0i
+(message) means take characters from the input plaintext message
+as pseudo-random input.  (For -e only.)
+.in 10
+s
+.in 15
+(system) means query the system for system-dependent
+information.  The type and "randomness" of this information
+depend upon both the specific computer and the
+port of RIPEM that you are using.
+
+.in 10
+Default is "efms", but command line and file data
+are not used if the "-C" and "-F" arguments are not present.
+.in -.5
+.\" --------   -r    --------
+.TP
+.B \-r
+.I (recipient)
+specifies the user to whom the message is being sent.  Used only
+with the "-e" option. The recipient name is usually specified
+as a complete email address.
+The recipient name is used to lookup the recipient's public
+key component.  Multiple recipients can be specified,
+each with a separate "-r" option. 
+.\" --------   -S    --------
+.TP
+.B -S
+.I (secret key output)
+specifies the file name to which the encrypted secret key should
+be written.  Used only by the "-g" option.  To prevent inadvertant
+overwriting of existing files, there is no default for this argument.
+.\" --------   -s    --------
+.TP
+.B -s
+.I (secret key)
+specifies the file containing the secret (or private) component of
+the RSA public key.  Read when the "-d" or "-e" options
+are used.
+If -s is not specified, the program looks for an environment
+variable named RIPEM_PRIVATE_KEY_FILE; if found, its value is used as
+the file name; otherwise, the name defaults to "~/.ripemprv"
+for Unix or "\RIPEMPRV" for MS-DOS.
+.\" ------------------------------
+.\" --------   -T    --------
+.TP
+.B -T
+.I (recipienT options)
+specifies options related to the processing of recipients.
+Following -T must be a string of option letters selected from below:
+.in 10  
+.\".TP 
+a
+.in 15
+(abort)
+specifies that RIPEM should unconditionally abort if, while in -e mode,
+it is unable to find the public key of one or more recipients.
+The default is to prompt the user for what to do.
+.in 10
+m
+.in 15
+(me)
+specifies that RIPEM should include the user as a recipient if
+encrypting in "-m encrypted" mode.
+.in 10
+n
+.in 15
+(none)
+specifies that RIPEM should clear the conditions that would be 
+specified by "a" and "m" above.
+.in -.5
+.\" --------   -u    --------
+.TP
+.B -u
+.I (username)
+specifies your username--actually, your email address.
+For encipherment, the username is simply placed in the message
+header to inform the recipient of the sender's username.
+For decipherment, the message header is searched for the username
+so that
+.B RIPEM
+will know which version of the message key to decrypt.
+
+If "-u" is not specified, RIPEM uses the value of
+the environment variable RIPEM_USER_NAME, if non-empty.
+Otherwise, the username
+defaults to <loginname>@<hostname> or "me" under MS-DOS
+and most other operating systems.
+
+The username can be specified as a comma-separated list of names.
+In this case, the first name in the list is used as your username
+for -g and -e.  For -d,  
+.B RIPEM
+will look for a recipient line that matches any of the names
+specified in the list.  This is useful if you have several 
+email addresses that you wish RIPEM to regard as equivalent.
+\" --------   -v    --------
+.TP
+.B -v
+.I (valid months)
+specified the number of valid months for self-signed
+certificates (during key generation and change password) and new
+validation certificates created when receiving.  For key generation
+and change password, -v is optional and defaults to 24 months.
+\" --------   -Y    --------
+.TP
+.B -Y
+.I (key sources)
+specifies the source(s) RIPEM should use to obtain public keys.
+Following -Y must be a string of option letters selected from below.
+The sources are contacted in the order given; if a key cannot be obtained
+from the first source, the second source, if any, is used.
+Default is "sf".
+.in 10
+f
+.in 15
+specifies that RIPEM should look in the public key file; see the -p option.
+.in 10
+s
+.in 15
+specifies that RIPEM should contact a network RIPEM key server; see the
+-y option.  
+.in 10
+g
+.in 15
+specifies that RIPEM should attempt to contact the recipient's host
+via "finger" to obtain the public key.  The recipient must have included
+the -P output from "ripem -g" in his/her ".plan" file.
+.in -1.0
+.\" --------   -y    --------
+.TP
+.B -y
+.I (server)
+specifies the domain name of an Internet RIPEM key server.
+Depending upon the value of the -Y option, RIPEM may try to contact
+this server to obtain public keys.  The default server port is 1611;
+to override this, follow the name of the server with a ":" followed
+by the server port number in decimal.
+This feature may be disabled on some platforms, depending upon
+the development and networking environment.
+If -y is not specified, the value of the environment variable RIPEM_SERVER_NAME,
+if any, is used.  There is no default value.
+
+If -y is specified as a comma-separated list of servers, when consulting a
+key server RIPEM
+will try the servers in the order listed until the desired key
+is obtained.
+.\" --------   -Z    --------
+.TP
+.B -Z
+.I (debug output)
+specifies the file to which debug output, if any, should be written.
+The default is standard error.
+
+
+.in -5
+If the environment variable RIPEM_ARGS is present,
+ripem uses its value to obtain additional command-line
+options.  Any conflicts are resolved in favor of the actual
+command-line arguments.
+.SH DESCRIPTION
+.B RIPEM
+implements a filter to process messages as part of a
+public key (asymmetric) cryptography
+privacy-enhanced mail system.
+
+RIPEM is expected to be used primarily to encrypt and
+decrypt text to be embedded in electronic mail messages.
+However, it also has two "sign-only" modes in which
+an authentication check is added to the message, but
+no encryption of the message itself takes place.
+RIPEM can also be used to generate RSA public keypairs.
+
+The techniques and data formats used by RIPEM are as compatible
+as possible
+with Privacy-Enhanced Mail Internet RFCs 1421-1424.
+However, there is no support for "certificates", so RIPEM is
+not really compatible with PEM as described in those documents.
+
+Briefly, messages are encrypted using a traditional
+private key (symmetric)
+cipher (DES in CBC mode) with a message key generated pseudo-randomly,
+enciphered using the RSA public key (asymmetric) system,
+and included with the ciphertext of the
+message.  A checksum or "message digest" of the plaintext
+is computed, encrypted with public key cryptography,
+and included in the ciphertext of the message.
+For more information, read the RFCs (available
+at many Internet sites) and the Public-Key Cryptography
+Standards (available from rsa.com as "pkcs" files).
+
+When RIPEM exits, it returns a status of 0 indicating
+successful completion, else a non-zero error code indicating
+that a problem occured.  In the latter case, an error message
+is written to standard error.
+.SH FILES
+RIPEM uses:
+
+An input file or stream containing a message to process (i.e., encipher /
+decipher / verify signature).
+
+An output file or stream from the processing.
+
+A file containing the user's encrypted private RSA key.
+
+A file containing the unencrypted public keys of potentially
+many users.
+.SH BUGS
+Due to the nature of RSAREF, RIPEM must keep the entire message
+and its encrypted version in memory at the same time.  This may
+place an uncomfortable upper limit on the size of messages on
+some platforms.
+.SH HISTORY
+Written in May - July 1992, with subsequent revisions.
+Uses RSAREF 1.0, which was released
+in March 1992.
+
+RIPEM itself is in the public domain.  However, it requires
+the RSAREF toolkit from RSA Data Security, Inc.  RSAREF
+is distributed freely for personal use within the USA,
+but is not in the public domain.  Contact RSA Data Security
+for terms and conditions.
+
+Authors:
+
+Mark Riordan         mrr@scss3.cl.msu.edu
+.in +.5
+Principal author; wrote most of the non-cryptographic routines,
+based in part on earlier work by the same author.  Send comments
+here.
+
+RSA Data Security    rsaref-info@rsa.com
+.in +.5
+Wrote and distributed RSAREF 1.0, the cryptographic toolkit
+used here.  Also, separately, designed and implemented
+the MD5 message digest algorithm.
+
+Raymond Lau          raylau@mit.edu
+.in +.5
+Wrote the Macintosh version of RIPEM.  This document does not
+apply to the Macintosh version.
+
+Jeff Thompson        jefft@netcom.com
+.in +.5
+Added certificate support, based partly on Ray's Mac code.
+
+Mark Henderson, 
+Richard Outerbridge,
+Marc VanHeyningen, 
+Greg Onufer, 
+Mark Windsor, 
+and many others also
+contributed.

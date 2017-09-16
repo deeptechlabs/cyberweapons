@@ -1,0 +1,72 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+
+
+	First, you must have a copy of the Python interpreter.  The
+current version is 1.3, and can be obtained from one of the following sites:
+
+Site			IP address 	Directory
+
+ftp.python.org          132.151.1.76    /pub/python
+gatekeeper.dec.com	16.1.0.2	/pub/plan/python
+ftp.uu.net		192.48.96.9	/languages/python
+ftp.wustl.edu		128.252.135.4	/graphics/graphics/sgi-stuff/python
+ftp.funet.fi		128.214.6.100	/pub/languages/python
+ftp.fu-berlin.de	130.133.1.18	/unix/languages/python (*python* only)
+ftp.sunet.se		130.238.127.3	/pub/lang/python
+unix.hensa.ac.uk	129.12.43.16	/uunet/languages/python
+ftp.sterlng.com         192.124.9.3     /programming/languages/python
+
+	Building the interpreter is fairly simple; simply run the
+configuration script, and then run "make".  Detailed instructions will
+be included in the interpreter distribution.  IMPORTANT: You must
+already have Python running to build the cryptography modules.  Be
+sure to run the "libainstall" and "inclinstall" targets, to install
+various libraries and *.h files needed to compile modified versions of
+the Python interpreter.
+	
+	Once Python has been built, unpack the pycrypt.tar file while
+in the top directory of the Python source distribution.  The tar file
+contains two directories, located at Extensions/Crypto and
+Demos/crypto.  Change to the Extensions/Crypto directory and edit
+Setup to comment out any modules you don't want to build.  Then run
+"make".  A special copy of the python interpreter will be built and
+left in the current directory, containing the selected modules.  You
+could also copy the source files to the Modules subdirectory, or
+prepare them for dynamic linking, if your interpreter supports
+dynamically linked modules.
+
+	Copy the *.py files in Lib/ to a Python library directory.
+The ftplib.py, httplib.py, nntplib.py, and urllib.py are modified
+versions of those distributed with Python 1.3; if you're running a
+later version of Python, contact me to get updated versions.
+
+	To verify that everything is in order, run
+Extensions/Crypto/test.py.  It will test all the cryptographic
+modules, skipping ones that aren't available.  If the test script
+reports an error on your machine, please inform me immediately,
+because that means there's a serious bug in the cryptographic
+routines.  (Or track down the bug and send me a patch.)  test.py also
+runs a crude benchmark, and will give you an impression of the
+comparative speeds of the algorithms and feedback modes.
+Lib/testpk.py tests the public-key algorithms.
+
+	If you have any comments, corrections, or improvements for
+this package, please e-mail me at the address below.  
+
+	Good luck!
+
+
+	Andrew Kuchling
+	andrewk@cst.ca
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.2
+
+iQCVAwUBML61igRXhWZuGe+lAQEtxAQAl8sG6AtxhBKI+rdsLfRsFjCZn8B++nnd
+wOIbMJJQ+SdZnkWbxLTExgj7/z1pW4gNOsxZrjtz2ZJ1oV8+mr1LG0rUBhgayBaA
+I/+ByUZ7AM8tAKhB8SYs7AA/Qx+tyjD7MaMFbA+XlYnjJlYEk1QceVw9bmvrLu1m
+o0Kr0MRBUS4=
+=NWes
+-----END PGP SIGNATURE-----

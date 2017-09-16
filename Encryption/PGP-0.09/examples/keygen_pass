@@ -1,0 +1,68 @@
+#!/usr/local/bin/perl -w -I.. -I/home/TheCrypt/perlmod2
+
+use strict;
+use Getopt::Long;
+
+use PGP::UserId;
+use PGP::CmdLine;
+use Math::PseudoRandomStream;
+use PGP::PublicKeyRingEntry;
+use PGP::SecretKeyCertificate;
+use Crypt::SHA;
+use Crypt::CSRandomStream;
+
+
+my $size = 1024;
+my $name;
+my $passphrase;
+
+my %opts = (
+	'-size=i' => \$size,
+	'-id=s' => \$name,
+	'-passphrase=s' => \$passphrase,
+);
+
+sub usage
+{
+    my $progname = $0;
+	$progname =~ s,.*/,,;
+	die "Usage: $progname [-passphrase=<passphrase>] [-size=1024] -id=<your name>\n";
+}
+
+GetOptions(%opts) || usage "Options Failed" ;
+defined $name || usage();
+
+
+my $ui = new PGP::CmdLine;
+
+unless (defined $passphrase)
+{
+	$passphrase = $ui->getNewPassphrase();
+}
+
+#
+#	Create a random input stream from passphrase
+#
+# my $ris = new Math::PseudoRandomStream Crypt::SHA->hash($passphrase)->data();
+my $ris = new Crypt::CSRandomStream Crypt::SHA->hash($passphrase)->data();
+ref($ris) || die $ris;
+
+
+
+my $skc = generate PGP::SecretKeyCertificate(
+			-size => $size,
+			-ris => $ris
+		);
+ref($skc) || die $skc;
+
+my $id = new PGP::UserId "$name";
+ref $id || die $id;
+
+my $pkc = $skc->publicKeyCertificate();
+ref $pkc || die $pkc;
+
+my $key = new PGP::PublicKeyRingEntry $pkc;
+ref $key || die $key;
+$key->addId($id);
+
+print $pkc->asString(), "\n";

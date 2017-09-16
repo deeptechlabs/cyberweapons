@@ -1,0 +1,20 @@
+-*- text -*-
+Copyright 1989 Antti Louko. All Rights Reserved.
+
+This is an arbitrary precision arithmetic implementation written by
+Antti Louko (alo@kampi.hut.fi). It is based partly on alogorithms in
+Knuth's book "Seminumerical algorithms". At this time you may use this
+program for non-commercial use. If you modify the program, you must
+add a comment in the modified file indicating who modified it. For
+commercial purposes please contact me.
+
+If you find bugs or otherwise modify this program, please send
+changes back to me.
+
+This package will be (I hope) part of the next BSD release. This
+means that the above copyright will be most probably changed to a less
+restrictive one.
+
+In any case, I would greatly appreciate if I would get credit for
+development of this package and support to develop more cryptographic
+software which can be used all over the world.

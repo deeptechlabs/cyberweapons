@@ -1,0 +1,38 @@
+#
+# Generate a 1024-bit key pair.
+#
+g
+1024
+1024.key
+#
+# Sign and verify with MD5.
+# All operations in this script use the new key pair.
+#
+s
+file
+3
+5
+1024-5.sig
+v
+file
+3
+5
+1024-5.sig
+#
+# Seal and open with DES.
+#
+e
+file
+1024-1.env
+3
+1
+1024-1.key
+1024-1.iv
+o
+1024-1.env
+-
+3
+1
+1024-1.key
+1024-1.iv
+q

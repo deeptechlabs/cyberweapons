@@ -1,0 +1,5060 @@
+%!PS
+%%Version: 3.3.2
+%%DocumentFonts: (atend)
+%%Pages: (atend)
+%%EndComments
+%
+% Version 3.3.2 prologue for troff files.
+%
+
+/#copies 1 store
+/aspectratio 1 def
+/formsperpage 1 def
+/landscape false def
+/linewidth .3 def
+/magnification 1 def
+/margin 0 def
+/orientation 0 def
+/resolution 720 def
+/rotation 1 def
+/xoffset 0 def
+/yoffset 0 def
+
+/roundpage true def
+/useclippath true def
+/pagebbox [0 0 612 792] def
+
+/R  /Times-Roman def
+/I  /Times-Italic def
+/B  /Times-Bold def
+/BI /Times-BoldItalic def
+/H  /Helvetica def
+/HI /Helvetica-Oblique def
+/HB /Helvetica-Bold def
+/HX /Helvetica-BoldOblique def
+/CW /Courier def
+/CO /Courier def
+/CI /Courier-Oblique def
+/CB /Courier-Bold def
+/CX /Courier-BoldOblique def
+/PA /Palatino-Roman def
+/PI /Palatino-Italic def
+/PB /Palatino-Bold def
+/PX /Palatino-BoldItalic def
+/Hr /Helvetica-Narrow def
+/Hi /Helvetica-Narrow-Oblique def
+/Hb /Helvetica-Narrow-Bold def
+/Hx /Helvetica-Narrow-BoldOblique def
+/KR /Bookman-Light def
+/KI /Bookman-LightItalic def
+/KB /Bookman-Demi def
+/KX /Bookman-DemiItalic def
+/AR /AvantGarde-Book def
+/AI /AvantGarde-BookOblique def
+/AB /AvantGarde-Demi def
+/AX /AvantGarde-DemiOblique def
+/NR /NewCenturySchlbk-Roman def
+/NI /NewCenturySchlbk-Italic def
+/NB /NewCenturySchlbk-Bold def
+/NX /NewCenturySchlbk-BoldItalic def
+/ZD /ZapfDingbats def
+/ZI /ZapfChancery-MediumItalic def
+/S  /S def
+/S1 /S1 def
+/GR /Symbol def
+
+/inch {72 mul} bind def
+/min {2 copy gt {exch} if pop} bind def
+
+/setup {
+	counttomark 2 idiv {def} repeat pop
+
+	landscape {/orientation 90 orientation add def} if
+	/scaling 72 resolution div def
+	linewidth setlinewidth
+	1 setlinecap
+
+	pagedimensions
+	xcenter ycenter translate
+	orientation rotation mul rotate
+	width 2 div neg height 2 div translate
+	xoffset inch yoffset inch neg translate
+	margin 2 div dup neg translate
+	magnification dup aspectratio mul scale
+	scaling scaling scale
+
+	addmetrics
+	0 0 moveto
+} def
+
+/pagedimensions {
+	useclippath userdict /gotpagebbox known not and {
+		/pagebbox [clippath pathbbox newpath] def
+		roundpage currentdict /roundpagebbox known and {roundpagebbox} if
+	} if
+	pagebbox aload pop
+	4 -1 roll exch 4 1 roll 4 copy
+	landscape {4 2 roll} if
+	sub /width exch def
+	sub /height exch def
+	add 2 div /xcenter exch def
+	add 2 div /ycenter exch def
+	userdict /gotpagebbox true put
+} def
+
+/addmetrics {
+	/Symbol /S null Sdefs cf
+	/Times-Roman /S1 StandardEncoding dup length array copy S1defs cf
+} def
+
+/pagesetup {
+	/page exch def
+	currentdict /pagedict known currentdict page known and {
+		page load pagedict exch get cvx exec
+	} if
+} def
+
+/decodingdefs [
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg /y exch def counttomark 2 idiv {y moveto show} repeat}
+	{neg moveto {2 index stringwidth pop sub exch div 0 32 4 -1 roll widthshow} repeat}
+	{neg moveto {spacewidth sub 0.0 32 4 -1 roll widthshow} repeat}
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg setfunnytext}
+] def
+
+/setdecoding {/t decodingdefs 3 -1 roll get bind def} bind def
+
+/w {neg moveto show} bind def
+/m {neg dup /y exch def moveto} bind def
+/done {/lastpage where {pop lastpage} if} def
+
+/f {
+	dup /font exch def findfont exch
+	dup /ptsize exch def scaling div dup /size exch def scalefont setfont
+	linewidth ptsize mul scaling 10 mul div setlinewidth
+	/spacewidth ( ) stringwidth pop def
+} bind def
+
+/changefont {
+	/fontheight exch def
+	/fontslant exch def
+	currentfont [
+		1 0
+		fontheight ptsize div fontslant sin mul fontslant cos div
+		fontheight ptsize div
+		0 0
+	] makefont setfont
+} bind def
+
+/sf {f} bind def
+
+/cf {
+	dup length 2 idiv
+	/entries exch def
+	/chtab exch def
+	/newencoding exch def
+	/newfont exch def
+
+	findfont dup length 1 add dict
+	/newdict exch def
+	{1 index /FID ne {newdict 3 1 roll put}{pop pop} ifelse} forall
+
+	newencoding type /arraytype eq {newdict /Encoding newencoding put} if
+
+	newdict /Metrics entries dict put
+	newdict /Metrics get
+	begin
+		chtab aload pop
+		1 1 entries {pop def} for
+		newfont newdict definefont pop
+	end
+} bind def
+
+%
+% A few arrays used to adjust reference points and character widths in some
+% of the printer resident fonts. If square roots are too high try changing
+% the lines describing /radical and /radicalex to,
+%
+%	/radical	[0 -75 550 0]
+%	/radicalex	[-50 -75 500 0]
+%
+% Move braceleftbt a bit - default PostScript character is off a bit.
+%
+
+/Sdefs [
+	/bracketlefttp		[201 500]
+	/bracketleftbt		[201 500]
+	/bracketrighttp		[-81 380]
+	/bracketrightbt		[-83 380]
+	/braceleftbt		[203 490]
+	/bracketrightex		[220 -125 500 0]
+	/radical		[0 0 550 0]
+	/radicalex		[-50 0 500 0]
+	/parenleftex		[-20 -170 0 0]
+	/integral		[100 -50 500 0]
+	/infinity		[10 -75 730 0]
+] def
+
+/S1defs [
+	/underscore		[0 80 500 0]
+	/endash			[7 90 650 0]
+] def
+%
+% Tries to round clipping path dimensions, as stored in array pagebbox, so they
+% match one of the known sizes in the papersizes array. Lower left coordinates
+% are always set to 0.
+%
+
+/roundpagebbox {
+    7 dict begin
+	/papersizes [8.5 inch 11 inch 14 inch 17 inch] def
+
+	/mappapersize {
+		/val exch def
+		/slop .5 inch def
+		/diff slop def
+		/j 0 def
+		0 1 papersizes length 1 sub {
+			/i exch def
+			papersizes i get val sub abs
+			dup diff le {/diff exch def /j i def} {pop} ifelse
+		} for
+		diff slop lt {papersizes j get} {val} ifelse
+	} def
+
+	pagebbox 0 0 put
+	pagebbox 1 0 put
+	pagebbox dup 2 get mappapersize 2 exch put
+	pagebbox dup 3 get mappapersize 3 exch put
+    end
+} bind def
+
+%%EndProlog
+%%BeginSetup
+mark
+/resolution 720 def
+setup
+2 setdecoding
+%%EndSetup
+%%Page: 1 1
+/saveobj save def
+mark
+1 pagesetup
+9 B f
+( \( 3BM \))3 271( DSA)1 1761( System V)2 386( UNIX)1 1811(DSA \( 3BM \))3 451 5 540 480 t
+(NAME)540 960 w
+10 R f
+( randBytesNeededForDSAKeySet, randBytes-)2 1933(DSASign, DSAVerify, randBytesNeededForDSAParams,)2 2387 2 900 1080 t
+(NeededForDSASign)900 1200 w
+9 B f
+(SYNOPSIS)540 1368 w
+10 B f
+(#include)900 1488 w
+10 S f
+(<)1287 1488 w
+10 B f
+(libcrypt.h)1342 1488 w
+10 S f
+(>)1762 1488 w
+10 B f
+(int randBytesNeededForDSAParams\(int primebits, int facbits\))4 2673 1 900 1656 t
+(int randBytesNeededForDSAKeySet\(int facbits\))2 2048 1 900 1824 t
+(int randBytesNeededForDSASign\(int facbits\))2 1933 1 900 1992 t
+(DSAParams)900 2160 w
+10 S f
+(*)1452 2160 w
+10 B f
+(genDSAParams\(int primebits, int facbits, BigInt randomStart\))5 2674 1 1502 2160 t
+(DSAKeySet)900 2328 w
+10 S f
+(*)1430 2328 w
+10 B f
+(genDSAKeySet\(DSAParams)1480 2328 w
+10 S f
+(*)2720 2328 w
+10 B f
+(params, int pbits, int qbits, BigInt randomStart\))6 2066 1 2770 2328 t
+(DSASignature)900 2496 w
+10 S f
+(*)1542 2496 w
+10 B f
+(DSASign\(BigInt m, DSAPrivateKey)2 1536 1 1592 2496 t
+10 S f
+(*)3153 2496 w
+10 B f
+(key, BigInt randomStart\))2 1086 1 3203 2496 t
+(DSASignature)900 2664 w
+10 S f
+(*)1542 2664 w
+10 B f
+(quantized)1592 2664 w
+10 S f
+(_)2015 2664 w
+10 B f
+(DSASign\(BigInt m, DSAPrivateKey)2 1536 1 2065 2664 t
+10 S f
+(*)3626 2664 w
+10 B f
+(key, BigInt randomStart\))2 1086 1 3676 2664 t
+(Boolean DSAVerify\(BigInt m, DSASignature)3 1922 1 900 2832 t
+10 S f
+(*)2847 2832 w
+10 B f
+(sig, DSAPublicKey)1 812 1 2897 2832 t
+10 S f
+(*)3734 2832 w
+10 B f
+(key\))3784 2832 w
+9 B f
+(DESCRIPTION)540 3000 w
+10 R f
+(For all of these functions)4 1003 1 900 3120 t
+10 I f
+(BigInt)1930 3120 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 3120 t
+10 I f
+(BigInts)3822 3120 w
+10 R f
+(.)4111 3120 w
+10 I f
+(bigInit)4188 3120 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 3120 t
+(for initialization of empty)3 1048 1 900 3240 t
+10 I f
+(BigInts)1979 3240 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 3240 t
+(care of the space allocation.)4 1110 1 900 3360 t
+(In all of the function which have an argument,)8 1881 1 900 3600 t
+10 I f
+(randomStart)2810 3600 w
+10 R f
+( is chosen NULL, the default,)5 1209(, if this argument)3 695 2 3316 3600 t
+( If)1 130( to generate necessary random material.)5 1654(DES-based pseudo-RNG seeded with truerand\(\) will be used)7 2536 3 900 3720 t
+10 I f
+(randomStart)900 3840 w
+10 R f
+(is not NULL, the accompanying functions,)5 1712 1 1431 3840 t
+10 I f
+(randBytesNeededForEG...)3168 3840 w
+10 R f
+( out how)2 352(are used to \256nd)3 613 2 4255 3840 t
+(many random bytes are expected.)4 1338 1 900 3960 t
+(In all above functions,)3 908 1 900 4200 t
+10 I f
+(primebits)1838 4200 w
+10 R f
+( of bits in the modulus, and)6 1128(is the number)2 554 2 2246 4200 t
+10 I f
+(f acbits)1 275 1 3959 4200 t
+10 R f
+(is the number of bits in)5 955 1 4265 4200 t
+10 I f
+(p)900 4320 w
+10 S f
+(-)974 4320 w
+10 R f
+( these are 1024 and 160 respectively.)6 1477(1. Typically)1 508 2 1045 4320 t
+10 I f
+(genDSAParams)900 4560 w
+10 R f
+( is sometimes the)3 701( It)1 114(generates a prime p, a prime factor of p-1, and a primitive root mod p.)14 2839 3 1566 4560 t
+( reason for decoupling this from the)6 1461( is the)2 251( This)1 234(case that large groups will use the same set of parameters.)10 2374 4 900 4680 t
+(genKeySet routine which actually generates the secret exponent and public and private keys.)12 3700 1 900 4800 t
+( create digital signatures along the guidelines proposed by the National Institute of Stan-)13 3675(These functions)1 645 2 900 5040 t
+( keys are the same)4 743( The)1 208( cryptosystem is a variant of El Gamal systems.)8 1925( The)1 208( \(NIST\).)1 341(dards and Technology)2 895 6 900 5160 t
+( \(actually the El Gamal implementation uses)6 1824(as those used by our implementation of the El Gamal system)10 2496 2 900 5280 t
+(the key scheme suggested by NIST and Schnorr\).)7 1974 1 900 5400 t
+10 I f
+(DSASign)900 5640 w
+10 R f
+(generates a digital signature for message)5 1726 1 1306 5640 t
+10 I f
+(m)3078 5640 w
+10 R f
+( quantized version use)3 953( The)1 226(using a private key.)3 845 3 3196 5640 t
+(STD)900 5760 w
+10 S f
+(_)1089 5760 w
+10 R f
+( quantum for execution to defend against Kocher-style timing)8 2695(QUANTUM milliseconds as the)3 1386 2 1139 5760 t
+(attacks. STD)1 541 1 900 5880 t
+10 S f
+(_)1441 5880 w
+10 R f
+(QUANTUM is de\256ned in libcrypt.h and should be tuned to your environment.)11 3128 1 1491 5880 t
+10 I f
+( y)1 52(DSAVeri f)1 399 2 900 6120 t
+10 R f
+(veri\256es that a signature received with a message)7 1982 1 1384 6120 t
+10 I f
+(m)3399 6120 w
+10 R f
+( public key which corre-)4 1011(is valid using the)3 705 2 3504 6120 t
+(sponds to the private key used to generate the signature.)9 2235 1 900 6240 t
+(Usage example:)1 640 1 900 6480 t
+(randbytes = randBytesNeededForDSAParams\(1024, 160\);)3 2330 1 900 6720 t
+(BigInt randomStart = bigInit\(0\);)3 1292 1 900 6960 t
+(bigRand\(randbytes, randomStart, PSEUDO\);)2 1804 1 900 7200 t
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 1
+%%Page: 2 2
+/saveobj save def
+mark
+2 pagesetup
+9 B f
+( \( 3BM \))3 271( DSA)1 1761( System V)2 386( UNIX)1 1811(DSA \( 3BM \))3 451 5 540 480 t
+10 R f
+(params = genDSAParams\(1024, 160, randomStart\);)4 2070 1 900 960 t
+(randbytes = randBytesNeededForDSAKeySet\(160\);)2 2080 1 900 1200 t
+(bigRand\(randbytes, randomStart, PSEUDO\);)2 1804 1 900 1440 t
+(DSAKeys = genDSAKeySet\(params, 1024, 160, randomStart\);)5 2525 1 900 1680 t
+(To sign the SHS digest of \256le "foo":)7 1452 1 900 1920 t
+(randbytes = randBytesNeededForDSASign\(160\);)2 1970 1 900 2160 t
+(bigRand\(randbytes, randomStart, PSEUDO\);)2 1804 1 900 2400 t
+(BigInt mdigest = bigInit\(0\);)3 1115 1 900 2640 t
+(BigMessageDigest\("foo", mdigest, SHS\);)2 1665 1 900 2880 t
+(DSAsig = DSASign\(mdigest, DSAKeys-)3 1645 1 900 3120 t
+10 S f
+(>)2545 3120 w
+10 R f
+(DSAPrivateKey, randomStart\);)1 1254 1 2600 3120 t
+(To verify:)1 402 1 900 3480 t
+(BigInt mdigest = bigInit\(0\);)3 1115 1 900 3720 t
+(BigMessageDigest\("foo", mdigest, SHS\);)2 1665 1 900 3960 t
+(Boolean verify = DSAVerify\(mdigest, DSAsig, DSAKeys-)5 2367 1 900 4200 t
+10 S f
+(>)3267 4200 w
+10 R f
+(DSAPublicKey\);)3322 4200 w
+9 B f
+(SEE ALSO)1 453 1 540 4608 t
+10 B f
+(bigInit)900 4728 w
+10 R f
+(\(3BM\),)1190 4728 w
+10 B f
+(bigTest)1570 4728 w
+10 R f
+(\(3BM\),)1887 4728 w
+10 B f
+(bigBits)2267 4728 w
+10 R f
+(\(3BM\),)2568 4728 w
+10 B f
+(bigToBuf)2948 4728 w
+10 R f
+(\(3BM\),)3355 4728 w
+10 B f
+(bufToBig)3735 4728 w
+10 R f
+(\(3BM\),)4142 4728 w
+10 B f
+(fBigPrint)4523 4728 w
+10 R f
+(\(3BM\),)4923 4728 w
+10 B f
+(atobig)900 4848 w
+10 R f
+(\(3BM\),)1167 4848 w
+10 B f
+(bigPow)1638 4848 w
+10 R f
+(\(3BM\),)1955 4848 w
+10 B f
+(EGSign)2425 4848 w
+10 R f
+(\(3BM\),)2760 4848 w
+10 B f
+(EGVerify)3230 4848 w
+10 R f
+(\(3BM\),)3646 4848 w
+10 B f
+(genStrongPrimeSet)4116 4848 w
+10 R f
+(\(3BM\))4948 4848 w
+10 B f
+(start)900 4968 w
+10 S f
+(_)1099 4968 w
+10 B f
+(quantize)1149 4968 w
+10 R f
+(\(3BM\))1516 4968 w
+10 B f
+(end)1813 4968 w
+10 S f
+(_)1969 4968 w
+10 B f
+(quantize)2019 4968 w
+10 R f
+(\(3BM\))2386 4968 w
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 2
+%%Page: 1 3
+/saveobj save def
+mark
+3 pagesetup
+9 B f
+( \( 3BM \))3 271( FUNCTIONS)1 553( RSA)1 1208( System V)2 386( UNIX)1 1258( \( 3BM \))3 271(RSA FUNCTIONS)1 733 7 540 480 t
+(NAME)540 960 w
+10 R f
+( RSADecrypt, RSASign, RSAVer-)3 1448(genRSAKeySet, getRSAPublicKey, getRSAPrivateKey, RSAEncrypt,)3 2872 2 900 1080 t
+( freeRSASig, RSAPrivateKeyDesEncrypt, RSAPrivateKey-)3 2451(ify, randBytesNeededForRSA, freeRSAKeys,)2 1869 2 900 1200 t
+(DesDecrypt)900 1320 w
+9 B f
+(SYNOPSIS)540 1488 w
+10 B f
+(#include)900 1608 w
+10 S f
+(<)1287 1608 w
+10 B f
+(libcrypt.h)1342 1608 w
+10 S f
+(>)1762 1608 w
+10 B f
+(int randBytesNeededForRSA\(int modbits, int publicExpBits\))4 2605 1 900 1776 t
+(RSAKeySet)900 1944 w
+10 S f
+(*)1430 1944 w
+10 B f
+(genRSAKeySet\(modulusBits, publicExpBits, publicExponent, randomStart\))3 3249 1 1480 1944 t
+(int modulusBits, publicExpBits;)2 1368 1 900 2064 t
+(BigInt publicExponent;)1 1011 1 900 2184 t
+(BigInt randomStart;)1 886 1 900 2304 t
+(RSAPublicKey)900 2472 w
+10 S f
+(*)1570 2472 w
+10 B f
+(getRSAPublicKey\(RSAKeySet\))1620 2472 w
+(RSAKeySet)900 2592 w
+10 S f
+(*)1430 2592 w
+10 B f
+(RSAKeySet;)1480 2592 w
+(RSAPrivateKey)900 2760 w
+10 S f
+(*)1607 2760 w
+10 B f
+(getRSAPrivateKey\(RSAKeySet\))1657 2760 w
+(RSAKeySet)900 2880 w
+10 S f
+(*)1430 2880 w
+10 B f
+(RSAKeySet;)1480 2880 w
+(BigInt RSAEncrypt\(message, RSAPubKey\))2 1858 1 900 3048 t
+(BigInt message;)1 680 1 900 3168 t
+(RSAPublicKey)900 3288 w
+10 S f
+(*)1570 3288 w
+10 B f
+(RSAPubKey;)1620 3288 w
+(BigInt RSADecrypt\(message, RSAPrivKey\))2 1861 1 900 3456 t
+(BigInt message;)1 680 1 900 3576 t
+(RSAPrivateKey)900 3696 w
+10 S f
+(*)1607 3696 w
+10 B f
+(RSAPrivKey;)1657 3696 w
+(BigInt quantized)1 721 1 900 3864 t
+10 S f
+(_)1621 3864 w
+10 B f
+(RSADecrypt\(message, RSAPrivKey\))1 1563 1 1671 3864 t
+(BigInt message;)1 680 1 900 3984 t
+(RSAPrivateKey)900 4104 w
+10 S f
+(*)1607 4104 w
+10 B f
+(RSAPrivKey;)1657 4104 w
+(RSASignature)900 4272 w
+10 S f
+(*)1542 4272 w
+10 B f
+(RSASign\(message, RSAPrivKey\))1 1410 1 1592 4272 t
+(BigInt message;)1 680 1 900 4392 t
+(RSAPRivateKey)900 4512 w
+10 S f
+(*)1635 4512 w
+10 B f
+(RSAPrivKey;)1685 4512 w
+(RSASignature)900 4680 w
+10 S f
+(*)1542 4680 w
+10 B f
+(quantized)1592 4680 w
+10 S f
+(_)2015 4680 w
+10 B f
+(RSASign\(message, RSAPrivKey\))1 1410 1 2065 4680 t
+(BigInt message;)1 680 1 900 4800 t
+(RSAPRivateKey)900 4920 w
+10 S f
+(*)1635 4920 w
+10 B f
+(RSAPrivKey;)1685 4920 w
+(Boolean RSAVerify\(message, signature, RSAPubKey\))3 2301 1 900 5088 t
+(BigInt message;)1 680 1 900 5208 t
+(RSASignature)900 5328 w
+10 S f
+(*)1542 5328 w
+10 B f
+(signature;)1592 5328 w
+(RSAPublicKey)900 5448 w
+10 S f
+(*)1570 5448 w
+10 B f
+(RSAPubKey;)1620 5448 w
+(freeRSAKeys\(RSAKeySet\))900 5616 w
+(RSAKeySet)900 5736 w
+10 S f
+(*)1430 5736 w
+10 B f
+(RSAKeySet;)1480 5736 w
+(freeRSASig\(RSASig\))900 5904 w
+(RSASignature)900 6024 w
+10 S f
+(*)1542 6024 w
+10 B f
+(RSASig;)1592 6024 w
+(void RSAPrivateKeyDesEncrypt\(rsakey, deskey\))2 2084 1 900 6192 t
+(RSAPrivateKey)900 6312 w
+10 S f
+(*)1607 6312 w
+10 B f
+(rsakey;)1657 6312 w
+(unsigned char deskey[8];)2 1067 1 900 6432 t
+(void RSAPrivateKeyDesDecrypt\(rsakey, deskey\))2 2077 1 900 6600 t
+(RSAPrivateKey)900 6720 w
+10 S f
+(*)1607 6720 w
+10 B f
+(rsakey;)1657 6720 w
+(unsigned char deskey[8];)2 1067 1 900 6840 t
+9 B f
+(DESCRIPTION)540 7008 w
+10 R f
+(For all of these functions)4 1003 1 900 7128 t
+10 I f
+(BigInt)1930 7128 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 7128 t
+10 I f
+(BigInts)3822 7128 w
+10 R f
+(.)4111 7128 w
+10 I f
+(bigInit)4188 7128 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 7128 t
+(for initialization of empty)3 1048 1 900 7248 t
+10 I f
+(BigInts)1979 7248 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 7248 t
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 3
+%%Page: 2 4
+/saveobj save def
+mark
+4 pagesetup
+9 B f
+( \( 3BM \))3 271( FUNCTIONS)1 553( RSA)1 1208( System V)2 386( UNIX)1 1258( \( 3BM \))3 271(RSA FUNCTIONS)1 733 7 540 480 t
+10 R f
+(care of the space allocation.)4 1110 1 900 960 t
+( RSA cryptosystem in which a public exponent)7 1913(These functions assume the general)4 1431 2 900 1128 t
+10 I f
+(e)4273 1128 w
+10 R f
+(, a private exponent)3 799 1 4317 1128 t
+10 I f
+(d)5145 1128 w
+10 R f
+(,)5195 1128 w
+(and a modulus)2 589 1 900 1248 t
+10 I f
+(n)1517 1248 w
+10 R f
+( message)1 366( For)1 192(are needed to do encryption and decryption.)6 1772 3 1595 1248 t
+10 I f
+(m)3953 1248 w
+10 R f
+( calcu-)1 270(, encryption is done by)4 925 2 4025 1248 t
+(lating)900 1377 w
+10 I f
+(E)1164 1377 w
+10 R f
+(\()1233 1377 w
+10 I f
+(m)1274 1377 w
+10 R f
+(\))1354 1377 w
+10 S f
+(=)1403 1377 w
+10 I f
+(m)1474 1377 w
+9 I f
+(e)1557 1337 w
+10 I f
+(mod n)1 263 1 1605 1377 t
+10 R f
+(and decryption by calculating)3 1217 1 1904 1377 t
+10 I f
+(D)3157 1377 w
+10 R f
+(\()3237 1377 w
+10 I f
+(E)3278 1377 w
+10 R f
+(\()3347 1377 w
+10 I f
+(m)3388 1377 w
+10 R f
+(\) \))1 74 1 3468 1377 t
+10 S f
+(=)3558 1377 w
+10 I f
+(m)3629 1377 w
+10 S f
+(=)3725 1377 w
+10 I f
+(E)3796 1377 w
+10 R f
+(\()3865 1377 w
+10 I f
+(m)3906 1377 w
+10 R f
+(\))3986 1377 w
+9 I f
+(d)4030 1337 w
+10 I f
+(mod n)1 263 1 4083 1377 t
+10 R f
+( be)1 131( may)1 208(. Decryption)1 535 3 4346 1377 t
+(sped up using the Chinese Remainder Theorem if the factorization of)10 2762 1 900 1497 t
+10 I f
+(n)3687 1497 w
+10 R f
+(is known.)1 389 1 3762 1497 t
+10 I f
+(randBytesNeededForRSA)900 1665 w
+10 R f
+(returns the number of bytes needed for a non-NULL)8 2105 1 1953 1665 t
+10 I f
+(randomStart)4085 1665 w
+10 R f
+(in the key gen-)3 602 1 4618 1665 t
+(eration routine following.)2 1024 1 900 1785 t
+10 I f
+(genRSAKeySet)900 1953 w
+10 R f
+( the pub-)2 361(takes as input the length needed for the modulus and the length \(in bits\) needed for)15 3339 2 1520 1953 t
+(lic exponent and generates)3 1085 1 900 2073 t
+10 I f
+(n)2018 2073 w
+10 R f
+(,)2068 2073 w
+10 I f
+(e)2126 2073 w
+10 R f
+(and)2203 2073 w
+10 I f
+(d)2380 2073 w
+10 R f
+( want to)2 336( also takes a BigInt value for the public exponent if you)11 2310(. It)1 144 3 2430 2073 t
+( you don't care, pass NULL as the third)8 1703( If)1 131( bigInit\(0x10001\);\).)1 809(specify its value \(E.g. publicExponent =)5 1677 4 900 2193 t
+( also generates the necessary pieces for Chinese Remainder Theorem modular exponentiation.)11 3802(argument. It)1 518 2 900 2313 t
+( structure which)2 661( The)1 214( private key.)2 514(These pieces are included as part of the)7 1626 4 900 2433 t
+10 I f
+(genRSAKeySet)3949 2433 w
+10 R f
+(returns contains)1 644 1 4576 2433 t
+( can be retrieved by using)5 1038( These)1 290(both the public and private keys.)5 1314 3 900 2553 t
+10 I f
+(getRSAPublicKey)3569 2553 w
+10 R f
+(and)4306 2553 w
+10 I f
+(getRSAPrivateKey)4477 2553 w
+10 R f
+( If)1 134( as argument.)2 571(with the key set)3 681 3 900 2673 t
+10 I f
+(randomStart)2329 2673 w
+10 R f
+(is NULL, the default, pseudo-random number generator)6 2342 1 2878 2673 t
+( it with the appropriate number of bytes retrieved using)9 2223( it is not NULL, \256ll)5 794( If)1 119(\(desRandom\(\)\) is used.)2 935 4 900 2793 t
+10 I f
+(rand-)4998 2793 w
+(BytesNeededForRSA)900 2913 w
+10 R f
+(using the RNG of your choice.)5 1226 1 1762 2913 t
+10 I f
+(RSAEncrypt)900 3210 w
+10 R f
+(does the modular exponentiation)3 1307 1 1413 3210 t
+10 I f
+(m)2745 3210 w
+9 I f
+(e)2828 3170 w
+10 I f
+(mod n)1 263 1 2876 3210 t
+10 R f
+( returns the)2 449(. and)1 219 2 3139 3210 t
+10 I f
+(BigInt)3832 3210 w
+10 R f
+(result.)4107 3210 w
+10 I f
+(RSADecrypt)900 3378 w
+10 R f
+( to do the same calculation much)6 1393(uses the private key and the Chinese Remainder Theorem)8 2397 2 1430 3378 t
+( quantized version use STD)4 1128( The)1 211(more quickly.)1 561 3 900 3498 t
+10 S f
+(_)2800 3498 w
+10 R f
+(QUANTUM milliseconds as the quantum for execution to)7 2370 1 2850 3498 t
+( same is true of quantized)5 1043( \(The)1 242(defend against Kocher-style timing attacks.)4 1745 3 900 3618 t
+10 S f
+(_)3930 3618 w
+10 R f
+(RSASign\). STD)1 680 1 3980 3618 t
+10 S f
+(_)4660 3618 w
+10 R f
+(QUANTUM)4710 3618 w
+(is de\256ned in libcrypt.h and should be tuned to your environment.)10 2593 1 900 3738 t
+10 I f
+(RSASign)900 3906 w
+10 R f
+(computes an RSA signature using an RSA private key \(actually just an RSA Decryption\).)13 3580 1 1275 3906 t
+10 I f
+( y)1 52(RSAVeri f)1 388 2 900 4074 t
+10 R f
+( RSA)1 225(veri\256es that an RSA signature was indeed generated using the given message \(actually an)13 3626 2 1369 4074 t
+(encryption of the signature using an RSA public key is compared to the message\).)13 3279 1 900 4194 t
+10 I f
+(f reeRSAKeySet)1 612 1 900 4362 t
+10 R f
+(frees the key set structure and all of its associated BigInts.)10 2321 1 1537 4362 t
+10 I f
+(f reeRSASig)1 463 1 900 4530 t
+10 R f
+(frees the RSA signature \(actually just a BigInt\).)7 1903 1 1388 4530 t
+10 I f
+(RSAPrivateKeyDes)900 4698 w
+10 R f
+([)1684 4698 w
+10 I f
+(En / De)2 271 1 1725 4698 t
+10 R f
+(])2004 4698 w
+10 I f
+(crypt)2053 4698 w
+10 R f
+( used to use DES to [en/de]crypt an RSA private key.)10 2483(should be)1 420 2 2317 4698 t
+10 I f
+(f)900 4818 w
+10 R f
+([)944 4818 w
+10 I f
+(put / get)2 294 1 985 4818 t
+10 R f
+(])1287 4818 w
+10 I f
+(RSAPrivateKey)1336 4818 w
+10 R f
+(can then be used to store/retrieve the private key.)8 1959 1 1982 4818 t
+9 B f
+(SEE ALSO)1 438 1 540 5106 t
+10 B f
+(bigInit)900 5226 w
+10 R f
+(\(3BM\),)1190 5226 w
+10 B f
+(bigTest)1570 5226 w
+10 R f
+(\(3BM\),)1887 5226 w
+10 B f
+(bigBits)2267 5226 w
+10 R f
+(\(3BM\),)2568 5226 w
+10 B f
+(bigToBuf)2948 5226 w
+10 R f
+(\(3BM\),)3355 5226 w
+10 B f
+(bufToBig)3735 5226 w
+10 R f
+(\(3BM\),)4142 5226 w
+10 B f
+(fBigPrint)4523 5226 w
+10 R f
+(\(3BM\),)4923 5226 w
+10 B f
+(atobig)900 5346 w
+10 R f
+(\(3BM\),)1167 5346 w
+10 B f
+(bigPow)1515 5346 w
+10 R f
+(\(3BM\),)1832 5346 w
+10 B f
+(randomBytes)2180 5346 w
+10 R f
+(\(3BM\),)2752 5346 w
+10 B f
+(fputRSAPrivateKey)3100 5346 w
+10 R f
+(\(3BM\),)3960 5346 w
+10 B f
+(start)4307 5346 w
+10 S f
+(_)4506 5346 w
+10 B f
+(quantize)4556 5346 w
+10 R f
+(\(3BM\),)4923 5346 w
+10 B f
+(end)900 5466 w
+10 S f
+(_)1056 5466 w
+10 B f
+(quantize)1106 5466 w
+10 R f
+(\(3BM\))1473 5466 w
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 4
+%%Page: 1 5
+/saveobj save def
+mark
+5 pagesetup
+9 B f
+( \( 3BM \))3 271( BIGMATH)1 1761( System V)2 386( UNIX)1 1546(BIGMATH \( 3BM \))3 716 5 540 480 t
+(NAME)540 960 w
+10 R f
+(bigAdd, bigSubtract, bigDivide, bigLeftShift, bigRightShift, bigCompare, bigCopy, bigMultiply, bigMod,)8 4320 1 900 1080 t
+(bigPow, negate, crtCombine)2 1138 1 900 1200 t
+9 B f
+(SYNOPSIS)540 1368 w
+10 B f
+(#include)900 1488 w
+10 S f
+(<)1287 1488 w
+10 B f
+(libcrypt.h)1342 1488 w
+10 S f
+(>)1762 1488 w
+cleartomark
+saveobj restore
+%%BeginGlobal
+/C /Courier def
+%%EndGlobal
+/saveobj save def
+mark
+10 C f
+(typedef struct Bignum {)3 1380 1 900 1728 t
+(Sign sign;)1 600 1 1400 1848 t
+(size_t length; /)2 960 1 1400 1968 t
+10 S f
+(*)2360 1968 w
+10 C f
+(length of number \(in Ulong units\))5 1980 1 2470 1968 t
+10 S f
+(*)4640 1968 w
+10 C f
+(/)4690 1968 w
+(size_t space; /)2 900 1 1400 2088 t
+10 S f
+(*)2300 2088 w
+10 C f
+(storage space \(in Ulong units\))4 1800 1 2410 2088 t
+10 S f
+(*)4280 2088 w
+10 C f
+(/)4330 2088 w
+(Ulong)1400 2208 w
+10 S f
+(*)1760 2208 w
+10 C f
+(num;)1810 2208 w
+(} Bignum;)1 540 1 900 2328 t
+(typedef Bignum)1 840 1 900 2568 t
+10 S f
+(*)1800 2568 w
+10 C f
+(BigInt;)1910 2568 w
+10 B f
+(void bigAdd\(BigInt a, BigInt b, BigInt result\))6 1937 1 900 2976 t
+(void bigSubtract\(BigInt a, BigInt b, BigInt result\))6 2125 1 900 3144 t
+(void bigDivide\(BigInt a, BigInt divisor, BigInt quotient, BigInt remainder\))8 3179 1 900 3312 t
+(void bigLeftShift\(BigInt a, int numbits, BigInt result\))6 2275 1 900 3480 t
+(void bigRightShift\(BigInt a, int numbits, BigInt result\))6 2337 1 900 3648 t
+(void bigAnd\(BigInt a, BigInt b, BigInt result\))6 1937 1 900 3816 t
+(void bigOr\(BigInt a, BigInt b, BigInt result\))6 1875 1 900 3984 t
+(void bigXor\(BigInt a, BigInt b, BigInt result\))6 1919 1 900 4152 t
+(int bigCompare\(BigInt a, BigInt b\))4 1493 1 900 4320 t
+(void bigCopy\(BigInt a, BigInt result\))4 1577 1 900 4488 t
+(void bigMultiply\(BigInt a, BigInt b, BigInt result\))6 2126 1 900 4656 t
+(void bigMod\(BigInt a, BigInt modulus, BigInt result\))6 2265 1 900 4824 t
+(void bigPow\(BigInt a, BigInt exponent, BigInt modulus, BigInt result\))8 2985 1 900 4992 t
+(void double)1 499 1 900 5160 t
+10 S f
+(_)1399 5160 w
+10 B f
+(bigPow\(BigInt a1, BigInt a2, BigInt exp1, BigInt exp2, BigInt modulus, BigInt result\))11 3633 1 1449 5160 t
+(Table)900 5328 w
+10 S f
+(*)1170 5328 w
+10 B f
+(g16)1220 5328 w
+10 S f
+(_)1370 5328 w
+10 B f
+(bigpow\(BigInt a, BigInt modulus, int len)5 1729 1 1420 5328 t
+10 S f
+(_)3149 5328 w
+10 B f
+(of)3199 5328 w
+10 S f
+(_)3282 5328 w
+10 B f
+(exp)3332 5328 w
+10 S f
+(_)3482 5328 w
+10 B f
+(in)3532 5328 w
+10 S f
+(_)3616 5328 w
+10 B f
+(4bit)3666 5328 w
+10 S f
+(_)3833 5328 w
+10 B f
+(nibs\))3883 5328 w
+(void brickell)1 537 1 900 5496 t
+10 S f
+(_)1437 5496 w
+10 B f
+(bigpow\(Table)1487 5496 w
+10 S f
+(*)2102 5496 w
+10 B f
+(table, BigInt exponent, BigInt modulus, BigInt result\))6 2289 1 2152 5496 t
+(void void negate \(BigInt a, BigInt modulus, BigInt result\))8 2442 1 900 5664 t
+(void void crtCombine \(BigInt a, BigInt b, BigInt p, BigInt q, BigInt c12, BigInt result\))14 3663 1 900 5832 t
+9 B f
+(DESCRIPTION)540 6120 w
+10 R f
+(For all of these functions)4 1003 1 900 6240 t
+10 I f
+(BigInt)1930 6240 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 6240 t
+10 I f
+(BigInts)3822 6240 w
+10 R f
+(.)4111 6240 w
+10 I f
+(bigInit)4188 6240 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 6240 t
+(for initialization of empty)3 1048 1 900 6360 t
+10 I f
+(BigInts)1979 6360 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 6360 t
+( example:)1 391( For)1 189(care of the space allocation.)4 1110 3 900 6480 t
+10 C f
+(result = bigInit\(0\);)2 1200 1 1540 6600 t
+(bigAdd\(a, b, result\);)2 1260 1 1540 6720 t
+10 I f
+(bigAdd)900 6888 w
+10 R f
+(adds two)1 358 1 1214 6888 t
+10 I f
+(BigInts)1597 6888 w
+10 R f
+(together and stores the result in)5 1251 1 1911 6888 t
+10 I f
+(result)3187 6888 w
+10 R f
+(.)3415 6888 w
+10 I f
+(bigSubtract)900 7128 w
+10 R f
+(subtracts)1392 7128 w
+10 I f
+(BigInt b)1 341 1 1772 7128 t
+10 R f
+(from)2138 7128 w
+10 I f
+(BigInt a)1 341 1 2357 7128 t
+10 R f
+(and stores the result in)4 899 1 2723 7128 t
+10 I f
+(result)3647 7128 w
+10 R f
+( second argument is larger)4 1057( the)1 147(. If)1 141 3 3875 7128 t
+(than the \256rst, the sign of the result is negative.)9 1846 1 900 7248 t
+10 I f
+(bigTest)2796 7248 w
+10 R f
+(\()3099 7248 w
+10 I f
+(b)3140 7248 w
+10 R f
+(\) is used to check the sign of a)8 1209 1 3198 7248 t
+10 I f
+(BigInt)4432 7248 w
+10 R f
+(.)4682 7248 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 5
+%%Page: 2 6
+/saveobj save def
+mark
+6 pagesetup
+9 B f
+( \( 3BM \))3 271( BIGMATH)1 1761( System V)2 386( UNIX)1 1546(BIGMATH \( 3BM \))3 716 5 540 480 t
+10 I f
+(bigDivide)900 960 w
+10 R f
+(divides)1319 960 w
+10 I f
+(a)1633 960 w
+10 R f
+(by)1708 960 w
+10 I f
+(divisor)1833 960 w
+10 R f
+(and stores the quotient in)4 1005 1 2136 960 t
+10 I f
+(quotient)3166 960 w
+10 R f
+(and the remainder in)3 823 1 3519 960 t
+10 I f
+(remainder)4367 960 w
+10 R f
+(.)4783 960 w
+10 C f
+(quotient = bigInit\(0\);)2 1320 1 1540 1080 t
+(remainder = bigInit\(0\);)2 1380 1 1540 1200 t
+(bigDivide\(a, divisor, quotient, remainder\);)3 2580 1 1540 1320 t
+10 I f
+( t)1 36( f)1 44( tShi)1 164(bigLe f)1 272 4 900 1488 t
+10 R f
+(and)1447 1488 w
+10 I f
+( t)1 36(bigRightShi f)1 517 2 1623 1488 t
+10 R f
+(shift their \256rst argument by)4 1122 1 2208 1488 t
+10 I f
+(numbits)3362 1488 w
+10 R f
+(to the left and right respectively, and)6 1509 1 3711 1488 t
+(place the result in)3 707 1 900 1608 t
+10 I f
+(result)1632 1608 w
+10 R f
+(.)1860 1608 w
+10 I f
+(bigAnd)900 1848 w
+10 R f
+(,)1189 1848 w
+10 I f
+(bigOr)1239 1848 w
+10 R f
+(and)1503 1848 w
+10 I f
+(bigXor)1672 1848 w
+10 R f
+(do the obvious.)2 614 1 1975 1848 t
+10 I f
+(bigCompare)900 2088 w
+10 R f
+(compares two)1 563 1 1431 2088 t
+10 I f
+(BigInts)2025 2088 w
+10 R f
+( result of the comparison is an integer which is positive if)11 2361(. The)1 236 2 2314 2088 t
+10 I f
+(a)4942 2088 w
+10 S f
+(>)5041 2088 w
+10 I f
+(b)5145 2088 w
+10 R f
+(,)5195 2088 w
+(negative if)1 424 1 900 2208 t
+10 I f
+(a)1349 2208 w
+10 S f
+(<)1448 2208 w
+10 I f
+(b)1552 2208 w
+10 R f
+(or zero if)2 365 1 1627 2208 t
+10 I f
+(a)2017 2208 w
+10 S f
+(=)2116 2208 w
+10 I f
+(b)2220 2208 w
+10 R f
+(.)2270 2208 w
+10 I f
+(bigCopy)900 2448 w
+10 R f
+(copies a)1 324 1 1264 2448 t
+10 I f
+(BigInt)1613 2448 w
+10 R f
+(into another.)1 505 1 1888 2448 t
+10 I f
+(bigMultiply)900 2697 w
+10 R f
+(multiplies two)1 580 1 1396 2697 t
+10 I f
+(BigInts)2005 2697 w
+10 R f
+(using a combination of)3 931 1 2323 2697 t
+10 I f
+(O)3283 2697 w
+10 R f
+(\()3363 2697 w
+10 I f
+(n)3404 2697 w
+9 I f
+(log)3465 2657 w
+9 R f
+(3)3587 2657 w
+10 R f
+(\) and)1 206 1 3648 2697 t
+10 I f
+(O)3883 2697 w
+10 R f
+(\()3963 2697 w
+10 I f
+(n)4004 2697 w
+9 R f
+(2)4065 2657 w
+10 R f
+( places the)2 431(\) algorithms and)2 663 2 4126 2697 t
+(result in)1 325 1 900 2817 t
+10 I f
+(result)1250 2817 w
+10 R f
+(.)1478 2817 w
+10 I f
+(bigMod)900 3057 w
+10 R f
+(returns)1236 3057 w
+10 I f
+(a mod modulus)2 643 1 1538 3057 t
+10 R f
+(in)2206 3057 w
+10 I f
+(result)2309 3057 w
+10 R f
+(.)2537 3057 w
+10 I f
+(bigPow)900 3306 w
+10 R f
+(computes)1231 3306 w
+10 I f
+(result)1639 3306 w
+10 S f
+(=)1916 3306 w
+10 I f
+(a)2020 3306 w
+9 I f
+(b)2081 3266 w
+10 I f
+(mod n)1 263 1 2134 3306 t
+10 R f
+(using)2422 3306 w
+10 I f
+(addition chaining tables)2 973 1 2664 3306 t
+10 R f
+(and)3662 3306 w
+10 I f
+(Montgomery reduction)1 918 1 3831 3306 t
+10 R f
+(.)4749 3306 w
+10 I f
+(double)900 3555 w
+10 S f
+(_)1180 3555 w
+10 I f
+(bigPow)1238 3555 w
+10 R f
+(computes)1569 3555 w
+10 I f
+(result)1977 3555 w
+10 S f
+(=)2254 3555 w
+10 I f
+(a)2358 3555 w
+9 I f
+(b)2419 3515 w
+10 I f
+(c)2472 3555 w
+9 I f
+(d)2527 3515 w
+10 I f
+(mod p)1 263 1 2580 3555 t
+10 R f
+( modulus \(as in El Gamal or Dif\256e-)7 1467(If one expects to use modular exponentiation using the same base and)11 2853 2 900 3795 t
+( the)1 155( If)1 124( table to be used in Brickell's speedup for exponentiation.)9 2380(Hellman systems\) one can precompute a)5 1661 4 900 3915 t
+(calculation is)1 657 1 900 4044 t
+10 I f
+(r)1709 4044 w
+10 S f
+(= a)1 167 1 1797 4044 t
+9 I f
+(e)1969 4004 w
+10 I f
+(mod p)1 263 1 2017 4044 t
+10 R f
+(, we calculate)2 799 1 2280 4044 t
+10 I f
+(table)3231 4044 w
+10 S f
+(=)3480 4044 w
+10 I f
+(g)3584 4044 w
+10 R f
+(16)3642 4044 w
+10 S f
+(_)3750 4044 w
+10 I f
+(bigpow)3808 4044 w
+10 R f
+(\()4111 4044 w
+10 S f
+(a)4152 4044 w
+10 R f
+(,)4223 4044 w
+10 I f
+(p)4256 4044 w
+10 R f
+(,)4314 4044 w
+10 I f
+(length)4347 4044 w
+10 S f
+(_)4605 4044 w
+10 I f
+(o f)1 94 1 4663 4044 t
+10 S f
+(_)4781 4044 w
+10 I f
+(e)4839 4044 w
+10 R f
+(\) and)1 329 1 4891 4044 t
+10 I f
+(brickell)900 4164 w
+10 S f
+(_)1213 4164 w
+10 I f
+(bigpow)1271 4164 w
+10 R f
+(\()1574 4164 w
+10 I f
+(table)1615 4164 w
+10 R f
+(,)1823 4164 w
+10 I f
+(e)1856 4164 w
+10 R f
+(,)1908 4164 w
+10 I f
+(p)1941 4164 w
+10 R f
+(,)1999 4164 w
+10 I f
+(r)2032 4164 w
+10 R f
+( length)1 275(\). Here,)1 326 2 2079 4164 t
+10 S f
+(_)2680 4164 w
+10 R f
+(of)2730 4164 w
+10 S f
+(_)2813 4164 w
+10 R f
+(e is the number of 4 bit nibbles in the exponent.)10 1907 1 2863 4164 t
+10 I f
+(negate)900 4404 w
+10 R f
+(returns)1191 4404 w
+10 S f
+(-)1493 4404 w
+10 I f
+(a mod p)2 354 1 1564 4404 t
+10 R f
+(by calculating)1 563 1 1943 4404 t
+10 I f
+(a)2531 4404 w
+10 S f
+(*)2589 4404 w
+10 R f
+(\()2647 4404 w
+10 I f
+(p)2688 4404 w
+10 S f
+(-)2762 4404 w
+10 R f
+(1 \))1 91 1 2833 4404 t
+10 I f
+(modp)2973 4404 w
+10 R f
+(.)3195 4404 w
+10 I f
+(crtCombine)900 4644 w
+10 R f
+( b with respect to primes p and q with)9 1714(does a Chinese Remainder combination of a and)7 2087 2 1419 4644 t
+(coef\256cient,)900 4764 w
+10 I f
+(c)1371 4764 w
+10 R f
+(12)1423 4764 w
+10 S f
+(=)1572 4764 w
+10 I f
+(p mod q)2 354 1 1676 4764 t
+10 R f
+(.)2030 4764 w
+9 B f
+(SEE ALSO)1 438 1 540 4932 t
+10 B f
+(bigInit)900 5052 w
+10 R f
+(\(3BM\),)1190 5052 w
+10 B f
+(bigTest)1570 5052 w
+10 R f
+(\(3BM\),)1887 5052 w
+10 B f
+(bigBits)2267 5052 w
+10 R f
+(\(3BM\),)2568 5052 w
+10 B f
+(bigToBuf)2948 5052 w
+10 R f
+(\(3BM\),)3355 5052 w
+10 B f
+(bufToBig)3735 5052 w
+10 R f
+(\(3BM\),)4142 5052 w
+10 B f
+(fBigPrint)4523 5052 w
+10 R f
+(\(3BM\),)4923 5052 w
+10 B f
+(atobig)900 5172 w
+10 R f
+(\(3BM\))1167 5172 w
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 6
+%%Page: 1 7
+/saveobj save def
+mark
+7 pagesetup
+9 B f
+( \( 3BM \))3 271( BIGUTILS)1 1761( System V)2 386( UNIX)1 1556(BIGUTILS \( 3BM \))3 706 5 540 480 t
+(NAME)540 960 w
+10 R f
+( freeBigInt, fBigPrint, bufToBig, bigToBuf, atobig, bigsprint,)6 2779(bigInit, bigTest, bigBits, bigBytes,)3 1541 2 900 1080 t
+(handle)900 1200 w
+10 S f
+(_)1166 1200 w
+10 R f
+(exception)1216 1200 w
+9 B f
+(SYNOPSIS)540 1368 w
+10 B f
+(#include)900 1488 w
+10 S f
+(<)1287 1488 w
+10 B f
+(libcrypt.h)1342 1488 w
+10 S f
+(>)1762 1488 w
+10 B f
+(BigInt bigInit\(unsigned long i\))3 1301 1 900 1656 t
+(Sign bigTest\(BigInt big\))2 1030 1 900 1824 t
+(int bigBits\(BigInt big\))2 941 1 900 1992 t
+(int bigBytes\(BigInt big\))2 1007 1 900 2160 t
+(void freeBignum\(BigInt big\))2 1212 1 900 2328 t
+(void fBigPrint\(BigInt big, FILE)3 1358 1 900 2496 t
+10 S f
+(*)2283 2496 w
+10 B f
+(fp\))2333 2496 w
+(void bufToBig\(unsigned char)2 1253 1 900 2664 t
+10 S f
+(*)2178 2664 w
+10 B f
+(buf, int len, BigInt big\))4 980 1 2228 2664 t
+(void bigToBuf\(BigInt big, int bufsize, unsigned char)6 2227 1 900 2832 t
+10 S f
+(*)3152 2832 w
+10 B f
+(buf\))3202 2832 w
+(BigInt atobig\(char)1 792 1 900 3000 t
+10 S f
+(*)1717 3000 w
+10 B f
+(a\))1767 3000 w
+(int bigsprint\(BigInt, unsigned char)3 1492 1 900 3168 t
+10 S f
+(*)2417 3168 w
+10 B f
+(buf\))2467 3168 w
+(void handle)1 499 1 900 3336 t
+10 S f
+(_)1399 3336 w
+10 B f
+(exception\(ExceptionType type, char)2 1535 1 1449 3336 t
+10 S f
+(*)3009 3336 w
+10 B f
+(exception)3059 3336 w
+10 S f
+(_)3464 3336 w
+10 B f
+(msg\))3514 3336 w
+9 B f
+(DESCRIPTION)540 3624 w
+10 R f
+(For all of these functions)4 1003 1 900 3744 t
+10 I f
+(BigInt)1930 3744 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 3744 t
+10 I f
+(BigInts)3822 3744 w
+10 R f
+(.)4111 3744 w
+10 I f
+(bigInit)4188 3744 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 3744 t
+(for initialization of empty)3 1048 1 900 3864 t
+10 I f
+(BigInts)1979 3864 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 3864 t
+(care of the space allocation.)4 1110 1 900 3984 t
+10 I f
+(bigInit)900 4224 w
+10 R f
+(takes an unsigned long integer and returns an equivalent)8 2262 1 1194 4224 t
+10 I f
+(BigInt)3483 4224 w
+10 R f
+(structure.)3760 4224 w
+10 I f
+(bigInit)4186 4224 w
+10 R f
+( the best way)3 533( is)1 94(\( 0 \))2 132 3 4461 4224 t
+(to initialize a)2 522 1 900 4344 t
+10 I f
+(BigInt)1447 4344 w
+10 R f
+( example:)1 391(. For)1 214 2 1697 4344 t
+10 C f
+(result = bigInit\(0\);)2 1200 1 1540 4464 t
+(bigAdd\(a, b, result\);)2 1260 1 1540 4584 t
+10 I f
+(bigTest)900 4752 w
+10 R f
+(returns the sign of a)4 793 1 1220 4752 t
+10 I f
+(BigInt)2038 4752 w
+10 R f
+( will be either)3 552(. It)1 136 2 2288 4752 t
+10 I f
+(POS)3001 4752 w
+10 R f
+(or)3209 4752 w
+10 I f
+(NEG)3317 4752 w
+10 R f
+(.)3517 4752 w
+10 I f
+(bigBits)900 4992 w
+10 R f
+(returns the number of bits in a)6 1204 1 1209 4992 t
+10 I f
+(BigInt)2438 4992 w
+10 R f
+(.)2688 4992 w
+10 I f
+(bigBytes)900 5232 w
+10 R f
+(returns the number of bytes in a)6 1270 1 1269 5232 t
+10 I f
+(BigInt)2564 5232 w
+10 R f
+(.)2814 5232 w
+10 I f
+(f reeBigInt)1 413 1 900 5472 t
+10 R f
+(frees a)1 262 1 1338 5472 t
+10 I f
+(BigInt)1625 5472 w
+10 R f
+(struct.)1900 5472 w
+10 I f
+(f BigPrint)1 381 1 900 5712 t
+10 R f
+(prints a)1 305 1 1314 5712 t
+10 I f
+(BigInt)1652 5712 w
+10 R f
+( number is printed most signi\256cant byte)6 1643( The)1 214( a stream.)2 403(in hexadecimal format to)3 1025 4 1935 5712 t
+(\256rst.)900 5832 w
+10 I f
+( ToBig)1 253(bu f)1 144 2 900 6072 t
+10 R f
+(converts a buffer of characters to a)6 1449 1 1333 6072 t
+10 I f
+(BigInt)2818 6072 w
+10 R f
+( least)1 220( least signi\256cant char in the buffer is the)8 1691(. The)1 241 3 3068 6072 t
+(signi\256cant in the big.)3 845 1 900 6192 t
+10 I f
+(bigToBu f)1 389 1 900 6432 t
+10 R f
+(converts a)1 409 1 1316 6432 t
+10 I f
+(BigInt)1752 6432 w
+10 R f
+( least signi\256cant byte n the big goes into the least)10 1996( The)1 208( buffer of characters.)3 838(to a)1 149 4 2029 6432 t
+(signi\256cant byte in the buffer.)4 1157 1 900 6552 t
+( zeroed.)1 321(If the buffer size is larger than that needed for the bignum, the extra bytes are)15 3161 2 900 6792 t
+10 I f
+( ToBig)1 253(bu f)1 144 2 4438 6792 t
+10 R f
+(will trim)1 354 1 4866 6792 t
+( Obviously,)1 499(these leading zeroes when used to reconvert.)6 1823 2 900 6912 t
+10 I f
+( size)1 158(bu f)1 144 2 3254 6912 t
+10 R f
+( as the big-)3 459(needs to be at least the same)6 1173 2 3588 6912 t
+(num \(4)1 286 1 900 7032 t
+10 S f
+(*)1186 7032 w
+10 R f
+(LENGTH\(big\)\).)1236 7032 w
+10 I f
+(atobig)900 7272 w
+10 R f
+(converts a string to a)4 832 1 1181 7272 t
+10 I f
+(BigInt)2038 7272 w
+10 R f
+( of a)2 179( is assumed that the string is a hexadecimal representation)9 2316(. It)1 136 3 2288 7272 t
+10 I f
+(BigInt)4945 7272 w
+10 R f
+(.)5195 7272 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 7
+%%Page: 2 8
+/saveobj save def
+mark
+8 pagesetup
+9 B f
+( \( 3BM \))3 271( BIGUTILS)1 1761( System V)2 386( UNIX)1 1556(BIGUTILS \( 3BM \))3 706 5 540 480 t
+10 R f
+(If one writes a)3 582 1 900 960 t
+10 I f
+(BigInt)1510 960 w
+10 R f
+(to a \256le using)3 551 1 1788 960 t
+10 I f
+(f BigPrint)1 381 1 2367 960 t
+10 R f
+( string using)2 499(and reads it back into a)5 938 2 2776 960 t
+10 I f
+( f)1 44(f scan)1 219 2 4240 960 t
+10 R f
+(,)4503 960 w
+10 I f
+(atobig)4555 960 w
+10 R f
+(is used to)2 382 1 4838 960 t
+(convert the string to a)4 871 1 900 1080 t
+10 I f
+(BigInt)1796 1080 w
+10 R f
+(.)2046 1080 w
+10 I f
+(bigsprint)900 1320 w
+10 R f
+(\256lls a buffer with the hex representation of a big.)9 1952 1 1287 1320 t
+10 I f
+(handle)900 1560 w
+10 S f
+(_)1180 1560 w
+10 I f
+(exception)1238 1560 w
+10 R f
+( WARNING.)1 542( are two types: CRITICAL and)5 1285( There)1 291(handles all known error conditions.)4 1448 4 1654 1560 t
+( error prints a message contained in exception)7 1881(A CRITICAL)1 566 2 900 1680 t
+10 S f
+(_)3347 1680 w
+10 R f
+( WARNING just prints the)4 1105( A)1 129(msg and exits.)2 589 3 3397 1680 t
+(message.)900 1800 w
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 8
+%%Page: 1 9
+/saveobj save def
+mark
+9 pagesetup
+9 B f
+( \( 3BM \))3 271( DES)1 1761( System V)2 386( UNIX)1 1816(DES \( 3BM \))3 446 5 540 480 t
+(NAME)540 960 w
+10 R f
+(key)900 1080 w
+10 S f
+(_)1044 1080 w
+10 R f
+( blockDecrypt, block3Encrypt,)2 1419(crunch, setupDESState, setupTripleDESState, blockEncrypt,)3 2707 2 1094 1080 t
+(block3Decrypt, bufferEncrypt, bufferDecrypt, buffer3Encrypt, buffer3Decrypt)4 3139 1 900 1200 t
+9 B f
+(SYNOPSIS)540 1368 w
+10 B f
+(#include "libcrypt.h")1 919 1 900 1488 t
+10 C f
+(typedef struct {)2 960 1 900 1848 t
+(ModeType mode;)1 840 1 1400 1968 t
+(unsigned char icv[8];)2 1260 1 1400 2088 t
+(unsigned char int_key[128];)2 1620 1 1400 2208 t
+(int count;)1 600 1 1400 2328 t
+(Ulong setup;)1 720 1 1400 2448 t
+(} DESState;)1 660 1 900 2568 t
+(typedef struct {)2 960 1 900 2808 t
+(ModeType mode;)1 840 1 1400 2928 t
+(unsigned char icv[8];)2 1260 1 1400 3048 t
+(unsigned char int_key[3][128];)2 1800 1 1400 3168 t
+(int count;)1 600 1 1400 3288 t
+( /)1 420(Ulong setup;)1 720 2 1400 3408 t
+10 S f
+(*)2540 3408 w
+10 C f
+(Set to 0xdeadbeef when setupTripleDESState is done)6 3000 1 2650 3408 t
+10 S f
+(*)5710 3408 w
+10 C f
+(/)5760 3408 w
+(} TripleDESState;)1 1020 1 900 3528 t
+(typedef int ModeType;)2 1260 1 900 3768 t
+(#define ECB 10)2 840 1 900 4008 t
+(#define CBC 20)2 840 1 900 4128 t
+(#define OFM 30)2 840 1 900 4248 t
+(#define ECB3 13)2 900 1 900 4368 t
+(#define CBC3 23)2 900 1 900 4488 t
+(#define OFM3 33)2 900 1 900 4608 t
+10 B f
+(void setupDESState \(DESState)2 1317 1 900 5136 t
+10 S f
+(*)2242 5136 w
+10 B f
+(s, unsigned char)2 693 1 2292 5136 t
+10 S f
+(*)3010 5136 w
+10 B f
+(key, unsigned char)2 804 1 3060 5136 t
+10 S f
+(*)3889 5136 w
+10 B f
+(icv, ModeType mode\))2 924 1 3939 5136 t
+(void setupTripleDESState \(TripleDESState)2 1851 1 900 5304 t
+10 S f
+(*)2776 5304 w
+10 B f
+(s, unsigned char)2 693 1 2826 5304 t
+10 S f
+(*)3544 5304 w
+10 B f
+(key[3], unsigned char)2 920 1 3594 5304 t
+10 S f
+(*)4539 5304 w
+10 B f
+(icv, ModeType mode\))2 924 1 4589 5304 t
+(void key)1 359 1 900 5472 t
+10 S f
+(_)1259 5472 w
+10 B f
+(crunch \(unsigned char buffer[], int bu\257en, unsigned char key[8]\))8 2757 1 1309 5472 t
+(void blockEncrypt \(unsigned char block[8], DESState)5 2291 1 900 5640 t
+10 S f
+(*)3216 5640 w
+10 B f
+(state\))3266 5640 w
+(void blockDecrypt \(unsigned char block[8], DESState)5 2284 1 900 5808 t
+10 S f
+(*)3209 5808 w
+10 B f
+(state\))3259 5808 w
+( char)1 219( \(unsigned)1 468(void bufferEncrypt)1 825 3 900 5976 t
+10 S f
+(*)2437 5976 w
+10 B f
+(buf, int buf)2 482 1 2487 5976 t
+10 S f
+(_)2969 5976 w
+10 B f
+(len, DESState)1 589 1 3019 5976 t
+10 S f
+(*)3633 5976 w
+10 B f
+(state\))3683 5976 w
+( char)1 219( \(unsigned)1 468(void bufferDecrypt)1 818 3 900 6144 t
+10 S f
+(*)2430 6144 w
+10 B f
+(buf, int buf)2 482 1 2480 6144 t
+10 S f
+(_)2962 6144 w
+10 B f
+(len, DESState)1 589 1 3012 6144 t
+10 S f
+(*)3626 6144 w
+10 B f
+(state\))3676 6144 w
+(void block3Encrypt \(unsigned char block[8], TripleDESState)5 2608 1 900 6312 t
+10 S f
+(*)3533 6312 w
+10 B f
+(state\))3583 6312 w
+(void block3Decrypt \(unsigned char block[8], TripleDESState)5 2601 1 900 6480 t
+10 S f
+(*)3526 6480 w
+10 B f
+(state\))3576 6480 w
+(void buffer3Encrypt \(unsigned char)3 1537 1 900 6648 t
+10 S f
+(*)2462 6648 w
+10 B f
+(buf, int buf)2 482 1 2512 6648 t
+10 S f
+(_)2994 6648 w
+10 B f
+(len, TripleDESState)1 856 1 3044 6648 t
+10 S f
+(*)3925 6648 w
+10 B f
+(state\))3975 6648 w
+(void buffer3Decrypt \(unsigned char)3 1530 1 900 6816 t
+10 S f
+(*)2455 6816 w
+10 B f
+(buf, int buf)2 482 1 2505 6816 t
+10 S f
+(_)2987 6816 w
+10 B f
+(len, TripleDESState)1 856 1 3037 6816 t
+10 S f
+(*)3918 6816 w
+10 B f
+(state\))3968 6816 w
+(void bignumDesEncrypt \(BigInt, unsigned char key[8]\))5 2352 1 900 6984 t
+(void bignumDesDecrypt \(BigInt, unsigned char key[8]\))5 2345 1 900 7152 t
+10 R f
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 9
+%%Page: 2 10
+/saveobj save def
+mark
+10 pagesetup
+9 B f
+( \( 3BM \))3 271( DES)1 1761( System V)2 386( UNIX)1 1816(DES \( 3BM \))3 446 5 540 480 t
+10 B f
+(void bignumCBCDesEncrypt \(BigInt, unsigned char key[8]\))5 2563 1 900 960 t
+(void bignumCBCDesDecrypt \(BigInt, unsigned char key[8]\))5 2556 1 900 1128 t
+(void blockEightBitCFMEncrypt \(unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8]\))12 4539 1 900 1296 t
+(void blockEightBitCFMDecrypt \(unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8]\))12 4532 1 900 1464 t
+(void blockSixtyFourBitCFMEncrypt \(unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8]\))12 4733 1 900 1632 t
+(void blockSixtyFourBitCFMDecrypt \(unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8]\))12 4726 1 900 1800 t
+9 B f
+(DESCRIPTION)540 1968 w
+10 R f
+(Single DES modes use DESState and)5 1497 1 900 2088 t
+10 I f
+(setupDESState)2422 2088 w
+10 R f
+( DES modes used TripleDES-)4 1199( Triple)1 294(to initialize state.)2 686 3 3041 2088 t
+(State and)1 380 1 900 2208 t
+10 I f
+(setupTripleDESState)1316 2208 w
+10 R f
+( 128 byte expanded)3 809( of these setup functions transform a key into a)9 1971(. Each)1 285 3 2155 2208 t
+(key, set the mode in the state and do the appropriate thing with initialization vectors \(icv's\).)15 3665 1 900 2328 t
+10 I f
+(key)900 2568 w
+10 S f
+(_)1040 2568 w
+10 I f
+(crunch)1098 2568 w
+10 R f
+( input which is)3 616(R expects)1 398 2 1375 2568 t
+10 I f
+(numbytes)2422 2568 w
+10 R f
+( is converted to an 8 byte key to be used in the)12 1949(long. This)1 439 2 2832 2568 t
+(block encryption functions.)2 1096 1 900 2688 t
+10 I f
+(blockEncrypt)900 2928 w
+10 R f
+(and)1464 2928 w
+10 I f
+(blockDecrypt)1640 2928 w
+10 R f
+( in the state)3 482( mode)1 254( The)1 212(are the basic DES block [en/de]cryption functions.)6 2063 4 2209 2928 t
+(causes the appropriate mode implementations to function.)6 2311 1 900 3048 t
+( functions handle buffers which)4 1276( These)1 291( bytes at a time.)4 642(The buffer encryption functions operate on buffers 8)7 2111 4 900 3216 t
+( which is interoperable with the corresponding buffer decryp-)8 2503(are not an even multiple of 8 bytes in a way)10 1817 2 900 3336 t
+( \256rst 8 digits [0-7] and)5 912( ECB buffer encryption functions encrypt an array containing the)9 2621( The)1 207(tion functions.)1 580 4 900 3456 t
+( in their)2 333( CBC and OFM functions just continue)6 1645( The)1 217(XOR the result with the remaining fractured block.)7 2125 4 900 3576 t
+( of bytes left in the fractured)6 1208(normal mode but only XOR their icv or mask with the appropriate number)12 3112 2 900 3696 t
+(block.)900 3816 w
+( which contain a 3 in their name, are triple DES [en/de]cryption functions which correspond)14 3763(The functions)1 557 2 900 3984 t
+( most com-)2 450( The)1 205( these assumes three 8 byte DES keys.)7 1531( of)1 109( Each)1 250(to the single encryption functions described.)5 1775 6 900 4104 t
+( these functions do encryption)4 1224( of)1 112( All)1 182(mmon way of using triple DES is to make key 1 and key 3 the same.)15 2802 4 900 4224 t
+( encrypt[key2],)1 666(as, encrypt[key1], decrypt[key2], encrypt[key3] and decryption as decrypt[key1],)7 3654 2 900 4344 t
+(decrypt[key3].)900 4464 w
+( Note)1 247( functions use eith CBC or ECB modes and single DES encryption.)11 2727(The bignum DES [en/de]cryption)3 1346 3 900 4632 t
+( decrypt functions take this)4 1102( The)1 210( 8 bytes longer than the original.)6 1326(that the length of an encrypted bignum is)7 1682 4 900 4752 t
+(into account.)1 516 1 900 4872 t
+(The cipher feedback mode \(CFM\) functions are currently under revision.)9 2915 1 900 5040 t
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 10
+%%Page: 1 11
+/saveobj save def
+mark
+11 pagesetup
+9 B f
+( \( 3BM \))3 271( Key exchange tools)3 759( Dif\256e-Hellman)1 1002( System V)2 386( UNIX)1 662( \( 3BM \))3 271(Dif\256e-Hellman Key exchange tools)3 1329 7 540 480 t
+(NAME)540 960 w
+10 R f
+( randBytesNeeded-)1 779(genDif\256eHellmanSet, Dif\256eHellmanInit, Dif\256eHellmanGneKey, freeDif\256eHellmanSet,)3 3541 2 900 1080 t
+(ForDHSet, randBytesNeededForDHInit)1 1592 1 900 1200 t
+9 B f
+(SYNOPSIS)540 1368 w
+10 B f
+(#include)900 1488 w
+10 S f
+(<)1287 1488 w
+10 B f
+(libcrypt.h)1342 1488 w
+10 S f
+(>)1762 1488 w
+10 R f
+(typedef struct {)2 619 1 900 1728 t
+(int qbits;)1 354 1 1260 1848 t
+(BigInt alpha, p, q;)3 725 1 1260 1968 t
+(Table)1260 2088 w
+10 S f
+(*)1512 2088 w
+10 R f
+(alphatab;)1562 2088 w
+(} Dif\256eHellmanSet;)1 806 1 900 2208 t
+10 B f
+(int randByteNeededForDHSet \(int pbits, int qbits\);)5 2178 1 900 2496 t
+(Dif\256eHellmanSet)900 2664 w
+10 S f
+(*)1658 2664 w
+10 B f
+(GenDif\256eHellmanSet \(int pbits, int qbits, BigInt randomStart\);)6 2696 1 1708 2664 t
+(int randBytesNeededForDHInit \(int qbits\);)3 1836 1 900 2832 t
+(void Dif\256eHellmanInit \(Dif\256eHellmanSet)2 1756 1 900 3000 t
+10 S f
+(*)2681 3000 w
+10 B f
+(myDHset, BigInt my)2 880 1 2731 3000 t
+10 S f
+(_)3611 3000 w
+10 B f
+(exponent, BigInt my)2 870 1 3661 3000 t
+10 S f
+(_)4531 3000 w
+10 B f
+(msg1, BigInt randomStart\);)2 1191 1 4581 3000 t
+(void quantized)1 632 1 900 3168 t
+10 S f
+(_)1532 3168 w
+10 B f
+(Dif\256eHellmanInit \(Dif\256eHellmanSet)1 1547 1 1582 3168 t
+10 S f
+(*)3154 3168 w
+10 B f
+(myDHset, BigInt my)2 880 1 3204 3168 t
+10 S f
+(_)4084 3168 w
+10 B f
+(exponent, BigInt my)2 870 1 4134 3168 t
+10 S f
+(_)5004 3168 w
+10 B f
+(msg1\);)5054 3168 w
+(void Dif\256eHellmanGenKey \(Dif\256eHellmanSet)2 1950 1 900 3336 t
+10 S f
+(*)2875 3336 w
+10 B f
+(myDHset, BigInt recd)2 935 1 2925 3336 t
+10 S f
+(_)3860 3336 w
+10 B f
+(msg1,)3910 3336 w
+(BigInt my)1 431 1 2340 3456 t
+10 S f
+(_)2771 3456 w
+10 B f
+(exponent, BigInt DH)2 887 1 2821 3456 t
+10 S f
+(_)3708 3456 w
+10 B f
+(key\)\);)3758 3456 w
+(void quantized)1 632 1 900 3624 t
+10 S f
+(_)1532 3624 w
+10 B f
+(Dif\256eHellmanGenKey \(Dif\256eHellmanSet)1 1741 1 1582 3624 t
+10 S f
+(*)3348 3624 w
+10 B f
+(myDHset, BigInt recd)2 935 1 3398 3624 t
+10 S f
+(_)4333 3624 w
+10 B f
+(msg1,)4383 3624 w
+(BigInt my)1 431 1 2340 3744 t
+10 S f
+(_)2771 3744 w
+10 B f
+(exponent, BigInt DH)2 887 1 2821 3744 t
+10 S f
+(_)3708 3744 w
+10 B f
+(key\)\);)3758 3744 w
+(void freeDif\256eHellmanSet \(Dif\256eHellmanSet)2 1898 1 900 3912 t
+10 S f
+(*)2823 3912 w
+10 B f
+(DHset\);)2873 3912 w
+9 B f
+(DESCRIPTION)540 4200 w
+10 R f
+( If)1 170( key exchange.)2 703(An implementation of Dif\256e-Hellman)3 1677 3 900 4320 t
+10 I f
+(randomStart)3529 4320 w
+10 R f
+(is not to be NULL in)5 1106 1 4114 4320 t
+10 I f
+( ieHellmanSet)1 546(genDi ff)1 316 2 900 4440 t
+10 R f
+(use)1799 4440 w
+10 I f
+(randBytesNeededForDHSet)1969 4440 w
+10 R f
+(with the length of p and q in bits to determine the)11 2095 1 3125 4440 t
+( contains a)2 451( a Dif\256eHellmanSet which)3 1101( Generate)1 420(amount of random data needed for parameter generation.)7 2348 4 900 4560 t
+(base, a prime p, a prime factor of p-1, and a table for using Brickell's speedup for exponentiation.)17 3900 1 900 4680 t
+( my)1 184(This Set must be agreed upon by the participants in the exchange.)11 2679 2 900 4848 t
+10 S f
+(_)3763 4848 w
+10 R f
+(exponent should usually be initial-)4 1407 1 3813 4848 t
+(ized to 0 unless you want to use a prespeci\256ed value.)10 2116 1 900 4968 t
+10 I f
+( ieHellmanInit)1 563(Di ff)1 172 2 900 5136 t
+10 R f
+( of the exchange.)3 687(is then called in which the caller's exponent is used to calculate his half)13 2872 2 1661 5136 t
+(If)900 5256 w
+10 I f
+(randomStart)993 5256 w
+10 R f
+(is not NULL, use)3 700 1 1526 5256 t
+10 I f
+(randBytesNeededForDHInit)2253 5256 w
+10 R f
+( the sub-prime, q, in bits as)6 1089(with the legnth of)3 714 2 3417 5256 t
+( a proper exponent.)3 815(its argument, to \256nd the number of random bytes needed to initialize the search for)14 3505 2 900 5376 t
+( call, my)2 353(After this function)2 746 2 900 5496 t
+10 S f
+(_)1999 5496 w
+10 R f
+(exponent should be protected \(say using BignumDESEncrypt\(\)\) and my)8 2904 1 2049 5496 t
+10 S f
+(_)4953 5496 w
+10 R f
+(msg1)5003 5496 w
+(sent to the other party in the exchange.)7 1547 1 900 5616 t
+(After receiving the other party's message, recd)6 1917 1 900 5784 t
+10 S f
+(_)2817 5784 w
+10 R f
+( DH)1 203(msg1, uncover your exponent and proceed.)5 1766 2 2867 5784 t
+10 S f
+(_)4836 5784 w
+10 R f
+(key will)1 334 1 4886 5784 t
+(contain the full pbits worth of Dif\256e Hellman key material for you to process as necessary.)15 3627 1 900 5904 t
+(The quantized version use STD)4 1283 1 900 6072 t
+10 S f
+(_)2183 6072 w
+10 R f
+( against)1 315(QUANTUM milliseconds as the quantum for execution to defend)8 2672 2 2233 6072 t
+( STD)1 246( attacks.)1 334(Kocher-style timing)1 810 3 900 6192 t
+10 S f
+(_)2290 6192 w
+10 R f
+(QUANTUM is de\256ned in libcrypt.h and should be tuned to your envi-)11 2880 1 2340 6192 t
+(ronment.)900 6312 w
+9 B f
+(SEE ALSO)1 438 1 540 6480 t
+10 B f
+(bigInit)900 6600 w
+10 R f
+(\(3BM\),)1190 6600 w
+10 B f
+(bigTest)1576 6600 w
+10 R f
+(\(3BM\),)1893 6600 w
+10 B f
+(bigBits)2280 6600 w
+10 R f
+(\(3BM\),)2581 6600 w
+10 B f
+(bigBytes)2968 6600 w
+10 R f
+(\(3BM\),)3335 6600 w
+10 B f
+(bigToBuf)3722 6600 w
+10 R f
+(\(3BM\),)4129 6600 w
+10 B f
+(bufToBig)4516 6600 w
+10 R f
+(\(3BM\),)4923 6600 w
+10 B f
+(fBigPrint)900 6720 w
+10 R f
+(\(3BM\),)1300 6720 w
+10 B f
+(atobig)1648 6720 w
+10 R f
+(\(3BM\),)1915 6720 w
+10 B f
+(bigPow)2262 6720 w
+10 R f
+(\(3BM\),)2579 6720 w
+10 B f
+(bignumDES[En/De]crypt)2926 6720 w
+10 R f
+(\(3BM\))4010 6720 w
+10 B f
+(start)4332 6720 w
+10 S f
+(_)4531 6720 w
+10 B f
+(quantize)4581 6720 w
+10 R f
+(\(3BM\))4948 6720 w
+10 B f
+(end)900 6840 w
+10 S f
+(_)1056 6840 w
+10 B f
+(quantize)1106 6840 w
+10 R f
+(\(3BM\))1473 6840 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 11
+%%Page: 1 12
+/saveobj save def
+mark
+12 pagesetup
+9 B f
+( \( 3BM \))3 271( GAMAL)1 368( EL)1 1393( System V)2 386( UNIX)1 1503( \( 3BM \))3 271(EL GAMAL)1 488 7 540 480 t
+(NAME)540 960 w
+10 R f
+( freeEGSig,)1 515(genEGParams, genEGKeySet, EGEncrypt, EGDecrypt, EGSign, EGVerify freeEGKeys,)6 3805 2 900 1080 t
+( randBytesNeededForEGParams, randBytesNeeded-)2 2142(freeEGParams, freeEGPublicKey, freeEGPrivateKey)2 2178 2 900 1200 t
+(ForEGKeySet randBytesNeededForEGEncrypt, randBytesNeededForEGSign)2 3103 1 900 1320 t
+9 B f
+(SYNOPSIS)540 1608 w
+10 B f
+(#include)900 1728 w
+10 S f
+(<)1287 1728 w
+10 B f
+(libcrypt.h)1342 1728 w
+10 S f
+(>)1762 1728 w
+10 B f
+(int randBytesNeededForEGParams\(int pbits, int qbits\);)4 2381 1 900 1896 t
+(int randBytesNeededForEGKeySet\(int qbits\);)2 1955 1 900 2064 t
+(int randBytesNeededForEGEncrypt\(int qbits\);)2 2000 1 900 2232 t
+(int randBytesNeededForEGSign\(int qbits\);)2 1840 1 900 2400 t
+(EGParams)900 2568 w
+10 S f
+(*)1397 2568 w
+10 B f
+(genEGParams\(int numbits)1 1148 1 1447 2568 t
+10 S f
+(_)2595 2568 w
+10 B f
+(in)2645 2568 w
+10 S f
+(_)2729 2568 w
+10 B f
+(p, int numbits)2 599 1 2779 2568 t
+10 S f
+(_)3378 2568 w
+10 B f
+(in)3428 2568 w
+10 S f
+(_)3512 2568 w
+10 B f
+(q, BigInt randomStart\))2 992 1 3562 2568 t
+(EGKeySet)900 2736 w
+10 S f
+(*)1375 2736 w
+10 B f
+(genEGKeySet\(EGParams)1425 2736 w
+10 S f
+(*)2555 2736 w
+10 B f
+(params, int pbits, int qbits, BigInt randomStart\))6 2066 1 2605 2736 t
+(BigInt EGEncrypt\(BigInt m, EGPublicKey)3 1847 1 900 2904 t
+10 S f
+(*)2772 2904 w
+10 B f
+(key, BigInt randomStart\))2 1086 1 2822 2904 t
+(BigInt EGDecrypt\(BigInt encryptedMessage, EGPrivateKey)3 2581 1 900 3072 t
+10 S f
+(*)3506 3072 w
+10 B f
+(key\))3556 3072 w
+(BigInt quantized)1 721 1 900 3240 t
+10 S f
+(_)1621 3240 w
+10 B f
+(EGDecrypt\(BigInt encryptedMessage, EGPrivateKey)2 2283 1 1671 3240 t
+10 S f
+(*)3979 3240 w
+10 B f
+(key\))4029 3240 w
+(EGSignature)900 3408 w
+10 S f
+(*)1487 3408 w
+10 B f
+(EGSign\(BigInt m, EGPrivateKey)2 1426 1 1537 3408 t
+10 S f
+(*)2988 3408 w
+10 B f
+(key, BigInt randomStart\))2 1086 1 3038 3408 t
+(EGSignature)900 3576 w
+10 S f
+(*)1487 3576 w
+10 B f
+(quantized)1537 3576 w
+10 S f
+(_)1960 3576 w
+10 B f
+(EGSign\(BigInt m, EGPrivateKey)2 1426 1 2010 3576 t
+10 S f
+(*)3461 3576 w
+10 B f
+(key\))3511 3576 w
+(Boolean EGVerify\(BigInt m, EGSignature)3 1812 1 900 3744 t
+10 S f
+(*)2737 3744 w
+10 B f
+(sig, EGPublicKey)1 757 1 2787 3744 t
+10 S f
+(*)3569 3744 w
+10 B f
+(key\))3619 3744 w
+(void freeEGKeys\(EGKeySet)1 1213 1 900 3912 t
+10 S f
+(*)2138 3912 w
+10 B f
+(keyset\))2188 3912 w
+(void freeEGPublicKey\(EGPublicKey)1 1587 1 900 4080 t
+10 S f
+(*)2512 4080 w
+10 B f
+(key\))2562 4080 w
+(void freeEGPrivateKey\(EGPrivateKey)1 1661 1 900 4248 t
+10 S f
+(*)2586 4248 w
+10 B f
+(key\))2636 4248 w
+(void freeEGSig\(EGSignature)1 1248 1 900 4416 t
+10 S f
+(*)2173 4416 w
+10 B f
+(sig\))2223 4416 w
+9 B f
+(DESCRIPTION)540 4584 w
+10 R f
+(For all of these functions)4 1003 1 900 4704 t
+10 I f
+(BigInt)1930 4704 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 4704 t
+10 I f
+(BigInts)3822 4704 w
+10 R f
+(.)4111 4704 w
+10 I f
+(bigInit)4188 4704 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 4704 t
+(for initialization of empty)3 1048 1 900 4824 t
+10 I f
+(BigInts)1979 4824 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 4824 t
+(care of the space allocation.)4 1110 1 900 4944 t
+(In all of the function which have an argument,)8 1881 1 900 5184 t
+10 I f
+(randomStart)2810 5184 w
+10 R f
+( is chosen NULL, the default,)5 1209(, if this argument)3 695 2 3316 5184 t
+( If)1 130( to generate necessary random material.)5 1654(DES-based pseudo-RNG seeded with truerand\(\) will be used)7 2536 3 900 5304 t
+10 I f
+(randomStart)900 5424 w
+10 R f
+(is not NULL, the accompanying functions,)5 1712 1 1431 5424 t
+10 I f
+(randBytesNeededForEG...)3168 5424 w
+10 R f
+( out how)2 352(are used to \256nd)3 613 2 4255 5424 t
+(many random bytes are expected.)4 1338 1 900 5544 t
+( random prime)2 604(El Gamal cryptosystems may use a different)6 1811 2 900 5784 t
+10 I f
+(p)3348 5784 w
+10 R f
+(, a primitive root)3 696 1 3398 5784 t
+10 S f
+(a)4127 5784 w
+10 R f
+(\()4198 5784 w
+10 I f
+(mod p)1 263 1 4239 5784 t
+10 R f
+(\) and a secret)3 552 1 4510 5784 t
+10 I f
+(X)5095 5784 w
+9 I f
+(a)5167 5804 w
+10 R f
+( may be used to ensure that all)7 1261( genEGParams\(\) is called before creating keys the Params)8 2380( If)1 124(for each user.)2 555 4 900 5904 t
+( If)1 121(\(or a group of\) users share the same parameters.)8 1953 2 900 6024 t
+10 I f
+(genEGKeySet)3004 6024 w
+10 R f
+( = NULL, a new)4 681( is called with params)4 891(\( \))1 82 3 3566 6024 t
+( user's public key is)4 835( A)1 131(set of parameters will be created for each key set.)9 2052 3 900 6172 t
+10 I f
+(Y)3951 6172 w
+9 I f
+(a)4018 6192 w
+10 S f
+(= a)1 134 1 4087 6172 t
+9 I f
+(X)4226 6114 w
+8 I f
+(a)4291 6132 w
+10 I f
+(mod p)1 263 1 4354 6172 t
+10 R f
+( encrypt a)2 409(. To)1 194 2 4617 6172 t
+(message)900 6296 w
+10 I f
+(m)1284 6296 w
+10 R f
+(, one creates a key)4 817 1 1356 6296 t
+10 I f
+(K)2219 6296 w
+10 S f
+(=)2310 6296 w
+10 I f
+(Y)2381 6296 w
+9 I f
+(b)2442 6315 w
+7 I f
+(X)2442 6242 w
+6 I f
+(a)2491 6256 w
+10 I f
+(mod p)1 263 1 2542 6296 t
+10 R f
+( message is then represented as the pair)7 1725( encrypted)1 439(. The)1 251 3 2805 6296 t
+(\()900 6420 w
+10 I f
+(Y)941 6420 w
+9 I f
+(a)1008 6440 w
+10 R f
+(,)1069 6420 w
+10 I f
+(K)1102 6420 w
+10 S f
+(*)1177 6420 w
+10 I f
+(m mod p)2 376 1 1235 6420 t
+10 R f
+( recipient of the pair can then regenerate the key as)10 2042(\) A)1 156 2 1619 6420 t
+10 I f
+(K)3843 6420 w
+10 S f
+(=)3934 6420 w
+10 I f
+(Y)4005 6420 w
+9 I f
+(a)4066 6439 w
+7 I f
+(X)4066 6366 w
+6 I f
+(b)4115 6380 w
+10 I f
+(mod p)1 263 1 4166 6420 t
+10 R f
+( the)1 147(and then divide)2 618 2 4455 6420 t
+(second part of the received pair by)6 1379 1 900 6540 t
+10 I f
+(K)2304 6540 w
+10 R f
+(to get)1 225 1 2396 6540 t
+10 I f
+(m)2646 6540 w
+10 R f
+(.)2718 6540 w
+10 I f
+(genEGParams)900 6780 w
+10 R f
+(generates the prime)2 791 1 1518 6780 t
+10 I f
+(p)2339 6780 w
+10 R f
+(and the primitive root)3 884 1 2419 6780 t
+10 S f
+(a)3333 6780 w
+10 R f
+( an)1 125(and returns them in)3 789 2 3426 6780 t
+10 I f
+(EGParams)4371 6780 w
+10 R f
+(structure.)4846 6780 w
+(It takes as argument the desired length of)7 1644 1 900 6900 t
+10 I f
+(p)2569 6900 w
+10 R f
+(in bits.)1 273 1 2644 6900 t
+10 I f
+(genEGKeySet)900 7140 w
+10 R f
+( private key differs from the)5 1132( The)1 207( Gamal systems.)2 662(generates the public and private keys for El)7 1739 4 1480 7140 t
+( secret)1 271(public key in that the)4 904 2 900 7260 t
+10 I f
+(X)2114 7260 w
+9 I f
+(a)2186 7280 w
+10 R f
+( function takes the an)4 910( This)1 242(is included.)1 475 3 2278 7260 t
+10 I f
+(EGParams)3944 7260 w
+10 R f
+(structure pointer as)2 793 1 4427 7260 t
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 12
+%%Page: 2 13
+/saveobj save def
+mark
+13 pagesetup
+9 B f
+( \( 3BM \))3 271( GAMAL)1 368( EL)1 1393( System V)2 386( UNIX)1 1503( \( 3BM \))3 271(EL GAMAL)1 488 7 540 480 t
+10 R f
+(generated by)1 512 1 900 960 t
+10 I f
+(genEGParams)1437 960 w
+10 R f
+(as argument.)1 510 1 2050 960 t
+10 I f
+(getEGPublicKey)900 1200 w
+10 R f
+(and)1604 1200 w
+10 I f
+(getEGPrivateKey)1782 1200 w
+10 R f
+(take an)1 294 1 2520 1200 t
+10 I f
+(EGKeySet)2848 1200 w
+10 R f
+(structure pointer as an argument and return the)7 1928 1 3292 1200 t
+(public or private key.)3 854 1 900 1320 t
+( p-1, the El Gamal func-)5 1010(If the thing being signed or encrypted is smaller than q, the large prime factor of)15 3310 2 900 1560 t
+(tions will use Brickell's modular exponentiation enhancement whereever possible.)8 3298 1 900 1680 t
+10 I f
+(EGEncrypt)900 1920 w
+10 R f
+(encrypts a)1 427 1 1394 1920 t
+10 I f
+(BigIntmessage)1866 1920 w
+10 R f
+(using a)1 307 1 2499 1920 t
+10 I f
+(publickey)2852 1920 w
+10 R f
+(and returns an)2 607 1 3280 1920 t
+10 I f
+(EGEncryptedMessage)3933 1920 w
+10 R f
+(structure)4871 1920 w
+(which is the pair of)4 771 1 900 2040 t
+10 I f
+(BigInts)1696 2040 w
+10 R f
+(discussed above.)1 671 1 2010 2040 t
+10 I f
+(EGDecrypt)900 2280 w
+10 R f
+(takes the pair generated by)4 1097 1 1386 2280 t
+10 I f
+(EGEncrypt)2515 2280 w
+10 R f
+( key)1 177(and and the private key associated with the public)8 2047 2 2996 2280 t
+(used for encryption and returns the original)6 1772 1 900 2400 t
+10 I f
+(BigIntmessage)2704 2400 w
+10 R f
+( STD)1 220( quantized version use)3 911(. The)1 237 3 3292 2400 t
+10 S f
+(_)4660 2400 w
+10 R f
+(QUANTUM)4710 2400 w
+( same is true)3 508( \(The)1 240( the quantum for execution to defend against Kocher-style timing attacks.)10 2957(milliseconds as)1 615 4 900 2520 t
+(of quantized)1 510 1 900 2640 t
+10 S f
+(_)1410 2640 w
+10 R f
+(EGSign\). STD)1 628 1 1460 2640 t
+10 S f
+(_)2088 2640 w
+10 R f
+( libcrypt.h and should be tuned to your environ-)8 2016(QUANTUM is de\256ned in)3 1066 2 2138 2640 t
+(ment.)900 2760 w
+10 I f
+(EGSign)900 3000 w
+10 R f
+(generates a digital signature for message)5 1621 1 1236 3000 t
+10 I f
+(m)2882 3000 w
+10 R f
+(using a private key.)3 782 1 2979 3000 t
+10 I f
+( y)1 52(EGVeri f)1 349 2 900 3240 t
+10 R f
+(veri\256es that a signature received with a message)7 2003 1 1337 3240 t
+10 I f
+(m)3376 3240 w
+10 R f
+( key which corre-)3 736(is valid using the public)4 1000 2 3484 3240 t
+(sponds to the private key used to generate the signature.)9 2235 1 900 3360 t
+10 I f
+(DSSSign)900 3600 w
+10 R f
+(and)1258 3600 w
+10 I f
+( y)1 52(DSSVeri f)1 388 2 1410 3600 t
+10 R f
+( The)1 210(are much more ef\256cient and use the same keys as the El Gamal counterparts.)13 3130 2 1880 3600 t
+(signature is also shorter.)3 971 1 900 3720 t
+10 I f
+(f ree)1 163 1 900 3960 t
+10 S f
+(*)1071 3960 w
+10 R f
+(free their respective structures.)3 1229 1 1146 3960 t
+9 B f
+(SEE ALSO)1 438 1 540 4128 t
+10 B f
+(bigInit)900 4248 w
+10 R f
+(\(3BM\),)1190 4248 w
+10 B f
+(bigTest)1576 4248 w
+10 R f
+(\(3BM\),)1893 4248 w
+10 B f
+(bigBits)2280 4248 w
+10 R f
+(\(3BM\),)2581 4248 w
+10 B f
+(bigBytes)2968 4248 w
+10 R f
+(\(3BM\),)3335 4248 w
+10 B f
+(bigToBuf)3722 4248 w
+10 R f
+(\(3BM\),)4129 4248 w
+10 B f
+(bufToBig)4516 4248 w
+10 R f
+(\(3BM\),)4923 4248 w
+10 B f
+(fBigPrint)900 4368 w
+10 R f
+(\(3BM\),)1300 4368 w
+10 B f
+(atobig)1622 4368 w
+10 R f
+(\(3BM\),)1889 4368 w
+10 B f
+(bigPow)2211 4368 w
+10 R f
+(\(3BM\))2528 4368 w
+10 B f
+(start)2825 4368 w
+10 S f
+(_)3024 4368 w
+10 B f
+(quantize)3074 4368 w
+10 R f
+(\(3BM\))3441 4368 w
+10 B f
+(end)3738 4368 w
+10 S f
+(_)3894 4368 w
+10 B f
+(quantize)3944 4368 w
+10 R f
+(\(3BM\))4311 4368 w
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 13
+%%Page: 1 14
+/saveobj save def
+mark
+14 pagesetup
+9 B f
+( \( 3BM \))3 271( EUCLID)1 1761( System V)2 386( UNIX)1 1641(EUCLID \( 3BM \))3 621 5 540 480 t
+(NAME)540 960 w
+10 R f
+(getInverse, extendedGcd, gcd)2 1185 1 900 1080 t
+9 B f
+(SYNOPSIS)540 1248 w
+10 B f
+(#include)900 1368 w
+10 S f
+(<)1287 1368 w
+10 B f
+(libcrypt.h)1342 1368 w
+10 S f
+(>)1762 1368 w
+10 B f
+(void getInverse\(p, q, result\))3 1174 1 900 1536 t
+(BigInt p, q, result;)3 787 1 900 1656 t
+(void extendedGcd\(u, v, u)3 1065 1 900 1824 t
+10 S f
+(\242)1973 1824 w
+10 B f
+(, v)1 100 1 1998 1824 t
+10 S f
+(\242)2106 1824 w
+10 B f
+(, gcd)1 200 1 2131 1824 t
+10 R f
+(\))2331 1824 w
+10 B f
+(BigInt u, v, u)3 560 1 900 1944 t
+10 S f
+(\242)1468 1944 w
+10 B f
+(, v)1 100 1 1493 1944 t
+10 S f
+(\242)1601 1944 w
+10 B f
+(, gcd)1 200 1 1626 1944 t
+10 R f
+(;)1826 1944 w
+10 B f
+(BigInt gcd\(u, v\))2 670 1 900 2112 t
+(BigInt u, v;)2 487 1 900 2232 t
+9 B f
+(DESCRIPTION)540 2400 w
+10 R f
+(For all of these functions)4 1003 1 900 2520 t
+10 I f
+(BigInt)1930 2520 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 2520 t
+10 I f
+(BigInts)3822 2520 w
+10 R f
+(.)4111 2520 w
+10 I f
+(bigInit)4188 2520 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 2520 t
+(for initialization of empty)3 1048 1 900 2640 t
+10 I f
+(BigInts)1979 2640 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 2640 t
+(care of the space allocation.)4 1110 1 900 2760 t
+10 I f
+(getInverse)900 3009 w
+10 R f
+(returns)1340 3009 w
+10 I f
+(p)1642 3009 w
+9 S f
+(-)1703 2969 w
+9 R f
+(1)1768 2969 w
+10 I f
+(mod q)1 263 1 1829 3009 t
+10 R f
+(in)2117 3009 w
+10 I f
+(result)2220 3009 w
+10 R f
+(.)2448 3009 w
+10 I f
+(extendedGcd)900 3249 w
+10 R f
+( is based on the equation:)5 1013( It)1 111(is Euclid's extended Greatest Common Divisor algorithm.)6 2329 3 1445 3249 t
+10 I f
+(u)2533 3369 w
+10 S f
+(*)2591 3369 w
+10 I f
+(u)2649 3369 w
+10 S f
+(\242 -)1 96 1 2707 3369 t
+10 I f
+(v)2819 3369 w
+10 S f
+(*)2871 3369 w
+10 I f
+(v)2929 3369 w
+10 S f
+(\242 =)1 129 1 2981 3369 t
+10 I f
+(gcd)3159 3369 w
+10 R f
+(\()3311 3369 w
+10 I f
+(u)3352 3369 w
+10 R f
+(,)3410 3369 w
+10 I f
+(v)3476 3369 w
+10 R f
+(\).)3528 3369 w
+10 I f
+(getInverse)900 3489 w
+10 R f
+(is just a call to)4 578 1 1340 3489 t
+10 I f
+(extendedGcd)1943 3489 w
+10 R f
+(when it is known that)4 861 1 2488 3489 t
+10 I f
+(gcd)3374 3489 w
+10 R f
+(\()3526 3489 w
+10 I f
+(p)3567 3489 w
+10 R f
+(,)3625 3489 w
+10 I f
+(q)3691 3489 w
+10 R f
+(\))3749 3489 w
+10 S f
+(=)3798 3489 w
+10 R f
+(1.)3869 3489 w
+9 B f
+(SEE ALSO)1 438 1 540 3657 t
+10 B f
+(bigInit)900 3777 w
+10 R f
+(\(3BM\),)1190 3777 w
+10 B f
+(bigTest)1570 3777 w
+10 R f
+(\(3BM\),)1887 3777 w
+10 B f
+(bigBits)2267 3777 w
+10 R f
+(\(3BM\),)2568 3777 w
+10 B f
+(bigToBuf)2948 3777 w
+10 R f
+(\(3BM\),)3355 3777 w
+10 B f
+(bufToBig)3735 3777 w
+10 R f
+(\(3BM\),)4142 3777 w
+10 B f
+(fBigPrint)4523 3777 w
+10 R f
+(\(3BM\),)4923 3777 w
+10 B f
+(atobig)900 3897 w
+10 R f
+(\(3BM\),)1167 3897 w
+10 B f
+(bigMod)1489 3897 w
+10 R f
+(\(3BM\),)1823 3897 w
+10 B f
+(bigDivide)2145 3897 w
+10 R f
+(\(3BM\),)2557 3897 w
+10 B f
+(bigSubtract)2879 3897 w
+10 R f
+(\(3BM\),)3385 3897 w
+10 B f
+(bigMultiply)3707 3897 w
+10 R f
+(\(3BM\))4214 3897 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 14
+%%Page: 1 15
+/saveobj save def
+mark
+15 pagesetup
+9 B f
+( \( 3BM \))3 271( MD5)1 1761( System V)2 386( UNIX)1 1796(MD5 \( 3BM \))3 466 5 540 480 t
+(NAME)540 960 w
+10 R f
+(MD5Init, MD5Update, MD5Final)2 1366 1 900 1080 t
+9 B f
+(SYNOPSIS)540 1248 w
+10 B f
+(#include)900 1368 w
+10 S f
+(<)1287 1368 w
+10 B f
+(libcrypt.h)1342 1368 w
+10 S f
+(>)1762 1368 w
+10 B f
+(MD5Init\(MD5)900 1536 w
+10 S f
+(_)1521 1536 w
+10 B f
+(CTX)1571 1536 w
+10 S f
+(*)1807 1536 w
+10 B f
+(mdContext\))1857 1536 w
+(MD5Update\(MD5)900 1704 w
+10 S f
+(_)1676 1704 w
+10 B f
+(CTX)1726 1704 w
+10 S f
+(*)1962 1704 w
+10 B f
+(mdContext, unsigned char)2 1131 1 2012 1704 t
+10 S f
+(*)3168 1704 w
+10 B f
+(data, int numbytes\))2 831 1 3218 1704 t
+(MD5Final\(unsigned char digest[16], MD5)3 1783 1 900 1872 t
+10 S f
+(_)2683 1872 w
+10 B f
+(CTX)2733 1872 w
+10 S f
+(*)2969 1872 w
+10 B f
+(mdContext\))3019 1872 w
+9 B f
+(DESCRIPTION)540 2040 w
+10 R f
+(For all of these functions)4 1003 1 900 2160 t
+10 I f
+(BigInt)1930 2160 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 2160 t
+10 I f
+(BigInts)3822 2160 w
+10 R f
+(.)4111 2160 w
+10 I f
+(bigInit)4188 2160 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 2160 t
+(for initialization of empty)3 1048 1 900 2280 t
+10 I f
+(BigInts)1979 2280 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 2280 t
+(care of the space allocation.)4 1110 1 900 2400 t
+10 I f
+(MD)900 2640 w
+10 R f
+(5)1063 2640 w
+10 I f
+(Init)1121 2640 w
+10 R f
+(takes a)1 274 1 1285 2640 t
+10 I f
+(MD)1584 2640 w
+10 R f
+(5)1747 2640 w
+10 S f
+(_)1805 2640 w
+10 I f
+(CTX)1863 2640 w
+10 R f
+(structure as input initialized simply as:)5 1547 1 2072 2640 t
+10 C f
+(mdContext = \(MD5_CTX)2 1200 1 1685 2760 t
+10 S f
+(*)2945 2760 w
+10 C f
+(\)malloc\(sizeof\(MD5_CTX\)\);)2995 2760 w
+10 R f
+(This function must be called to start the digest process.)9 2198 1 900 2880 t
+10 I f
+(MD)900 3120 w
+10 R f
+(5)1063 3120 w
+10 I f
+(Update)1121 3120 w
+10 R f
+( is fed 16 byte chunks of data and updates the digest.)11 2108( It)1 111(is the digest work routine.)4 1041 3 1440 3120 t
+10 I f
+(MDFinal)900 3360 w
+10 R f
+(is called to terminate the digest.)5 1271 1 1297 3360 t
+10 I f
+(bigMessageDigest)900 3600 w
+10 R f
+( digest is)2 386( The)1 220( to create a digest for a buffer of characters.)9 1872(uses these three functions)3 1065 4 1677 3600 t
+(returned in a)2 504 1 900 3720 t
+10 I f
+(BigInt)1429 3720 w
+10 R f
+(.)1679 3720 w
+10 I f
+(MD)900 3960 w
+10 R f
+(5)1063 3960 w
+10 I f
+(Print)1121 3960 w
+10 R f
+(prints the digest to stdout.)4 1037 1 1352 3960 t
+( exactly the same interface except that MD4Final leaves the)9 2494(MD2 and MD4 are also supported and have)7 1826 2 900 4200 t
+(digest in the context structure:)4 1210 1 900 4320 t
+10 I f
+(MD)2135 4320 w
+10 R f
+(4)2298 4320 w
+10 I f
+(Final)2356 4320 w
+10 R f
+(\()2581 4320 w
+10 I f
+(MD)2622 4320 w
+10 R f
+(4)2785 4320 w
+10 S f
+(_)2843 4320 w
+10 I f
+(CTX)2901 4320 w
+10 S f
+(*)3093 4320 w
+10 I f
+(context)3151 4320 w
+10 R f
+(\).)3447 4320 w
+9 B f
+(SEE ALSO)1 438 1 540 4608 t
+10 B f
+(bigInit)900 4728 w
+10 R f
+(\(3BM\),)1190 4728 w
+10 B f
+(bigTest)1570 4728 w
+10 R f
+(\(3BM\),)1887 4728 w
+10 B f
+(bigBits)2267 4728 w
+10 R f
+(\(3BM\),)2568 4728 w
+10 B f
+(bigToBuf)2948 4728 w
+10 R f
+(\(3BM\),)3355 4728 w
+10 B f
+(bufToBig)3735 4728 w
+10 R f
+(\(3BM\),)4142 4728 w
+10 B f
+(fBigPrint)4523 4728 w
+10 R f
+(\(3BM\),)4923 4728 w
+10 B f
+(atobig)900 4848 w
+10 R f
+(\(3BM\))1167 4848 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 15
+%%Page: 1 16
+/saveobj save def
+mark
+16 pagesetup
+9 B f
+( \( 3BM \))3 271( mdigest)1 1761( System V)2 386( UNIX)1 1691(mdigest \( 3BM \))3 571 5 540 480 t
+(NAME)540 960 w
+10 R f
+(fBigMessageDigest, bigMessageDigest)1 1576 1 900 1080 t
+9 B f
+(SYNOPSIS)540 1248 w
+10 B f
+(#include)900 1368 w
+10 S f
+(<)1287 1368 w
+10 B f
+(libcrypt.h)1342 1368 w
+10 S f
+(>)1762 1368 w
+10 B f
+(void fBigMessageDigest\(char)1 1240 1 900 1536 t
+10 S f
+(*)2165 1536 w
+10 B f
+(\256lename, BigInt digest, DigestType digestType\))4 2017 1 2215 1536 t
+(void bigMessageDigest\(unsigned char)2 1606 1 900 1704 t
+10 S f
+(*)2531 1704 w
+10 B f
+(buf, int bu\257en, BigInt digest, DigestType digestType\))6 2261 1 2581 1704 t
+10 R f
+(This is a simple interface to SHS, MD2, MD4 and MD5.)10 2268 1 900 1872 t
+10 I f
+(digest)900 1992 w
+10 R f
+(must be initialized \(digest = bigInit\(0\)\).)5 1583 1 1164 1992 t
+(The digest types are de\256ned as follows:)6 1581 1 900 2112 t
+(#de\256ne SHS 1)2 578 1 900 2352 t
+(#de\256ne MD5 5)2 605 1 900 2472 t
+(#de\256ne MD4 4)2 605 1 900 2592 t
+(#de\256ne MD2 3)2 605 1 900 2712 t
+(typedef int DigestType;)2 949 1 900 2832 t
+9 B f
+(SEE ALS)1 383 1 540 3120 t
+10 B f
+(bigInit)900 3240 w
+10 R f
+(\(3BM\),)1190 3240 w
+10 B f
+(bigTest)1570 3240 w
+10 R f
+(\(3BM\),)1887 3240 w
+10 B f
+(bigBits)2267 3240 w
+10 R f
+(\(3BM\),)2568 3240 w
+10 B f
+(bigToBuf)2948 3240 w
+10 R f
+(\(3BM\),)3355 3240 w
+10 B f
+(bufToBig)3735 3240 w
+10 R f
+(\(3BM\),)4142 3240 w
+10 B f
+(fBigPrint)4523 3240 w
+10 R f
+(\(3BM\),)4923 3240 w
+10 B f
+(atobig)900 3360 w
+10 R f
+(\(3BM\),)1167 3360 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 16
+%%Page: 1 17
+/saveobj save def
+mark
+17 pagesetup
+9 B f
+( \( 3BM \))3 271( BIGUTILS)1 1761( System V)2 386( UNIX)1 1556(BIGUTILS \( 3BM \))3 706 5 540 480 t
+(NAME)540 960 w
+(SYNOPSIS)540 1080 w
+10 B f
+(#include)900 1200 w
+10 S f
+(<)1287 1200 w
+10 B f
+(libcrypt.h)1342 1200 w
+10 S f
+(>)1762 1200 w
+10 R f
+(Stdio-based functions:)1 897 1 900 1320 t
+10 B f
+(long fgetLength P\(\(FILE)2 1061 1 900 1488 t
+10 S f
+(*)1986 1488 w
+10 B f
+(stream\);)2036 1488 w
+(void fputLength P\(\(long length, register FILE)5 1956 1 900 1656 t
+10 S f
+(*)2881 1656 w
+10 B f
+(stream\);)2931 1656 w
+(int fgetBoolean P\(\(FILE)2 1033 1 900 1824 t
+10 S f
+(*)1958 1824 w
+10 B f
+(stream, int form\);)2 761 1 2008 1824 t
+(void fputBoolean P\(\(int value, register FILE)5 1889 1 900 1992 t
+10 S f
+(*)2814 1992 w
+10 B f
+(stream, int form\);)2 761 1 2864 1992 t
+(long fgetInteger P\(\(FILE)2 1065 1 900 2160 t
+10 S f
+(*)1990 2160 w
+10 B f
+(stream, int form\);)2 761 1 2040 2160 t
+(void fputInteger P\(\(long value, register FILE)5 1921 1 900 2328 t
+10 S f
+(*)2846 2328 w
+10 B f
+(stream, int form\);)2 761 1 2896 2328 t
+(long fgetString P\(\(unsigned char)3 1392 1 900 2496 t
+10 S f
+(*)2317 2496 w
+10 B f
+(string, int limi,)2 634 1 2367 2496 t
+10 R f
+(register FILE)1 535 1 2055 2616 t
+10 S f
+(*)2615 2616 w
+10 R f
+(stream, int form\)\);)2 735 1 2665 2616 t
+10 B f
+(void fputString P\(\(unsigned char)3 1410 1 900 2784 t
+10 S f
+(*)2335 2784 w
+10 B f
+(cp, long lengt,)2 595 1 2385 2784 t
+10 R f
+(register FILE)1 535 1 2055 2904 t
+10 S f
+(*)2615 2904 w
+10 R f
+(stream, int form, int stringtype\)\);)4 1316 1 2665 2904 t
+10 B f
+(unsigned char)1 604 1 900 3072 t
+10 S f
+(*)1529 3072 w
+10 B f
+(fgetBitString P\(\(unsigned char)2 1311 1 1579 3072 t
+10 S f
+(*)2915 3072 w
+10 B f
+(bstring, int limi,)2 690 1 2965 3072 t
+10 R f
+(register FILE)1 535 1 2700 3192 t
+10 S f
+(*)3260 3192 w
+10 R f
+(stream, int form\)\);)2 735 1 3310 3192 t
+10 B f
+(void fputBitString P\(\(unsigned char)3 1538 1 900 3360 t
+10 S f
+(*)2463 3360 w
+10 B f
+(bstring, int blengt,)2 790 1 2513 3360 t
+10 R f
+(register FILE)1 535 1 2130 3480 t
+10 S f
+(*)2690 3480 w
+10 R f
+(stream,int form\)\);)1 710 1 2740 3480 t
+10 B f
+(int featDataUnit P\(\(FILE)2 1082 1 900 3648 t
+10 S f
+(*)2007 3648 w
+10 B f
+(stream, int form, register tag\);)4 1295 1 2057 3648 t
+(void fgetEOC P\(\(FILE)2 972 1 900 3816 t
+10 S f
+(*)1897 3816 w
+10 B f
+(stream, int form\);)2 761 1 1947 3816 t
+(void fputEOC P\(\(FILE)2 990 1 900 3984 t
+10 S f
+(*)1915 3984 w
+10 B f
+(stream\);)1965 3984 w
+(void fputBigInt P\(\(BigInt big, FILE)4 1528 1 900 4152 t
+10 S f
+(*)2453 4152 w
+10 B f
+(stream\);)2503 4152 w
+(BigInt fgetBigInt P\(\(FILE)2 1117 1 900 4320 t
+10 S f
+(*)2042 4320 w
+10 B f
+(stream\);)2092 4320 w
+(void fputTable P\(\(Table)2 1029 1 900 4488 t
+10 S f
+(*)1954 4488 w
+10 B f
+(table, FILE)1 495 1 2004 4488 t
+10 S f
+(*)2524 4488 w
+10 B f
+(stream\);)2574 4488 w
+(Table)900 4656 w
+10 S f
+(*)1170 4656 w
+10 B f
+(fgetTable P\(\(FILE)1 791 1 1245 4656 t
+10 S f
+(*)2061 4656 w
+10 B f
+(stream\);)2111 4656 w
+(void fputRSAPublicKey P\(\(RSAPublicKey)2 1829 1 900 4824 t
+10 S f
+(*)2754 4824 w
+10 B f
+(key, FILE)1 434 1 2804 4824 t
+10 S f
+(*)3263 4824 w
+10 B f
+(stream\);)3313 4824 w
+(RSAPublicKey)900 4992 w
+10 S f
+(*)1570 4992 w
+10 B f
+(fgetRSAPublicKey P\(\(FILE)1 1191 1 1645 4992 t
+10 S f
+(*)2861 4992 w
+10 B f
+(stream\);)2911 4992 w
+(void fputRSAPrivateKey P\(\(RSAPrivateKey)2 1903 1 900 5160 t
+10 S f
+(*)2828 5160 w
+10 B f
+(key, FILE)1 434 1 2878 5160 t
+10 S f
+(*)3337 5160 w
+10 B f
+(stream\);)3387 5160 w
+(RSAPrivateKey)900 5328 w
+10 S f
+(*)1607 5328 w
+10 B f
+(fgetRSAPrivateKey P\(\(FILE)1 1228 1 1682 5328 t
+10 S f
+(*)2935 5328 w
+10 B f
+(stream\);)2985 5328 w
+(void fputRSASignature P\(\(RSASignature)2 1773 1 900 5496 t
+10 S f
+(*)2698 5496 w
+10 B f
+(sig, FILE)1 401 1 2748 5496 t
+10 S f
+(*)3174 5496 w
+10 B f
+(stream\);)3224 5496 w
+(RSASignature)900 5664 w
+10 S f
+(*)1542 5664 w
+10 B f
+(fgetRSASignature P\(\(FILE)1 1163 1 1617 5664 t
+10 S f
+(*)2805 5664 w
+10 B f
+(stream\);)2855 5664 w
+(RSAPublicKey)900 5832 w
+10 S f
+(*)1570 5832 w
+10 B f
+(nfgetRSAPublicKey P\(\(char)1 1207 1 1645 5832 t
+10 S f
+(*)2877 5832 w
+10 B f
+(\);)2927 5832 w
+(RSAPrivateKey)900 6000 w
+10 S f
+(*)1607 6000 w
+10 B f
+(nfgetRSAPrivateKey P\(\(char)1 1244 1 1682 6000 t
+10 S f
+(*)2951 6000 w
+10 B f
+(\);)3001 6000 w
+(void fputEGParams P\(\(EGParams)2 1483 1 900 6168 t
+10 S f
+(*)2408 6168 w
+10 B f
+(params, FILE)1 606 1 2458 6168 t
+10 S f
+(*)3089 6168 w
+10 B f
+(stream\);)3139 6168 w
+(EGParams)900 6336 w
+10 S f
+(*)1397 6336 w
+10 B f
+(fgetEGParams P\(\(FILE)1 1018 1 1472 6336 t
+10 S f
+(*)2515 6336 w
+10 B f
+(stream\);)2565 6336 w
+(void fputEGPublicKey P\(\(EGPublicKey)2 1719 1 900 6504 t
+10 S f
+(*)2644 6504 w
+10 B f
+(key, FILE)1 434 1 2694 6504 t
+10 S f
+(*)3153 6504 w
+10 B f
+(stream\);)3203 6504 w
+(EGPublicKey)900 6672 w
+10 S f
+(*)1515 6672 w
+10 B f
+(fgetEGPublicKey P\(\(FILE)1 1136 1 1590 6672 t
+10 S f
+(*)2751 6672 w
+10 B f
+(stream\);)2801 6672 w
+(void fputEGPrivateKey P\(\(EGPrivateKey)2 1793 1 900 6840 t
+10 S f
+(*)2718 6840 w
+10 B f
+(key, FILE)1 434 1 2768 6840 t
+10 S f
+(*)3227 6840 w
+10 B f
+(stream\);)3277 6840 w
+(EGPrivateKey)900 7008 w
+10 S f
+(*)1552 7008 w
+10 B f
+(fgetEGPrivateKey P\(\(FILE)1 1173 1 1627 7008 t
+10 S f
+(*)2825 7008 w
+10 B f
+(stream\);)2875 7008 w
+(void fputEGSignature P\(\(EGSignature)2 1663 1 900 7176 t
+10 S f
+(*)2588 7176 w
+10 B f
+(sig, FILE)1 401 1 2638 7176 t
+10 S f
+(*)3064 7176 w
+10 B f
+(stream\);)3114 7176 w
+10 R f
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 17
+%%Page: 2 18
+/saveobj save def
+mark
+18 pagesetup
+9 B f
+( \( 3BM \))3 271( BIGUTILS)1 1761( System V)2 386( UNIX)1 1556(BIGUTILS \( 3BM \))3 706 5 540 480 t
+10 B f
+(EGSignature)900 960 w
+10 S f
+(*)1487 960 w
+10 B f
+(fgetEGSignature P\(\(FILE)1 1108 1 1562 960 t
+10 S f
+(*)2695 960 w
+10 B f
+(stream\);)2745 960 w
+(void fputDSASignature P\(\(DSASignature)2 1773 1 900 1128 t
+10 S f
+(*)2698 1128 w
+10 B f
+(sig, FILE)1 401 1 2748 1128 t
+10 S f
+(*)3174 1128 w
+10 B f
+(stream\);)3224 1128 w
+(DSASignature)900 1296 w
+10 S f
+(*)1542 1296 w
+10 B f
+(fgetDSASignature P\(\(FILE)1 1163 1 1617 1296 t
+10 S f
+(*)2805 1296 w
+10 B f
+(stream\);)2855 1296 w
+10 R f
+(Buffer-based functions:)1 945 1 900 1464 t
+10 B f
+(long bufGetLength P\(\(unsigned char)3 1571 1 900 1632 t
+10 S f
+(**)2496 1632 w
+10 B f
+(buffer\);)2596 1632 w
+(void bufPutLength P\(\(long length, register unsigned char)6 2443 1 900 1800 t
+10 S f
+(**)3368 1800 w
+10 B f
+(buffer\);)3468 1800 w
+(int bufGetBoolean P\(\(unsigned char)3 1543 1 900 1968 t
+10 S f
+(**)2468 1968 w
+10 B f
+(buffer, int form\);)2 734 1 2568 1968 t
+(void bufPutBoolean P\(\(int value, register unsigned char)6 2376 1 900 2136 t
+10 S f
+(**)3301 2136 w
+10 B f
+(buffer, int form\);)2 734 1 3401 2136 t
+(long bufGetInteger P\(\(unsigned char)3 1575 1 900 2304 t
+10 S f
+(**)2500 2304 w
+10 B f
+(buffer, int form\);)2 734 1 2600 2304 t
+(void bufPutInteger P\(\(long value, register unsigned char)6 2408 1 900 2472 t
+10 S f
+(**)3333 2472 w
+10 B f
+(buffer, int form\);)2 734 1 3433 2472 t
+(long bufGetString P\(\(unsigned char)3 1532 1 900 2640 t
+10 S f
+(*)2457 2640 w
+10 B f
+(string, int limit,)2 667 1 2507 2640 t
+(register unsigned char)2 955 1 2055 2760 t
+10 S f
+(**)3035 2760 w
+10 B f
+(buffer, int form\)\);)2 767 1 3135 2760 t
+(void bufPutString P\(\(unsigned char)3 1527 1 900 2928 t
+10 S f
+(*)2452 2928 w
+10 B f
+(cp, long length,)2 651 1 2502 2928 t
+(register unsigned char)2 955 1 2055 3048 t
+10 S f
+(**)3035 3048 w
+10 B f
+(buffer, int form, int stringtype\)\);)4 1392 1 3135 3048 t
+(unsigned char)1 604 1 900 3216 t
+10 S f
+(*)1529 3216 w
+10 B f
+(bufGetBitString P\(\(unsigned char)2 1451 1 1579 3216 t
+10 S f
+(*)3055 3216 w
+10 B f
+(bstring, int limit,)2 723 1 3105 3216 t
+(register unsigned char)2 955 1 2700 3336 t
+10 S f
+(**)3680 3336 w
+10 B f
+(buffer, int form\)\);)2 767 1 3780 3336 t
+(void bufPutBitString P\(\(unsigned char)3 1655 1 900 3504 t
+10 S f
+(*)2580 3504 w
+10 B f
+(bstring, int blength,)2 846 1 2630 3504 t
+(register unsigned char)2 955 1 2130 3624 t
+10 S f
+(**)3110 3624 w
+10 B f
+(buffer,int form\)\);)1 742 1 3210 3624 t
+(int bufEatDataUnit P\(\(unsigned char)3 1587 1 900 3792 t
+10 S f
+(**)2512 3792 w
+10 B f
+(buffer, int form, register tag\);)4 1268 1 2612 3792 t
+(void bufGetEOC P\(\(unsigned char)3 1482 1 900 3960 t
+10 S f
+(**)2407 3960 w
+10 B f
+(buffer, int form\);)2 734 1 2507 3960 t
+(void bufPutEOC P\(\(unsigned char)3 1477 1 900 4128 t
+10 S f
+(**)2402 4128 w
+10 B f
+(buffer\);)2502 4128 w
+(void bufPutBigInt P\(\(BigInt big, unsigned char)5 2015 1 900 4296 t
+10 S f
+(**)2940 4296 w
+10 B f
+(buffer\);)3040 4296 w
+(BigInt bufGetBigInt P\(\(unsigned char)3 1627 1 900 4464 t
+10 S f
+(**)2552 4464 w
+10 B f
+(buffer\);)2652 4464 w
+(void bufPutTable P\(\(Table)2 1146 1 900 4632 t
+10 S f
+(*)2071 4632 w
+10 B f
+(table, unsigned char)2 865 1 2121 4632 t
+10 S f
+(**)3011 4632 w
+10 B f
+(buffer\);)3111 4632 w
+(Table)900 4800 w
+10 S f
+(*)1170 4800 w
+10 B f
+(bufGetTable P\(\(unsigned char)2 1301 1 1245 4800 t
+10 S f
+(**)2571 4800 w
+10 B f
+(buffer\);)2671 4800 w
+(void bufPutRSAPublicKey P\(\(RSAPublicKey)2 1946 1 900 4968 t
+10 S f
+(*)2871 4968 w
+10 B f
+(key, unsigned char)2 804 1 2921 4968 t
+10 S f
+(**)3750 4968 w
+10 B f
+(buffer\);)3850 4968 w
+(RSAPublicKey)900 5136 w
+10 S f
+(*)1570 5136 w
+10 B f
+(bufGetRSAPublicKey P\(\(unsigned char)2 1701 1 1645 5136 t
+10 S f
+(**)3371 5136 w
+10 B f
+(buffer\);)3471 5136 w
+(void bufPutRSAPrivateKey P\(\(RSAPrivateKey)2 2020 1 900 5304 t
+10 S f
+(*)2945 5304 w
+10 B f
+(key, unsigned char)2 804 1 2995 5304 t
+10 S f
+(**)3824 5304 w
+10 B f
+(buffer\);)3924 5304 w
+(RSAPrivateKey)900 5472 w
+10 S f
+(*)1607 5472 w
+10 B f
+(bufGetRSAPrivateKey P\(\(unsigned char)2 1738 1 1682 5472 t
+10 S f
+(**)3445 5472 w
+10 B f
+(buffer\);)3545 5472 w
+(void bufPutRSASignature P\(\(RSASignature)2 1890 1 900 5640 t
+10 S f
+(*)2815 5640 w
+10 B f
+(sig, unsigned char)2 771 1 2865 5640 t
+10 S f
+(**)3661 5640 w
+10 B f
+(buffer\);)3761 5640 w
+(RSASignature)900 5808 w
+10 S f
+(*)1542 5808 w
+10 B f
+(bufGetRSASignature P\(\(unsigned char)2 1673 1 1617 5808 t
+10 S f
+(**)3315 5808 w
+10 B f
+(buffer\);)3415 5808 w
+(void bufPutEGParams P\(\(EGParams)2 1600 1 900 5976 t
+10 S f
+(*)2525 5976 w
+10 B f
+(params, unsigned char)2 976 1 2575 5976 t
+10 S f
+(**)3576 5976 w
+10 B f
+(buffer\);)3676 5976 w
+(EGParams)900 6144 w
+10 S f
+(*)1397 6144 w
+10 B f
+(bufGetEGParams P\(\(unsigned char)2 1528 1 1472 6144 t
+10 S f
+(**)3025 6144 w
+10 B f
+(buffer\);)3125 6144 w
+(void bufPutEGPublicKey P\(\(EGPublicKey)2 1836 1 900 6312 t
+10 S f
+(*)2761 6312 w
+10 B f
+(key, unsigned char)2 804 1 2811 6312 t
+10 S f
+(**)3640 6312 w
+10 B f
+(buffer\);)3740 6312 w
+(EGPublicKey)900 6480 w
+10 S f
+(*)1515 6480 w
+10 B f
+(bufGetEGPublicKey P\(\(unsigned char)2 1646 1 1590 6480 t
+10 S f
+(**)3261 6480 w
+10 B f
+(buffer\);)3361 6480 w
+(void bufPutEGPrivateKey P\(\(EGPrivateKey)2 1910 1 900 6648 t
+10 S f
+(*)2835 6648 w
+10 B f
+(key, unsigned char)2 804 1 2885 6648 t
+10 S f
+(**)3714 6648 w
+10 B f
+(buffer\);)3814 6648 w
+(EGPrivateKey)900 6816 w
+10 S f
+(*)1552 6816 w
+10 B f
+(bufGetEGPrivateKey P\(\(unsigned char)2 1683 1 1627 6816 t
+10 S f
+(**)3335 6816 w
+10 B f
+(buffer\);)3435 6816 w
+(void bufPutEGSignature P\(\(EGSignature)2 1780 1 900 6984 t
+10 S f
+(*)2705 6984 w
+10 B f
+(sig, unsigned char)2 771 1 2755 6984 t
+10 S f
+(**)3551 6984 w
+10 B f
+(buffer\);)3651 6984 w
+(EGSignature)900 7152 w
+10 S f
+(*)1487 7152 w
+10 B f
+(bufGetEGSignature P\(\(unsigned char)2 1618 1 1562 7152 t
+10 S f
+(**)3205 7152 w
+10 B f
+(buffer\);)3305 7152 w
+10 R f
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 18
+%%Page: 3 19
+/saveobj save def
+mark
+19 pagesetup
+9 B f
+( \( 3BM \))3 271( BIGUTILS)1 1761( System V)2 386( UNIX)1 1556(BIGUTILS \( 3BM \))3 706 5 540 480 t
+10 B f
+(void bufPutDSASignature P\(\(DSASignature)2 1890 1 900 960 t
+10 S f
+(*)2815 960 w
+10 B f
+(sig, unsigned char)2 771 1 2865 960 t
+10 S f
+(**)3661 960 w
+10 B f
+(buffer\);)3761 960 w
+(DSASignature)900 1128 w
+10 S f
+(*)1542 1128 w
+10 B f
+(bufGetDSASignature P\(\(unsigned char)2 1673 1 1617 1128 t
+10 S f
+(**)3315 1128 w
+10 B f
+(buffer\);)3415 1128 w
+9 B f
+(DESCRIPTION)540 1416 w
+10 R f
+(These functions may be used to move various cryptolib structures in and out of buffers or stdio streams.)17 4320 1 900 1536 t
+( the form bufPut or bufGet use usigned char)8 1758(Functions of)1 504 2 900 1656 t
+10 S f
+(**)3187 1656 w
+10 R f
+(buffers and are useful for creating messages out)7 1908 1 3312 1656 t
+( ASN.1)1 345( in and out of \256les.)5 850( functions are useful for moving objects)6 1706( Stdio-based)1 541(of various structures.)2 878 5 900 1776 t
+( is not BER or DER \(Basic and)7 1310( This)1 237( push these structures around.)4 1220(\(abstract syntax notation 1\) is used to)6 1553 4 900 1896 t
+(Distinguished Encoding rules\).)2 1241 1 900 2016 t
+10 I f
+(This part of CryptoLib is probably most subject to change and should not be relied upon too strictly.)17 4024 1 900 2184 t
+10 R f
+( 31, 1996)2 375( January)1 4036(Page 3)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 3 19
+%%Page: 1 20
+/saveobj save def
+mark
+20 pagesetup
+9 B f
+( \( 3BM \))3 271( PRIMES)1 1761( System V)2 386( UNIX)1 1641(PRIMES \( 3BM \))3 621 5 540 480 t
+(NAME)540 960 w
+10 R f
+( genStrongPrime, randBytesNeededForPrime,)2 1857(setPrimeAttempts, primeTest, getPrime, genStrongPrimeSet,)3 2463 2 900 1080 t
+(randBytesNeededForRoot)900 1200 w
+9 B f
+(SYNOPSIS)540 1368 w
+10 B f
+(#include)900 1488 w
+10 S f
+(<)1287 1488 w
+10 B f
+(libcrypt.h)1342 1488 w
+10 S f
+(>)1762 1488 w
+10 B f
+(void setPrimeAttempts\(int i\))2 1214 1 900 1656 t
+(Boolean primeTest\(BigInt big\))2 1306 1 900 1824 t
+(int randBytesNeededForPrime\(int pbits, int qbits, PrimeType type\))6 2871 1 900 1992 t
+(void getPrime\(int numbits, BigInt result, BigInt randomStart\))6 2650 1 900 2160 t
+(void genStrongPrimeSet\(int pbits, BigInt p, int qlen, BigInt q, PrimeType type, BigInt randomStart\))12 4283 1 900 2328 t
+(int type \(either NIST or GORDON\))5 1518 1 900 2448 t
+(void genStrongPrime\(int pbits, BigInt p, BigInt randomStart\))6 2635 1 900 2616 t
+(int randBytesNeededForRoot\(int pbits\))2 1677 1 900 2784 t
+(void getPrimitiveElement\(BigInt el, BigInt p, BigInt q, BigInt randomStart\))8 3237 1 900 2952 t
+9 B f
+(DESCRIPTION)540 3120 w
+10 R f
+(For all of these functions)4 1003 1 900 3240 t
+10 I f
+(BigInt)1930 3240 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 3240 t
+10 I f
+(BigInts)3822 3240 w
+10 R f
+(.)4111 3240 w
+10 I f
+(bigInit)4188 3240 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 3240 t
+(for initialization of empty)3 1048 1 900 3360 t
+10 I f
+(BigInts)1979 3360 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 3360 t
+(care of the space allocation.)4 1110 1 900 3480 t
+10 I f
+(primeTest)900 3720 w
+10 R f
+( is a test for divisibility of the candidate by one of the \256rst 54 primes \(2)16 2880( \256rst)1 182( The)1 206(has two phases.)2 626 4 1326 3720 t
+( this test is passed, the second phase begins in which the candidate is passed to a probabilistic)17 3786( After)1 264(- 251\).)1 270 3 900 3840 t
+( this test is not prime is 1)7 1081( probability that a number which passes)6 1647( The)1 215(phase for a number of trials.)5 1175 4 900 3969 t
+10 I f
+(/)5026 3969 w
+10 R f
+(25)5062 3969 w
+9 I f
+(n)5167 3929 w
+10 R f
+(where n is the number of passes.)6 1300 1 900 4089 t
+10 I f
+(primeTest)2250 4089 w
+10 R f
+(returns)2675 4089 w
+10 I f
+(TRUE)2977 4089 w
+10 R f
+(or)3252 4089 w
+10 I f
+(FALSE)3360 4089 w
+10 R f
+(.)3649 4089 w
+10 I f
+(setPrimeAttempts)900 4329 w
+10 R f
+(is used to set the number of passes)7 1512 1 1649 4329 t
+10 I f
+(primeTest)3206 4329 w
+10 R f
+(should make through its probabilistic)4 1569 1 3651 4329 t
+( default value of)3 651(phase. The)1 457 2 900 4449 t
+10 I f
+(primeTestAttempts)2033 4449 w
+10 R f
+(is 5.)1 167 1 2808 4449 t
+10 I f
+(randBytesNeededForPrime)900 4689 w
+10 R f
+( needed for)2 452(returns the number of bytes)4 1102 2 2024 4689 t
+10 I f
+(randomStart)3605 4689 w
+10 R f
+(in any of the prime gerner-)5 1082 1 4138 4689 t
+( in the large)3 498( type is GORDON, qbits is 0, otherwise, qbits if the number of bits desired)14 3116( If)1 125(ation routines.)1 581 4 900 4809 t
+(prime factor of)2 598 1 900 4929 t
+10 I f
+(p)1523 4929 w
+10 S f
+(-)1597 4929 w
+10 R f
+(1.)1668 4929 w
+10 I f
+(getPrime)900 5169 w
+10 R f
+(generates a random prime of length)5 1436 1 1295 5169 t
+10 I f
+(numbits)2760 5169 w
+10 R f
+(. If)1 145 1 3077 5169 t
+10 I f
+(randomStart)3252 5169 w
+10 R f
+(is NULL, the pseudo-random num-)4 1432 1 3788 5169 t
+( is true for all of the functions containing a randomStart variable.)11 2596( This)1 228(ber generator is called.)3 908 3 900 5289 t
+10 I f
+(genStrongPrimeSet)900 5529 w
+10 R f
+(is called with the length in bits of the prime and of the prime factor of p-1 and two)18 3506 1 1714 5529 t
+(empty)900 5649 w
+10 I f
+(BigInt)1191 5649 w
+10 R f
+( \256rst pointer will contain the)5 1216( The)1 221(pointers as its arguments.)3 1064 3 1482 5649 t
+10 I f
+(strong prime)1 530 1 4024 5649 t
+10 R f
+(and the second)2 625 1 4595 5649 t
+( contain a prime factor of)5 1076(pointer will)1 476 2 900 5769 t
+10 I f
+(strongPrime)2490 5769 w
+10 S f
+(-)3039 5769 w
+10 R f
+(1. If)1 204 1 3143 5769 t
+10 I f
+(type)3385 5769 w
+10 S f
+(\272)3559 5769 w
+10 I f
+(GORDON)3622 5769 w
+10 R f
+(the prime will be a Gordon)5 1144 1 4076 5769 t
+( If)1 118(strong prime.)1 536 2 900 5889 t
+10 I f
+(type)1581 5889 w
+10 S f
+(\272)1755 5889 w
+10 I f
+(NIST)1818 5889 w
+10 R f
+(it will be strong in the sense discussed in the NIST Digital Signature Standard.)13 3169 1 2051 5889 t
+(In either case,)2 556 1 900 6009 t
+10 I f
+(strongPrime)1481 6009 w
+10 S f
+(-)2030 6009 w
+10 R f
+(1 has a large, prime factor,)5 1066 1 2134 6009 t
+10 I f
+( Pminus)1 308( f)1 44(f actorO)1 319 3 3225 6009 t
+10 R f
+(1.)3904 6009 w
+10 I f
+(genStrongPrime)900 6249 w
+10 R f
+(is just)1 244 1 1587 6249 t
+10 I f
+(genStrongPrimeSet)1863 6249 w
+10 R f
+(\()2648 6249 w
+10 I f
+(numbits)2689 6249 w
+10 R f
+(,)3014 6249 w
+10 I f
+(prime)3080 6249 w
+10 R f
+(,)3321 6249 w
+10 I f
+(bigInit)3354 6249 w
+10 R f
+(\( 0 \))2 132 1 3629 6249 t
+10 I f
+(NIST)3777 6249 w
+10 R f
+( used)1 216(\) That is, this function is)5 1013 2 3991 6249 t
+( here the use of)4 621( Note)1 247(when the factor and the extra properties of Gordon strong primes are not needed.)13 3264 3 900 6369 t
+10 I f
+(big-)5059 6369 w
+(Init)900 6489 w
+10 R f
+( is not recommended as it will be dif\256cult to free a BigInt allocated in this way.)16 3172( This)1 228(\( 0 \).)2 157 3 1047 6489 t
+10 I f
+(randBytesNeededForRoot)900 6729 w
+10 R f
+(returns the number of bytes needed if)6 1509 1 1971 6729 t
+10 I f
+(randomStart)3508 6729 w
+10 R f
+( be NULL in the fol-)5 849(is not to)2 329 2 4042 6729 t
+(lowing function.)1 661 1 900 6849 t
+10 I f
+(getPrimitiveElement)900 7089 w
+10 R f
+( argument is just the large factor of p-1)8 1598( factor)1 261( The)1 209(returns a primitive element mod p.)5 1402 4 1750 7089 t
+(gotten from one pf the strong prime generation functions.)8 2294 1 900 7209 t
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 20
+%%Page: 2 21
+/saveobj save def
+mark
+21 pagesetup
+9 B f
+( \( 3BM \))3 271( PRIMES)1 1761( System V)2 386( UNIX)1 1641(PRIMES \( 3BM \))3 621 5 540 480 t
+(SEE ALSO)1 438 1 540 960 t
+10 B f
+(bigInit)900 1080 w
+10 R f
+(\(3BM\),)1190 1080 w
+10 B f
+(bigTest)1570 1080 w
+10 R f
+(\(3BM\),)1887 1080 w
+10 B f
+(bigBits)2267 1080 w
+10 R f
+(\(3BM\),)2568 1080 w
+10 B f
+(bigToBuf)2948 1080 w
+10 R f
+(\(3BM\),)3355 1080 w
+10 B f
+(bufToBig)3735 1080 w
+10 R f
+(\(3BM\),)4142 1080 w
+10 B f
+(fBigPrint)4523 1080 w
+10 R f
+(\(3BM\),)4923 1080 w
+10 B f
+(atobig)900 1200 w
+10 R f
+(\(3BM\),)1167 1200 w
+10 B f
+(bigPseudoRand)1489 1200 w
+10 R f
+(\(3BM\),)2163 1200 w
+10 B f
+(bigReallyRand)2485 1200 w
+10 R f
+(\(3BM\))3125 1200 w
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 21
+%%Page: 1 22
+/saveobj save def
+mark
+22 pagesetup
+9 B f
+(QUAD)540 480 w
+9 S f
+(_)805 480 w
+9 B f
+( QUAD)1 1316( System V)2 386( UNIX)1 1281(RESIDUE \( 3BM \))3 671 4 850 480 t
+9 S f
+(_)4504 480 w
+9 B f
+(RESIDUE \( 3BM \))3 671 1 4549 480 t
+(NAME)540 960 w
+10 R f
+(quadResidue, compositeQuadResidue, squareRoot, compositeSquareRoot, bigIsQR, bigJacobi)5 3775 1 900 1080 t
+9 B f
+(SYNOPSIS)540 1248 w
+10 B f
+(#include)900 1368 w
+10 S f
+(<)1287 1368 w
+10 B f
+(libcrypt.h)1342 1368 w
+10 S f
+(>)1762 1368 w
+10 B f
+(Boolean quadResidue \(BigInt a, BigInt p\);)5 1803 1 900 1536 t
+(Boolean compositeQuadResidue \(BigInt a, BigInt p, BigInt q\);)7 2656 1 900 1704 t
+(void squareRoot \(BigInt a, BigInt p, BigInt root\);)7 2104 1 900 1872 t
+(void compositeSquareRoot \(BigInt a, BigInt p, BigInt q, BigInt root1, BIgInt root2\);)11 3588 1 900 2040 t
+(Boolean bigIsQR\(BigInt a, BigInt p, BigInt q\))6 1954 1 900 2208 t
+(int bigJacobi\(BigInt a, BigInt b\))4 1372 1 900 2376 t
+9 B f
+(DESCRIPTION)540 2544 w
+10 R f
+(For all of these functions)4 1003 1 900 2664 t
+10 I f
+(BigInt)1930 2664 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 2664 t
+10 I f
+(BigInts)3822 2664 w
+10 R f
+(.)4111 2664 w
+10 I f
+(bigInit)4188 2664 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 2664 t
+(for initialization of empty)3 1048 1 900 2784 t
+10 I f
+(BigInts)1979 2784 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 2784 t
+(care of the space allocation.)4 1110 1 900 2904 t
+10 I f
+(a)900 3153 w
+10 R f
+(is a quadratic residue if)4 935 1 976 3153 t
+10 I f
+(x)1937 3153 w
+9 R f
+(2)1992 3113 w
+10 I f
+(mod n)1 263 1 2053 3153 t
+10 S f
+(=)2365 3153 w
+10 I f
+(a)2469 3153 w
+10 R f
+(has a solution)2 554 1 2545 3153 t
+10 I f
+(x)3126 3153 w
+10 R f
+(. If)1 143 1 3170 3153 t
+10 I f
+(n)3340 3153 w
+10 R f
+(is prime,)1 352 1 3417 3153 t
+10 I f
+(a)3796 3153 w
+9 R f
+(\()3857 3113 w
+9 I f
+(n)3894 3113 w
+9 S f
+(-)3961 3113 w
+9 R f
+(1 \))1 82 1 4026 3113 t
+9 I f
+(/)4115 3113 w
+9 R f
+(2)4147 3113 w
+10 I f
+(mod n)1 263 1 4208 3153 t
+10 S f
+(=)4520 3153 w
+10 R f
+(1. If)1 193 1 4624 3153 t
+10 I f
+(n)4844 3153 w
+10 R f
+(is com-)1 299 1 4921 3153 t
+(posite,)900 3273 w
+10 I f
+(n)1195 3273 w
+10 S f
+(=)1294 3273 w
+10 I f
+(p)1398 3273 w
+10 S f
+(*)1456 3273 w
+10 I f
+(q)1514 3273 w
+10 R f
+(for)1595 3273 w
+10 I f
+(p)1742 3273 w
+10 R f
+(and)1823 3273 w
+10 I f
+(q)1998 3273 w
+10 R f
+(prime,)2079 3273 w
+10 I f
+(a)2368 3273 w
+10 R f
+( residue modulo each prime.)4 1154(is a quadratic residue if it is a quadratic)8 1617 2 2449 3273 t
+( that the primes are of the form,)7 1292(In each square root function, it is assumed)7 1707 2 900 3393 t
+10 I f
+(pmod)3928 3393 w
+10 R f
+(4)4158 3393 w
+10 S f
+(=)4257 3393 w
+10 R f
+( the composite)2 591(3. For)1 268 2 4361 3393 t
+( remainder theorem to combine the square roots)7 1994(modulus, the square roots are formed using the Chinese)8 2326 2 900 3513 t
+( composite modulus, there are 4 roots.)6 1592( the)1 157( For)1 199(modulo each prime.)2 816 4 900 3633 t
+10 I f
+(compositeSquareRoot)3725 3633 w
+10 R f
+(returns two of)2 582 1 4638 3633 t
+(them,)900 3753 w
+10 I f
+(root)1150 3753 w
+10 R f
+(1 and)1 219 1 1325 3753 t
+10 I f
+(root)1569 3753 w
+10 R f
+( others are)2 415(2. The)1 280 2 1744 3753 t
+10 I f
+(n)2464 3753 w
+10 S f
+(-)2563 3753 w
+10 I f
+(root)2667 3753 w
+10 R f
+(1 and)1 219 1 2842 3753 t
+10 I f
+(n)3086 3753 w
+10 S f
+(-)3185 3753 w
+10 I f
+(root)3289 3753 w
+10 R f
+(2.)3464 3753 w
+10 I f
+(bigJacobi)900 3993 w
+10 R f
+(calculates the Jacobi symbol \(a/b\).)4 1378 1 1319 3993 t
+10 I f
+(bigIsQR)900 4233 w
+10 R f
+( mode p)2 324(determines whether a is a quadratic residue)6 1723 2 1258 4233 t
+10 S f
+(*)3305 4233 w
+10 R f
+( does this by cal-)4 681( It)1 112(q where p and q are prime.)6 1072 3 3355 4233 t
+( If)1 116(culating the Jacobi symbols \(a/p\) and \(a/q\).)6 1728 2 900 4353 t
+10 I f
+(both)2769 4353 w
+10 R f
+(are 1, then a is a quadratic residue modulo p)9 1763 1 2972 4353 t
+10 S f
+(*)4735 4353 w
+10 R f
+(q.)4785 4353 w
+9 B f
+(SEE ALSO)1 438 1 540 4641 t
+10 B f
+(bigInit)900 4761 w
+10 R f
+(\(3BM\),)1190 4761 w
+10 B f
+(bigTest)1570 4761 w
+10 R f
+(\(3BM\),)1887 4761 w
+10 B f
+(bigBits)2267 4761 w
+10 R f
+(\(3BM\),)2568 4761 w
+10 B f
+(bigToBuf)2948 4761 w
+10 R f
+(\(3BM\),)3355 4761 w
+10 B f
+(bufToBig)3735 4761 w
+10 R f
+(\(3BM\),)4142 4761 w
+10 B f
+(fBigPrint)4523 4761 w
+10 R f
+(\(3BM\),)4923 4761 w
+10 B f
+(atobig)900 4881 w
+10 R f
+(\(3BM\),)1167 4881 w
+10 B f
+(crtCombine)1489 4881 w
+10 R f
+(\(3BM\).)1999 4881 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 22
+%%Page: 1 23
+/saveobj save def
+mark
+23 pagesetup
+9 B f
+( \( 3 \))3 126( QUANTIZE)1 1906( System V)2 386( UNIX)1 1656(QUANTIZE \( 3 \))3 606 5 540 480 t
+(NAME)540 960 w
+10 R f
+(start)900 1080 w
+10 S f
+(_)1072 1080 w
+10 R f
+(quantize, end)1 532 1 1122 1080 t
+10 S f
+(_)1654 1080 w
+10 R f
+(quantize - start/end CPU time quantization)5 1707 1 1704 1080 t
+9 B f
+(SYNOPSIS)540 1248 w
+10 B f
+(int)900 1368 w
+10 R f
+(start)1042 1368 w
+10 S f
+(_)1214 1368 w
+10 R f
+(quantize\()1264 1368 w
+10 B f
+(int quantum)1 532 1 1635 1368 t
+10 R f
+(\);)2167 1368 w
+10 B f
+(int)900 1608 w
+10 R f
+(end)1042 1608 w
+10 S f
+(_)1186 1608 w
+10 R f
+(quantize\(\);)1236 1608 w
+9 B f
+(DESCRIPTION)540 1776 w
+10 R f
+( functions provide a simple method to encapsulate code blocks that should run in a multiple of)16 3801(The quantize)1 519 2 900 1896 t
+( are mainly useful in building certain on-line cryp-)8 2027( They)1 256(a coarse-grained "quantized" amount of CPU time.)6 2037 3 900 2016 t
+( by observing the time the target takes)7 1551(tographic protocols in which an attacker could learn key information)9 2769 2 900 2136 t
+( the secret \(c.f., Paul Kocher's attacks against various public-key cryptosys-)10 3049(to perform calculations that use)4 1271 2 900 2256 t
+(tems\).)900 2376 w
+(start)900 2544 w
+10 S f
+(_)1072 2544 w
+10 R f
+( a quantized execution environment that will run in multiples of)10 2628(quantize\(quantum\) begins)1 1047 2 1122 2544 t
+10 B f
+(quantum)4830 2544 w
+10 R f
+(milliseconds. end)1 734 1 900 2664 t
+10 S f
+(_)1634 2664 w
+10 R f
+( next quantum)2 588(quantize\(\) ends the environment, busy-waiting until \(approximately\) the)7 2948 2 1684 2664 t
+(multiple.)900 2784 w
+( starting point)2 560( ms is a good)4 532( 100)1 201(The quantum should be at least the expected range of normal CPU runtime.)12 3027 4 900 2952 t
+( typical processors, but one should measure each implementation for)9 2785(for exponentiation-based protocols on)3 1535 2 900 3072 t
+( that are too small leak timing information; quanta that are too large are wasteful of)15 3430( Quanta)1 345(safest results.)1 545 3 900 3192 t
+( of public key operations making use of secrets use STD)10 2292( quantized versions)2 781( The)1 210(CPU usage.)1 477 4 900 3312 t
+10 S f
+(_)4660 3312 w
+10 R f
+(QUANTUM)4710 3312 w
+(millisecs. STD)1 620 1 900 3432 t
+10 S f
+(_)1520 3432 w
+10 R f
+(QUANTUM is de\256ned in libcrypt.h and should be tuned to your environment.)11 3128 1 1570 3432 t
+9 B f
+(DIAGNOSTICS)540 3600 w
+10 R f
+(start)900 3720 w
+10 S f
+(_)1072 3720 w
+10 R f
+(quantize\(\) and end)2 746 1 1122 3720 t
+10 S f
+(_)1868 3720 w
+10 R f
+( \(quantization could not be)4 1083( an error occurred)3 716( If)1 118(quantize\(\) return 0 on normal exit.)5 1385 4 1918 3720 t
+(scheduled or a non-positive quantum with start)6 2068 1 900 3840 t
+10 S f
+(_)2968 3840 w
+10 R f
+(quantize, or no previous active start)5 1580 1 3018 3840 t
+10 S f
+(_)4598 3840 w
+10 R f
+(quantum\(\) on)1 572 1 4648 3840 t
+(end)900 3960 w
+10 S f
+(_)1044 3960 w
+10 R f
+(quantum\(\)\) -1 is returned.)3 1031 1 1094 3960 t
+9 B f
+(EXAMPLE)540 4128 w
+10 R f
+(start)900 4248 w
+10 S f
+(_)1072 4248 w
+10 R f
+(quantize\(100\); RSA)1 802 1 1122 4248 t
+10 S f
+(_)1924 4248 w
+10 R f
+(Decrypt\(...\); end)1 659 1 1974 4248 t
+10 S f
+(_)2633 4248 w
+10 R f
+(quantize\(\);)2683 4248 w
+9 B f
+(SEE ALSO)1 453 1 540 4416 t
+10 R f
+(setitimer\(2\), signal\(2\))1 871 1 900 4536 t
+9 B f
+(BUGS)540 4704 w
+10 R f
+(Quantized environments do not nest.)4 1468 1 900 4824 t
+( particular, the actual quanta)4 1173( In)1 143( only approximate, based on the setitimer\(2\) function.)7 2220(The quantization is)2 784 4 900 4992 t
+( not rely on)3 470( Do)1 176( independent of the encapsulated code runtime / quantum\).)8 2375(will vary with each call \(but are)6 1299 4 900 5112 t
+(\256ne-grained quanta \(less than about 20 milliseconds\).)6 2139 1 900 5232 t
+(There is no mechanism to adjust the quantum for MIPS)9 2218 1 900 5400 t
+9 B f
+(AUTHORS)540 5568 w
+10 R f
+(Matt Blaze and Jack Lacy, AT&T Bell Laboratories.)7 2104 1 900 5688 t
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 23
+%%Page: 1 24
+/saveobj save def
+mark
+24 pagesetup
+9 B f
+( \( 3BM \))3 271( FUNCTIONS)1 553( Rabin)1 1208( System V)2 386( UNIX)1 1203( \( 3BM \))3 271(Rabin FUNCTIONS)1 788 7 540 480 t
+(NAME)540 960 w
+10 R f
+( RabinDecrypt, RabinSign,)2 1179(genRabinKeySet, getRabinPublicKey, getRabinPrivateKey, RabinEncrypt,)3 3141 2 900 1080 t
+( randBytesNeededForRabinEn-)1 1274(RabinVerify, freeRabinKeys, freeRabinSig randBytesNeededForRabinSet,)3 3046 2 900 1200 t
+(crypt, randBytesNeededForRabinSign)1 1526 1 900 1320 t
+9 B f
+(SYNOPSIS)540 1488 w
+10 B f
+(#include)900 1608 w
+10 S f
+(<)1287 1608 w
+10 B f
+(libcrypt.h)1342 1608 w
+10 S f
+(>)1762 1608 w
+10 B f
+(int randBytesNeededForRabinSet\(int modbits\))2 2000 1 900 1776 t
+(int randBytesNeededForRabinEncrypt\(int modbits\))2 2217 1 900 1944 t
+(int randBytesNeededForRabinSign\(int modbits\))2 2057 1 900 2112 t
+(RabinKeySet)900 2280 w
+10 S f
+(*)1492 2280 w
+10 B f
+(genRabinKeySet\(int modulusdBits, BitInt randomStart\))3 2402 1 1542 2280 t
+(BigInt RabinEncrypt\(message, RabinPubKey, randomStart\))3 2587 1 900 2448 t
+(BigInt message;)1 680 1 900 2568 t
+(RabinPublicKey)900 2688 w
+10 S f
+(*)1632 2688 w
+10 B f
+(RabinPubKey;)1682 2688 w
+(BigInt randomStart;)1 886 1 900 2808 t
+(BigInt RabinDecrypt\(message, RabinPrivKey\))2 1985 1 900 2976 t
+(BigInt message;)1 680 1 900 3096 t
+(RabinPrivateKey)900 3216 w
+10 S f
+(*)1669 3216 w
+10 B f
+(RabinPrivKey;)1719 3216 w
+(BigInt quantized)1 721 1 900 3384 t
+10 S f
+(_)1621 3384 w
+10 B f
+(RabinDecrypt\(message, RabinPrivKey\))1 1687 1 1671 3384 t
+(BigInt message;)1 680 1 900 3504 t
+(RabinPrivateKey)900 3624 w
+10 S f
+(*)1669 3624 w
+10 B f
+(RabinPrivKey;)1719 3624 w
+(RabinSignature)900 3792 w
+10 S f
+(*)1604 3792 w
+10 B f
+(RabinSign\(message, RabinPrivKey, randomStart\))2 2139 1 1654 3792 t
+(BigInt message;)1 680 1 900 3912 t
+(RabinPRivateKey)900 4032 w
+10 S f
+(*)1697 4032 w
+10 B f
+(RabinPrivKey;)1747 4032 w
+(BigInt randomStart;)1 886 1 900 4152 t
+(RabinSignature)900 4320 w
+10 S f
+(*)1604 4320 w
+10 B f
+(quantized)1654 4320 w
+10 S f
+(_)2077 4320 w
+10 B f
+(RabinSign\(message, RabinPrivKey, randomStart\))2 2139 1 2127 4320 t
+(BigInt message;)1 680 1 900 4440 t
+(RabinPRivateKey)900 4560 w
+10 S f
+(*)1697 4560 w
+10 B f
+(RabinPrivKey;)1747 4560 w
+(BigInt randomStart;)1 886 1 900 4680 t
+(Boolean RabinVerify\(message, signature, RabinPubKey\))3 2425 1 900 4848 t
+(BigInt message;)1 680 1 900 4968 t
+(RabinSignature)900 5088 w
+10 S f
+(*)1604 5088 w
+10 B f
+(signature;)1654 5088 w
+(RabinPublicKey)900 5208 w
+10 S f
+(*)1632 5208 w
+10 B f
+(RabinPubKey;)1682 5208 w
+(freeRabinKeys\(RabinKeySet\))900 5376 w
+(RabinKeySet)900 5496 w
+10 S f
+(*)1492 5496 w
+10 B f
+(RabinKeySet;)1542 5496 w
+(freeRabinSig\(RabinSig\))900 5664 w
+(RabinSignature)900 5784 w
+10 S f
+(*)1604 5784 w
+10 B f
+(RabinSig;)1654 5784 w
+9 B f
+(DESCRIPTION)540 5952 w
+10 R f
+(For all of these functions)4 1003 1 900 6072 t
+10 I f
+(BigInt)1930 6072 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 6072 t
+10 I f
+(BigInts)3822 6072 w
+10 R f
+(.)4111 6072 w
+10 I f
+(bigInit)4188 6072 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 6072 t
+(for initialization of empty)3 1048 1 900 6192 t
+10 I f
+(BigInts)1979 6192 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 6192 t
+(care of the space allocation.)4 1110 1 900 6312 t
+(In all of the function which have an argument,)8 1881 1 900 6480 t
+10 I f
+(randomStart)2810 6480 w
+10 R f
+( is chosen NULL, the default,)5 1209(, if this argument)3 695 2 3316 6480 t
+( If)1 130( to generate necessary random material.)5 1654(DES-based pseudo-RNG seeded with truerand\(\) will be used)7 2536 3 900 6600 t
+10 I f
+(randomStart)900 6720 w
+10 R f
+(is not NULL, the accompanying functions,)5 1712 1 1431 6720 t
+10 I f
+(randBytesNeededForEG...)3168 6720 w
+10 R f
+( out how)2 352(are used to \256nd)3 613 2 4255 6720 t
+(many random bytes are expected.)4 1338 1 900 6840 t
+( taken to avoid the small)5 1015( has been)2 383( Care)1 244(Rabin's scheme is essentially RSA with 2 as the public exponent.)10 2678 4 900 7008 t
+( Decryption, Signature and)3 1181( Encryption,)1 554( \(See Simmons' Contemporary Cryptology\).)4 1920(exponent attack)1 665 4 900 7128 t
+( the)1 154( since squaring is the encryption process, to decrypt)8 2114( However,)1 446(Veri\256cation work exactly as with RSA.)5 1606 4 900 7248 t
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 24
+%%Page: 2 25
+/saveobj save def
+mark
+25 pagesetup
+9 B f
+( \( 3BM \))3 271( FUNCTIONS)1 553( Rabin)1 1208( System V)2 386( UNIX)1 1203( \( 3BM \))3 271(Rabin FUNCTIONS)1 788 7 540 480 t
+10 R f
+( is correct is)3 530( some way to detect which if these)7 1490( Thus)1 266( yields 4 square roots.)4 938( This)1 244(square root is taken.)3 852 6 900 960 t
+( format is:)2 423( message to be encrypted is thus given "structure". From most-sig-byte to least, the)13 3380(needed. The)1 517 3 900 1080 t
+([random pad)1 517 1 900 1200 t
+10 S f
+(\357)1452 1200 w
+10 R f
+(message)1536 1200 w
+10 S f
+(\357)1909 1200 w
+10 R f
+(msg)1993 1200 w
+10 S f
+(_)2160 1200 w
+10 R f
+(len \(4 bytes\))2 519 1 2210 1200 t
+10 S f
+(\357)2764 1200 w
+10 R f
+(digest \(pad)1 451 1 2848 1200 t
+10 S f
+(\357)3334 1200 w
+10 R f
+(msg)3418 1200 w
+10 S f
+(\357)3620 1200 w
+10 R f
+(msg)3704 1200 w
+10 S f
+(_)3871 1200 w
+10 R f
+( functions sup-)2 612(len\) ] The digest)3 687 2 3921 1200 t
+( arguments the digest type and digest length in)8 1908( functions below take as)4 985( The)1 210(ported are SHS, MD{2, 4, 5}.)5 1217 4 900 1320 t
+(bytes.)900 1440 w
+( put)1 161( the message to be signed must be)7 1406( Thus)1 257(In order to sign messages the square root must be calculated.)10 2496 4 900 1608 t
+( is for this reason that Rabin's signature is usually less)10 2171( It)1 111( which is a quadratic residue modulo N.)7 1592(into a form)2 446 4 900 1728 t
+(ef\256cient than doing RSASign.)3 1206 1 900 1848 t
+(The quantized version use STD)4 1283 1 900 2016 t
+10 S f
+(_)2183 2016 w
+10 R f
+( against)1 315(QUANTUM milliseconds as the quantum for execution to defend)8 2672 2 2233 2016 t
+( STD)1 246( attacks.)1 334(Kocher-style timing)1 810 3 900 2136 t
+10 S f
+(_)2290 2136 w
+10 R f
+(QUANTUM is de\256ned in libcrypt.h and should be tuned to your envi-)11 2880 1 2340 2136 t
+(ronment.)900 2256 w
+10 I f
+(f reeRabinKeySet)1 679 1 900 2424 t
+10 R f
+(frees the key set structure and all of its associated BigInts.)10 2321 1 1604 2424 t
+10 I f
+(f reeRabinSig)1 530 1 900 2592 t
+10 R f
+(frees the Rabin signature \(actually just a BigInt\).)7 1947 1 1455 2592 t
+9 B f
+(SEE ALSO)1 438 1 540 2880 t
+10 B f
+(bigInit)900 3000 w
+10 R f
+(\(3BM\),)1190 3000 w
+10 B f
+(bigTest)1570 3000 w
+10 R f
+(\(3BM\),)1887 3000 w
+10 B f
+(bigBits)2267 3000 w
+10 R f
+(\(3BM\),)2568 3000 w
+10 B f
+(bigToBuf)2948 3000 w
+10 R f
+(\(3BM\),)3355 3000 w
+10 B f
+(bufToBig)3735 3000 w
+10 R f
+(\(3BM\),)4142 3000 w
+10 B f
+(fBigPrint)4523 3000 w
+10 R f
+(\(3BM\),)4923 3000 w
+10 B f
+(atobig)900 3120 w
+10 R f
+(\(3BM\),)1167 3120 w
+10 B f
+(bigPow)1489 3120 w
+10 R f
+(\(3BM\),)1806 3120 w
+10 B f
+(fputRabinPrivateKey)2128 3120 w
+10 R f
+(\(3BM\))3050 3120 w
+10 B f
+(start)3347 3120 w
+10 S f
+(_)3546 3120 w
+10 B f
+(quantize)3596 3120 w
+10 R f
+(\(3BM\))3963 3120 w
+10 B f
+(end)4260 3120 w
+10 S f
+(_)4416 3120 w
+10 B f
+(quantize)4466 3120 w
+10 R f
+(\(3BM\))4833 3120 w
+( 2)1 75( Page)1 3920(January 31, 1996)2 685 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 2 25
+%%Page: 1 26
+/saveobj save def
+mark
+26 pagesetup
+9 B f
+( \( 3BM \))3 271( RANDOM)1 1761( System V)2 386( UNIX)1 1576(RANDOM \( 3BM \))3 686 5 540 480 t
+(NAME)540 960 w
+10 R f
+(randomBytes, bigRand, getRandBetween)2 1654 1 900 1080 t
+9 B f
+(SYNOPSIS)540 1248 w
+10 B f
+(#include)900 1368 w
+10 S f
+(<)1287 1368 w
+10 B f
+(libcrypt.h)1342 1368 w
+10 S f
+(>)1762 1368 w
+10 B f
+(void randomBytes\(unsigned char)2 1418 1 900 1536 t
+10 S f
+(*)2343 1536 w
+10 B f
+(buf, int numbytes, int type\))4 1162 1 2393 1536 t
+(bigRand\(int numbytes, BigInt result, int type\))5 1960 1 900 1704 t
+(getRandBetween\(BigInt big1, BigInt big2, BigInt result, int type, BigInt randomStart\))9 3671 1 900 1872 t
+(seed)900 2040 w
+10 S f
+(_)1083 2040 w
+10 B f
+(rng\(unsigned char)1 787 1 1133 2040 t
+10 S f
+(*)1945 2040 w
+10 B f
+(seed, int seedlen\))2 719 1 1995 2040 t
+9 B f
+(DESCRIPTION)540 2208 w
+10 R f
+(For all of these functions)4 1003 1 900 2328 t
+10 I f
+(BigInt)1930 2328 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 2328 t
+10 I f
+(BigInts)3822 2328 w
+10 R f
+(.)4111 2328 w
+10 I f
+(bigInit)4188 2328 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 2328 t
+(for initialization of empty)3 1048 1 900 2448 t
+10 I f
+(BigInts)1979 2448 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 2448 t
+(care of the space allocation.)4 1110 1 900 2568 t
+10 I f
+(randomBytes)900 2808 w
+10 R f
+(generates truly random bytes and puts them into a buffer if)10 2366 1 1453 2808 t
+10 I f
+(type)3846 2808 w
+10 S f
+(=)4036 2808 w
+10 I f
+(REALLY)4107 2808 w
+10 R f
+( is based on the)4 624(. It)1 138 2 4458 2808 t
+( is pri-)2 279( It)1 120( pseudo random number generators.)4 1469( is very slow relative to)5 985( It)1 121(randomness in system interrupts.)3 1346 6 900 2928 t
+( or when a)3 436(marily useful for initiating a search for primes or initializing pseudo random number generators)13 3884 2 900 3048 t
+(truly random number is necessary.)4 1378 1 900 3168 t
+(If)900 3408 w
+10 I f
+(type)993 3408 w
+10 S f
+(=)1183 3408 w
+10 I f
+(PSEUDO randomBytes)1 942 1 1254 3408 t
+10 R f
+( based on 3DES in counter mode)6 1333(generates random bytes using a generator)5 1664 2 2223 3408 t
+( 64 bit)2 286( he)1 159( suf\256x\).)1 326( 64 bit output of 3DES is xor'd with SHA\(pre\256x, counter,)10 2470( The)1 221(using a random key.)3 858 6 900 3528 t
+( 3DES keys, pre\256x and suf\256x are initialized)7 1811( The)1 214( for every call to desRandom\(\).)5 1292(counter is incrememnted)2 1003 4 900 3648 t
+(using truerand\(\) by default or using seed)6 1631 1 900 3768 t
+10 S f
+(_)2531 3768 w
+10 R f
+( 64 bytes)2 363( the latter is used, the seed must be)8 1406( If)1 118(rng\(seed, seedlen\).)1 752 4 2581 3768 t
+( truerand\(\) is used, the seeding happens only once.)8 2018( If)1 116(and seedlen = 64.)3 699 3 900 3888 t
+10 I f
+(bigRand)900 4128 w
+10 R f
+(creates a)1 345 1 1264 4128 t
+10 I f
+(BigInt)1634 4128 w
+10 R f
+(from random bytes generated in the above ways.)7 1940 1 1909 4128 t
+10 I f
+(type)3874 4128 w
+10 R f
+(can be)1 257 1 4065 4128 t
+10 I f
+(REALLY)4347 4128 w
+10 R f
+(or)4723 4128 w
+10 I f
+(PSEUDO)4832 4128 w
+10 R f
+(as above.)1 371 1 900 4248 t
+10 I f
+(getRandBetween)900 4488 w
+10 R f
+(returns a random)2 714 1 1615 4488 t
+10 I f
+(BigInt)2373 4488 w
+10 R f
+(which is between)2 733 1 2667 4488 t
+10 I f
+(big)3445 4488 w
+10 R f
+(1 and)1 239 1 3581 4488 t
+10 I f
+(big)3865 4488 w
+10 R f
+(2.)4001 4488 w
+10 I f
+(type)4146 4488 w
+10 R f
+(is either)1 339 1 4357 4488 t
+10 I f
+(REALLY)4741 4488 w
+10 R f
+(or)5137 4488 w
+10 I f
+(PSEUDO)900 4608 w
+10 R f
+(.)1288 4608 w
+10 I f
+(randomStart)1365 4608 w
+10 R f
+( it is NULL, then either truerand \(if)7 1421( If)1 118(is a random starting point for the new value.)8 1783 3 1898 4608 t
+( If)1 124(type = REALLY\) or desRandom\(\) \(type = PSEUDO\) are used for a starting value.)13 3393 2 900 4728 t
+10 I f
+(randomStart)4451 4728 w
+10 R f
+(is not)1 229 1 4991 4728 t
+(NULL, it should contain as many bytes as the)8 1829 1 900 4848 t
+10 I f
+(larger)2754 4848 w
+10 R f
+(of)3029 4848 w
+10 I f
+(a)3137 4848 w
+10 R f
+(and)3212 4848 w
+10 I f
+(b)3381 4848 w
+10 R f
+(.)3431 4848 w
+10 I f
+(seed)900 5088 w
+10 S f
+(_)1085 5088 w
+10 I f
+(rng)1143 5088 w
+10 R f
+( the)1 158( Seeding)1 383( for repeatable random bytes.)4 1210(seeds the pseudo random number generator to allow)7 2152 4 1317 5088 t
+( can just be)3 467( They)1 260( one's password can be used to avoid storing private El Gamal exponents.)12 3008(generator with)1 585 4 900 5208 t
+(regenerated at the time of use.)5 1202 1 900 5328 t
+9 B f
+(SEE ALSO)1 438 1 540 5496 t
+10 B f
+(bigInit)900 5616 w
+10 R f
+(\(3BM\),)1190 5616 w
+10 B f
+(bigBits)1512 5616 w
+10 R f
+(\(3BM\),)1813 5616 w
+10 B f
+(bigToBuf)2135 5616 w
+10 R f
+(\(3BM\),)2542 5616 w
+10 B f
+(bufToBig)2864 5616 w
+10 R f
+(\(3BM\),)3271 5616 w
+10 B f
+(fBigPrint)3593 5616 w
+10 R f
+(\(3BM\),)3993 5616 w
+10 B f
+(atobig)4315 5616 w
+10 R f
+(\(3BM\))4582 5616 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 26
+%%Page: 1 27
+/saveobj save def
+mark
+27 pagesetup
+9 B f
+( \( 3BM \))3 271( SHS)1 1761( System V)2 386( UNIX)1 1821(SHS \( 3BM \))3 441 5 540 480 t
+(NAME)540 960 w
+10 R f
+(shs, bigMessageDigest, shsInit, shsUpdate, shsFinal)4 2083 1 900 1080 t
+9 B f
+(SYNOPSIS)540 1248 w
+10 B f
+(#include)900 1368 w
+10 S f
+(<)1287 1368 w
+10 B f
+(libcrypt.h)1342 1368 w
+10 S f
+(>)1762 1368 w
+10 B f
+(\(unsigned long)1 627 1 900 1536 t
+10 S f
+(*)1552 1536 w
+10 B f
+(\)shs\(unsigned char)1 804 1 1602 1536 t
+10 S f
+(*)2431 1536 w
+10 B f
+(message, int messageLength\))2 1229 1 2481 1536 t
+(void shsInit \(SHS)2 747 1 900 1704 t
+10 S f
+(_)1647 1704 w
+10 B f
+(CTX)1697 1704 w
+10 S f
+(*)1933 1704 w
+10 B f
+(context\))1983 1704 w
+(void shsUpdate \(SHS)2 902 1 900 1872 t
+10 S f
+(_)1802 1872 w
+10 B f
+(CTX)1852 1872 w
+10 S f
+(*)2088 1872 w
+10 B f
+(context, unsigned char)2 964 1 2138 1872 t
+10 S f
+(*)3127 1872 w
+10 B f
+(buffer, int length\))2 758 1 3177 1872 t
+(void shsFinal \(SHS)2 814 1 900 2040 t
+10 S f
+(_)1714 2040 w
+10 B f
+(CTX)1764 2040 w
+10 S f
+(*)2000 2040 w
+10 B f
+(context\))2050 2040 w
+(bigMessageDigest\(unsigned char)1 1397 1 900 2208 t
+10 S f
+(*)2322 2208 w
+10 B f
+(message, int messageLength, BigInt digest, int type\))6 2202 1 2372 2208 t
+9 B f
+(DESCRIPTION)540 2376 w
+10 R f
+(For all of these functions)4 1003 1 900 2496 t
+10 I f
+(BigInt)1930 2496 w
+10 R f
+(arguments are assumed to be initialized)5 1588 1 2207 2496 t
+10 I f
+(BigInts)3822 2496 w
+10 R f
+(.)4111 2496 w
+10 I f
+(bigInit)4188 2496 w
+10 R f
+( should be used)3 625(\( 0 \))2 132 2 4463 2496 t
+(for initialization of empty)3 1048 1 900 2616 t
+10 I f
+(BigInts)1979 2616 w
+10 R f
+( is needed than is provided the functions themselves take)9 2317( more space)2 488(. If)1 147 3 2268 2616 t
+(care of the space allocation.)4 1110 1 900 2736 t
+10 I f
+(shs)900 2976 w
+10 R f
+( implementation of the NIST proposed Secure Hash Standard.)8 2517(is an)1 190 2 1057 2976 t
+10 I f
+(shs)3819 2976 w
+10 R f
+(returns a pointer to 5 unsigned)5 1243 1 3977 2976 t
+(longs which make up a hash value for the message.)9 2046 1 900 3096 t
+10 C f
+(W struct SHS_CTX {)3 1080 1 900 3336 t
+(long totalLength;)1 1020 1 1260 3468 t
+(unsigned long h[5];)2 1140 1 1260 3600 t
+(unsigned long w[80];)2 1200 1 1260 3732 t
+(} SHS_CTX;)1 600 1 900 3864 t
+10 R f
+(The normal way to use)4 915 1 900 4224 t
+10 I f
+(shs)1840 4224 w
+10 R f
+(is to do the following:)4 884 1 1993 4224 t
+10 C f
+(SHS_CTX context;)1 960 1 900 4392 t
+(char buffer[BUF_SIZE];)1 1320 1 900 4524 t
+(long length;)1 720 1 900 4656 t
+(FILE)900 4788 w
+10 S f
+(*)1200 4788 w
+10 C f
+(fp;)1250 4788 w
+(shsInit\(&context\);)900 5052 w
+(while \(length = fread\(buffer, 1, BUF_SIZE, fp\))6 2760 1 900 5184 t
+(shsUpdate\(&context, buffer, length\);)2 2160 1 1260 5316 t
+(shsFinal\(&context\);)900 5448 w
+10 R f
+( are times when)3 650( There)1 289( allows for digest seeding.)4 1074(Using this method)2 746 4 900 5820 t
+10 I f
+(shsUpdate)3691 5820 w
+10 R f
+(will be called with a pass-)5 1075 1 4145 5820 t
+( After)1 269(word in the buffer, before entering the read loop.)8 2022 2 900 5940 t
+10 I f
+(shsFinal)3225 5940 w
+10 R f
+( in context.h[i],)2 632( is called, the digest is)5 928(\( \))1 82 3 3578 5940 t
+(with i = 0 to 4.)5 660 1 900 6060 t
+10 I f
+(bigMessageDigest)1624 6060 w
+10 R f
+( digest is)2 386( The)1 220(calls shs to create a digest for a buffer of characters.)10 2213 3 2401 6060 t
+(returned in a)2 524 1 900 6180 t
+10 I f
+(BigInt)1459 6180 w
+10 R f
+(. Ing)1 218 1 1709 6180 t
+10 I f
+(bigMessageDigest)1962 6180 w
+10 R f
+( MD)1 220( MD4 or MD5.)3 632(, the type argument can be SHS, MD2,)7 1618 3 2700 6180 t
+10 S f
+(*)5170 6180 w
+10 R f
+( structures and com-)3 851(syntax is identical to that for SHS substituting "MD2, MD4 or MD5" for "SHS" in)14 3469 2 900 6300 t
+(mands.)900 6420 w
+9 B f
+(SEE ALSO)1 438 1 540 6708 t
+10 B f
+(MD5)900 6828 w
+10 R f
+(\(3BM\),)1116 6828 w
+10 B f
+(bigInit)1533 6828 w
+10 R f
+(\(3BM\),)1823 6828 w
+10 B f
+(bigTest)2240 6828 w
+10 R f
+(\(3BM\),)2557 6828 w
+10 B f
+(bigBits)2974 6828 w
+10 R f
+(\(3BM\),)3275 6828 w
+10 B f
+(bigToBuf)3692 6828 w
+10 R f
+(\(3BM\),)4099 6828 w
+10 B f
+(bufToBig)4516 6828 w
+10 R f
+(\(3BM\),)4923 6828 w
+10 B f
+(fBigPrint)900 6948 w
+10 R f
+(\(3BM\),)1300 6948 w
+10 B f
+(atobig)1622 6948 w
+10 R f
+(\(3BM\))1889 6948 w
+( 31, 1996)2 375( January)1 4036(Page 1)1 269 3 540 7680 t
+cleartomark
+showpage
+saveobj restore
+%%EndPage: 1 27
+%%Trailer
+done
+%%Pages: 27
+%%DocumentFonts: Times-Bold Courier Times-Italic Times-Roman Symbol

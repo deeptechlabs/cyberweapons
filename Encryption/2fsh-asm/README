@@ -1,0 +1,159 @@
+               Optimized ANSI C + 386 Assembler Diskette
+
+
+Files on this diskette (or in this ZIP file):
+
+File Name           Description
+========================================================================
+
+README          This file
+
+PLATFORM.H      Platform-specific definitions (e.g., endianness, rotates)
+
+TABLE.H         Macros and tables for Twofish internal structures
+
+AES.H           AES header file, function prototypes, API explanation/example
+
+DEBUG.H         Debug i/o macros and functions
+
+TWOFISH2.C      Optimized ANSI C source code
+
+TST2FISH.C      Test code, links with TWOFISH2.C to generate KAT/MCT
+
+COMPILE.BAT     Batch file used to compile TST2FISH.EXE.  See this file for
+                the set of compiler options used to optimize performance.
+ 
+2FISH_86.ASM    Optimized assembly language for Pentium/PentiumPro/PentiumII.
+
+CPUTYPE.ASM     Intel code to detect CPU type.
+
+STRUCMAC.INC    Portable structured programming macros for assembly language.
+
+TST2FISH.EXE    Executable 32-bit console app of TST2FISH.C, TWOFISH2.C,
+                and 2FISH_86.ASM linked together.  Use the -a switch to
+                run the assembly language version.
+
+========================================================================
+
+Notes:
+
+To programmers wishing to use the Twofish code:  please see the
+example code (and comments) at the end of the file AES.H showing how 
+the Twofish functions are typically used.
+
+The program TST2FISH.EXE will generate the full set of KAT/MCT/Tables 
+files (excluding the intermediate values file) in the current directory,
+if run with the -M switch:
+ 
+        TST2FISH -M -a
+
+When run without command-line parameters, it will generate a partial MCT set,
+since the full set takes a long time.
+
+When run with a question mark character ('?') as a parameter, TST2FISH.EXE
+will display a help screen of command line options.
+
+The -t switch will time the encryption, decryption, and key schedule setup
+routines, down to the clock cycle.  Use it in conjunction with -a to
+time both C and assembly language versions.
+
+
+
+
+
+================================================================
+======= EXPLANATION OF HOW "COMPILED" KEYING MODE WORKS ========
+================================================================
+
+Here is an explanation of exactly how "compiled" mode works.  It is
+really very simple. We first explain full keying mode, so that the
+differences can be clearly seen.
+
+FULL KEYING MODE:
+
+For each key, we allocate a keyInstance structure and store the
+computed subkeys (all 40 dwords) in it, as well as the key-dependent
+S-boxes (four at 256 dwords each, total of 4K bytes).  There is a
+single copy of the encryption/decryption code, which is used for all
+keys.  For each keyInstance structure, the keys can be changed at any
+time by calling a key schedule routine, reKey(), which will compute
+new subkey and S-box entries.  Note that it is possible (and usually
+desirable) to re-use the same keyInstance for different keys, simply
+calling reKey() to change the key-dependent values, so that the
+structure does not have to allocated/freed, which is often very time
+consuming.  However, in this case, obviously the caller MUST INSURE
+that the same keyInstance is not being used for encryption/decryption
+in one thread while it is "simultaneously" being re-keyed in another
+thread.  We emphasizie this rather obvious point here in order to
+draw a parallel to it for compiled mode.  Here is a possible piece of
+"full keying" mode code for the Twofish PHT/subkey computation in
+Pentium assembler:
+
+        ; assume ebp --> keyInstance, eax = T0, ebx = T1, esi = R
+        add     eax,ebx                 ;eax = T0 +   T1
+        add     ebx,eax                 ;ebx = T0 + 2*T1
+        mov     ecx,[ebp].subkey8       ;get one subkey for this round
+        add     eax,ecx                 ;add it to PHT result (F0)
+        mov     ecx,[ebp].subkey9       ;get other subkey for this round
+        add     ebx,ecx                 ;add it to PHT result (F1)
+
+Nothing magic here at all, but it will help understand what happens in
+the compiled mode.   By the way, 2FISH_86.ASM does not use this particular
+code sequence, but it illustrates the concept very nicely.
+
+
+COMPILED MODE:
+
+For each key, we allocate a keyInstance structure, as above.
+However, in this case the keyInstance also contains the code for the
+particular key.  The S-boxes and subkey values are still there, but
+the keyInstance is about 5K bytes larger to hold a copy of the
+encryption and decryption code.  There is one static copy of the
+encryption/decryption routines, which is never actually executed.
+Instead, it is used as a "template" to copy into the keyInstance.
+Here is a (simplified) example of how the template code might look:
+
+        ; assume ebp --> keyInstance, eax = T0, ebx = T1, esi = R
+        add     eax,ebx                 ;eax = T0 +   T1
+        add     ebx,eax                 ;ebx = T0 + 2*T1
+        add     eax,12345678h           ;eax = F0
+        add     ebx,12345678h           ;ebx = F1
+
+Note that the last two opcodes contain 4-byte "immediate" values
+(12345678h).  After the code is copied over from the template into
+the keyInstance, the reKey() routine also "patches" in the actual
+subkey values into the code.  Suppose that the subkey8 value is
+9ABCDEF0h and subkey9 is 5A5A5A5Ah.  After this code is copied to the
+keyInstance and the subkeys "compiled" into it, it looks like this:
+
+        add     eax,ebx                 ;eax = T0 +   T1
+        add     ebx,eax                 ;ebx = T0 + 2*T1
+        add     eax,9ABCDEF0h           ;eax = F0
+        add     ebx,5A5A5A5Ah           ;eax = F1
+
+After the first reKey, subsequent reKey calls do not actually copy
+the code over again, they merely patch in the new subkey values to
+save time.  Notice that we are not actually ever changing any opcodes,
+just the immediate constants associated with them.
+
+Similar to full keying mode, if one ever tries to encrypt/decrypt while
+simultaneously reKey-ing, the results are indeterminate, but note
+that there is never any danger of executing incorrect opcodes, just
+getting inconsistent subkeys.  It is true that one has to be careful
+to call reKey() before calling the encryption routine, but the code
+checks for valid "compilation signatures" to help avoid errors here.
+In any case, having to remember to initialize a data structure before
+using it is hardly an onerous requirement (e.g., it is perfectly handled
+by C++ constructors). 
+
+A further optimization that works really well on Pentium is as follows:
+
+        lea     ecx,[eax+  ebx+9ABCDEF0h]       ;ecx = F0
+        lea     ebx,[eax+2*ebx+5A5A5A5Ah]       ;ebx = F1
+
+This opcode sequence what is actually used in our Pentium and Pentium
+Pro code, and it cuts out one clock per round.  Most importantly,
+however, is that this compilation technique also frees up registers
+on the register-poor Pentium architecture, allowing better register
+allocation schemes and even higher performance.  Thus, compiled mode
+really has a double effect on performance.  

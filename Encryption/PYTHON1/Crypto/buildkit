@@ -1,0 +1,122 @@
+#!/usr/local/bin/python --
+# -*-Python-*-
+#  buildkit : Builds the object files
+#
+# Part of the Python Cryptography Toolkit, version 1.0.0
+#
+# Copyright (C) 1994, A.M. Kuchling
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# 
+
+import sys, regex, regsub, string
+import posix
+
+# This class neatly encapsulates files; compares examine the time of
+# creation of the two files.
+
+class File:
+    def __init__(self, filename):
+        self.filename=filename
+    def __cmp__(self, other):
+        try:
+            t1=posix.stat(self.filename)[8]
+        except posix.error, (error, message):
+            if error==2: return(-1)
+            raise posix.error, (error,message)
+        try:
+            t2=posix.stat(other.filename)[8]
+        except posix.error, (error, message):
+            if error==2: return(+1)
+            raise posix.error, (error,message)
+        if (t1<t2): return(-1)
+        if (t1>t2): return(+1)
+        return 0
+
+def execute(command):
+    print command
+    status=posix.system(command)
+    if (status!=0): raise KeyboardInterrupt 
+
+def BuildSourceFile(algorithm, moduletype, substlist):    
+    if moduletype=='simple': module=algorithm
+    else: module=string.lower(algorithm)
+    sys.stderr.write(' Building C source code for '+algorithm+'\n')
+    input=open('framewks/'+moduletype+'.in', 'r')
+    output=open('src/'+module+'module.c', 'w')
+    substlist.append( ('@@ALGORITHM@@', algorithm) )
+    substlist.append( ('@@MODNAME@@', module) )
+    output.write('\n\n/* Do not modify this file; '
+                 +'it is automatically generated\n')
+    output.write('   from '+moduletype+'.in and '+module+'.c\n */\n\n')
+    while (1):
+        l=input.readline()
+        if (l==''): break
+        for entry in substlist:
+            keyword, value=entry
+            l=regsub.gsub(keyword, value, l)
+
+        temp=l
+        l=regsub.gsub('@@IMPLEMENTATION@@', '', l)
+
+        # Check if the @@IMPLEMENTATION@@ keyword has been encountered
+        if (l!=temp):
+            newfile=open(moduletype+'/'+module+'.c', 'r')      
+            while (1):  # Copy the implementation into the output file
+                l1=newfile.readline()
+                if (l1==''): break
+                output.write(l1)
+        output.write(l)
+    output.close()
+    input.close()
+
+input=open('config.pct', 'r')
+modules = input.readlines()
+input.close()
+
+for i in modules:
+    if i=='': break
+    # Remove anything after a # symbol
+    pos=string.find(i, '#')
+    if (pos!=-1): 
+        i=i[:pos]
+        if i=='': continue
+    f = string.split(i)
+    if len(f)==0: continue
+    moduletype=f[0]
+    if (moduletype=='block' or moduletype=='stream'):
+        substlist = [('@@BLOCKSIZE@@', f[2]),
+                     ('@@KEYSIZE@@', f[3]) ]
+    elif (moduletype=='hash'):
+        substlist=[('@@DIGESTSIZE@@', f[2]) ]
+    elif (moduletype=='simple'):
+        substlist=[]
+    else:
+        sys.stderr.write('Unknown keyword '+moduletype+'\n')
+    algorithm=f[1]
+    if moduletype=='simple': module=algorithm
+    else: module=string.lower(algorithm)
+    framework=File('framewks/'+moduletype+'.in')
+    base=File(moduletype+'/'+module+'.c')
+    source=File('src/'+module+'module.c')
+    object1=File('obj/'+module+'module.o')
+    asmobj=File('obj/'+module+'module.s')
+    try:
+        if (source<base or source<framework):
+            BuildSourceFile(algorithm, moduletype, substlist)
+    except KeyboardInterrupt:
+        print 'Error occurred; deleting', source.filename
+        posix.unlink(source.filename)
+        sys.exit(1)

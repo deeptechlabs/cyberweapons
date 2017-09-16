@@ -1,0 +1,64 @@
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+# Additional restrictions due to national laws governing the use, import or
+# export of cryptographic software is the responsibility of the software user,
+# importer or exporter to follow.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+# All make programs dont have the .h suffix defined
+#
+.SUFFIXES: .h
+
+#      CC = gcc
+ DEFINES =
+INCLUDES =
+#   CCOPT = -g
+   CCOPT = -O
+  CFLAGS = ${CCOPT} ${DEFINES} ${INCLUDES}
+ LDFLAGS =
+
+LIBDIR = 
+
+
+ SRCS = compile.c
+
+PROGS = compile
+
+ HDRS = compile.h
+
+REMOVES = ${PROGS} ${HDRS}
+
+# This rule should be defined in all make programs.
+#
+#.c.o:
+#	${CC} ${CFLAGS} -c $* $<
+
+.c.h:
+	${CC} ${CFLAGS} -o $* $< ${LDFLAGS}
+	./$* > $@
+
+
+all	: ${HDRS}
+
+
+install	:
+
+clean	:
+	rm -f ${REMOVES} *.o core a.out
+
+
+depend  : ${THDR}
+	../util/mkdepend -CC '${CC}' -CFLAGS '${CFLAGS}' ${SRCS}
+
+compile.h	: compile.c
+
+# DEPEND
+#
+# Don not change the lines below, run make depend
+#

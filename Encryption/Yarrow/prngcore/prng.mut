@@ -1,0 +1,89 @@
+/*
+	prng.mut
+
+	This file is included at the end of prng.c. 
+	It merely wraps those routines for mutex use.
+*/
+
+/* Mutex Control Macros */
+#define WAIT_PERIOD  100  /* 1/10 second */
+/* Macro for top of these functions */
+#define TOP(mutex)											\
+prng_error_status retval;									\
+DWORD waitval;												\
+waitval = WaitForSingleObject(mutex,WAIT_PERIOD);			\
+if(waitval == WAIT_TIMEOUT) {return PRNG_ERR_TIMEOUT;}		\
+if(waitval != WAIT_OBJECT_0) {return PRNG_ERR_MUTEX;}
+/* Macro for bottom of these functions */
+#define BOTTOM(mutex)										\
+ReleaseMutex(mutex);										\
+return retval;
+
+int prngInitialize(void)
+{
+	prng_error_status retval;
+
+	/* There is no mutex yet */
+	retval = m_prngInitialize();
+	if(retval==PRNG_ERR_MUTEX) {return PRNG_ERR_MUTEX;} /* The mutex was not set up */
+	BOTTOM(mutex);
+}
+
+int prngProcessSeedBuffer(BYTE *buf,LONGLONG ticks)
+{
+	TOP(mutex);
+	retval = m_prngProcessSeedBuffer(buf,ticks);
+	BOTTOM(mutex);
+}
+
+int prngOutput(BYTE *outbuf,UINT outbuflen)
+{
+	TOP(mutex);
+	retval = m_prngOutput(outbuf,outbuflen);
+	BOTTOM(mutex);
+}
+
+int prngInput(BYTE *inbuf,UINT inbuflen,UINT poolnum,UINT estbits)
+{
+	TOP(mutex);
+	retval = m_prngInput(inbuf,inbuflen,poolnum+ENTROPY_SOURCES,estbits);
+	BOTTOM(mutex);
+}
+
+int prngInputEntropy(BYTE *inbuf,UINT inbuflen,UINT poolnum)
+{
+	TOP(mutex);
+	/*May want to insert a static entropy estimate here */
+	retval = m_prngInput(inbuf,inbuflen,poolnum,1);
+	BOTTOM(mutex);
+}
+
+int prngForceReseed(LONGLONG ticks)
+{
+	TOP(mutex);
+	retval = m_prngForceReseed(ticks);
+	BOTTOM(mutex);
+}
+
+int prngAllowReseed(LONGLONG ticks)
+{
+	TOP(mutex);
+	retval = m_prngAllowReseed(ticks);
+	BOTTOM(mutex);
+}
+
+int prngSlowPoll(UINT pollsize)
+{
+	TOP(mutex);
+	retval = m_prngSlowPoll(pollsize);
+	BOTTOM(mutex);
+}
+
+int prngDestroy(void)
+{
+	TOP(mutex);
+	return retval = m_prngDestroy();
+	/* Do not release the handle on exit - Any threads waiting on it will get a WAIT_ABANDONED
+	message and therefore return immediately */
+}
+

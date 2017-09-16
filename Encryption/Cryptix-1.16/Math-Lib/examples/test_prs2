@@ -1,0 +1,54 @@
+#!/usr/local/bin/perl -w -I.
+
+use Math::PseudoRandomStream;
+use Stream::DataInput;
+
+$prs = new Math::PseudoRandomStream pack("H*", "0123456789ABCDEF0123456789ABCDEF01234567");
+
+my $dis = new Stream::DataInput $prs;
+
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";

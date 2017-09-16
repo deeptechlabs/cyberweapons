@@ -1,0 +1,90 @@
+.\" @(#)primes.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH PRIMES 3BM
+.SH NAME
+setPrimeAttempts, primeTest, getPrime, genStrongPrimeSet, genStrongPrime, randBytesNeededForPrime, randBytesNeededForRoot
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBvoid setPrimeAttempts(int i)\fR
+.LP
+\fBBoolean primeTest(BigInt big)\fR
+.LP
+\fBint randBytesNeededForPrime(int pbits, int qbits, PrimeType type)\fR
+.LP
+\fBvoid getPrime(int numbits, BigInt result, BigInt randomStart)\fR
+.LP
+\fBvoid genStrongPrimeSet(int pbits, BigInt p, int qlen, BigInt q, PrimeType type, BigInt randomStart)\fR
+\fBint type (either NIST or GORDON)\fR
+.LP
+\fBvoid genStrongPrime(int pbits, BigInt p, BigInt randomStart)\fR
+.LP
+\fBint randBytesNeededForRoot(int pbits)\fR
+.LP
+\fBvoid getPrimitiveElement(BigInt el, BigInt p, BigInt q, BigInt randomStart)\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+$primeTest$ has two phases.  The first is a test for divisibility of
+the candidate by one of the first 54 primes (2 - 251).  After this
+test is passed, the second phase begins in which the candidate is
+passed to a probabilistic phase for a number of trials.  The
+probability that a number which passes this test is not prime is
+$1/25 sup size +2 n$ where n is the number of passes.  $primeTest$
+returns $TRUE$ or $FALSE$.
+
+$setPrimeAttempts$ is used to set the number of passes $primeTest$
+should make through its probabilistic phase.  The default 
+value of $primeTestAttempts$ is 5.
+
+$randBytesNeededForPrime$ returns the number of bytes needed for
+$randomStart$ in any of the prime gerneration routines.  If type
+is GORDON, qbits is 0, otherwise, qbits if the number of bits
+desired in the large prime factor of $p-1$.
+
+$getPrime$ generates a random prime of length $numbits$.  If
+$randomStart$ is NULL, the pseudo-random number generator is called.
+This is true for all of the functions containing a randomStart variable.
+
+$genStrongPrimeSet$ is called with the length in bits of the prime and of
+the prime factor of p-1 and two
+empty $BigInt$ pointers as its arguments.  The first pointer
+will contain the \fIstrong prime\fR and the second pointer will
+contain a prime factor of $strongPrime ~-~ 1$.  If $type == GORDON$
+the prime will be a Gordon strong prime.  If $type == NIST$ it
+will be strong in the sense discussed in the NIST Digital Signature
+Standard.  In either case, $strongPrime ~-~ 1$ has a large, prime factor,
+$factorOfPminus1$.
+
+$genStrongPrime$ is just $genStrongPrimeSet(numbits, ~prime, bigInit(0) NIST)$
+That is, this function is used when the factor and the
+extra properties of Gordon strong primes are not needed.
+Note here the use of $bigInit(0)$.  This is not recommended as it
+will be difficult to free a BigInt allocated in this way.
+
+$randBytesNeededForRoot$ returns the number of bytes needed if $randomStart$
+is not to be NULL in the following function.
+
+$getPrimitiveElement$ returns a primitive element mod p.  The factor
+argument is just the large factor of p-1 gotten from one pf the strong
+prime generation functions.
+
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+.BR bigPseudoRand (3BM),
+.BR bigReallyRand (3BM)

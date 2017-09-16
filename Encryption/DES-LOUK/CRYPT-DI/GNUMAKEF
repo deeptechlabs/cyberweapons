@@ -1,0 +1,5 @@
+# This make file is for GNU make
+
+SUBDIRS:=	config hutlib alodes mp
+
+include Makerules

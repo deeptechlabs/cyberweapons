@@ -1,0 +1,5 @@
+# This make file is for GNU make
+
+SUBDIRS:=	lib prog
+
+include Makerules

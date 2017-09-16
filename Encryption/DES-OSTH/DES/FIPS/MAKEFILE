@@ -1,0 +1,30 @@
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+# Additional restrictions due to national laws governing the use, import or
+# export of cryptographic software is the responsibility of the software user,
+# importer or exporter to follow.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+   FILES = fips_E.h fips_IP.h fips_IPinv.h fips_LS.h fips_P.h fips_PC1.h \
+	   fips_PC2.h fips_S.h
+
+
+all	:
+
+install	: 
+	echo 'Nothing to install'
+
+clean	:
+	rm -f *.o core a.out
+
+depend	:
+	echo 'Nothing to depend'
+
+
+# DEPEND

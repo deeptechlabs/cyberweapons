@@ -1,0 +1,244 @@
+Announcing the availability of RIPEM 1.0, a public key encryption
+program oriented toward use with electronic mail.
+
+It's been a long time coming, but finally the necessary local
+permissions have been obtained.
+
+RIPEM provides capabilities very similar to Privacy-Enhanced Mail
+(PEM), as described by Internet RFC's 1113-1115.  However, RIPEM
+lacks the concept of a "certificate", a document which guarantees
+that you have the correct public key of a correspondant.  RIPEM
+does implement a simple public key server, plus key lookup via
+finger, but these are much less secure than the certificate-based
+key management described in those RFC's.  RIPEM uses DES and 
+RSA as its encryption mechanisms, as specified by the RFC's.
+
+
+HOW RIPEM IS USED
+
+RIPEM simply reads a plaintext or ciphertext message, and produces
+a ciphertext or plaintext message.  It is not an electronic mail
+program, and has a horrible user interface.  However, interfaces
+to RIPEM for specific Unix mailers have been written, and more are
+expected.  RIPEM is not intended to be invoked directly by the
+average user.
+
+RIPEM is documented via a User's Manual (available in the RIPEM
+distribution in both plain ASCII and Postscript forms) and a 
+"man" page.  These are too lengthy to reproduce here.
+ 
+To give you a taste of what RIPEM is like, I present an abbreviated
+description of its calling sequence:
+
+Usage:  ripem {-e | -d | -g | -c}     <in >out
+  [-r recipient] [-m {encrypted | mic-only | mic-clear}]
+  [-u myusername]  [-h head] [-b #_of_bits_in_gen_key]
+  [-p publickey_infile] [-s privatekey_infile] [-k key_to_private_key or -]
+  [-P publickey_outfile] [-S privatekey_outfile]
+  [-y pub_key_server_name] [-Y key_sources] [-T recip_opts]
+  [-i infile] [-o outfile] [-D debug_level] [-Z debug_out_file]          
+  [-R random_sources] [-F random_input_file] [-C random_string]         
+where:
+  random_sources is one or more of "cefkms", specifying "random" input from
+    Command line, Entire command, File, Keyboard, Message, or running System.
+  key_sources is a string of one or more of "fgs", which tell ripem to look
+    for public keys from a File, finGer, or Server, in the order specified.
+  head is one or more of "ipr", for Include headers in msg; Prepend headers
+    to output; get Recipients from headers.  
+  recip_opts is one or more of "amn", for Abort if can't find keys for
+    all users; include Me as a recipient if encrypting; None of the above.
+Relevant environment variables:
+  RIPEM_PUBLIC_KEY_FILE, RIPEM_PRIVATE_KEY_FILE, RIPEM_KEY_TO_PRIVATE_KEY,
+  RIPEM_USER_NAME, RIPEM_RANDOM_FILE, RIPEM_SERVER_NAME, RIPEM_ARGS
+
+
+PLATFORMS SUPPORTED
+
+RIPEM has been ported to the following platforms:
+
+-- Unix (non-386):  NeXTStep 2.x and 3.x, SunOS 4.x, Sun Solaris
+2.x, IBM RS/6000 AIX, DEC ULTRIX, HP 9000/700 HP/UX, Convex C2xx**,
+IBM 370 AIX,  Silicon Graphics Irix 4.x, Motorola 88000 System
+V/88**, IBM RT CMU Mach**.
+
+-- These variants of Unix on 386/486 platforms:  Linux 0.98*, SCO ODT 2.0,
+Jolitz 386BSD, IBM AIX/386.
+
+-- MS-DOS:  Vanilla 8086*, Vanilla 8086 w/ FTP Software PC/TCP support,
+DJGCC 386 DOS-extender*.
+
+-- Macintosh* (straight port of the Unix version; others are considering
+improving the user interface).
+
+* Does not support Internet access to key servers.
+** These ports may not be current.
+Ports to other platforms are planned, but your help is needed.
+
+
+LICENSING
+
+RIPEM itself (i.e., the code I wrote) is in the public domain.
+However, RIPEM is based on RSA Data Security's RSAREF cryptographic
+toolkit.  RSAREF is not in the public domain, but its authors, RSA
+Data Security, do license it free of charge for non-commercial use.
+Because RIPEM uses RSAREF, use of RIPEM is subject to the RSAREF
+license agreement.
+
+The RSAREF program license seems pretty straightforward.  It
+can be obtained via anonymous FTP from rpub.cl.msu.edu, and is
+distributed along with the RIPEM source.  Also, I intend to post
+the RSAREF license to sci.crypt.  You should read the license before
+using RIPEM, because use of RIPEM is dependent upon your agreeing
+to the RSAREF terms.
+
+
+HOW TO GET RIPEM
+
+RIPEM is distributed in both source and executable forms.
+The binaries are distributed merely as a convenience to you,
+as the source distribution contains all necessary source to
+build RIPEM, including the source to RSAREF.
+
+RIPEM is distributed via non-anonymous FTP from rpub.cl.msu.edu.
+You must apply for an "account" on this machine, as described below.
+
+I do not distribute RIPEM via email, because past experience has
+taught me that I can't handle the load.  However, RSA Data Security
+will soon begin distributing RIPEM along with RSAREF.  I believe
+that their distribution mechanism is electronic mail.
+
+You can also get RIPEM from friends or other sites that will
+eventually carry RIPEM.   But I specifically stipulate that you
+must abide by the RSAREF license terms, and you must not export
+RIPEM outside the USA and Canada.
+
+The following is the contents of the file GETTING_ACCESS, available
+on rpub.cl.msu.edu:
+
+   Dear FTP user,
+   
+   To access the RIPEM cryptographic software archive at rpub.cl.msu.edu,
+   you must have an "account" on my custom FTP server.  Traditional
+   anonymous FTP login is allowed, but anonymous users are prevented
+   from doing GETs on files containing cryptographic software.
+   Anonymous access is allowed so that you can get README-type files
+   like this one, and files containing descriptions of software
+   licensing terms.
+   
+   To apply for FTP access to rpub.cl.msu.edu, send an email message
+   to ripem@rpub.cl.msu.edu.   State your citizenship (must be USA or
+   Canadian, or you must be a permanent resident of one of these 
+	countries) and your willingness to comply with relevant export laws
+   and software licenses.  (You should get and read the file
+   "rsaref-license.txt" on this host, so you know what you are agreeing
+   to.)  Also state the "canonical" Internet domain name of your host.
+   (If you are not sure of the primary name of your host, FTP to
+   rpub.cl.msu.edu under user anonymous.  The FTP server will inform
+   you of your hostname.)  Also state the country in which your host
+   resides.
+   
+   Here's a sample email message you might send to ripem@rpub.cl.msu.edu:
+   
+      Dear Mark,
+   
+      Please give me access to rpub.cl.msu.edu.  I am an American
+      citizen, and I agree to comply with crypto export laws and
+      RSAREF license terms.  My hostname is hobbit.egr.bigu.edu;
+      this host is located in the United States.
+   
+      Thank you.
+   
+   When I receive your message, with luck I'll promptly issue you
+   a special FTP username and password by return email.  This username 
+   will work only from the hostname you specify in your message.
+   
+   In the case of RIPEM, you may redistribute the code, but only
+   to others in the USA and Canada, and only under the terms of
+   the RSAREF license agreement mentioned above.
+   
+   Thank you.
+
+(This rather complex distribution mechanism is largely an attempt
+to satisfy local admins, not a requirement of program license terms.)
+
+
+SOME HISTORY AND INEVITABLE COMPARISONS
+
+RIPEM is my third attempt at writing freely distributable
+public key encryption software.  The first attempt, unnamed,
+never made it out the door because I found to my surprise that
+the RSA algorithm was patented.  The second attempt, RPEM,
+met a great deal of controversy in May 1991 due to its use of
+the Rabin encryption algorithm.  Public Key Partners claimed that
+it infringed upon their patents.  RPEM was withdrawn.
+
+RIPEM is a near-complete rewrite of RPEM, based on the licensed
+RSAREF toolkit; it's faster, more full-featured, and more legal.  
+
+The inevitable comparison, of course, is to Pretty Good Privacy (PGP),
+an RSA and IDEA-based crypto program by Phil Zimmerman and others.
+PGP has several advantages over RIPEM, especially in the area
+of key management for non-networked users.  RIPEM is arguably 
+better-suited for use with Internet-based email.  PGP
+is said to infringe upon public key encryption patents, whereas
+RIPEM has the blessing of the holders of those patents.  
+
+
+FUTURE RIPEM RELEASES
+
+I expect that a number of minor improvements to RIPEM will be
+released in the weeks following this announcement.  If nothing
+else, I expect to see RIPEM ported to several other platforms.  
+Your help in this is appreciated.  
+
+If no one beats me to it, I will unpack my Windows NT and OS/2 2.x
+beta CD-ROMs and attempt a port to these platforms.  However,
+there are other platforms, such as the Commodore Amiga, to 
+which I have no access.  Your help in porting RIPEM to new
+platforms is appreciated.
+
+The level of support I will provide will depend upon the demand
+and upon the availability of free time.  In other words, I am
+not promising anything.  However, the complete source code to
+RIPEM is readily available, so enhancements can be done by 
+anyone.
+
+If input continues at the rate that I've been getting during Beta
+testing, I expect to distribute new releases fairly frequently.
+The frequent release of new versions is intended to ease the
+coordination of source code amoungst developers.  As a RIPEM user
+(as opposed to developer), do not feel compelled to download the
+latest version of RIPEM whenever the version number changes.
+Consult the file "changes.txt" on rpub.cl.msu.edu for a description
+of the latest changes, to determine whether it's worth your while
+to obtain the latest version.
+
+
+RIPEM TO-DO LIST
+
+RIPEM beta testers have asked for more sophisticated key management
+for non-network-based users.  This will probably be added.
+
+Some have suggested adding compression to RIPEM.  This might be done.
+
+The ability to encipher binary files without manually sending them
+through uuencode is desirable.  This might also be done.
+
+It has been suggested that alternative single-key encryption
+algorithms be added, to supplement DES.  For instance, IDEA has
+been proposed.  I have confidence in DES when used in CBC mode with
+a unique key for every message, and have no plans to incorporate
+IDEA.  However, if there is sufficient demand and if I could find
+IDEA code written in the USA or Canada, I might be talked into
+adding it.
+
+
+CREDITS
+
+RIPEM was written by me, Mark Riordan (mrr@scss3.cl.msu.edu).  
+A number of testers contributed code, ideas, and support.  Amoung
+these are Richard Outerbridge, Greg Onufer, Mark Henderson, 
+Marc VanHeyningen, Mark Windsor, Uri Blumenthal, Jeff Thompson, and others.
+The RSAREF toolkit was written by persons unknown at RSA Data Security.
+
+Mark Riordan    mrr@scss3.cl.msu.edu   21 December 1992

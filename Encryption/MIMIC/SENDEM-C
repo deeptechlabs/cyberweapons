@@ -1,0 +1,17 @@
+
+echo "mail $1 <Kinnock-speak.cfl" >>mimic-source-owners
+mail $1 <P-code/MimicParser.p
+mail $1 <P-code/WordEater.p
+mail $1 <P-code/OutSpitter.p
+mail $1 <P-code/MimicGlobals.p
+mail $1 <P-code/Randomness.p
+mail $1 <P-code/TableSetter.p
+mail $1 <P-code/MimicMaster.p
+mail $1 <Mimic-Manual.txt
+mail $1 <mimic-notice
+mail $1 <baseballer.cfl
+mail $1 <PaulCode6
+mail $1 <Kinnock-speak.cfl
+
+
+

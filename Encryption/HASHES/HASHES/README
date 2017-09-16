@@ -1,0 +1,31 @@
+In here are various implementations of message digest algorithms, in
+C and 68000 assembler.  rot.asm contains a few ideas about
+an 8086 implementation, but it will take more work to finish it,
+particularly about what values get stored in what registers and
+arranging the three-input boolean operations to accomodate this.
+
+Anyway, on another topic, we have:
+
+md5test.c	- A test driver for the MD5 implementations.
+
+md5.c		- An implementation of the RSA Data Security, Inc. MD5
+md5.h		  Message Digest Algorithm, by RSA Data Security Inc.
+
+md52.c		- An independent implementation of MD5 by Colin Plumb.
+md52.h		  If you use this, you can call MD5 "MD5" instead of
+		  the legally-mandated mouthful above.
+
+md53.asm	- A 68000 assembler implementaion of the core Transform()
+		  function from md52.asm.
+byterev.asm	- A 68000 assmebler implementation of the byte-reversal
+		  needed in md52.asm.
+
+shs.c		- A C implementation of the NIST Secure Hash Standard
+		  (Is it a standard yet?).  By Peter Gutmann.
+		  In the public domain.  Has an integral test
+		  driver.
+shs2.asm	- A 68000 assembly implementation of SHS.
+
+In the "miscellaneous junk" category:
+
+rot.asm		- The 8086 implementation ideas mentioned above.

@@ -1,0 +1,17 @@
+#!/usr/local/bin/perl -w -I. -I.. -I/home/TheCrypt/perlmod2
+
+use strict;
+
+use PGP::PublicKeyRing;
+
+my $kr = PGP::PublicKeyRing->open();
+ref $kr || die $kr;
+
+my $key = $kr->get('[Bb]illy');
+print $key->asString(), "\n";
+
+my $key = $kr->get('B.*y');
+print $key->asString(), "\n";
+
+my $key = $kr->get('^Billy boy$');
+print $key->asString(), "\n";

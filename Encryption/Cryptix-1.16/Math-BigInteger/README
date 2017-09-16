@@ -1,0 +1,26 @@
+This BigNum library is based on Eric Young's BigNum C library.
+
+
+Functionality
+=============
+
+Could be better.
+Perhaps a few predefined values.
+A few extra functions, such as bit operations.
+
+Some checking should be done to ensure that result arg is not a
+paramter on those functions where it is disallowed (eg. mul)
+
+Documentation
+=============
+
+Could be better.
+
+Testing
+=======
+
+Could be better.
+
+
+Mail bug reports to cryptix-perl-bugs@systemics.com
+

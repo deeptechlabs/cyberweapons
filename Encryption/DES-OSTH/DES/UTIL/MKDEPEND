@@ -1,0 +1,108 @@
+#! /bin/sh
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+#
+#			 A simple depend program.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+    CC=cc
+CFLAGS=
+ MFILE=Makefile
+
+while :; do
+	case "$1" in
+	-CC)
+		case $# in
+		1)	
+			exit 1
+			;;
+		esac
+		shift
+		CC="$1"
+		;;
+	-CFLAGS)
+		case $# in
+		1)	
+			exit 1
+			;;
+		esac
+		shift
+		CFLAGS="$1"
+		;;
+	*)	
+		break
+		;;
+	esac
+	shift
+done
+
+(
+	awk '/^# DEPEND/ {
+		print;
+		exit;
+	}
+	{
+		print;
+	}
+	END {
+		print "#";
+		print "# Don not change the lines below, run make depend";
+		print "#";
+	}' $MFILE
+
+	${CC} -M ${CFLAGS} $@ | \
+	awk -F: 'BEGIN {
+		target = "";
+		depend = "";
+	}
+	$1 != target {
+		if (depend != "") {
+			print ptarget depend;
+			depend = "";
+		}
+		target = $1;
+		if (length(target) < 8) {
+			ptarget = target "		:";
+		} else {
+			ptarget = target "	:";
+		}
+	}
+	{
+		tmp = depend " " $2;
+		if (length(tmp) > 66) {
+			print ptarget depend;
+			depend = $2;
+		} else {
+			depend = tmp;
+		}
+	}
+	END {
+		if (depend != "") {
+			print ptarget depend;
+		}
+	}' - | sed 's/  */ /g'
+) > $MFILE.new
+
+case $? in
+0)	
+	if mv $MFILE $MFILE.bak; then
+		if mv $MFILE.new $MFILE; then
+			exit 0
+		else
+			mv $MFILE.bak $MFILE
+			exit 1
+		fi
+	else
+		exit 1
+	fi
+	;;
+*)
+	exit 1
+	;;
+esac

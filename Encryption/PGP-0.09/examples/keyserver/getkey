@@ -1,0 +1,50 @@
+#!/usr/local/bin/perl -w -I/home/TheCrypt/perlmod2
+
+use strict;
+use IO::File;
+use Message::Server;
+use CGI;
+
+sub error
+{
+	my $msg = shift;
+	print $::query->header(
+		-type       => 'text/html',
+		-status     => "404 $msg"	# Not found
+	);
+	print $::query->start_html;
+	print "<H1>An error has occured - $msg</H1>";
+	print $::query->end_html;
+	exit 0;
+}
+sub internal_error { my $msg = shift; error "Internal error [$msg]"; }
+
+
+#
+#	Create agent to keyserver backend
+#
+my $backend = new Message::Server;
+defined $backend || internal_error "Could not create socket ($!)";
+$backend->registerPortname("fetch-key", 9020);
+
+#
+#	Extract payment and description from CGI request
+#
+local $::query = new CGI;
+
+my $id = $::query->param('id');
+defined $id || error "id missing";
+
+#
+#	Send request to backend for processing
+#
+my ($reply, $status);
+($reply, $status) = $backend->s_request("fetch-key", $id);
+$status && internal_error("backend not responding ($reply)");
+$reply->[1] && error $reply->[0];
+
+print $::query->header(
+        -type       => 'application/x-sox-keyserver',
+		'Content-length'    => length($reply->[0])
+	);
+print $reply->[0];

@@ -1,0 +1,73 @@
+.TH snuffle 1
+.SH NAME
+snuffle \- encrypt
+
+unsnuffle \- decrypt
+.SH SYNTAX
+snuffle
+[
+.I time-key
+]
+
+unsnuffle
+[
+.I time-key
+]
+.SH DESCRIPTION
+.I snuffle
+encrypts its input and sends it to the output.
+Up to the first newline or EOF,
+the input is taken as a key;
+if
+.I time-key
+is provided,
+it is used as a further key.
+.PP
+.I unsnuffle
+decrypts its input and sends it to the output.
+It takes an input key
+and
+.I time-key
+the same way
+as
+.I snuffle.
+.PP
+.I snuffle
+and 
+.I unsnuffle
+use
+Ralph Merkle's
+Snefru
+hash function,
+which is probably about three times more secure than DES.
+Actually,
+any reasonably good hash function
+can be plugged into
+these programs.
+Encryption and hashing are fundamentally equivalent.
+.PP
+The input key is most important for the first 64 characters,
+less important for the next 55 characters, and ignored past
+that.
+.I time-key
+is ignored past 64 characters.
+.I time-key
+should be a time-dependent key,
+perhaps the output of
+.I date(1);
+it helps limit the damage that
+a single security breach can do.
+.PP
+Although
+.I snuffle
+is twice as slow as
+.I crypt(1),
+it is much more secure.
+The input key provides at least 128 bits of real security.
+.SH BUGS
+Hmph.
+.SH AUTHOR
+Placed into the public domain by Daniel J. Bernstein.
+.SH "SEE ALSO"
+crypt(1),
+crypt(3)

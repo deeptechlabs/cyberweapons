@@ -1,0 +1,6 @@
+The messages and code here discuss a cipher based on the MD5
+message digest algorithm.  The cipher was designed by Phil Karn
+(with input from others) and coded by Mark Windsor.
+This particular discussion in sci.crypt dates from Feb-March 92.
+
+Transcribed by Mark Riordan   mrr@scss3.cl.msu.edu

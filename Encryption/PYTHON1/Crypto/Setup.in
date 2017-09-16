@@ -1,0 +1,33 @@
+
+*noconfig*
+
+# Hash algorithms
+
+md2 md2module.c		# MD4
+md4 md4module.c		# MD4
+md5 md5module.c		# MD5
+sha shamodule.c		# SHA
+haval havalmodule.c     # HAVAL
+
+# Block encryption algorithms
+blowfish blowfishmodule.c
+des desmodule.c
+des3 des3module.c
+idea ideamodule.c
+rc5 rc5module.c
+redoc3 redoc3module.c
+diamond diamondmodule.c
+
+# Stream encryption algorithms
+
+arc4 arc4module.c
+sapphire sapphiremodule.c
+
+# "Simple" modules
+
+rotor rotormodule.c
+crypt cryptmodule.c
+ufcrypt ufcryptmodule.c
+
+
+

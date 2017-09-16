@@ -1,0 +1,25 @@
+#!/usr/local/bin/perl -w -I..
+
+use Stream::IO;
+use PGP::PacketFactory;
+use PGP::Armoury;
+
+my $fis = new Stream::FileInput $ARGV[0];
+my $dis = new Stream::DataInput $fis;
+
+my ($pkt, $err);
+($pkt, $err) = PGP::Armoury::readPacket($dis);
+
+my $sis = new Stream::StringInput $pkt;
+$dis = new Stream::DataInput $sis;
+
+for (;;)
+{
+	my $packet = PGP::PacketFactory::restore($dis);
+	last unless defined $packet;
+	die $packet unless ref($packet);
+	print "\n";
+	print "Packet = ", ref($packet), "\n";
+	print $packet, "\n";
+	print $packet->asString(), "\n";
+}

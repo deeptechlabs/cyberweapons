@@ -1,0 +1,5 @@
+set edit_hdrs
+set editor=/home/scss3/mrr/bin/ripem-encrypt
+set visual=/usr/ucb/vi
+bind-macro D :pipe ripemd\n
+bind-macro R r~f\n~\|ripemr\n~v\n

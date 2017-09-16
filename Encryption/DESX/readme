@@ -1,0 +1,19 @@
+This package, DESX, consists of C functions to implement the
+DESX cipher, plus a main driver program.
+
+DESX is a simple extension of DES invented by RSA Data Security.
+RSA has been using DESX in their commercial products since 1986.
+
+The DES and DESX implementations here were done by Richard Outerbridge,
+based on my description of the algorithm to him.  RSADSI claims
+no ownership of the DESX algorithm, but they did copyright their
+implementation of DESX.  They showed me their implementation
+of DESX.  I wrote an English description of the algorithm and
+showed it to Richard.  This thus is a "clean-room" implementation,
+because the code was written by someone who never saw RSA's
+source code.
+
+Mark Riordan   16 April 1994   mrr@ripem.msu.edu
+Richard Outerbridge is at:  71755.204@compuserve.com
+Richard Outerbridge is at:  71755.204@compuserve.com
+

@@ -1,0 +1,138 @@
+Announcing CryptoLib - Release 1.2		1/12/96
+   Jack Lacy, AT&T Bell Labs
+
+CryptoLib is a portable and efficient library of primitives
+for building cryptographic applications.  It runs under most versions
+of Unix as well as DOS, Windows and Windows-NT (and 95).
+
+We are pleased to make CryptoLib source code available without charge
+to researchers and developers in the US and Canada.  (Because of export
+restrictions on cryptographic software, we are only able to make the
+software available within the US and Canada to US and Canadian citizens
+and US permanent residents.)
+
+CryptoLib is intended for research and experimental use, and is
+distributed without warranty or support.  In particular, please
+note the following license conditions:
+
+ *              Copyright (c) 1995 by AT&T.
+ * Permission to use, copy, and modify this software without fee
+ * is hereby granted, provided that this entire notice is included in
+ * all copies of any software which is or includes a copy or
+ * modification of this software and in all copies of the supporting
+ * documentation for such software.
+ *
+ * This software may be subject to export controls.
+ *
+ * SOME PARTS OF CRYPTOLIB MAY BE RESTRICTED UNDER UNITED STATES EXPORT
+ * REGULATIONS.
+ *
+ *
+ * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+ * REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+ * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+
+The attached describes the library and some timing results.
+
+To obtain source code send elecrtonic mail to:
+
+	cryptolib@research.att.com
+
+with a statement of the following form:
+
+	"I am a U.S. or Canadian citizen or a legal permanent resident of the
+	U.S. and am aware that some parts of CryptoLib may be restricted under
+	United States Export regulations.  I have read and understand the
+	CryptoLib license."
+
+	Name:
+	Location:
+	E-mail:
+	Are you licensed to use the RSA patent?
+	   If yes, give name of licensed organization:
+		
+===============================================================================
+
+CryptoLib includes the following:
+
+	Arbitrary length bignums.
+
+	bigmath package:
+		bigAdd, bigSubtract, bigMultiply, bgiDivide,
+		bigLeftShift, bigRightShift,
+		bigAnd, bigOr, bigXor, bigCopy,
+		Euclid's extended GCD,
+		modular reduction and exponentiation
+
+	crypto primitives
+		DES and 3DES + modes
+		Diffie-Hellman
+		DSA (Signing and verification roughly equally efficient)
+		El Gamal
+		Rabin's scheme
+		Random Number generation (PSEUDO and TRUE)
+		MD[2,4,5]
+		Prime generation
+		RSA (provided only if you convince me that you have a license)
+		SHA
+		truerand (For Unix, NT and 95)
+		quantization (Defense against Kocher's timing attack)
+		quantized RSA, DSA and El Gamal private key operations.
+		
+	support functions
+		asn1.c
+		ioutils.c
+		netIface.c
+
+Some timing information:
+
+All times assume 32X32 bit assembly of multiplication primitives.
+
+bigPow times (a^b mod c with a,b,c the same length)
+
+		512 bits	1024 bits
+		--------	---------
+bigPow		0.12s		0.72s		Sparc II Brickell bigpow
+		0.43s		3.0s		Sparc II with asm (gcc)
+		0.12s		0.78s		Sparc 10 with asm
+		0.03s		0.17s		Sparc 10 with asm (Brickell)
+		0.084s		0.45s		SGI Indigo (150MHz)
+		0.109s		0.75s		100 MHz Pentium (gcc under DOS)
+
+Strong Prime Generation -- ProbTestAttempts = 5
+100 primes generated in each test.  Times below are:
+(total test time)/100 = avg. time per prime generated.
+Using Gordon's strong prime algorithm.
+
+    256		512	1024	Machine
+    ---		---	----	-------
+    2.8s	24.0s	5.11m	Sparc II 
+    .45s	2.7s	77s	100 MHz pentium
+	
+
+
+	RSA Times (64 bit public exponent, message encrypted is full length)
+	---------
+
+		512	768	1024 bits	machine
+		---	---	---------	-------
+encrypt		30ms	50ms	80ms		sparc II
+decrypt		160ms	480ms	930ms
+
+encrypt		15ms	33ms	56ms		100 MHz Pentium (Under NT)
+decrypt		38ms	104ms	214ms
+
+
+	DSA Times
+	---------
+
+		512	768	1024 bits	machine
+		---	---	---------	-------
+sign		99ms	166ms	216ms		sparc II (Brickell speedup)
+verify		156ms	316ms	416ms
+
+sign		21ms	38ms	49ms		100 MHz Pentium (Under NT)
+verify		27ms	43ms	71ms
+
+

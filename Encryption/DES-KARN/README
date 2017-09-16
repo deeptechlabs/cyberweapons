@@ -1,0 +1,48 @@
+Late breaking news:
+	Versions of uuencode and uudecode now included, which are helpful
+	for using this package to send/receive encrypted mail.
+
+Phil asked me to clean this up slightly and package it for distribution.
+I've got it running on my Symmetric 4.2bsd system, Phil reports it runs fine
+on a variety of systems at Bellcore.  Note that getopt is required but not
+provided, as there is already a getopt package in the mod.sources archives.
+
+Bdale Garbee, N3EUA  870401	
+winfree!bdale aka bdale%winfree.uucp@flash.bellcore.com
+
+- - - - -
+
+This package contains a DES subroutine library based on the original public
+domain code by James Gillogly, but made faster and more flexible. Commands
+using this library have been added for testing and for encrypting and
+decrypting files (compatible with the DES command under Sun UNIX), among
+other things.
+
+Run make. That will compile everything and run test data (from the NBS
+certification suite) through it.  It runs as-is under UNIX. It will run
+under MS-DOS with a few minor changes: make sure you define LITTLE_ENDIAN
+when compiling des.c, and change the name of the console in getpass.c.  If
+you have the byte order flag set wrong, you will get ENCRYPT FAIL messages
+when the descert test is run.
+
+radlogin.c is an experimental program for secure UNIX login via insecure
+channels (like amateur packet radio). Make it and set it up as the login
+shell for a special, password-free login (e.g., "radio"). When it starts the
+user will be asked his REAL login name, which is then looked up in
+/etc/rkeys. (This file must be read protected since it contains DES keys).
+The time of day is then printed in hex as a challenge. The user must encrypt
+it using DES and his key and type the answer back.  The user may use the
+program "descalc" to perform his local calculation. All this is very clumsy;
+it works, but after all it's only experimental.
+
+Phil Karn, KA9Q
+bellcore!karn aka karn@flash.bellcore.com
+
+- - - - -
+Subject: Re:  rkeys file
+
+rkeys:
+karn 0123456789abcdef
+uid  des_key_in_hex
+
+- - - - -

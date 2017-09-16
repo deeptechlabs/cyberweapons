@@ -1,0 +1,1047 @@
+
+
+
+
+
+
+
+                           CRYPT BREAKERS WORKBENCH
+
+                                 USERS MANUAL
+
+
+
+
+
+
+
+
+                               Robert W. Baldwin
+                            baldwin@xx.lcs.mit.edu
+                               mit-eddie!baldwin
+                                 October, 1986
+
+Overview
+     The  Crypt Breakers' Workbench (CBW) is an interactive multi-window system
+for mounting a cipher-text only attack on a file encrypted by  the  Unix  crypt
+command.    CBW  is  a workbench in the sense that it provides the user with an
+integrated set of tools that simplify the initial, middle and final portions of
+the  decryption process.  A user interacts with the workbench by choosing tools
+and setting parameters.  CBW carries out the work and displays the results.   A
+moderately  experienced  user  of  CBW  can  easily decrypt both long and short
+messages when bigram statistics are known for the message  space.    The  basic
+cryptanalytic  techniques  used  by  CBW  are described in a paper by Reeds and
+Weinberger that appeared in the October 1984 issue of the ATT Bell Laboratories
+Technical  Journal.    This  manual  explains  the  capabilities  and operating
+procedures of CBW.
+
+1. Introduction to the Workbench
+     A workbench is a place where a craftsman can quickly and comfortably carry
+out  a  wide range of tasks.  The ease of performing tasks comes from the range
+of tools present on the workbench and the experience of the  craftsman.    Each
+tool  has  its strengths and limitations, but the craftsman can select the best
+tool for the job at hand.  The workbench is not a  static  thing.    Often  the
+craftsman builds a jig that is tailored to a particular problem.  Some jigs are
+later discarded while others become permanent fixtures of the workbench.  It is
+in  this  sense  of the term workbench that CBW is a workbench for breaking the
+Unix crypt cipher.
+
+     CBW has evolved over the past two years, and it will continue to evolve as
+the  process of decrypting Unix files becomes better understood.  Already I can
+think of commands that I want to add to speed up the end-game of the decryption
+process.  It is being released in its current form to allow others to play with
+it and add their own ideas.
+
+     One goal of releasing CBW is to discourage  people  from  using  the  Unix
+crypt  command  for  sensitive  information.   Crypt was never intended to be a
+highly secure cipher.  It's primary advantage has been its speed, which made it
+suitable  for  integration  into a wide range of application programs.  The CBW
+program simply points out how easy the cipher  is  to  break  using  the  ideas
+described  by  Reeds  and  Weinberger in the October 1984 issue of the ATT Bell
+Labs Technical Journal.  As those authors suggested, if you must use crypt, you
+should run compress on the file before encrypting it.
+
+2. Key Space Attack
+     The basic metaphor of CBW is that the computer knows several message-space
+searching strategies, and the user decides which strategy to  try  next.    The
+program  takes  on the burden of carrying out the strategy, but it is up to the
+user to choose the strategy and to set  the  necessary  parameters  (e.g.,  how
+close  a  scoring  statistic has to be to its expected value before the program
+will accept a guess).  When a strategy completes, its  results  are  displayed.
+An  important  feature  of  the  program is that the results are displayed in a
+manner that makes it easy for the user to decide what to do next.  Further,  it
+easy  to  carry out decisions such as accepting the outcome as is, accepting it
+with minor changes, or starting over with a different strategy or  a  different
+parameter setting.
+
+     To use CBW it is necessary to know a few facts about the underlying cipher
+system, in this case the Unix crypt program.  The primary fact to know is  that
+the  job  of  deciphering  a file can be broken down into several smaller jobs.
+The ciphertext being decoded can be divided into blocks of 256 characters,  and
+each block can be decoded separately.
+
+     Each  block  is encrypted using a relatively simple cipher system, but the
+key to this simple system changes at the end of each block.  Effectively,  each
+block  is  encrypted  by  a  single  rotor  enigma  system.   The rotor has 256
+positions to handle full eight-bit bytes, and  this  leads  to  the  number  of
+characters  in each block.  CBW represents the wiring for each block's rotor by
+a permutation matrix.
+
+     Once several blocks are decoded (or mostly decoded), it  becomes  possible
+to determine how the key changes after each block.  The key change is expressed
+as a permutation matrix called Zee.  Typically one needs to solve four or  five
+blocks  (about 1000 characters), before it is possible to automatically compute
+Zee and solve the rest of the file.  For short messages there  is  no  need  to
+compute Zee.
+
+     After  the  inter-block  relationship  has  been  determined, the program,
+zeecode, can be used to decipher the whole file.  The program zeecode looks  at
+the  save-file  produced  by  CBW  to get the information it needs to decode an
+entire file.
+
+3. Files, Terminals and Shell Variables
+     This documentation assumes that the code, source, and datafiles  are  kept
+in  a  directory  called  /projects/Ecrypt,  but  these  files  could be placed
+anywhere.
+
+     The most important files are  the  program  itself,  and  the  files  that
+contain  the  English  language  statistics.  The program is called 'cbw'.  The
+statistics files are 'mss.stats', 'mss-bigram.stats', and 'trigram.stats'.  For
+the probable word guessing command there are files like 'common.words'.
+
+     To  make it easy for users to provide their own statistics files, cbw uses
+the shell variables LETTERSTATS, BIGRAMSTATS, and TRIGRAMSTATS to access  these
+files.      The  variable  DICTIONARY  identifies  a  file  of  words  for  the
+lookup-pattern command (one word per line).  These shell variables must be  set
+to  the full pathnames for the desired files.  The file stats.slice defines all
+of these variables.  Your .login file should contain a line like:  
+
+                     source  /projects/Ecrypt/stats.slice
+
+     The main input to cbw is a ciphertext file, and the main output is a  save
+file  that  specifies how the ciphertext can be decoded.  The program 'zeecode'
+uses CBW's save file to decode the ciphertext file.  The  ciphertext  file  for
+cbw  is  assumed  to  have a name like 'fileroot.cipher'.  The output of cbw is
+stored in the file named 'fileroot.perm'.  The '.perm' stands for permutation.
+
+
+
+3.1. Terminal compatibility
+     CBW is designed to run on any display terminal.  To run  on  a  particular
+terminal  CBW  must be able to generate graphic characters on that terminal and
+be able to recognize the escape sequences sent by that terminal's function keys
+(e.g.,  the  arrow keys).  CBW adapts to different terminals by examining shell
+variables (TERM, GRAPHICSMAP, and KEYMAP), the termcap entry, and  compiled  in
+defaults.   It builds a keystroke map and a graphics symbol map which translate
+between arbitrarily  long  sequences  of  ascii  characters  and  the  internal
+representation  for  keystroke  commands and graphic symbols.  The rest of this
+document will describe the action of keys, but the reader should remember  that
+the binding between commands and keys can be changed.
+
+     You  should  be  able  to  use  CBW  without  understanding the details of
+terminal handling, but for completeness, those details  are  presented  in  the
+appendix.  You will need to be sure that the shell variable TERM identifies the
+kind of terminal you are using.  You should also be able to find a shell script
+that  will  set up the graphics map for your terminal.  List the files matching
+/projects/Ecrypt/*.slice,  if  there  is   one   for   your   terminal   (e.g.,
+vt100.slice),  execute  it  to  initialize the necessary shell variables (e.g.,
+source /projects/Ecrypt/vt100.slice).
+
+     In general an unrecognized  keystroke  generates  a  self-insert  command.
+However, control characters other than newline and tab are reserved for default
+keystroke commands.  To insert a control character, precede it by a C-Q.    The
+C-Q  command  will  create  a  self-insert command for the next ascii character
+received from the terminal.
+
+     The notation C-N will be used to represent pressing the N or n  key  while
+the control key is held down.
+
+4. Getting Started and Getting Out
+     After  setting  up  the shell variables described in the previous section,
+you can invoke the Crypt Breakers' Workbench from any directory by typing:  
+
+                        /projects/Ecrypt/cbw  fileroot
+
+Where 'fileroot.cipher' is the name of  the  ciphertext  file  in  the  current
+directory.   You do not need to specify the full pathname of the cbw program if
+/project/Ecrypt is in your shell's search path.
+
+     To exit the program move the cursor to the bottom window (using the  arrow
+keys  or  C-N or C-X), then type 'q', a space, and a return.  The 'q' signifies
+the quit command, the space causes command  completion  to  be  invoked  (i.e.,
+'qui    ' would work just as well), and the return key causes the command to be
+executed.  If you have changed the decryption window since you last saved  your
+work, the program will ask if you really want to quit.  Type 'y' if you want to
+quit, or any other key to abort the quit command.
+
+5. Commands
+     There are two types of commands: keystroke and user commands.    Keystroke
+commands are interpreted by the window that currently contains the cursor.  For
+example, the up-arrow key generally moves the cursor up by one line, but in the
+decryption-block window, it moves the cursor up two lines.  An attempt has been
+made to keep the keystroke commands uniform  and  emacs-like.    The  keystroke
+commands will be explained for each window.
+
+     The  user commands can take arguments typed by the user.  They are entered
+into the command line via a simple editor and executed when the  user  types  a
+return.    The  cursor  must  be in the user i/o window to type or execute user
+commands.  The details of the editor are given in the section on the  user  i/o
+window.  Each user command is explained in section 7.
+
+-------------------------------------------------------------------------------
+
+                    Crypt Breakers' Workbench
+Block - 0                                Know  14 of 128 wires   |Word Match
+                                                                 |.n.y
+@Device[dover]......e[...........o.............A.........@....i. |Andy
+                                                                 |envy
+......................... ...................................... |indy
+                                                                 |only
+....... .................................................xt.r.a. |
+                                                                 |
+..o.......s.........d.s.............e.........t....o.mu......on  |
+                                                                 |
+                                                                 |
+                                                                 |
+Probable word search -- Done                                     |
+@Device[dover]..t...e[Font.timesroman..].....e.A..i.l....@Sectio |
+n..n..................... .r...n......n.ly.....on.....h......... |
+....... .........;................ons.......e .c.... ....xt.r.a. |
+..o.......s.........d.s.............e.........t.. .o.mu..c...on  |
+                                                                 |
+                                                                 `----------
+
+Help   : F3 enters guess, ^G undoes it.
+Status : Command completed.
+Command: pwords-from file: mss.words  Max dev: 1.2 (try 1.0)
+
+-------------------------------------------------------------------------------
+
+                          Figure 5-1:   Sample Screen
+
+6. Windows
+     The  screen  is  partitioned  into  seven  windows as shown in figure 5-1.
+Associated with each window is a  keystroke  command  interpreter  and  private
+state  information.    By  convention  keys  like  up-arrow, C-D, and delete do
+similar things in all the windows.
+
+     There are some keystrokes that have the same effects in all windows,  they
+are:
+
+C-L             Redraw the whole screen.
+
+C-X, F4         Jump to command input line.
+
+C-Q             Quote.  Insert the following character.
+
+C-Z             Abort  the current command, restore the terminal modes, suspend
+                the program and return  to  the  shell.    If  the  program  is
+                restarted,  the  terminal  will  be initialized for CBW and the
+                screen redrawn.  The command that was active (if any) when  the
+                C-Z  was received is aborted.  Actually this command is invoked
+                when CBW receives a SIGTSTP signal.
+
+C-C             Restore the terminal modes and kill the CBW process.   Actually
+                this command is invoked when CBW receives a SIGINT signal.
+
+     The following subsections describe the features of the windows starting at
+the top of the screen and working downwards.
+
+
+
+6.1. Banner window
+     This window contains the program title.  Default behavior for arrow keys.
+
+
+
+6.2. Decryption Block Label window
+     This window contains a single line that describes the block  displayed  in
+the decryption block storage window.  The block number is shown at the left end
+of the line.  The right hand side of this line displays how much is known about
+the  decryption  permutation for the current block.  This value is expressed in
+terms of the number of wires (2-cycles in the permutation) that are known.    A
+decryption  permutation  that  maps character A to B also maps B to A, so there
+are only 128 wires even though there are 256 possible characters.
+
+
+
+6.3. Decryption Block Storage window
+     Displays what is known about the plaintext corresponding to a single block
+of  256  ciphertext  characters.    A  dot character, which is different from a
+period character, is shown when the plaintext  character  is  unknown.    Other
+graphic   characters  represent  control  characters  like  newline,  tab,  and
+form-feed.  If a character decrypts into a byte  that  has  the  high  bit  set
+(i.e., not an ascii character), it shows as a solid diamond.
+
+     Most  keystrokes  are self-insert commands.  When a character is inserted,
+it replaces the character at the current position, and any  deduced  characters
+are  displayed  and  highlighted (by underlining).  The other keystroke command
+characters are:
+
+C-D, DEL        Delete character forward,  delete  backward.    This  forces  a
+                permutation wiring to be removed.  It can do unexpected things.
+                Consider a permutation with  A  wired  to  B  and  P  wired  to
+                Q.  Adding  a  wire  from B to P, then removing it with the DEL
+                command does not restore the original AB and PQ wirings.
+
+C-G             Undo.  Backup the permutation to the state it  had  before  the
+                last   contiguous  sequence  of  keystrokes.    Arrow  commands
+                terminate a contiguous sequence of keystrokes.  In most  cases,
+                undo should be used instead of DEL or C-D.
+
+C-T             Try-all.   Display a list of the ascii characters that could be
+                put in the current cursor position without conflicting with the
+                existing permutation wirings.  The list is sorted with the most
+                likely character first (leftmost).
+
+C-L             Redraws the whole screen.  As a side  effect  this  erases  the
+                list of characters produced by C-T.
+
+F1, C-R         Move to the previous block of 256 characters.
+
+F2, C-S         Advance to next block of 256 characters.
+
+
+
+6.4. Guess Block Label window
+     Title  for  the  Guess  Block  Storage  window.    Default arrow behavior.
+Parameters for guessing commands are displayed in this window.
+
+
+
+6.5. Guess Block Storage window
+     This window is multiplexed between different strategies for guessing  that
+a  particular  plaintext  string is at some position in the block.  The general
+meaning of the keystroke commands are:
+
+F2, C-S         Goto next guess.
+
+F3, C-A         Accept guess, merge it into the current decryption block.  This
+                does not automatically advance to the next guess.
+
+C-G             Undo  the  merge of a guess.  Actually this is identical to the
+                undo in the decryption block storage window, so  it  will  only
+                undo  the  guess  if  you  have  not  typed any commands to the
+                decryption window.
+
+
+
+6.6. Word Lookup
+     This window displays the list of  words  in  a  dictionary  that  match  a
+particular  pattern.    The  pattern is specified by the lookup-pattern command
+(see section 7.4).  Only the first  20  or  so  matches  are  displayed.    The
+dictionary  file defaults to /usr/dict/words, but the pathname can be set using
+the environment variable DICTIONARY.  The dictionary  file  contains  a  sorted
+list of words separated by newline characters.  Case is ignored.
+
+
+
+6.7. User I/O window
+     This  window consists of three lines: help, status, and command.  The help
+line changes as the cursor moves between windows.  It reminds the user  of  the
+commands  available  in the current window.  A more elaborate help facility has
+not been implemented.  The status line is used to  show  error  and  completion
+messages.    The  cursor  cannot  be  positioned over either the help or status
+lines.
+
+     The command line behaves like a line editor.  The editing characters are:
+
+C-U             Erase the whole line.
+
+C-F, C-B        Move forward and backward one character.
+
+C-D, DEL        Delete one character forward or backward.
+
+F2, C-S         Next-Argument.  It searches for the first "%" character in  the
+                command  line, deletes it and leaves the cursor there.  This is
+                used with command templates.
+
+Space           Within the first word on the command line,  a  space  character
+                invokes  command  completion.   A completed command string is a
+                template  command  with  argument  slots  (marked  by  %)   and
+                suggested argument values.
+
+Return          Execute command.  The cursor can be anywhere within the command
+                line.
+
+7. User Commands
+
+
+
+7.1. quit
+     Exit the program.  If any of the permutations have changed since they were
+last saved, the user is asked for confirmation.
+
+
+
+7.2. save-permutation
+     Associated  with  each block of the ciphertext is a permutation that tells
+how to decode the known characters.  This  command  saves  those  permutations.
+There  is  a  special permutation, called Zee, that relates the permutations of
+successive blocks.  The save command also saves Zee.
+
+
+
+7.3. load-permutations
+     Inverse of save.  The ciphertext file is  loaded  automatically  when  CBW
+starts,  but  the  permutation file must be loaded explicitly.  This command is
+used to load previously saved work.  Warning: the load command will replace the
+current permutations without asking whether you want to save them first.
+
+
+
+7.4. lookup-pattern
+     Searches  a  dictionary  for  words matching a pattern.  The dictionary is
+specified by the shell variable DICTIONARY.  The pattern  is  specified  as  an
+argument  to  the  command.   Currently, the pattern consists of characters and
+periods (.).  The period characters match any one character in a word from  the
+dictionary.    This  means that you have to know the length of the word you are
+looking for.  The current dictionary does not contain  suffixes,  so  you  will
+often need to try a few patterns to find the desired word.  There are many ways
+to improve this command.
+
+
+
+7.5. bigram guessing
+     This command  uses  a  statistics  based  on  letter  pairs  (bigrams)  to
+carefully  guess  at the plaintext.  This is the most useful command in CBW and
+it represents a significant improvement on  the  techniques  discussed  in  the
+Reeds  and  Weinberger paper.  This tool works by finding the best position for
+guessing, and then trying all 128 ascii characters in that position.  For  each
+of the 128 trials the deduced characters are scored and the trial with the best
+score is accepted if it meets the criteria  set  by  the  user.    The  process
+repeats for the next best position until no positions satisfy the user's cutoff
+criteria.
+
+     The best position for guessing is the one that produces the most evidence.
+It  is  the  position  that generates the largest number of deduced characters.
+Preference is given to positions that are deduced next to an  already  accepted
+character  because  bigram  statistics  can  be  used  in  these  places.    An
+approximation  to  the  best  position  can  be  identified  by  examining  the
+ciphertext.  For the crypt cipher it is possible to identify all the characters
+in the ciphertext that were the output of a particular terminal  of  the  block
+rotor.    Each  of  the  128  trial plaintext characters for that position will
+generate a wiring from that terminal to some other  terminal.    If  the  other
+terminal  is  already used, the guess is rejected immediately.  However, if the
+rotor terminal is free, additional character positions may be  deduced  because
+of the symmetric nature of the rotor (recall that if the rotor maps X to Y then
+it also maps Y to X).  Thus by examining the ciphertext CBW  can  set  a  lower
+limit  on  the  number  of  characters  that  will  be deduced by guessing in a
+particular position.
+
+     The bigram command takes two arguments, a  cut-off  level  and  a  minimum
+probability.  The purpose of the cutoff level is to insure that a guess is only
+accepted if the probability of the guess being right is at  least  some  factor
+greater  than  the  probability that the guess is wrong.  A cutoff level of 2.0
+tells CBW to only accept guesses when the probability of the guess being  right
+is  at  least twice as great as the probability that the guess is wrong.  Since
+all 128 possible guesses are tried, the probability of a guess being  wrong  is
+just the sum of the probabilities that any other guess is correct.
+
+     The  probability  that  a guess is correct is based on a statistic that is
+the sum of the logarithm of the expected letter  pair  frequencies  of  deduced
+characters  appearing next to the deduced or accepted characters.  The mean and
+variance of this statistic is a simple function of  the  number  of  characters
+deduced,  so it is possible to approximate the probability density distribution
+of the statistic with a  gaussian  distribution.    The  probability  (actually
+probability  density) that a guess is correct can be computed from the gaussian
+distribution based on the number of standard deviations that the observed value
+of the statistics differs from its expected value.
+
+     The  minimum  probability  tells  CBW to only accept the best guess if its
+probability is higher than some value.  The minimum probability comes into play
+when  very  few  letter pairs are deduced.  In those cases it is better to skip
+guessing until additional characters have been deduced.
+
+     This command can be used to automatically deduce  about  100  of  the  256
+possible positions within a block.  It is by far the most useful command in the
+workbench.  My usual strategy is to run the command three times on each  block,
+first  with  a  cut-off  of  1.5  and a minimum probability of 0.6, then with a
+cut-off of 1.2 and a probability of 0.4, and finally with a cut-off of 1.0  and
+a probability of 0.15.
+
+     An  essential  aspect  of  this  command  is that it carefully selects the
+positions where it does guessing.  After each guess  it  selects  the  position
+that  will  deduce the maximum number of letters and letter pairs.  Without the
+careful searching, it is only slightly  more  effective  than  the  equivalence
+class command (which is now obsolete).
+
+     The  method  for computing the bigram probability is somewhat interesting.
+Rather than having a 128 x 128 entry table, the program uses a 36  x  36  entry
+table  with  a  character mapping table.  For example, the character map treats
+upper and lower case letters the same, and it  treats  all  left  brackets  and
+parenthesis the same.  To compensate for the information lost by treating upper
+and lower case letters as the same, the program bases its  guess  probabilities
+on  the  product  (actually products are taken by summing logs) of the monogram
+and bigram probabilities for the deduced characters.  Compensating for the lost
+information  lead  to  a  30%  increase  in  the  number  of  correctly guessed
+characters.
+
+
+
+7.6. pwords
+     Given a list of words that are likely  to  be  found  in  the  text,  this
+command  tries  each  word  in  every possible starting position, and accepts a
+guess if the score for the deduced characters  is  within  a  given  number  of
+standard deviations of its expected value.  The list of words must be stored in
+a file, one word per  line,  using  standard  C  backslashing  conventions  for
+control characters (e.g., "\n" for newline).
+
+     CBW  used  to  have a command that accepted words from the keyboard, but I
+found that users  are  more  thorough  in  selecting  words  if  they  have  to
+separately  edit  a  file.    The result is a collection of reusable files that
+becomes a permanent part of your workbench.  For example, I have files for mail
+headers, C programs, computer science articles, common short words, and various
+text formatters.  Of course in the spirit of a workbench, if you  do  not  like
+this limitation it is easy to add the desired command.
+
+
+
+7.7. auto-trigram guessing
+     This command is obsolete.  Use pword instead.
+
+
+
+7.8. knit-blocks
+     This  command is used to deduce the relationship between successive blocks
+of the cipher.  That relationship is stored in a permutation called Zee.  Given
+four or more partially filled in blocks, the knit command can be used to deduce
+information about Zee.  You can then use the propagate command to transfer what
+you  have  solved  in one block to any other block (see section 7.10).  For the
+theory of knitting see the Reeds and Weinberger paper.
+
+     The knitting processes is not deterministic  unless  you  have  completely
+solved  four  blocks  or partially solved more than five blocks.  When knitting
+blocks k through n, the knit command  displays  block  n+1  in  the  decryption
+window and in the guess window it displays the characters that would be deduced
+by each knitting guess.  You can use the F3 (or C-A)  key  to  accept  a  guess
+and/or the F2 to advance to the next guess.
+
+     The  knit command is intolerant of incorrect decodings of a block.  If you
+are not sure of the plaintext value of a character (e.g., whether some position
+contains  a space or a tab character), it is best to leave character undecoded.
+If any character is incorrectly decoded, then the knit  command  will  run  for
+hours.    If the command runs for more than five minutes, abort it with C-Z.  A
+clever algorithm might avoid this mis-feature.
+
+     The knit command displays how much of Zee is currently known.
+
+
+
+7.9. Clear-zee
+     Sets the Zee permutation to a state where no information is known.    This
+is the only way to recover from a bad knitting.
+
+
+
+7.10. propagate using Zee
+     If  the  Zee  permutation is partially known, the propagate command can be
+used to deduce unknown characters in one block from known characters in another
+block.   Its arguments are any two block numbers.  The blocks do not have to be
+adjacent.  The destination block will be displayed  in  the  decryption  window
+with the deduced characters highlighted.
+
+8. Known Bugs
+
+   1. Due  to  a simple memory allocation strategy, only the first fifteen
+      or so blocks of a file can be examined.
+
+   2. CBW can only process full 256 character blocks, which means that  it
+      cannot be used to decode very short files.
+
+   3. Trigram stats are no longer used, so they should not be loaded.
+
+   4. Replacing  the  knit  window without accepting the current guess (by
+      say invoking the propagate command),  causes  the  current  knitting
+      guess to be accepted.  This bug comes from an oversight in my window
+      package and is a bit of a pain to fix.
+
+   5. See the file TODO.txt for a list of suggested enhancements.
+
+Acknowledgments
+     The author would like to thank Simson L.  Garfinkel,  Samuel  M.  Levitin,
+Clifford Neuman, and Tim Shepard for the ideas and programs they contributed to
+this project.  Paul Paloski provided  extensive  comments  on  the  alpha  test
+version of CBW, and John Gilmore enhanced it for portability.
+
+I. Graphics Map
+
+     CBW  uses  non-ascii  symbols  to  display non-printing characters such as
+newline and tab.  Each kind of terminal supports a different  set  of  graphics
+characters  (if any), and even if two terminals support the same graphic (e.g.,
+middle horizontal bar) they usually represent  it  by  different  sequences  of
+ascii  characters.  CBW handles these differences by using an explicit graphics
+symbol map.  The map converts an internal symbol identifier into  a  string  of
+ascii characters which cause the terminal to display the desired symbol.
+
+     The  graphics map can be set by the user via a shell environment variable.
+The map is build in three steps.  CBW first looks in the termcap entry for this
+terminal  for  the  definitions  that  describes  how  to  enter  and  exit the
+terminal's standout mode (inverse video) and graphics mode.  There  must  be  a
+definition  for  standout  mode,  but  the graphics mode fields can be missing.
+Next,  a  default  graphics  map  is  read  from  a  compiled  in  string  (see
+terminal.h).    The  default  map uses standout mode to represent symbols.  For
+example, the newline and tab characters are drawn by displaying an  'n'  and  a
+'t' in standout mode.  A complete list of the defaults is given in table I-1.
+
+-------------------------------------------------------------------------------
+
+GRAPHIC         USE
+\St             Tab characters.
+\SX             Non-Ascii character.
+\Sn             Newline character.
+\Sr             Return character.
+\Sf             Form feed character.
+\SC             Other control characters.
+\S              Plaintext character unknown (standout space).
+\N^             Pseudo underline to highlight char above this one.
+\N|             Vertical line segment.
+\N-             Horizontal line segment.
+\N`             Lower-left corner of box.
+
+
+                     Table I-1:   Default graphic symbols
+
+-------------------------------------------------------------------------------
+
+     The  last  step of building the graphics map is to read the shell variable
+GRAPHICSMAP (if it is defined).  This variable is formatted like a /etc/termcap
+entry.   It is a sequence of definitions separated by whitespace (spaces, tabs,
+or newlines) or colons.  Each definition has a label and a value.  The label is
+a string terminated by an '=' character.  The label associated with each symbol
+is given in table I-2.  The value is a sequence of characters terminated  by  a
+colon  (or  the  end  of  the  environment  variable  string).    The first two
+characters of the value string are special.  The  first  character  must  be  a
+backslash  ('\').    The  second character specifies the mode that the terminal
+should be in when the remainder  of  the  value  string  is  displayed.    That
+character  must  be  one  of  'N', 'S', or 'G' for normal, standout, or graphic
+mode.  The combined mode of standout plus graphics cannot be represented  (this
+could  be  fixed  in terminal.c).  The rest of the value characters can use the
+standard backslash conventions (\n, \r, \t, \f, \\, and \177) with the addition
+that \E will be translated into an escape character (\033).
+
+-------------------------------------------------------------------------------
+
+LABEL   SYMBOL
+tb      Tab characters.
+na      Non-Ascii character.
+lf      Newline character.
+cr      Return character.
+ff      Form feed character.
+cc      Other control characters.
+uk      Plaintext character unknown.
+ul      Pseudo underline to highlight char above this one.
+vb      Vertical line segment (bar).
+hb      Horizontal line segment (bar).
+ll      Lower-left corner of box.
+
+
+                  Table I-2:   Symbol labels for graphic map
+
+-------------------------------------------------------------------------------
+
+     The default map string and the h19 graphics map string are listed below to
+illustrate the format.
+Default Graphics Map String:
+
+        #define DGRAPHICS       "tb=\\St:na=\\SX: lf=\\Sn:cr=\\Sr:\
+                                 ff=\\Sf:cc=\\SC:uk=\\S :::ul=\\N^:
+                                 hb=\\N-:vb=\\N|:ll=\\N`:"
+
+H19 Graphics Map String:
+
+        setenv GRAPHICSMAP 'tb=\Gh:lf=\Gk:cr=\Gg:na=\Gi:\
+                            ff=\G~:cc=\Gw:uk=\G^:ul=\Gz:\
+                            hb=\G'\`':vb=\Ga:ll=\Ge'
+
+     To make up a new graphics map, you should first  find  out  the  range  of
+symbols  that  your  terminal  can display.  Just put your terminal in graphics
+mode (see the 'as' and 'ae' definitions in the termcap for your  terminal)  and
+send  it  all  the ascii character The file /projects/Ecrypt/graphics does this
+for terminal that use \EF and \EG to enter and exit graphics  mode  (vt100  and
+h19).
+
+II. Key Map
+
+     CBW  uses a keymap to convert arbitrary sequences of ascii characters into
+keystroke  commands.    The  information  in  the  map  comes  from  the  shell
+environment  variable  KEYMAP,  the  termcap entry for the user's terminal, and
+from a compiled in string that specifies the default map (see terminal.h).  The
+shell variable overrides the information from the other sources.
+
+     The  termcap  entry  for  the  terminal should provide all the information
+needed by CBW.  It should not be necessary to use the  KEYMAP  variable.    The
+termcap  entry can come from the environment variable TERMCAP, or from the file
+/etc/termcap based on the value of the variable TERM.
+
+     The format of the key map environment variable string is the same  as  the
+format  of the graphics map variable except that the first two character of the
+value field are not treated specially.  Each definition in the string  binds  a
+keystroke  command  to  some  sequence of ascii characters.  Note that the same
+command can be bound to two or more  sequences.    The  label  portion  of  the
+definition  identifies  the  command  and the value portion gives the character
+sequence.  Table II-1 lists the label to use for each keystroke command.   Many
+of  the default bindings come the termcap entry.  In those cases, the label for
+the definition in the termcap entry is given.    The  command  labels  used  in
+KEYMAP are different from the terminal capability labels used in TERMCAP.
+
+-------------------------------------------------------------------------------
+
+LABEL   COMMAND
+up      Move cursor up.
+do      Move cursor down.
+le      Move cursor left.
+ri      Move cursor right.
+re      Redraw screen.
+un      Undo last guess accepted.
+cl      Clear command line.
+ws      Word search (not fully implemented).
+df      Delete current character and move forward.
+db      Move left and delete that character.
+pr      Previous block or guess.
+ne      Next block or guess.
+ac      Accept guess.
+ex      Execute command line or insert newline.
+ta      Try all characters in this position.
+jc      Jump to command line.
+
+
+                   Table II-1:   Command labels for key map
+
+-------------------------------------------------------------------------------
+
+     Several  termcap  definitions  are  required by CBW and several others are
+used if they are present.  CBW will print a message and  exit  if  one  of  the
+required  definitions  is missing.  Table II-2 list all the definitions used by
+CBW.
+
+-------------------------------------------------------------------------------
+
+LABEL           USE
+is              Terminal initialization string.
+ce              Erase to end of line.
+cd              Erase to end of screen.
+cl              Erase whole screen.
+cm              Cursor motion.
+as              Start graphics mode.
+ae              End graphics mode.
+so              Start standout mode.
+se              End standout mode.
+ks              Start send keypad escapes.
+ke              End send keypad escapes.
+k1              The f1 key.
+k2              The f2 key.
+k3              The f3 key.
+k4              The f4 key.
+ku              Up arrow.
+kd              Down arrow.
+kl              Left arrow.
+kr              Right arrow.
+
+
+                 Table II-2:   TERMCAP definitions used by CBW
+
+-------------------------------------------------------------------------------
+
+III. Command Summary
+
+
+KEYSTROKE       COMMAND
+
+C-L             Redraw the whole screen.  As a side effect this erases the list
+                of characters produced by C-T.
+
+C-X, F4         Jump to command input line.
+
+C-Q             Quote.  Insert the following character.
+
+C-Z             Abort  the current command, restore the terminal modes, suspend
+                the program and return  to  the  shell.    If  the  program  is
+                restarted,  the  terminal  will  be initialized for CBW and the
+                screen redrawn.  The command that was active (if any) when  the
+                C-Z  was received is aborted.  Actually this command is invoked
+                when CBW receives a SIGTSTP signal.
+
+C-C             Restore the terminal modes and kill the CBW process.   Actually
+                this command is invoked when CBW receives a SIGINT signal.
+
+C-D, DEL        Delete  character  forward,  delete  backward.    This forces a
+                permutation wiring to be removed.  It can do unexpected things.
+                Consider  a  permutation  with  A  wired  to  B  and P wired to
+                Q. Adding a wire from B to P, then removing  it  with  the  DEL
+                command does not restore the original AB and PQ wirings.
+
+C-G             Undo.    Backup  the permutation to the state it had before the
+                last  contiguous  sequence  of  keystrokes.    Arrow   commands
+                terminate  a  sequence.    In  most  cases, undo should be used
+                instead of DEL or C-D.  The cursor must be in either the  guess
+                block or the decryption block window.
+
+C-T             Try-all.   Display a list of the ascii characters that could be
+                put in the current cursor position without conflicting with the
+                existing permutation wirings.  The list is sorted with the most
+                likely character first (leftmost).  The cursor must be  in  the
+                decryption block window.
+
+F1, C-R         Move to the previous block of 256 characters.  Decryption block
+                window only.
+
+F2, C-S         Advance to next block of  256  characters.    Decryption  block
+                window only.
+
+F2, C-S         Goto next guess.  Guess block window only.
+
+F3, C-A         Accept guess, merge it into the current decryption block.  This
+                does not automatically advance to the next guess.  Guess  block
+                window only.
+
+C-F, C-B        Move forward and backward one character.
+
+C-D, DEL        Delete one character forward or backward.
+
+F2, C-S         Next-Argument.   It searches for the first "%" character in the
+                command line, deletes it and leaves the cursor there.  This  is
+                used with command templates.
+
+Space           Within  the  first  word on the command line, a space character
+                invokes command completion.  A completed command  string  is  a
+                template   command  with  argument  slots  (marked  by  %)  and
+                suggested argument values.
+
+Return          Execute command.  The cursor can be anywhere within the command
+                line.
+
+
+
+-------------------------------------------------------------------------------
+
+                                 USER COMMANDS
+
+
+quit-program permanently
+
+auto-trigram max_dev: % min_total_chars: % min_wire_chars: %
+
+knitting using blocks from: % to: % Min show count: %
+
+lookup-pattern: % in dictionary
+
+equivalence-class guess, use accept level: % (try 2.0)
+
+pwords-from file: % Max dev: % (try 1.0)
+
+load-permutations
+
+save-permutations
+
+clear-zee permutation
+
+propagate-info from: % to: % using Zee
+
+bigram-guess level: % (2.0), min_prob: % (0.15)
+
+IV. Tutorial
+
+     The  following  is  a  step  by  step  sequence of commands to compile and
+exercise the Crypt Breakers Workbench.  It demonstrates how easily crypt  files
+can be broken.
+
+   1. Edit  stats.slice to set the name of the directory that contains the
+      statistics files.  Statistics for scribe documents are included with
+      the source files.
+
+      The  stats.slice  file  also  defines the location of the dictionary
+      used by the lookup-pattern  command.    The  default  dictionary  is
+      /usr/dict/words.    The  dictionary is just a list of words, one per
+      line.  Case does not matter.
+
+   2. Execute 'source  stats.slice'  to  initialize  the  necessary  shell
+      variables.
+
+   3. If there is a .slice file for your terminal type (e.g., vt100.slice,
+      or h19.slice), execute source on that file.   This  initializes  the
+      graphics map and key map.
+
+   4. Print  out  cbw.doc,  so you can read it after you have decided that
+      you can't figure out how the program works.
+
+   5. Copy test3.perm and .cipher to foo.perm and foo.cipher.    The  .txt
+      files contain the original plaintext.
+
+   6. Execute 'cbw foo'.
+
+   7. The  cursor  will  on the command line.  Use the arrow keys (or C-P,
+      C-N, C-F, C-B) to move the cursor to the upper lefthand position  of
+      the  decryption  window.   Try typing '@Device[Dover]'.  Notice that
+      most of the characters you type  deduced  other  characters  in  the
+      block.
+
+   8. The  'D'  in  'Dover'  is wrong.  Using the arrow keys, position the
+      cursor over the 'D' and type 'd'.
+
+   9. Advance to the position after the ']' and  type  C-T.    A  list  of
+      possible  characters  for this position will be displayed.  The list
+      is sorted with the most likely character on the left.   Notice  that
+      many characters are not possible because they would deduce non-ascii
+      characters elsewhere in the  block,  or  they  would  conflict  with
+      previously accepted guesses.
+
+      Try  guessing  tab,  comma  and linefeed for the character after the
+      ']'.  Use C-G to undo each guess.  Delete and C-D do not restore the
+      old  state,  they  just  erase  the  wiring  that  was  deduced by a
+      particular character.
+
+  10. Move the cursor down to the command line.  You can use emacs  cursor
+      characters  (C-N,  C-P, C-F, C-B) or the arrow keys.  Unfortunately,
+      C-U does not work as in emacs.  The C-X key or F4 will jump directly
+      to the command line.
+
+  11. Type  'pw  '.    The  space  will  cause  command completion for the
+      probable-word guessing command.  Type F2 (or C-S) to advance to  the
+      first  argument,  and  enter  the  file name 'mss.words'.  That file
+      contains a list of keywords used  by  the  Scribe  (Finalword)  text
+      formatter.    Press  F2  to  advance  to  the second argument, which
+      specifies a cut-off level for automatically accepting guesses.   The
+      level  is the maximum number of standard deviations that the scoring
+      function can be away from its expected value.  Enter 1.2, and  press
+      return to invoke the command.
+
+  12. A  partially filled in block will appear in the guessing window.  To
+      accept the result of this command, press F3 (or C-A).
+
+  13. Try the pword guess command again with a level of 3.   To  do  this,
+      just  move  to  the  command  line, change the 1.2 to a 3, and press
+      return.  Again F3 accepts the guess.  If  some  guesses  look  wrong
+      (such  as the 'F' on the second line under the '[Article]'), you can
+      correct them using the editor in the decryption block window.
+
+  14. Advance to block  1  of  the  file  by  moving  the  cursor  to  the
+      decryption  window and pressing F2 (or C-S).  F1 (or C-R) moves back
+      one block, F2 moves ahead one block.
+
+  15. The second block is likely to  be  plain  english  with  few  scribe
+      commands.    Move  to the command window, type C-U to erase the line
+      and type 'bi ' to  setup  the  bigram  guessing  command.    Try  an
+      acceptance  level  of  1.0  and  a minimum probability of 0.6.  Type
+      return to invoke the command.
+
+  16. After a short wait (~15  seconds),  a  partial  block  will  appear.
+      Accept the guess with the F3 key in the guessing window.
+
+  17. Try  looking  up a pattern in the dictionary.  In the command window
+      type 'look ', use F2 to advance to the  pattern,  and  type  in  the
+      pattern  '....llit.', and press return.  This will match against the
+      word 'satellite' if it is in you site's dictionary.
+
+  18. One could go on like this, but let's skip  ahead  by  loading  in  a
+      previously  saved state.  Invoke the load command (it loads the file
+      foo.perm, just as save dumps to foo.perm (making this command take a
+      filename  is  a  good implementation exercise)).  Type C-U, 'load ',
+      and return.  Notice that all the work so  far  is  replaced  by  the
+      information in the .perm file.  This can be considered a feature.
+
+  19. Use  the  F1 and F2 keys in the decryption window to view the blocks
+      that have been solved.  Notice that a fully solved  block  does  not
+      specify  all  the wirings of the block key (permutation).  Typically
+      only 105 of the 128 wires are used.
+
+  20. Lets try deducing the inter-block relationship (zee).   Execute  the
+      clear-zee command.
+
+  21. Execute  knit  blocks 0 through 3 with a min show count of 20.  This
+      means that the program should only show you guesses that  deduce  20
+      or more wirings of the zee permutation.  Press return to invoke this
+      guessing strategy.  The cursor will move  to  the  guessing  window.
+      Press F2 to start the first round of guessing.
+
+      The running time of the knit command is exponential in the number of
+      blocks knitted, and it will run for a very long time if any  of  the
+      blocks  are  decrypted incorrectly.  This means that it is better to
+      leave a position blank than to guess at it.
+
+  22. The program moves to block 4 and shows you the characters in block 4
+      that would be deduced from block 3 given the deduced wirings of zee.
+      If these look reasonable, press F3 to accept the guess, and press F2
+      to try the next guess.  To reject a guess, press F2 without pressing
+      F3.
+
+  23. Now that part of zee is known, try propagating the settings of block
+      1 into block 0 using zee.  The propagate command will do this.  Also
+      try propagating blocks 2, 3, and 4 to zero.
+
+      Notice that the number of known wires can increase without  deducing
+      additional characters in the block.
+
+  24. There should be a command that propagates information between groups
+      of blocks, but for now you must do this one block at a time.   After
+      propagating  block 1 - 4 to block zero, and block zero to blocks 1 -
+      4, et cetera, try the knit command again.
+
+  25. Propagate block 4 to 5  to  provide  a  framework  to  evaluate  new
+      guesses.
+
+  26. Knit block 0 through 4 with a minimum show level of 2.  You may want
+      to skip accepting guesses that do not deduce any characters.  Repeat
+      this process with a show level of 1.
+
+  27. The  program  should  now  know  all 256 wirings of zee.  Repeat the
+      process of propagating information  between  blocks  until  all  128
+      wires of the block zero are known.
+
+  28. Save  your  work  with the save-permutations command (on the command
+      line type 'sa ' and press return).  This writes the file foo.perm.
+
+  29. Exit the program with the quit command.
+
+  30. Copy foo.perm to zeecode.perm.
+
+  31. Execute 'zeecode < foo.cipher | more '.  This  program  reads  CBW's
+      save  file  to  find  the  permutation  for  block  zero and the Zee
+      permutation  that  describes  how  the  remaining  block  keys   are
+      generated.    Using  this  information it decodes standard input and
+      writes on standard output.
+
+  32. That's all.
+
+                               Table of Contents
+Overview                                                                      2
+1. Introduction to the Workbench                                              2
+2. Key Space Attack                                                           2
+3. Files, Terminals and Shell Variables                                       2
+     3.1. Terminal compatibility                                              2
+4. Getting Started and Getting Out                                            2
+5. Commands                                                                   2
+6. Windows                                                                    4
+     6.1. Banner window                                                       4
+     6.2. Decryption Block Label window                                       4
+     6.3. Decryption Block Storage window                                     4
+     6.4. Guess Block Label window                                            4
+     6.5. Guess Block Storage window                                          4
+     6.6. Word Lookup                                                         4
+     6.7. User I/O window                                                     4
+7. User Commands                                                              4
+     7.1. quit                                                                4
+     7.2. save-permutation                                                    4
+     7.3. load-permutations                                                   4
+     7.4. lookup-pattern                                                      4
+     7.5. bigram guessing                                                     4
+     7.6. pwords                                                              5
+     7.7. auto-trigram guessing                                               5
+     7.8. knit-blocks                                                         5
+     7.9. Clear-zee                                                           5
+     7.10. propagate using Zee                                                5
+8. Known Bugs                                                                 5
+Acknowledgments                                                               6
+I. Graphics Map                                                               7
+II. Key Map                                                                   8
+III. Command Summary                                                          9
+IV. Tutorial                                                                 10
+
+                                List of Figures
+Figure 5-1:   Sample Screen                                                   3
+
+                                List of Tables
+Table I-1:   Default graphic symbols                                          7
+Table I-2:   Symbol labels for graphic map                                    7
+Table II-1:   Command labels for key map                                      8
+Table II-2:   TERMCAP definitions used by CBW                                 8

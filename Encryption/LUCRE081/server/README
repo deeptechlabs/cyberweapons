@@ -1,0 +1,103 @@
+-lucre version 0.8.1 README
+---------------------------
+
+This is version 0.8.1 of -lucre (We pronounce it ``dash lucre''; you can
+pronounce it however you like), the Unofficial Cypherpunks Release of Ecash
+(or ``Coderpunks'', if you want).  As the ``-l'' indicates, this is a C
+library that implements the protocols of DigiCash's ecash (version
+1.8.5, the kind used by Mark Twain Bank, not EUnet).  This is an ALPHA
+release.  That is, future release may not even adhere to the same API.
+This library was developed for, and is provided for, research purposes;
+adjust your expectations of support accordingly.  As far as we know,
+-lucre will only work on Unix-style machines; it is unlikely that
+we will release a Windows or Mac version.
+
+-lucre provides all of the basic things you would like (payment requests,
+payments, deposits, withdrawals, opening accounts).  The format of the
+wallet is somewhat different from that of DigiCash's standard client,
+so it would probably be tough to use both that and -lucre with the same
+MT bank account (maybe not, though; we haven't tried).
+
+Most of the information used to produce this program came from information
+published on the net, and from analysis of the output of a logging packet
+forwarder.  The rest was experimentation.  Because these are not ``official''
+sources, some things may be incorrect.  Use at your own risk; there is
+always the possibility, when using ecash, that your money will vanish into
+the bowels of the network.
+
+To use this code, you will need the SSLeay package, which you can get from
+ftp://ftp.psy.uq.oz.au/pub/Crypto/SSL/SSLeay-0.5.2a.tar.gz, and the
+Berkeley db package, which you can get from
+ftp://ftp.cs.berkeley.edu/pub/4bsd/db.1.85.tar.gz.  Note especially that
+the use of SSLeay is subject to restrictions in some countries, including the
+US.  Also, as distributed, this package does _not_ do blinding of withdrawn
+coins, as that process is patented by Dr. David Chaum.  If you manage to
+license the patent, or if you fall under the ``Experimental Use Exception''
+(in the US, and possibly other places), it's up to you to add in the blinding
+code yourself.  In any case, and especially if you plan to use ecash
+for commercial purposes, we would recommend that you contact competent legal
+counsel.  Note that DigiCash publishes an ``official'' library for ecash,
+though (at time of writing) it is much higher-level, and without source
+available.  If that library would suit your needs, you are probably better off
+using it instead of -lucre.
+
+This library is _not_ in the public domain.  Currently, you may not modify
+it, redistribute it, or distribute any program linked to it (dynamically
+or staticly), without our explicit permission (signed by the public key
+below).  This restriction is a reflection of the ALPHA version of the
+library; it is likely that future versions will have more lenient
+licensing agreements.
+
+Some things we would like to put in future versions:
+
+o Resending aborted withdrawals: the code to do this is in there, but the
+   bank seems to think the repeated withdrawal message is a new withdrawal
+   [We lost $0.23 learning this... :-( ].  We'll look into this further.
+
+o An interface into resending and cancelling payments: all of the right info
+   is currently being stored in the databases; only convenient functions
+   to actually do the work are needed.
+
+o Make the function names more parallel: currently, some are like
+   ``wallet_open'' and some are like ``free_msg'' (we're talking about
+   verb-object order, here).  This isn't a big deal, especially if you
+   have lucre.h in front of you.
+
+o Put in better differentiation of error conditions, and more logging.
+
+o More complete client-to-client communications.  Right now it is limited
+   to payment requests and payments.
+
+We are, of course, open to suggestions [and ecash donations! :-) ].
+
+You can reach us, the development team for -lucre, at either of the
+addresses below (in fact, use both, as the nym servers seem to be flaky).
+Better yet, there is a mailing list to discuss the library; send mail
+to majordomo@c2.org with body "subscribe dev-lucre" to subscribe.
+
+Type bits/keyID    Date       User ID
+pub  1024/E9E2AC75 1996/06/13 Development team for -lucre <lucre@alpha.c2.org>
+          Key fingerprint =  63 94 0D F7 D9 6F 2D E5  08 0F EE 19 CB 6B A9 17 
+sig       E9E2AC75             Development team for -lucre <lucre@alpha.c2.org>
+                              Development team for -lucre <lucre@nym.jpunix.com>
+sig       E9E2AC75             Development team for -lucre <lucre@alpha.c2.org>
+
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.2
+
+mQCNAzHANI0AAAEEANYAvtkmYoH/Mav1A8fuwm+ZsDD4t3NY7nYd6zBKkepLLHWd
+Ue1Wnyr3mFHcrQBbJshwOJOCCUvYwDHST1TOqssaK/vAVavvubD8kRam+SET04b/
+477krJbCycnbBJ5FSugR4kKKs3S3BkrFWIJaBVTSzsocp+eGrrpcpsjp4qx1AAUR
+tDBEZXZlbG9wbWVudCB0ZWFtIGZvciAtbHVjcmUgPGx1Y3JlQGFscGhhLmMyLm9y
+Zz6JAJUDBRAxwDTfulymyOnirHUBAeqmBACfy2V57n/kAWMaUT5cFjW/C9ErL9JD
+2ej5xr2vXNsYqXVIGGAc1ZNWIRKdxIp5fs+eBwf6mPRcwHe62a50hp9nTmhNnNCr
+HLLr6g4KkIgNslYtIma+U7ojysAWrcU0Ng8dse8bheO6OiXPoBVI+stp9Uijl60f
+tTOCPEP9ldY34LQyRGV2ZWxvcG1lbnQgdGVhbSBmb3IgLWx1Y3JlIDxsdWNyZUBu
+eW0uanB1bml4LmNvbT6JAJUDBRAxxegrulymyOnirHUBAb+MBADErPAtQdo4X8UU
+8uGrFsDvSIfzRVgaz+HarEB1PNW5gsEiw9xhHizT6cKM0L9F7BCJWye2jHDm8DSP
+a5GdQNEmg+siFOw7+97hELqOzJsOjTBrF+mZ5flEeGQJHKub1D5hRChIqI/bwa5A
+6e8AKbLB+mfaO2hfXJtnlroUx9foTg==
+=GvP2
+-----END PGP PUBLIC KEY BLOCK-----
+

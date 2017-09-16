@@ -1,0 +1,21 @@
+#  simple makefile for elliptic curve stuff under MACHTEN(Mac, MACH kernel)
+
+test: eliptic.o bigint.o support.o krypto_knot.o
+	ld -o eliptic /lib/crt0.o krypto_knot.o support.o eliptic.o bigint.o -lc
+
+krypto_knot.o:	eliptic.h bigint.h eliptic_keys.h krypto_knot.c
+	cc -c -g -DMACHTEN krypto_knot.c
+
+support.o:	eliptic_keys.h eliptic.h bigint.h support.c
+#	cc -c -O support.c
+	cc -c -g -DMACHTEN support.c
+
+eliptic.o:	eliptic.h bigint.h eliptic.c
+#	cc -c -O eliptic.c
+	cc -c -g eliptic.c
+
+bigint.o:	bigint.h bigint.c
+#	cc -c -O bigint.c
+	cc -c -g bigint.c
+	cc -c -g bigint.c
+

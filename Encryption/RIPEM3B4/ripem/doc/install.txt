@@ -1,0 +1,110 @@
+install.txt   Mark Riordan   mrr@scss3.cl.msu.edu
+
+This document briefly describes how to install RIPEM.
+
+
+OVERVIEW
+
+Unpack the source tree.  (If you're reading this, you must have
+done that already, so I won't elaborate.)
+
+Make the RSAREF library in rsaref/test/.  
+Make the RIPEM main program in main/.  
+That's it.
+
+You can pretty much ignore the stuff in util/.  Likewise, you can ignore
+the  server/ tree unless you want to run your own server (which you
+probably don't given the fact that multiple servers do not cooperate
+under the current scheme).
+
+"make" in the directory rsaref/install, possibly after making changes (for the
+name of your compiler, etc.) in "makefile".  For MS-DOS Microsoft
+C 7.0, just type "nmake -f rsaref.mak" in this directory.
+
+Make the RIPEM main program and RCERTS in main/.  
+For Unix, type "make" in 
+this directory to obtain instructions.  For MS-DOS Microsoft C 7.0,
+type "nmake -f ripem.mak".  You can use "nmake -f ripemsoc.mak" if 
+you have the FTP Software Inc. PC/TCP Developer's Toolkit.  For
+Borland C++ 4.0, use ripem.ide.
+
+That's it.
+
+
+UNIX INSTRUCTIONS
+
+Make "rsaref.a".  Do this by:
+
+	cd rsaref/test 
+
+Examine "makefile" and make any corrections needed for your system,
+for instance, the name of your C compiler.  Then type:
+
+	make
+
+Now move to the main/ directory and make RIPEM:  
+
+   cd ../../main
+
+"make" targets are defined for several popular platforms, including SunOS, NeXTStep, HP-UX, and IBM's AIX.  Type "make" to get a list of the platforms.
+Then type "make <platform_name>" to make RIPEM for your platform.  As above, you may have to modify the makefile slightly, even if you have a "supported" platform, to reflect site differences.  For instance, I tend to use the GCC compiler, whereas you may prefer the vendor's C compiler.
+
+The make process will run a decryption of a sample message to test 
+the correct operation of the newly-built RIPEM.  It will also run 
+a benchmark key generation.  If you build RIPEM on a platform not 
+previously mentioned in "benchmrk.txt", please email me the timings
+so I can include them in the next release.
+
+PC INSTRUCTIONS
+
+The most recent PC version of RIPEM has been compiled only with
+Microsoft C 7.0.  Most likely MS C 6.0 would work with few changes,
+and I once compiled a very early version with Borland C++ 2.0.
+
+I create my RIPEM directory under C:\CIP\RIPEM.  Microsoft's PWB
+has a tendency to hard-code full path names in its .MAK files.  I 
+believe I have succeeded in hand-editing out the absolute path names
+from the distributed .MAK files, but you may wish to set up your 
+RIPEM distribution in the same directory.
+
+Make RSAREF.LIB:
+
+	cd rsaref\test
+	nmake /f rsaref.mak
+
+If you have Microsoft C 7.0, you can make RIPEM by 
+
+   cd ..\..\main
+   NMAKE /f RIPEM.MAK
+	
+or if you have FTP Software's PC/TCP Developer's Toolkit,
+
+   NMAKE /f RIPEMSOC.MAK
+	
+I think that the makefile is also compatible with MSC 6.0.
+
+To test the PC installation, put RIPEM on your path, and do:
+
+   cd ..\test
+	testd
+	
+You should get the message "RIPEM test message decrypted properly."
+
+
+OTHER INSTRUCTIONS
+
+Richard Outerbridge ported RIPEM before version 2.0 to the Macintosh,
+under Think C 5.0.2.  I have merged his code into this distribution,
+but you're on your own in terms of recreating the necessary project
+files.  The file getsys.c will not compile for Think C because the
+functions GetDefaultHomeDir and EstablishRIPEMHomeDir have not been
+ported.  See the sections in #ifdef MACTC.  Any help here would be
+appreciated.
+ 
+I am looking for help in porting to other platforms.  I should think
+it'd be fairly easy to port RIPEM to OS/2 or to DOS with a DOS extender
+(as in DJGCC), but I haven't gotten around to those yet myself.  There are
+other platforms, such as the Amiga, to which I have no access and will
+have to depend entirely on your help for porting.
+
+Mark Riordan

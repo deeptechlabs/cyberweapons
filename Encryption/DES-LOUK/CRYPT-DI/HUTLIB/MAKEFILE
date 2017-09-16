@@ -1,0 +1,13 @@
+CC=cc
+CFLAGS=-g -O -Ilibdir 
+LIBNAME=libhut.a
+O_FILES=getline.o getpass.o next_field.o read-passwd.o strerror.o strsave.o xalloc.o
+
+all:	$(LIBNAME)
+
+$(LIBNAME): $(O_FILES)
+	ar ru $(LIBNAME) $?
+	ranlib $(LIBNAME)
+
+clean::
+	rm -f $(LIBNAME) $(O_FILES)

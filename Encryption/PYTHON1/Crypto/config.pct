@@ -1,0 +1,31 @@
+# config.pct
+
+# This lists all the modules that can possibly be automatically constructed.
+# You can comment out the ones that you won't *ever* want to build.
+# However, usually you'll select the modules you want in the Setup file.
+
+# Format: "hash" algorithm digestsize
+hash MD2 16	
+hash MD4 16	
+hash MD5 16	
+hash SHA 20
+#hash HAVAL 32
+
+# "block" algorithm blocksize keylength
+block Blowfish 8 0
+block DES 8 8
+block DES3 8 16
+block IDEA 8 16
+block RC5 8 0
+block REDOC3 8 0
+block Diamond 16 0
+
+# Stream ciphers
+stream ARC4 1 0
+stream Sapphire 1 0
+
+# "simple" filenamebase
+simple rotor
+simple crypt
+simple ufcrypt
+simple haval 

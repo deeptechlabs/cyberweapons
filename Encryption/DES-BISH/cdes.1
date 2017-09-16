@@ -1,0 +1,227 @@
+.\"
+.\" (c) Copyright 1987 by Matt Bishop and the Universities Space Research
+.\"			 Association.
+.\" This work was funded by grant NCC 2-398 from the National Aeronautics
+.\" and Space Administration to the Universities Space Research Association.
+.\"
+.\" Author's Address:
+.\"		Matt Bishop
+.\"		Research Institute for Advanced Computer Science
+.\"		NASA Ames Research Center
+.\"		Moffett Field, CA  94035
+.\" ARPANET:	mab@riacs.edu, mab@icarus.riacs.edu
+.\" CSNET:	mab@riacs.edu
+.\" UUCP:	...!decvax!decwrl!riacs!mab
+.\"		...!ihnp4!ames!riacs!mab
+.\"		...!ucbvax!ames!riacs!mab
+.\"
+.ds Ux \\s-2UNIX\\s0
+.ds As \\s-2ASCII\\s0
+.ds Fp \\s-2FIPS\\s0 \\s-2PUB\\s0
+.TH CDES 1 "Dartmouth College"
+.SH NAME
+cdes \- encrypt/decrypt using the Data Encryption Standard
+.SH SYNOPSIS
+.BR cdes " ["
+.IR options " ]  ["
+.IR password " ]"
+.SH DESCRIPTION
+.I Cdes
+reads from the standard input and writes
+on the standard output.
+It implements all DES modes of operation described in \*(Fp 81
+including alternative cipher feedback mode and both authentication modes.
+All modes but the electronic code book mode require an
+initialization vector;
+if none is supplied,
+the zero vector is used.
+To protect the key and initialization vector from being read by
+.IR ps (1),
+.I cdes
+hides its arguments on entry.
+If no
+.I key
+is given,
+one is requested from the controlling terminal if that can be opened,
+or from the standard input if not.
+.PP
+The key and initialization vector are taken as sequences of \*(As
+characters which are then mapped into their bit representations.
+If either begins with `0x' or `0X',
+that one is taken as a sequence of hexadecimal digits indicating the
+bit pattern;
+if either begins with `0b' or `0B',
+that one is taken as a sequence of binary digits indicating the bit pattern.
+In either case,
+only the leading 64 bits of the key or initialization vector
+are used,
+and if fewer than 64 bits are provided, enough 0 bits are appended
+to pad the key to 64 bits.
+Note that if the key is not entered on the command line,
+the
+.B \-a
+option
+.I must
+be given or the program will abort.
+This is due to limits of the password reading function
+.IR getpass (3),
+which allows at most 8 characters to be entered.
+.PP
+By default,
+the standard input is encrypted and written to the standard output.
+Using the same key for encryption and decryption preserves plaintext,
+so
+.ce
+cdes \f2key\fP < plaintext | cdes \-i \f2key\fP
+is a very expensive equivalent of
+.IR cat (1).
+.PP
+Options are:
+.TP
+.B \-a
+the key and initialization vector strings are to be taken as \*(As.
+suppressing the special interpretation given to leading `0x', `0X',
+\&`0b', and `0B' characters.
+Note this flag applies to
+.I both
+the key and initialization vector.
+.TP
+.B \-b
+According to the DES standard,
+the low-order bit of each character in the key string is deleted.
+Since most \*(As representations set the high-order bit to 0,
+simply deleting the low-order bit effectively reduces the size of the
+key space from 2\u\s-356\s0\d to 2\u\s-348\s0\d keys.
+Setting this option copies the low-order bit into the high-order bit,
+thus preserving the key space size.
+.TP
+.B \-c
+Use cipher block chaining mode.
+.TP
+.B \-e
+Use electronic code book mode.
+This is the default.
+.TP
+.BI \-f b
+Use
+.IR b -bit
+cipher feedback mode.
+Currently
+.I b
+must be a multiple of 8
+between 8 and 64 inclusive.
+.TP
+.BI \-F b
+Use
+.IR b -bit
+alternative cipher feedback mode.
+Currently
+.I b
+must be a multiple of 7
+between 7 and 56 inclusive.
+.TP
+.B \-i
+invert (decrypt) the input.
+.TP
+.BI \-m b
+Compute a message authentication code (MAC) of
+.I b
+bits on the input.
+.I b
+must be between 1 and 64 inclusive;
+if
+.I b
+is not a multiple of 8,
+enough 0 bits will be added to pad the MAC length
+to the nearest multiple of 8.
+Only the MAC is output.
+MACs are only available in cipher block chaining mode
+or in cipher feedback mode.
+.TP
+.BI \-o b
+Use
+.IR b -bit
+output feedback mode.
+Currently
+.I b
+must be a multiple of 8
+between 8 and 64 inclusive.
+.TP
+.BI \-v v
+Set the initialization vector to
+.IR v ;
+the vector is interpreted in the same way as the key.
+The vector is ignored in electronic codebook mode.
+.PP
+The DES is considered a very strong cryptosystem,
+and other than table lookup attacks,
+key search attacks,
+and Hellman's time-memory tradeoff
+(all of which are very expensive and time-consuming),
+no cryptanalytic methods for breaking the
+DES are known in the open literature.
+No doubt the choice of keys and key security
+are the most vulnerable aspect of
+.IR cdes .
+.SH FILES
+/dev/tty	controlling terminal for typed key
+.SH SEE ALSO
+.br
+crypt(1), crypt(3)
+.br
+.IR "Data Encryption Standard" ,
+Federal Information Processing Standard #46,
+National Bureau of Standards,
+U.S. Department of Commerce
+(January 1977)
+.br
+.IR "DES Modes of Operation"
+Federal Information Processing Standard #81,
+National Bureau of Standards,
+U.S. Department of Commerce
+(December 1980)
+.br
+Matt Bishop,
+\&``An Application of a Fast Data Encrypotion Standard Implementation,''
+.I "Computing Systems"
+.BR 1 (3)
+pp. 223-254
+(Summer 1988)
+.br
+Dorothy Denning,
+.IR "Cryptography and Data Security" ,
+Addison-Wesley Publishing Co.,
+Reading, MA
+\(co1982.
+.SH BUGS
+.PP
+There is a controversy raging over whether the DES will still be secure
+in a few years. The advent of special-purpose hardware could reduce
+the cost of any of the methods of attack named above
+so that they are no longer computationally infeasible.
+.PP
+As the key or key schedule is kept in memory
+throughout the run of this program,
+the encryption can be compromised if memory is readable.
+.PP
+There is no warranty of merchantability nor any warranty
+of fitness for a particular purpose nor any other warranty,
+either express or implied, as to the accuracy of the
+enclosed materials or as to their suitability for any
+particular purpose.  Accordingly, the user assumes full
+responsibility for their use. Further,
+the author assumes no obligation
+to furnish any assistance of any kind whatsoever, or to
+furnish any additional information or documentation.
+.SH AUTHOR
+Matt Bishop,
+Department of Mathematics and Computer Science,
+Bradley Hall,
+Dartmouth College,
+Hanover, NH  03755
+.sp
+Electronic mail addresses:
+.br
+Internet: Matt.Bishop@dartmouth.edu
+.br
+UUCP: decvax!dartvax!Matt.Bishop

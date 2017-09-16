@@ -1,0 +1,193 @@
+/* encode byte c, using temp t.  Warning: c must not have side effects. */
+#define zencode(c,t)  (t=decrypt_byte(), update_keys(c), t^(c))
+
+/* decode byte c in place */
+#define zdecode(c)   update_keys(c ^= decrypt_byte())
+
+local ulg keys[3]; /* keys defining the pseudo-random sequence */
+
+/***********************************************************************
+ * Return the next byte in the pseudo-random sequence
+ */
+int decrypt_byte()
+{
+   ush temp;
+
+   temp = (ush)keys[2] | 2;
+   return (int)(((ush)(temp * (temp ^ 1)) >> 8) & 0xff);
+}
+
+/***********************************************************************
+ * Update the encryption keys with the next byte of plain text
+ */
+void update_keys(c)
+    int c;                  /* byte of plain text */
+{
+    keys[0] = CRC32(keys[0], c);
+    keys[1] += keys[0] & 0xff;
+    keys[1] = keys[1] * 134775813L + 1;
+    keys[2] = CRC32(keys[2], (int)(keys[1] >> 24));
+}
+
+
+/***********************************************************************
+ * Initialize the encryption keys and the random header according to
+ * the given password.
+ */
+void init_keys(passwd)
+    char *passwd;             /* password string with which to modify keys */
+{
+    keys[0] = 305419896L;
+    keys[1] = 591751049L;
+    keys[2] = 878082192L;
+    while (*passwd != '\0') {
+	update_keys((int)*passwd);
+	passwd++;
+    }
+}
+
+/***********************************************************************
+ * Write encryption header to file zfile using the password passwd
+ * and the cyclic redundancy check crc.
+ */
+void crypthead(passwd, crc, zfile)
+    char *passwd;                /* password string */
+    ulg crc;                     /* crc of file being encrypted */
+    FILE *zfile;                 /* where to write header */
+{
+    int n;                       /* index in random header */
+    int t;                       /* temporary */
+    int c;                       /* random byte */
+    uch header[RAND_HEAD_LEN-2]; /* random header */
+    static unsigned calls = 0;   /* ensure different random header each time */
+
+    /* First generate RAND_HEAD_LEN-2 random bytes. We encrypt the
+     * output of rand() to get less predictability, since rand() is
+     * often poorly implemented.
+     */
+    if (++calls == 1) {
+	srand((unsigned)time(NULL) ^ getpid());
+    }
+    init_keys(passwd);
+    for (n = 0; n < RAND_HEAD_LEN-2; n++) {
+	c = (rand() >> 7) & 0xff;
+	header[n] = (uch)zencode(c, t);
+    }
+    /* Encrypt random header (last two bytes is high word of crc) */
+    init_keys(passwd);
+    for (n = 0; n < RAND_HEAD_LEN-2; n++) {
+	putc(zencode(header[n], t), zfile);
+    }
+    putc(zencode((int)(crc >> 16) & 0xff, t), zfile);
+    putc(zencode((int)(crc >> 24), t), zfile);
+}
+
+ ---------------------------
+[part of appnote.txt, in wuarchive.wustl.edu:/mirrors/msdos/zip/pkz110eu.exe.
+ To extract: unzip pkz110eu.exe appnote.txt
+]
+
+Decryption
+----------
+
+The encryption used in PKZIP was generously supplied by Roger
+Schlafly.  PKWARE is grateful to Mr. Schlafly for his expert
+help and advice in the field of data encryption.
+
+PKZIP encrypts the compressed data stream.  Encrypted files must
+be decrypted before they can be extracted.
+
+Each encrypted file has an extra 12 bytes stored at the start of
+the data area defining the encryption header for that file.  The
+encryption header is originally set to random values, and then
+itself encrypted, using 3, 32-bit keys.  The key values are
+initialized using the supplied encryption password.  After each byte
+is encrypted, the keys are then updated using psuedo-random number
+generation techniques in combination with the same CRC-32 algorithm
+used in PKZIP and described elsewhere in this document.
+
+The following is the basic steps required to decrypt a file:
+
+1) Initialize the three 32-bit keys with the password.
+2) Read and decrypt the 12-byte encryption header, further
+   initializing the encryption keys.
+3) Read and decrypt the compressed data stream using the
+   encryption keys.
+
+
+Step 1 - Initializing the encryption keys
+-----------------------------------------
+
+Key(0) <- 305419896
+Key(1) <- 591751049
+Key(2) <- 878082192
+
+loop for i <- 0 to length(password)-1
+    update_keys(password(i))
+end loop
+
+
+Where update_keys() is defined as:
+
+
+update_keys(char):
+  Key(0) <- crc32(key(0),char)
+  Key(1) <- Key(1) + (Key(0) & 000000ffH)
+  Key(1) <- Key(1) * 134775813 + 1
+  Key(2) <- crc32(key(2),key(1) >> 24)
+end update_keys
+
+
+Where crc32(old_crc,char) is a routine that given a CRC value and a
+character, returns an updated CRC value after applying the CRC-32
+algorithm described elsewhere in this document.
+
+
+Step 2 - Decrypting the encryption header
+-----------------------------------------
+
+The purpose of this step is to further initialize the encryption
+keys, based on random data, to render a plaintext attack on the
+data ineffective.
+
+
+Read the 12-byte encryption header into Buffer, in locations
+Buffer(0) thru Buffer(11).
+
+loop for i <- 0 to 11
+    C <- buffer(i) ^ decrypt_byte()
+    update_keys(C)
+    buffer(i) <- C
+end loop
+
+
+Where decrypt_byte() is defined as:
+
+
+unsigned char decrypt_byte()
+    local unsigned short temp
+    temp <- Key(2) | 2
+    decrypt_byte <- (temp * (temp ^ 1)) >> 8
+end decrypt_byte
+
+
+After the header is decrypted, the last two bytes in Buffer
+should be the high-order word of the CRC for the file being
+decrypted, stored in Intel low-byte/high-byte order.  This can
+be used to test if the password supplied is correct or not.
+
+
+Step 3 - Decrypting the compressed data stream
+----------------------------------------------
+
+The compressed data stream can be decrypted as follows:
+
+
+loop until done
+    read a charcter into C
+    Temp <- C ^ decrypt_byte()
+    update_keys(temp)
+    output Temp
+end loop
+
+

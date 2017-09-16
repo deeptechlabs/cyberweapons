@@ -1,0 +1,71 @@
+#!/usr/local/bin/perl -w -I.
+
+
+use Math::BigInteger;
+
+my $i = new Math::BigInteger 1234;
+# my $j = new Math::BigInteger 2;
+my $j = $i;
+
+print $i->saveAsInt(), "\n";
+print $i, "\n";
+
+print "$i, $j\n";
+
+$i++; $j++;
+$i++; $j++;
+$i++; $j++;
+print "$i, $j\n";
+
+$i++; $j--;
+print "$i, $j\n";
+$i++; $j--;
+print "$i, $j\n";
+$i++; $j--;
+print "$i, $j\n";
+
+print $i + $j, "\n";
+
+print "$i, $j\n";
+print ": ", (($i + $j) - $i), "\n";
+print "$i, $j\n";
+print ": ", ($i + $j * ($i + $j - $j)), "\n";
+print "$i, $j\n";
+
+$i = ($i + $j * ($i + $j - $j));
+print "$i, $j\n";
+$i = ($i + $j * ($i + $j - $j));
+print "$i, $j\n";
+$i = ($i + $j * $i);
+print "$i, $j\n";
+
+print "\n";
+print $i->saveAsInt(), "\n";
+print $j->saveAsInt(), "\n";
+
+# my $i = new Math::BigInteger;
+my $i = $j->new();
+my $j = $i;
+$i++;
+print "$i, $j\n";
+
+
+my $b = restore Math::BigInteger pack("H*", "dc9925e1f1d41131acf23c86811eab4bc7b8ce1e9cbcb00aa2c09c3bf05067c1");
+
+my $c = $b;
+$c++;
+
+
+my $zero = $c->new();
+my $one = $c->new();
+
+$one++;
+print "B = $b\n";
+print "C = $c\n";
+print "Zero = $zero\n";
+print "One = $one\n";
+print "Zero = $zero\n";
+print "One = $one\n";
+
+print "B = $b\n";
+print "C = $c\n";

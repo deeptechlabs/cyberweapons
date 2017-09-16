@@ -1,0 +1,41 @@
+Test Driver for Crypto++, a C++ Class Library of Cryptographic Primitives:
+
+- To generate an RSA key
+	cryptest g
+
+- To encrypt and decrypt a string using RSA
+	cryptest r
+
+- To sign a file using RSA
+	cryptest rs privatekeyfile messagefile signaturefile
+
+- To verify a signature of a file using RSA
+	cryptest rv publickeyfile messagefile signaturefile
+
+- To calculate MD5, SHS, and RIPEMD-160 message digests:
+    cryptest m file
+
+- To encrypt and decrypt a string using DES-EDE in CBC mode: 
+    cryptest t
+
+- To encrypt or decrypt a file
+    cryptest e|d input output
+
+- To share a file into shadows:
+    cryptest s <pieces> <pieces-needed> file
+    (make sure file has no extension, if you're running this under DOS)
+
+- To reconstruct a file from shadows:
+    cryptest j output file1 file2 [....]
+
+- To gzip a file:
+    cryptest z <compression-level> input output
+
+- To gunzip a file:
+    cryptest u input output
+
+- To run validation tests:
+    cryptest v
+
+- To run benchmarks:
+    cryptest b [time for each benchmark in seconds]

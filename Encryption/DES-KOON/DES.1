@@ -1,0 +1,157 @@
+.ds ]T 14 Mar 91
+.ds CP \s-2\(co\f3 Copyright 1991 by David G. Koontz\f1\s+2
+.de}F
+.ev1
+.}E
+.if\\n()s 'sp |\\n(.pu-1v-1p
+.if\\n()t 'sp |\\n(.pu-3v
+.ifn 'sp |\\n(.pu-4v
+.ifn .tl Page %\\*(]T
+.if\\n()s .tl - % -
+.if\\n()t \{.if o .tl Page %\\*(CP\\*(]T
+.ife .tl \\*(]T\\*(CPPage % \}
+'bp
+.ev
+..
+.de}C
+..
+.po 1.0i
+.nrIN 0.5i
+.nr)S 12
+.TH \f3DES 1 "" "\s+1\f6/dev/ktz\f1\s-1"
+.SH \f3NAME
+des \- encrypt/decrypt using fast implementation of NBS DES
+.SH \f3SYNOPSIS
+.B des
+-e \|\(bv \|-d  [-n]  [-k key \|\(bv \|-K hex_key] [-p pad_character], or
+.br
+.B des
+-t [-v]
+.tr ~
+.SH \f3COMMAND LINE OPTIONS
+.IP \f3-e~-d  5
+.tr
+.I Des\^
+encrypts or decrypts according to the
+.B -e 
+(encrypt) and 
+.B -d 
+(decrypt) flags reading from standard input and writing to standard output.
+.RE
+.IP \f3-n 5
+disables the initial and inverse initial permutations, which yields
+a substantial throughput gain.  Byte ordering of encrypted files is big
+endian.
+.RE
+.IP \f3-k 5
+passes an 8 character ascii key.
+..RE
+.IP \f3-K 5
+passes a 16 character hexidecimal key.  
+.sp
+The DES algorithm
+produces a 64 bit cipher product using a 56 bit key and 64 bit plaintext value.
+If no key is passed 
+.I des\^
+uses the routine getpass("key: ") to 
+demand an ascii key from standard input.  All key inputs must be of
+the correct length or 
+.I des\^ 
+will  terminate.  ascii string keys (
+.B -k 
+and
+.B getpass()
+) have each byte shifted left one bit, to leave bit[0] undefined.  Bit[0] is
+used for parity or is otherwise uninvolved.  Shifting ascii keys
+results in a 56 bit key.  Hexidecimal key strings are not shifted.  It is the
+hex key provider's responsibility to properly position 7 bits of key into the
+upper 7 bits of each hexidecimal pair (byte).
+.RE 
+.IP \f3-p 5
+passes a hexidecimal value of the range 0x0 - 0xFF to be used in place
+of the default pad character (0x20).
+The pad character is used to fill out the last 8 byte block if the input
+stream does not supply muliples of 8 bytes.  The pad characters remain in
+the decrypted output.
+.RE 
+.SH \f3TESTMODE
+.IP \f3-t 5
+Sets test mode.  Uses a test vector format described below.  Each vector
+includes a 16 character hexidecimal key, data value and result value.
+All output during test mode is maked to standard error.  A summary is output.
+.RE
+.IP \f3-v 5
+Sets verbose mode during test mode.  Outputs test vector and exception values
+for errors.
+.sp
+Initial permutation, and inverse initial permutation are always executed during
+test mode.
+.RE
+.SH \f3TEST VECTOR FORMAT
+ An input line must contain less than 127 characters.  A line containing
+a leading space is considered a vector.  A line without a leading
+space is a comment.  The 
+.I des\^
+mode is set for vectors following a comment line that contains either
+.B encrypt
+or
+.B decrypt
+as the first 7 characters.
+A line containing a vector is comprised
+of a leading space and three 16 hexdigit values.
+.PP
+A trailing comment line in the vector file forces output of the error
+total.
+.SH \f3NORMAL OPERATION
+Files encrypted by
+.I des\^
+are compatible with the NBS Digital Encryption in ECB mode without the
+.B -n
+flag.
+.PP
+.I des\^
+can provide interoperable secure data between different systems and 
+implementations of DES (including chips) when using key input in hex strings.
+.I Des\^ 
+also has the capabilty of decrypting concatenated files, if
+all used the same key schedule and key.
+.SH \f3EXAMPLE
+.IP
+des -e -k abcdefgh < foo.c > fum
+.PP
+will use the string "abcdefgh" as key
+to encrypt the contents of "foo.c", and place the encrypted
+output in file "fum".  File "fum" at this point will be unreadable.
+.SM \f3NOTE:\f1 
+that the original file, "foo.c", remains in readable form.
+To obtain readable print-out of the file "fum", it
+could be decoded as follows:
+.IP
+des -d < fum
+.PP
+After the response:
+.IP
+key:
+.PP
+the user types in "abcdefgh".
+.SH \f3FILES
+.tr *
+.ta \w'des.test******\ \ \ \ 'u
+des.test	test vector file, derived from \f2NBS Special Pub 500-20\f1
+.br
+.tr
+.DT
+.SH \f3SEE ALSO
+crypt(1),
+makekey(1),
+des(3)
+.SH \f3BUGS
+Encryption of large files is time consuming.
+.PP
+.I des\^
+uses padding of the input to assemble the last block of data.  This can
+result in up to 7 characters added to the decoded data.  If having the pad
+character selectable is not flexible enough, a pipeline filter can be written
+to protect and stuff a pad value in the plaintext domain, and strip pad
+characters from the decoded output.
+.br

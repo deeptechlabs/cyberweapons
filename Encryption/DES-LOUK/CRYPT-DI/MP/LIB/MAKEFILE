@@ -1,0 +1,13 @@
+CC=cc
+CFLAGS=-g -O -Ilibdir 
+LIBNAME=libamp.a
+O_FILES=mp_add.o mp_add_int.o mp_atom.o mp_cmp.o mp_data.o mp_div.o mp_div_x.o mp_expand.o mp_gcd.o mp_inv.o mp_itom.o mp_lcm.o mp_len.o mp_mul.o mp_mul_x.o mp_new.o mp_norm.o mp_pow.o mp_random.o mp_rdiv.o mp_reduce.o mp_rpow.o mp_sqrt.o mp_sub.o str-to-num.o test-prime.o
+
+all:	$(LIBNAME)
+
+$(LIBNAME): $(O_FILES)
+	ar ru $(LIBNAME) $?
+	ranlib $(LIBNAME)
+
+clean::
+	rm -f $(LIBNAME) $(O_FILES)

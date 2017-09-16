@@ -1,0 +1,399 @@
+                          VOL. 58, No. 145
+
+                      DEPARTMENT OF COMMERCE (DOC)
+         National Institute of Standards and Technology (NIST)
+
+                      Docket No. 930659-3159
+                          RIN 0693-AB19
+
+ A Proposed Federal Information Processing Standard for an Escrowed
+ Encryption Standard (EES)
+
+                         58 FR 40791
+
+                      Friday, July 30, 1993
+
+ Notice; request for comments.
+
+ SUMMARY: A Federal Information Processing Standard (FIPS) for an
+ Escrowed Encryption Standard (EES) is being proposed. This
+ proposed standard specifies use of a symmetric-key
+ encryption/decryption algorithm and a key escrowing method which
+ are to be implemented in electronic devices and used for
+ protecting certain unclassified government communications when
+ such protection is required. The algorithm and the key escrowing
+ method are classified and are referenced, but not specified, in
+ the standard.
+
+    This proposed standard adopts encryption technology developed
+ by the Federal government to provide strong protection for
+ unclassified information and to enable the keys used in the
+ encryption and decryption processes to be escrowed. This latter
+ feature will assist law enforcement and other government agencies,
+ under the proper legal authority, in the collection and decryption
+ of electronically transmitted information. This proposed standard
+ does not include identification of  key escrow  agents who will
+ hold the keys for the  key escrow  microcircuits or the procedures
+ for access to the keys. These issues will be addressed by the
+ Department of Justice.
+
+    The purpose of this notice is to solicit views from the public,
+ manufacturers, and Federal, state, and local government users so
+ that their needs can be considered prior to submission of this
+ proposed standard to the Secretary of Commerce for review and
+ approval.
+
+    The proposed standard contains two sections: (1) An
+ announcement section, which provides information concerning the
+ applicability, implementation, and maintenance of the standard;
+ and (2) a specifications section which deals with the technical
+ aspects of the standard. Both sections are provided in this
+ notice.
+
+
+ DATES: Comments on this proposed standard must be received on or
+ before September 28, 1993.
+
+
+ ADDRESSES: Written comments concerning the proposed standard
+ should be sent to: Director, Computer Systems Laboratory, ATTN:
+ Proposed FIPS for Escrowed Encryption Standard, Technology
+ Building, room B-154, National Institute of Standards and
+ Technology, Gaithersburg, MD 20899.
+
+    Written comments received in response to this notice will be
+ made part of the public record and will be made available for
+ inspection and copying in the Central Reference and Records
+ Inspection Facility, room 6020, Herbert C. Hoover Building, 14th
+ Street between Pennsylvania and Constitution Avenues, NW.,
+ Washington, DC 20230.
+
+
+ FOR FURTHER INFORMATION CONTACT: Dr. Dennis Branstad, National
+ Institute of Standards and Technology, Gaithersburg, MD 20899,
+ telephone (301) 975-2913.
+
+
+    SUPPLEMENTARY INFORMATION: This proposed FIPS implements the
+ initiative announced by the White House Office of the Press
+ Secretary on April 16, 1993. The President of the U.S. approved a
+ Public Encryption Management directive, which among other actions,
+ called for standards to facilitate the procurement and use of
+ encryption devices fitted with  key-escrow  microcircuits in
+ Federal communication systems that process sensitive, but
+ unclassified information.
+
+    Dated: July 26, 1993.
+
+  Arati Prabhakar,
+  Director.(NIST)
+
+
+ - ----------------------------------------------------
+  Federal Information Processing Standards Publication XX
+  1993 XX
+  Announcing the Escrowed Encryption Standard (EES)
+
+    Federal Information Processing Standards Publications (FIPS
+ PUBS) are issued by the National Institute of Standards and
+ Technology (NIST) after approval by the Secretary of Commerce
+ pursuant to section 111(d) of the Federal Property and
+ Administrative Services Act of 1949 as amended by the Computer
+ Security Act of 1987, Public Law 100-235.
+
+  Name of Standard: Escrowed Encryption Standard (EES).
+
+  Category of Standard: Telecommunications Security.
+
+  Explanation: This Standard specifies use of a symmetric-key
+ encryption (and decryption) algorithm and a Law Enforcement Access
+ Field (LEAF) creation method (one part of a  key escrow  system)
+ which provide for decryption of encrypted telecommunications when
+ interception of the telecommunications is lawfully authorized.
+ Both the algorithm and the LEAF creation method are to be
+ implemented in electronic devices (e.g., very large scale
+ integration chips). The devices may be incorporated in security
+ equipment used to encrypt (and decrypt) sensitive unclassified
+ telecommunications data. Decryption of lawfully intercepted
+ telecommunications may be achieved through the acquisition and use
+ of the LEAF, the decryption algorithm and escrowed key components.
+
+    To escrow something (e.g., a document, an encryption key) means
+ that it is "delivered to a third person to be given to the grantee
+ only upon the fulfillment of a condition" (Webster's Seventh New
+ Collegiate Dictionary). A key escrow  system is one that entrusts
+ components of a key used to encrypt telecommunications to third
+ persons, called key component escrow agents. In accordance with
+ the common definition of "escrow", the key component escrow agents
+ provide the key components to a "grantee" (i.e., a government
+ agency) only upon fulfillment of the condition that the grantee
+ properly demonstrates legal authorization to conduct electronic
+ surveillance of communications which are encrypted using the
+ specific device whose key component is requested. The key
+ components obtained through this process are then used by the
+ grantee to reconstruct the device unique key and obtain the
+ session key (contained in the LEAF) which is used to decrypt the
+ telecommunications that are encrypted with that device. The term,
+ "escrow", for purposes of this standard, is restricted to the
+ dictionary definition.
+
+    The encryption/decryption algorithm has been approved for
+ government applications requiring encryption of sensitive
+ unclassified telecommunications of data as defined herein. The
+ specific operations of the algorithm and the LEAF creation method
+ are classified and hence are referenced, but not specified, in
+ this standard.
+
+    Data, for purposes of this standard, includes voice, facsimile
+ and computer information communicated in a telephone system.
+ Telephone system, for purposes of this standard, is limited to
+ systems circuit-switched up to no more than 14.4 kbs or which use
+ basic-rate ISDN, or to a similar grade wireless service.
+
+    Data that is considered sensitive by a responsible authority
+ should be encrypted if it is vulnerable to unauthorized disclosure
+ during telecommunications. A risk analysis should be performed
+ under the direction of a responsible authority to determine
+ potential threats and risks. The costs of providing encryption
+ using this standard as well as alternative methods and their
+ respective costs should be projected. A responsible authority
+ should then make a decision, based on the risk and cost analyses,
+ whether or not to use encryption and then whether or not to use
+ this standard.
+
+  Approving Authority: Secretary of Commerce.
+
+  Maintenance Agency: Department of Commerce, National Institute of
+ Standards and Technology.
+
+  Applicability: This standard is applicable to all Federal
+ departments and agencies and their contractors under the
+ conditions specified below. This standard may be used in designing
+ and implementing security products and systems which Federal
+ departments and agencies use or operate or which are operated for
+ them under contract. These products may be used when replacing
+ Type II and Type III (DES) encryption devices and products owned
+ by the government and government contractors.
+
+    This standard may be used when the following conditions apply:
+
+    1. An authorized official or manager responsible for data
+ security or the security of a computer system decides that
+ encryption is required and cost justified as per OMB Circular A-
+ 130; and
+
+    2. The data is not classified according to the National
+ Security Act of 1947, as amended, or the Atomic Energy Act of
+ 1954, as amended.
+
+    However, Federal departments or agencies which use encryption
+ devices for protecting data that is classified according to either
+ of these acts may use those devices also for protecting
+ unclassified data in lieu of this standard.
+
+    In addition, this standard may be adopted and used by non-
+ Federal Government organizations. Such use is encouraged when it
+ provides the desired security.
+
+ Applications: Devices conforming to this standard may be used for
+ protecting unclassified communications.
+
+  Implementations: The encryption/decryption algorithm and the LEAF
+ creation method shall be implemented in electronic devices (e.g.,
+ electronic chip packages) that can be physically protected against
+ unauthorized entry, modification and reverse engineering.
+ Implementations which are tested and validated by NIST will be
+ considered as complying with this standard. An electronic device
+ shall be incorporated into a cyptographic module in accordance
+ with FIPS 140-1. NIST will test for conformance with FIPS 140-1.
+ Cryptographic modules can then be integrated into security
+ equipment for sale and use in an application. Information about
+ devices that have been validated, procedures for testing equipment
+ for conformance with NIST standards, and information about
+ obtaining approval of security equipment are available from the
+ Computer Systems Laboratory, NIST, Gaithersburg, MD 20899.
+
+  Export Control: Implementations of this standard are subject to
+ Federal Government export controls as specified in title 22, Code
+ of Federal Regulations, parts 120 through 131 (International
+ Traffic of Arms Regulations -ITAR). Exporters of encryption
+ devices, equipment and technical data are advised to contact the
+ U.S. Department of State, Office of Defense Trade Controls for
+ more information.   Patents: Implementations of this standard may
+ be covered by U.S. and foreign patents.
+
+  Implementation Schedule: This standard becomes effective thirty
+ days following publication of this FIPS PUB.
+
+  Specifications: Federal Information Processing Standard (FIPS
+ XXX)(affixed).
+
+  Cross Index:
+
+    a. FIPS PUB 46-2, Data Encryption Standard.
+
+    b. FIPS PUB 81, Modes of Operation of the DES
+
+    c. FIPS PUB 140-1, Security Requirements for Cryptographic
+ Modules.
+
+
+  Glossary:
+
+    The following terms are used as defined below for purposes of
+ this standard:
+
+    Data-Voice, facsimile and computer information communicated in
+ a telephone system.
+
+    Decryption-Conversion of ciphertext to plaintext through the
+ use of a cryptographic algorithm.
+
+    Device (cryptographic)-An electronic implementation of the
+ encryption/decryption algorithm and the LEAF creation method as
+ specified in this standard.
+
+    Digital data-Data that have been converted to a binary
+ representation.
+
+    Encryption-Conversion of plaintext to ciphertext through the
+ use of a cryptographic algorithm.
+
+    Key components-The values from which a key can be derived
+ (e.g., KU sub 1 + KU sub 2).
+
+    Key escrow -A process involving transferring one or more
+ components of a cryptographic key to one or more trusted key
+ component escrow agents for storage and later use by government
+ agencies to decrypt ciphertext if access to the plaintext is
+ lawfully authorized.
+
+    LEAF Creation Method 1-A part of a  key escrow  system that is
+ implemented in a cryptographic device and creates a Law
+ Enforcement Access Field.
+
+    Type I cryptography-A cryptographic algorithm or device
+ approved by the National Security Agency for protecting classified
+ information.
+
+    Type II cryptography-A cryptographic algorithm or device
+ approved by the National Security Agency for protecting sensitive
+ unclassified information in systems as specified in section 2315
+ of Title 10 United State Code, or section 3502(2) of Title 44,
+ United States Code.
+
+    Type III cryptography-A cryptographic algorithm or device
+ approved as a Federal Information Processing Standard.
+
+    Type III(E) cryptography-A Type III algorithm or device that is
+ approved for export from the United States.
+
+  Qualifications. The protection provided by a security product or
+ system is dependent on several factors. The protection provided by
+ this standard against key search attacks is greater than that
+ provided by the DES (e.g., the cryptographic key is longer).
+ However, provisions of this standard are intended to ensure that
+ information encrypted through use of devices implementing this
+ standard can be decrypted by a legally authorized entity.
+
+  Where to Obtain Copies of the Standard: Copies of this
+ publication are for sale by the National Technical Information
+ Service, U.S. Department of Commerce, Springfield, VA 22161. When
+ ordering, refer to Federal Information Processing Standards
+ Publication XX (FIPS PUB XX), and identify the title. When
+ microfiche is desired, this should be specified. Prices are
+ published by NTIS in current catalogs and other issuances. Payment
+ may be made by check, money order, deposit account or charged to a
+ credit card accepted by NTIS.
+  Specifications for the Escrowed Encryption Standard
+
+
+  1. Introduction
+
+    This publication specifies Escrowed Encryption Standard (EES)
+ functions and parameters.
+
+
+  2. General
+
+    This standard specifies use of the SKIPJACK cryptographic
+ algorithm and the LEAF Creation Method 1 (LCM-1) to be implemented
+ in an approved electronic device (e.g., a very large scale
+ integration electronic chip). The device is contained in a logical
+ cryptographic module which is then integrated in a security
+ product for encrypting and decrypting telecommunications.
+
+    Approved implementations may be procured by authorized
+ organizations for integration into security equipment. Devices
+ must be tested and validated by NIST for conformance to this
+ standard. Cryptographic modules must be tested and validated by
+ NIST for conformance to FIPS 140-1.
+
+
+  3. Algorithm Specifications
+
+    The specifications of the encryption/decryption algorithm
+ (SKIPJACK) and the LEAF Creation Method 1 (LCM-1) are classified.
+ The National Security Agency maintains these classified
+ specifications and approves the manufacture of devices which
+ implement the specifications. NIST tests for conformance of the
+ devices implementing this standard in cryptographic modules to
+ FIPS 140-1 and FIPS 81.
+
+
+  4. Functions and Parameters
+
+
+  4.1 Functions
+
+    The following functions, at a minimum, shall be implemented:
+
+    1. Data Encryption: A session key (80 bits) shall be used to
+ encrypt plaintext information in one or more of the following
+ modes of operation as specified in FIPS 81: ECB, CBC, OFB (64) CFB
+ (1, 8, 16, 32, 64).
+
+    2. Data Decryption: The session key (80 bits) used to encrypt
+ the data shall be used to decrypt resulting ciphertext to obtain
+ the data.
+
+    3.  Key Escrow:  The Family Key (KF) shall be used to create
+ the Law Enforcement Access Field (LEAF) in accordance with the
+ LEAF Creation Method 1 (LCM-1). The Session Key shall be encrypted
+ with the Device Unique Key and transmitted as part of the LEAF.
+ The security equipment shall ensure that the LEAF is transmitted
+ in such a manner that the LEAF and ciphertext may be decrypted
+ with legal authorization. No additional encryption or modification
+ of the LEAF is permitted.
+
+
+  4.2 Parameters
+
+    The following parameters shall be used in performing the
+ prescribed functions:
+
+    1. Device Identifier (DID): The identifier unique to a
+ particular device and used by the  Key Escrow  System.
+
+    2. Device Unique Key (KU): The cryptographic key unique to a
+ particular device and used by the  Key Escrow  System.
+
+    3. Cryptographic Protocol Field (CPF): The field identifying
+ the registered cryptographic protocol used by a particular
+ application and used by the  Key Escrow  System (reserved for
+ future specification and use).
+
+    4. Escrow Authenticator (EA): A binary pattern that is inserted
+ in the LEAF to ensure that the LEAF is transmitted and received
+ properly and has not been modified, deleted or replaced in an
+ unauthorized manner.
+
+    5. Initialization Vector (IV): A mode and application dependent
+ vector of bytes used to initialize, synchronize and verify the
+ encryption, decryption and key escrow  functions.
+
+    6. Family Key (KF): The cryptographic key stored in all devices
+ designated as a family that is used to create the LEAF.
+
+    7. Session Key (KS): The cryptographic key used by a device to
+ encrypt and decrypt data during a session.

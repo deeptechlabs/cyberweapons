@@ -1,0 +1,27 @@
+#!/usr/local/bin/perl -w -I. -I.. -I/home/TheCrypt/perlmod2
+
+use strict;
+
+use PGP::PublicKeyRing;
+use PGP::SecretKeyRing;
+use PGP::PublicKeyRingEntry;
+
+my $kr = PGP::PublicKeyRing->open("gary.pgp");
+ref $kr || die $kr;
+
+# print $kr->asString();
+
+my $ke = restore PGP::PublicKeyRingEntry $kr->getByExactUserId('Gary Howland');
+print $ke->asString(), "\n";
+
+
+
+__END__
+
+#
+#	Display the secret key ring
+#
+my $kr = PGP::SecretKeyRing->open();
+ref $kr || die $kr;
+
+print $kr->asString();

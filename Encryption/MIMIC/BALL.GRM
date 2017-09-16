@@ -1,0 +1,604 @@
+
+*period = ./1//
+*questionmark = ?/1//
+*WeatherComment = Hmm . Do you think it will rain ? /.1/
+                  What are the chances of rain today ? /.1/
+                  Nice weather as long as it doesn't rain . /.1/
+                  Well, if rain breaks out it will certainly change things . /.1/
+                  You can really tell the mettle of a manager when rain is threatened . /.1//
+
+*BlogsOutfielder = Orville Baskethands /.1/ Robert Liddlekopf /.1/
+                   Harrison "Harry" Hanihan /.1//
+*BlogsInfielder = Gerry Johnson /.1/ Lefty Clemson /.1/ Robby Rawhide /.1/
+                  Alberto Juan Turbosino /.1//
+*BlogsManager = Billy Martin /.1/ Hanson Haversham /.1//
+*BlogsCatcher = Bloaty Von Ripple /.1//
+*BlogsPitcher = Mark Markinson /.1/ Andy Anteriority /.1//
+*BlogsPlayer= Orville Baskethands /.1/ Robert Liddlekopf /.1/
+                   Harrison "Harry" Hanihan /.1/
+                  Gerry Johnson /.1/ Lefty Clemson /.1/ Robby Rawhide /.1/
+                  Alberto Juan Turbosino /.1/Bloaty Von Ripple /.1/
+Mark Markinson /.1/ Andy Anteriority /.1//
+*WhapperOutfielder = Prince Albert von Carmicheal /.1/ Parry Posteriority /.1/
+                     Herbert Herbertson /.1//
+*WhapperInfielder = Johnny Johanesberger /.1/ Frank Gavi /.1/ 
+                    Harry Dolcetto /.1/ Sal Sauvignon /.1//
+*WhapperManager = Bob Von Bittle /.1/ Hank Von Bittle /.1//
+*WhapperCatcher = Mark Cloud /.1//
+*WhapperPitcher = Jerry Johnstone /.1/ Albert Ancien-Regime /.1//
+*WhapperPlayer = Prince Albert von Carmicheal /.1/ Parry Posteriority /.1/
+                     Herbert Herbertson /.1/Johnny Johanesberger /.1/ Frank Gavi /.1/ 
+                    Harry Dolcetto /.1/ Sal Sauvignon /.1/
+Jerry Johnstone /.1/ Albert Ancien-Regime /.1/
+Mark Cloud /.1//
+*Announcer= Bob /.1/ Ted /.1/ Mike /.1/ Rich /.1//
+*DumbComment = Some kind of Ballplayer, huh ? /.1/
+               These guys came to play ball ./.1/
+               What a game so far today ./.1/
+               How about those players ./.1/
+               Got to love baseball ./.1/
+               Hey, they're playing the organ ./.1//
+               
+
+
+
+*WhapperOutfieldOut = He pops one up into deep left field . /.1/
+                      He lifts it back toward the wall where it is caught 
+                      by *BlogsOutfielder *period/.1/
+                      He knocks it into the glove of *BlogsOutfielder *period /.1/
+                      He gets a real piece of it and drives it toward the wall
+                      where it is almost ... Oh My God! ... saved by 
+                      *BlogsOutfielder *period /.1/
+                      He pops it up to *BlogsOutfielder *period /.2//
+
+
+
+*WeirdOutfield = who is too deep to get it. Basehit! /.1/
+                 who bobbles the catch! /.05/
+                 who trips on his Nikes! Time for a new sponsor. /.05/
+                 who loses it in the sun. It drops in the warning track. /.1/
+                 whose mind seems lost thinking of investments. He starts
+                 moving too late! Hit. /.1//
+
+*OutfieldResult = for a double! /.1/ for a stand-up double. /.1/
+                  for a stand-up double ... wait he's going to stretch
+                  it for a triple and ... he's safe. /.1/
+                  to grab another hit . /.1/
+                  to bump his average up . His salary is up for renegotiation
+                  this year . /.1//
+                
+               
+*WhapperOutfieldHit = knocks it toward *BlogsOutfielder *WeirdOutfield /.1/
+                      line-drives toward the outfield where *BlogsOutfielder
+                      *WeirdOutfield /.1/
+                      puts it into the back corner of right field. /.1/
+                      lifts it over the head of *BlogsOutfielder 
+                      *OutfieldResult /.1/
+                      drives it into the stands for a HomeRun! /.1/
+                      lifts it toward heaven ! HomeRun !/.1/
+                      sends it to the man upstairs . HomeRun !/.1/
+                      clears the stadium wall . Whoa ! HomeRun !/.1/
+                      and it's ... La Bomba ! HomeRun !/.1//
+
+*BlogsOutfieldHit = knocks it toward *WhapperOutfielder *WeirdOutfield /.1/
+                      line-drives toward the outfield where *WhapperOutfielder
+                      *WeirdOutfield /.1/
+                      puts it into the back corner of right field. /.1/
+                      lifts it over the head of *WhapperOutfielder 
+                      *OutfieldResult /.1/
+                      drives it into the stands for a home-run! /.1/
+                      lifts it toward heaven ! /.1/
+                      sends it to the man upstairs . /.1/
+                      clears the stadium wall . Whoa ! /.1/
+                      and it's ... La Bomba ! /.1//
+                      
+*BlogsOutfieldOut = He pops one up into deep left field . /.1/
+                      He lifts it back toward the wall where it is caught 
+                      by *WhapperOutfielder *period/.1/
+                      He knocks it into the glove of *WhapperOutfielder *period /.1/
+                      He gets a real piece of it and drives it toward the wall
+                      where it is almost ... Oh My God! ... saved by 
+                      *WhapperOutfielder *period /.1/
+                      He pops it up to *WhapperOutfielder *period /.2//
+
+
+*BuntResponseHit = bobbles it ./.1/
+                trips on it . /.1/
+                scoops it up and realizing that he's too late
+                signs it and throws it to a kid in the stands . / .01 /
+                gets to, but the throw is ... late! /.1/
+                grabs it, but the throw is too low ! /.1//
+*BuntResponseOut = grabs it and makes the out . /.1/
+                scoops it up and tosses him out . /.1/
+                passes it on to first . /.1/ 
+                nabs it ./.1/
+                picks it up, laughs and tosses him out . /.1/
+                grabs it and tosses it to first . /.1//
+*InfieldLocation = first base /.1/second base/.1/the pitcher's mound/.1/
+                   short stop/.1/third base/.1/third base foul line/.1/
+		   first base foul line/.1//
+*BadThrow = in the dirt ./.1/digging a ditch ./.1/too wide ./.1/ into the 
+            umpire's head ! Whoa ! /.01/way too wide to make the tag ./.1/
+	    too high ./.1/too high to make the tag ./.1/in his chest ./.1//
+*BaseReached = for a single ./.1/for a double ./.1/ for a triple ./.1/
+               for a easy single ... Wait he's going to try for more and the 
+	       throw is *BadThrow /.1/ for a standup double. But is that young
+	       Charlie Hustle going to wait ? No . He's going for the triple and
+	       the throw is *BadThrow /.1/for a close single and the the toss is
+	       *BadThrow /.1/ for a dangerous double and the throw is *BadThrow /.1//
+*HitResult = into short right field *BaseReached /.1/ 
+             into short left field *BaseReached / .1/
+	     and the ball bounces past the shortstop *BaseReached/.1/
+	     and the ball takes a weird bounce at *InfieldLocation *BaseReached /.1/
+             and the ball flies down the foul line . It stays fair *BaseReached/.1/ 
+	     in the short left field where it 
+             bounces into the stands . Ground rule double for the young man ./.1//
+*WhapperInfieldHit = He tries to bunt, and *BlogsInfielder *BuntResponseHit /.1/
+                     He knocks it down the line between the legs of *BlogsInfielder 
+                     *period /.1/
+                     He waps it into the short-stops glove, but he can't control
+                     it . Safe at first . /.1/
+                     He lifts it over the head of *BlogsInfielder *HitResult /.1/
+		     The batter gets a piece of it *HitResult /.1/
+		     It's contact time  *HitResult /.1/
+		     Nice hit *HitResult /.1/
+		     Whoa ! That swing was on the money  *HitResult /.1/
+		     Nice job *HitResult /.1/
+		     Great hit *HitResult /.1/
+		     Super looper for a hit /.1/
+                     He knocks a line-drive into the head of *BlogsInfielder /.05//
+
+*WhapperInfieldOut = He grounds out to *BlogsInfielder *period/.1/
+                     He pops it up to *BlogsInfielder *period/.1/
+                     He tries to bunt, and *BlogsInfielder *BuntResponseOut /.1/
+                     He knocks a line-drive into the glove of *BlogsInfielder /.1/
+                     He knocks an easy bouncer to *BlogsInfielder *period /.1/
+                     He bounces one of the ground into the first-baseman's glove .
+                     / .1//
+
+*BlogsInfieldHit = He tries to bunt, and *WhapperInfielder *BuntResponseHit /.1/
+                     He knocks it down the line between the legs of *WhapperInfielder 
+                     *period /.1/
+                     
+                     He lifts it over the head of *WhapperInfielder *HitResult /.1/
+		      The batter gets a piece of it *HitResult /.1/
+		    Nice job *HitResult /.1/
+		     Great hit *HitResult /.1/ It's contact time  *HitResult /.1/
+		     Nice hit *HitResult /.1/
+		     He waps it into the short-stops glove, but he can't control
+                     it . Safe at first . /.1/
+		     Whoa ! That swing was on the money  *HitResult /.1/
+		     Super looper for a hit /.1/
+                     He knocks a line-drive into the head of *WhapperInfielder /.05//
+
+*BlogsInfieldOut = He grounds out to *WhapperInfielder *period/.1/
+                    He  knocks a line-drive into the glove of *WhapperInfielder /.1/
+                     He tries to bunt, and *WhapperInfielder *BuntResponseOut /.1/
+                     He knocks an easy bouncer to *WhapperInfielder *period /.1/
+                    He  pops it up to *WhapperInfielder *period/.1/
+                    He  bounces one of the ground into the first-baseman's glove .
+                     / .1//
+
+*EndOfInning = Well, that's the end of their chances in this inning, *Announcer 
+               *period *Commercial/.1/
+               No more at bats left in this inning. *Commercial /.1/
+               The inning's over . Some kind of ballplayer, huh, *Announcer *period *Commercial /.1/
+               Yowza! End of the inning . Hard to imagine life without baseball? Right, *Announcer
+               *questionmark *Commercial /.1/
+               That inning proves why baseball is the nation's game . *Commercial /.1//
+
+*Return = Back to the game, *Announcer *period /.1/
+          We now return to the game between the Blogs and the Whappers . /.1/
+          Now back to the game . /.1/
+          Just wanted to say thanks to our sponsors for those great messages . /.1//
+
+*Commercial = This is WZZZ-TV bringing you the ballgame! *BeerCom *BeerCom
+              *CarCom *Return/.1/
+              We're here at WZZZ-TV bringing you the ballgame! *CarCom *CarCom 
+              *BeerCom *Return /.1/
+              This is the WZZZ baseball network! *BeerCom *CarCom *CarCom
+              *BeerCom *BeerCom *Return /.1/
+              Now a message from our sponsors. *BeerCom *BeerCom 
+              *BeerCom *Return /.1/
+              Now a very special message from our sponsors. *CarCom *BeerCom 
+              *CarCom *Return /.1//
+
+*BeerOne = Imported Name . / .1/ Imported Label ./.1/ Imported Aura . /.1/
+           Imported Concept ./.1/ Imported Danger Warning in German . /.1//
+*BeerTwo = American Taste . /.1/ American Flavor . /.1/ Clean American Taste ./.1/
+           No Overly-flavorful Assault on your tongue . /.1//
+*BeerThree = fermentation is natural ? /.1/ 
+             yeast is one of Mother Nature's Creatures ? /.1/
+             yeast is a beast of Nature ? /.1/
+             beer is natural ? /.1//
+*BeerFour = Support Mother Nature and drink. /.1/
+            Go green and support the environment . /.1/
+            Support Natural Things and drink another ! /.1/
+            Live a natural life and drink some more ! /.1//
+*BeerCom = St. Belch . *BeerOne *BeerTwo /.1/
+           Longing for adventure ? Open a bottle of St. Belch ! /.1/
+           Did you know that *BeerThree *BeerFour /.1/
+           Hey! *BeerFour /.1/
+           Man comes up to Bob on the street and says, "Want a St. Belch ?" 
+           and his friend says, "Sure, I'm a man and I love to drink ." It
+           turns out the Man was the head of a Fortune 500 company looking
+           of a new Chairman of the Board of Directors . He hires Bob for
+           $350,000 a year . /.1/
+           St. Belch Beer: Especially tailored for men who watch ballgames . /.1//
+
+*Car = Chevy Cordon-Bleu / .1 / Chevy Coq-au-Van /.1/ Ford Hodenplatzer /.1/
+       Ford Wienerschnitzel / .1/ Chevy Choucroute /.1/ Ford Weisswurst /.1/
+       Chevy Crouton /.1//
+
+*CarFoodAdj = Scrumptious ! /.1/ Delicious ! /.1/ Mouth-watering !/.1/
+              Tasty! /.1/ Rich ! /.1/ Sinfully Sweet ! /.1/ Organically-Grown/.1//
+
+*CarRegAdj = Fast ! / .1/ Bold ! / .1/ Ambitious ! /.1/ Nocturnal ! /.1/
+             Adiabatic ! /.1/ Anti-establishmentary !/.1/ Plenary ! /.1/
+             Easy ! /.1/ Capitalistic ! /.1//
+
+*CarLink = That's the new /.1/ What a car, the /.1/ How about that /.1/
+           That's it. The new /.1//
+
+*CarCom = Wow! *CarFoodAdj *CarRegAdj *CarFoodAdj *CarRegAdj 
+          *CarLink *Car *period /.1/
+          What do these words mean? *CarRegAdj *CarFoodAdj *CarRegAdj
+          *CarLink *Car *period /.1/
+          Yowza! *CarFoodAdj *CarRegAdj *CarFoodAdj *CarLink *Car *period /.1/
+          The way to a man's heart is through his stomach. Ergo we want
+          you to think of our car as *CarFoodAdj *period *CarLink *Car *period /.1//
+
+*PlateAction = comes to the plate ./.1/
+               swings the bat to get ready and enters the batter's box ./.1/
+               adjusts the cup and enters the batter's box ./.1/
+               swings the baseball bat to stretch and enters the batter's box ./.1//
+
+*NewBlogsBatter = Now, *BlogsPlayer *PlateAction /.1/
+                  Here we go. *BlogsPlayer *PlateAction /.1/
+                  The pitcher spits. *BlogsPlayer *PlateAction /.1/
+                  The crowd is nervous. *BlogsPlayer *PlateAction /.1//
+
+*NewWhapperBatter = Now, *WhapperPlayer *PlateAction /.1/
+                  Here we go. *WhapperPlayer *PlateAction /.1/
+                  The pitcher spits. *WhapperPlayer *PlateAction /.1/
+                  The crowd is nervous. *WhapperPlayer *PlateAction /.1//
+
+*Strike = Swings and misses ! /.1/ Fans the air ! /.1/ No contact in Mudsville ! /.1/
+          Whooooosh! Strike ! /.1/ Steeeriiiiike ! /.1/ No wood on that one . /.1/
+          He just watched it go by ./.1/ No contact on that one . /.1/
+          Nothing on that one ./.1/ He swings for the stands, but no contact . /.1//
+*BallCall = Ball ./.1/The umpire calls a ball ./.1/
+            Definitely a ball ./.1/No strike this time . /.1//
+*Ball = High and outside . *BallCall /.1/ Whoa, he's brushing him back . *BallCall/.1/
+        Short and away . *BallCall/.1/ OOOh, that's almost in the dirt . *BallCall/.1/ No good. *BallCall /.1/
+        High and too inside. *BallCall/.1//
+*ThePitchType = a curve ball ./.1/ a flaming fast ball ./.1/ a screaming fast ball ./.1/
+                a change-up ./.1/ a knuckler ./.1/ what looks like a spitball ./.1/
+		a spitter ./.1/a split-fingered fastball ./.1/ a rising fast ball ./.1/
+		a fast one that looked like it was rising ./.1/ a screamer ./.1/
+		a torcher ./.1/ a blaster ./.1/a knuckball ./.1/ a breaking curve ./.1/
+		a slow change-up ./.1/ a toaster ./.1/ a rattling corkscrew ./.1/
+		a curvaceous beauty ./.1/ a wobbling knuckler ./.1/ a bouncing knuckleball ./.1/
+		a smoking gun ./.1/a blazing comet ./.1/a rattler ./.1/
+		a heckraising fast ball ./.1/a rocket booster ./.1/a fastball with wings ./.1//
+*ThePitch = Checks first base . Nothing. Winds up and pitches *ThePitchType /.1/
+            Here's the pitch It's *ThePitchType /.1/
+            Here comes the pitch It's *ThePitchType/.1/
+            He's winding up . What *ThePitchType /.1/
+            And the next pitch is *ThePitchType /.1/
+            The next pitch is *ThePitchType /.1/
+            A full windup and it's *ThePitchType /.1/
+            He's uncorking *ThePitchType /.1/
+            It's *ThePitchType /.1//
+            
+
+*StrikeOut = He's out of there . / .1/
+             Strike out . He's swinging at the umpire . The umpire reconsiders until
+             the security guards arrive . /.1/
+             Strike out ! /.1/
+             Yes. Another wiffer ./.1/
+             Strike out . There goes his batting average . /.1/
+             Strike three . Some sports writer figured that each strike cost the ball
+             player about $1,530 at today's average rate . /.1/
+             The last strike . Only three chances in this game . /.1//
+
+*BlogsHit = Here we go. *ThePitch *Ball *ThePitch *BlogsInfieldHit /.1/
+            Okay. *ThePitch *Ball *Strike *Strike *BlogsInfieldHit /.1/
+            The crowd is roaring . *ThePitch *Ball *ThePitch *Ball *BlogsOutfieldHit/.1/
+            Here we go . *Ball *ThePitch *Ball *ThePitch *BlogsOutfieldHit /.1/
+            Here's the pitch . *Strike *ThePitch *Strike *ThePitch 
+            *BlogsOutfieldHit /.1//
+
+
+
+*BlogsOut = Yeah. *ThePitch *Strike *ThePitch *Strike *ThePitch *Strike *StrikeOut /.1/
+            The pitchers is winding up to throw. *Strike *ThePitch *Ball *ThePitch
+            *BlogsInfieldOut /.1/
+            Here's the fastball . *BlogsInfieldOut /.1/
+            He's trying the curveball . *BlogsOutfieldOut /.1/
+            Love that Baseball game. *ThePitch *Ball *ThePitch *Ball *ThePitch
+            *Strike *ThePitch *Strike *ThePitch *Strike *StrikeOut /.1/
+            Another fastball . *Strike *ThePitch *BlogsOutfieldOut /.1//
+
+
+*WhapperHit = Here we go. *ThePitch *Ball *ThePitch *WhapperInfieldHit /.1/
+            Okay. *ThePitch *Ball *Strike *Strike *WhapperInfieldHit /.1/
+            The crowd is roaring . *ThePitch *Ball *ThePitch
+            *Ball *WhapperOutfieldHit/.1/
+            Here we go . *Ball *ThePitch *Ball *ThePitch *WhapperOutfieldHit /.1/
+            Here's the pitch . *Strike *ThePitch *Strike *ThePitch 
+            *WhapperOutfieldHit /.1//
+
+
+
+*WhapperOut = Yeah. *ThePitch *Strike *ThePitch *Strike 
+            *ThePitch *Strike *StrikeOut /.1/
+            The pitchers is winding up to throw. *Strike *ThePitch *Ball *ThePitch
+            *WhapperInfieldOut /.1/
+            Here's the fastball . *WhapperInfieldOut /.1/
+            He's trying the curveball . *WhapperOutfieldOut /.1/
+            Love that Baseball game. *ThePitch *Ball *ThePitch *Ball *ThePitch
+            *Strike *ThePitch *Strike *ThePitch *Strike *StrikeOut /.1/
+            Another fastball . *Strike *ThePitch *WhapperOutfieldOut /.1//
+   
+                   
+
+*OneWhapperLeft = Only one more out needed . *NewWhapperBatter *WhapperHit 
+                *OneWhapperLeft /.1/
+                The Blogs only need to get one more out . *NewWhapperBatter 
+                *WhapperHit *OneWhapperLeft /.1/
+                The Blogs are trying for the last out .  *NewWhapperBatter 
+                *WhapperHit *OneWhapperLeft /.1/
+                The crowd is looking for the last out !   *NewWhapperBatter 
+                *WhapperHit *OneWhapperLeft /.1/
+                Before the last out, let's get a message in from our 
+                sponsors. *Commercial   *NewWhapperBatter 
+                *WhapperHit *OneWhapperLeft /.05/
+                Only one out left.   *NewWhapperBatter 
+                *WhapperHit *OneWhapperLeft /.1/
+                Yup, the Blogs only need to get one more out.   *NewWhapperBatter 
+                *WhapperHit *OneWhapperLeft /.1/
+                Hey, two down, one to go. *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1/
+                Only one chance left for the Whapper . *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1/
+                Two big outs for the Blogs. *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1/
+                What a game ! *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1/
+                These are the times that make baseball special . *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1/
+                One more thin out stands between the Whappers and the end of
+                this inning's chances . *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1/
+                Yowza. *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1/
+                He's hefting some wood . *NewWhapperBatter
+                *WhapperOut *EndOfInning /.1//
+           
+
+*TwoWhappersLeft = Hey, one down, two to go.   *NewWhapperBatter 
+                   *WhapperHit *TwoWhappersLeft /.1/
+                   The Whappers have only one out .       *NewWhapperBatter 
+                   *WhapperHit *TwoWhappersLeft /.1/
+                   One down, two to go.  *NewWhapperBatter 
+                   *WhapperHit *TwoWhappersLeft /.1/
+                   Only one out into the inning.  *NewWhapperBatter 
+                   *WhapperHit *TwoWhappersLeft /.1/
+                   One out against the Whappers.  *NewWhapperBatter 
+                   *WhapperHit *TwoWhappersLeft /.1/
+                   The Blogs need two more outs. *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   Two more outs to go. *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   The Whappers have two outs to spare. *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   Plenty of room. Only one out. *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   How about those ballplayers. One out so far. *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   Some day for a ballgame, huh? *WeatherComment *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   Wow. Only one out. *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   Somekind of ballgame, huh, *Announcer *questionmark *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1/
+                   Yup, got to love this stadium. *NewWhapperBatter
+                   *WhapperOut *OneWhapperLeft /.1//
+
+*ThreeWhappersLeft = No damage yet, *Announcer *period *NewWhapperBatter
+                    *WhapperHit *ThreeWhappersLeft /.1/
+                    No outs . *NewWhapperBatter
+                    *WhapperHit *ThreeWhappersLeft /.1/
+                    No outs yet for the Whappers . *NewWhapperBatter
+                    *WhapperHit *ThreeWhappersLeft /.1/
+                    No trouble yet . *NewWhapperBatter
+                    *WhapperHit *ThreeWhappersLeft /.1/
+                    Check out the Whapper's mascot a Weasel. He's biting a 7-year old !
+                    Some kind of mascot, huh, *Announcer *questionmark *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.01/
+                    Nobody out yet . *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.1/
+                    Whappers are up with no outs . *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.1/
+                    Nothing's happened yet to the Whappers . *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.1/
+                    No outs yet . *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.1/
+                    What a day . *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.1/
+                    I could go for a home run, *Announcer *period *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.1/
+                    Baseball and Apple Pie . *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.1/
+                    Yup.  *DumbComment *NewWhapperBatter
+                    *WhapperOut *TwoWhappersLeft /.2//
+                    
+
+*OneBlogsLeft = Only one more out needed . *NewBlogsBatter *BlogsHit 
+                *OneBlogsLeft /.1/
+                The Whapper only need to get one more out . *NewBlogsBatter 
+                *BlogsHit *OneBlogsLeft /.1/
+                The Whappers are trying for the last out .  *NewBlogsBatter 
+                *BlogsHit *OneBlogsLeft /.1/
+                The crowd is looking for the last out !   *NewBlogsBatter 
+                *BlogsHit *OneBlogsLeft /.1/
+                Before the last out, let's get a message in from our 
+                sponsors. *Commercial   *NewBlogsBatter 
+                *BlogsHit *OneBlogsLeft /.05/
+                Only one out left.   *NewBlogsBatter 
+                *BlogsHit *OneBlogsLeft /.1/
+                Yup, the Whappers only need to get one more out.   *NewBlogsBatter 
+                *BlogsHit *OneBlogsLeft /.1/
+                Hey, two down, one to go. *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1/
+                Only one chance left for the Blogs . *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1/
+                Two big outs for the Whappers. *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1/
+                What a game ! *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1/
+                These are the times that make baseball special . *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1/
+                One more thin out stands between the Blogs and the end of
+                this inning's chances . *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1/
+                Yowza. *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1/
+                He's hefting some wood . *NewBlogsBatter
+                *BlogsOut *EndOfInning /.1//
+           
+
+*TwoBlogsLeft = Hey, one down, two to go.   *NewBlogsBatter 
+                   *BlogsHit *TwoBlogsLeft /.1/
+                   The Blogs have only one out .       *NewBlogsBatter 
+                   *BlogsHit *TwoBlogsLeft /.1/
+                   One down, two to go.  *NewBlogsBatter 
+                   *BlogsHit *TwoBlogsLeft /.1/
+                   Only one out into the inning.  *NewBlogsBatter 
+                   *BlogsHit *TwoBlogsLeft /.1/
+                   One out against the Blogs.  *NewBlogsBatter 
+                   *BlogsHit *TwoBlogsLeft /.1/
+                   The Whappers need two more outs. *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   Two more outs to go. *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   The Blogs have two outs to spare. *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   Plenty of room. Only one out. *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   How about those ballplayers. One out so far. *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   Some day for a ballgame, huh? *WeatherComment *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   Wow. Only one out. *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   Somekind of ballgame, huh, *Announcer *questionmark *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1/
+                   Yup, got to love this stadium. *NewBlogsBatter
+                   *BlogsOut *OneBlogsLeft /.1//
+
+*ThreeBlogsLeft = No damage yet, *Announcer *period *NewBlogsBatter
+                    *BlogsHit *ThreeBlogsLeft /.1/
+                    No outs . *NewBlogsBatter
+                    *BlogsHit *ThreeBlogsLeft /.1/
+                    No outs yet for the Blogs . *NewBlogsBatter
+                    *BlogsHit *ThreeBlogsLeft /.1/
+                    No trouble yet . *NewBlogsBatter
+                    *BlogsHit *ThreeBlogsLeft /.1/
+                    Check out the Blogs Weasel. He's biting a 7-year old !
+                    Some kind of mascot, huh, *Announcer *questionmark *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.01/
+                    Nobody out yet . *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.1/
+                    Blogs are up with no outs . *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.1/
+                    Nothing's happened yet to the Blogs . *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.1/
+                    No outs yet . *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.1/
+                    What a day . *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.1/
+                    I could go for a home run, *Announcer *period *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.1/
+                    Baseball and Apple Pie . *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.1/
+                    Yup.  *DumbComment *NewBlogsBatter
+                    *BlogsOut *TwoBlogsLeft /.2//
+                    
+
+*BlogsHalf = Time for the Blogs to see what they can do . *ThreeBlogsLeft /.1/
+             It's the Blogs turn at bat . *ThreeBlogsLeft /.1/
+             Bottom half of the inning . The Blogs must prove their stuff . 
+             *ThreeBlogsLeft /.1/
+             Let's get on with the inning . *ThreeBlogsLeft /.1/
+             Well, another half of the inning, *Announcer *period *DumbComment
+             *ThreeBlogsLeft /.1/
+             Let's get moving  with this half of the inning, but first, 
+             another message from our sponsors . *Commercial *ThreeBlogsLeft /.1//
+
+*WhapperHalf = Top of the inning. *ThreeWhappersLeft /.1/
+                Another new inning . Ain't life great, *Announcer *questionmark
+                *ThreeWhappersLeft /.1/
+                Start of another inning . *ThreeWhappersLeft /.1/
+                Yes, it's time for the Whappers to lead off the inning . 
+                *ThreeWhappersLeft /.1/
+                Time for another inning . The Whappers will be leading off . 
+                *ThreeWhappersLeft /.1//
+             
+*NineInnings = Let's get going ! *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf /.1/     
+               The Umpire throws out the ball . *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf /.1/   
+               Play Ball ! *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf /.1/
+               It's a fine day for a game . *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf
+               *WhapperHalf *BlogsHalf /.1//
+
+*OneInning = Let's get going ! *WhapperHalf *BlogsHalf
+               /.1/     
+               The Umpire throws out the ball . *WhapperHalf *BlogsHalf
+                /.1/   
+               Play Ball ! *WhapperHalf *BlogsHalf
+               /.1/
+               It's a fine day for a game . *WhapperHalf *BlogsHalf
+                /.1//
+
+*AAStart = Well Bob, Welcome to yet another game between the 
+           Whappers and the Blogs here in scenic downtown
+           Blovonia . I think it is fair to say that there is
+           plenty of BlogFever brewing in the stands as the
+           hometown comes out to root for its favorites. *OneInning /.1/
+           It's time for another game between the Whappers and
+           the Blogs in scenic downtown Blovonia . I've just got
+           to say that the Blog fans have come to support their
+           team and rant and rave . *OneInning /.1//
+           

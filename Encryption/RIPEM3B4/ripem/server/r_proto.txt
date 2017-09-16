@@ -1,0 +1,41 @@
+RIPEM Key Server Protocol
+
+Mark Riordan   12 June 1992
+
+Requests are made to the server by clients.  Each request is
+responded to by the server.  
+The syntax --> is used to describe requests made by a client.
+The syntax <-- is used to describe replies from the server.
+
+--> LOOKUP     name
+
+  <-- KEYIS    name,preferred_name,key
+
+  <-- REDIRECT name,server_name
+
+  <-- NOTFOUND name
+
+
+--> ADD        name,key
+
+  <-- REGOK    name
+
+  <-- DUP      name
+
+
+--> REPLACE    name,signed_token,newkey
+
+  <-- REPLACED name,newkey
+
+  <-- BADSIG   name,signed_token
+
+  <-- ADDED    name,newkey
+
+
+--> DELETE     name,signed_token
+
+  <-- DELETED  name
+
+  <-- BADSIG   name,signed_token
+
+  <-- NOSUCH   name

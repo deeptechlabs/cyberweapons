@@ -1,0 +1,62 @@
+Changes from v2.0 to v2.1
+
+1) support(c): get_string() call to fpurge() is conditionally selected only
+   for MACHTEN systems.
+
+2) support.c: get_string() bug that could cause buffer overrun is repaired.
+
+3) support.c: conditionally replace memmove(dest, src, cnt) with bcopy(src,
+   dest, cnt) in both instances.
+
+4) support.c: remove unnecessary {} to eliminate warning
+
+
+DOS  (BCC v4.0 large model)
+
+5) support.c: change "#include <strings.h>" to "#include <string.h>"
+
+6) krypto_knot.c: change dimensions of cypher_array to 16383, plain_array
+   to 65535, and out_array to 65535 because of Borland's limitation of
+   65535-byte array limit and alocated space dynamicaly(with malloc)
+   instead of staticly to address Borland static data section size limit.
+
+ANSI
+
+7) Created ANSI prototypes for all functions such that they are only
+   declared if ANSI_MODE is defined.  Some functions that already had
+   argument types in the declaration had their types removed so that
+   non-ANSI compilers won't choke.  Since prototypes belong in include
+   files, I created new krypto_knot.h and support.h files.
+
+8) krypto_knot.c:elptic_cipher() wants to return an element, but the
+   variable returned in at least one place, crypt_count, is declared
+   as a (sugned)long while ELEMENT is typedef'd(in bigint.h) to be
+   unsigned long.  I resolved this by changing crypt_count's type to
+   ELEMENT.
+
+9) eliptic.c:elptic_mul() treats bit_count as a signed quantity although
+   it is declared as an ELEMENT.  ELEMENT is typedef'd(in bigint.h) to
+   be unsigned long.  I resolved this by changing bit_count's type to
+   (signed)long.
+
+10) eliptic.c:elptic_key_gen() contains a call to eliptic_hash() which
+  seems to do an implicit type coersion of its secong argument from
+  char* to ELEMENT*.  I've made this explicit to eliminate the warning.
+
+11) support.c:public_key_gen() unecessary re-reference operator(&) is
+  removed from both invocations of get_string() to eliminate warnings.
+
+12) support.c: three instances of !fopen() are replaced by fopen() != NULL
+  to eliminate warnings.
+
+13) krypto_knot.c: both etern declaration and call in main() of
+  restore_pub_key() are corrected to properly treat it as an int
+  function(as declared in support.c) rather than as a void function.
+
+14) krypto_knot.c: main() malloc()s of both plain_array and out_array
+  are coerced to their correct types of char* instead of ELEMENT* .
+
+15) krypto_knot.c: main() fixed bug which caused garbage to print for
+  name and address of regenerated key.
+  name and address of regenerated key.
+

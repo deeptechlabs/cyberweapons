@@ -1,0 +1,33 @@
+Wot? time ./keygen_pass -id gary -passphrase "ruby soh0" -size 1024
+version byte:   2
+Timestamp:      Fri Sep 20 14:38:35 1996
+validity (days):        0
+Public key alg:         1
+Public key:
+N = f06e41491a1e72f143628fe6a474e498c2c103c94b803a136e22b86501e93d433a015652b22c6e673ca92b27c2c1544f6cae55fd012686198fbf39634a09993a7c33b4629e9493a47a4eeac9440c864cef998c9051f76a53c4434b2841ae98e3e3b19de321015c8f8785b62644aa6ea8b0293cfc179a5a93d0ef79bd17257b8b
+E = 11
+Fingerprint = MD5:bd54697a848917ad65929833f2d6037d
+
+10.50 real         8.96 user         0.37 sys
+Wot? 
+Wot? time ./keygen_pass -id gary -passphrase "AND OUT COME THE WOLVES"
+
+
+
+Thu Sep 26 16:55:23 1996
+Searching ...
+Thu Sep 26 17:16:19 1996
+Key id: 372a7d31ad103c9f
+User id: Curt Howland <howland@ConXioN.com>
+version byte:   2
+Timestamp:      Thu Mar  4 18:56:46 1993
+validity (days):        0
+Public key alg:         1
+Public key:
+N = d1ff5283903745f626d8698da64f35a0632399fd43f96c4d16cb22b2f0cecd926f7f1f7e07f32caced42509b1e96634ae97375d59bcec268372a7d31ad103c9f
+E = 11
+Fingerprint = MD5:64bd7992139d1e61a410a9ef248a19f3
+
+Thu Sep 26 17:16:20 1996
+
+

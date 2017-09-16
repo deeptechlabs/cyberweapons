@@ -1,0 +1,32 @@
+#!/usr/local/bin/perl -w -I.
+
+use FileInputStream;
+use DataInputStream;
+
+my $i = 0;
+my @a;
+
+for ($i = 0; $i < 100; $i++)
+{
+	print "Create FileInputStream $i\n";
+	$a[$i] = new FileInputStream "/etc/networks";
+	warn("Failed to open $i\n") unless defined($a[$i]);
+}
+
+for ($i = 0; $i < 100; $i++)
+{
+	print "************* Displaying $i **************\n";
+	disp($a[$i]);
+}
+
+sub disp
+{
+	my $fis = shift;
+
+	my $dis = new DataInputStream $fis;
+
+	while (defined($_ = $dis->readLine()))
+	{
+		print $_, "\n";
+	}
+}

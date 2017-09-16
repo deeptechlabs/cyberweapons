@@ -1,0 +1,51 @@
+$Id: README,v 1.1 1992/01/08 05:04:15 wengland Exp wengland $
+
+---------
+
+This package contains source for a portable 
+Linear Congruential Generator (LCG) generator based on 
+the work of Park and Miller 1988.
+
+SEE:
+
+ Stephen K. Park and Keith W. Miller. RANDOM NUMBER GENERATORS:
+ GOOD ONES ARE HARD TO FIND. Communications of the ACM,
+ New York, NY.,October 1988 p.1192
+
+INSTRUCTIONS:
+
+ To compile and test random.c under Unix run 'make'.
+
+
+HELP SAVE THE WORLD: 
+
+ If you have bugs, fixes, etc.  Please send them to
+ support@stephsf.com.  We don't guarantee to fix them 
+ but, we'll certainly look at them.
+
+
+KNOWN BUGS:
+
+  It does not work using the Metaware C compiler on a 386
+  CTOS (Unisys) system. I gave up and hacked it in assembler.
+
+
+THEORY:
+
+  The authors of the original ACM article are continuing research 
+  and work on LCG's and are available via email.
+
+    Stephen K. Park   park@cs.wm.edu
+    Keith W. Miller   miller@cs.wm.edu
+    John Burton       jcburt@cs.wm.edu
+
+  The (random.c) software provided here is in no way sponsored  by
+  them or their university.  If you have questions about the code
+  please send them to me.  If you have questions about the theory
+  or test results please ask them.
+
+
+Have Fun!
+
+  Bill England, wengland@stephsf.com
+  Stephen Software Systems Inc., Tacoma/Seattle, +1 800 829 1684

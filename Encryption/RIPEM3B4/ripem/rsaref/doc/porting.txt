@@ -1,0 +1,22 @@
+RSAREF has been ported without modification (except for makefile) to
+the following platforms:
+
+     Personal Computer running DOS
+          Microsoft Visual C v1.0 (MS C v8.0) large memory model
+
+     Personal Computer running OS/2 v2.0
+          IBM C Set/2 v1.0
+
+     Macintosh running System 7
+          MPW 3.2
+
+     NeXTStation
+
+     DECStation 3100
+
+     Personal Computer running Unix System V Release 4.2
+
+     SPARCStation1 running Solaris v1.1.2 (SunOS v4.1.2)
+
+     SPARC Classic running Solaris v2.2 (SunOS v5.2)
+          C Development Set 2.0.1

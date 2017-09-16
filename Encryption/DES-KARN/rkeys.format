@@ -1,0 +1,16 @@
+>From bellcore!karn@flash.bellcore.com Sat Mar 14 23:48:50 1987
+Received: by flash.bellcore.com (4.12/4.7)
+	id AA13633; Sat, 14 Mar 87 00:05:44 est
+Date: Sat, 14 Mar 87 00:05:44 est
+From: karn@flash.bellcore.com (Phil R. Karn)
+Message-Id: <8703140505.AA13633@flash.bellcore.com>
+To: bdale@winfree.UUCP
+Subject: Re:  rkeys file
+Status: R
+
+rkeys:
+karn 0123456789abcdef
+uid  des_key_in_hex
+
+Phil
+

@@ -1,0 +1,69 @@
+#!/usr/local/bin/perl -w
+
+use FileHandle;
+use Stream::IO;
+use PGP::PKEncryptedKey;
+use PGP::ConvEncryptedData;
+use PGP::LiteralData;
+use PGP::PublicKeyRing;
+use PGP::RandomStream;
+use PGP::Armoury;
+
+
+#
+#	Create random stream
+#
+my $ris = new PGP::RandomStream;
+ref($ris) || die $ris;
+$ris->goodSeed();
+
+#
+#	Read public key
+#
+my $pkr = restoreFromFile PGP::PublicKeyRing "pubring.pgp";
+my $pk = $pkr->getKey('joe')->publicKey();
+
+#
+#	Read from stdin
+#
+my @data = <STDIN>;
+my $msg = '';
+foreach(@data) { $msg .= $_; }
+
+#
+#	Package up data in a literal packet
+#
+my $lit = new PGP::LiteralData $msg;
+ref($lit) || die $lit;
+my ($litpkt, $err);
+($litpkt, $err) = PGP::PacketFactory::saveAsString($lit);
+defined $err && die $err;
+
+#
+#	Create a key
+#
+my $key = $ris->read(16);	# Assuming IDEA
+
+#
+#	Create pk andf conv packets
+#
+my $pkek = new PGP::PKEncryptedKey $pk, $key, $ris;
+die $pkek unless ref($pkek);
+
+my $cep = new PGP::ConvEncryptedData $key, $litpkt, $ris;
+die $cep unless ref($cep);
+	   
+my $out = '';
+my ($pkt, $err);
+($pkt, $err) = PGP::PacketFactory::saveAsString($pkek);
+defined $err && die $err;
+$out .= $pkt;
+($pkt, $err) = PGP::PacketFactory::saveAsString($cep);
+defined $err && die $err;
+$out .= $pkt;
+
+print "-----BEGIN PGP MESSAGE-----\n\n";
+print PGP::Armoury::messageWithChecksum($out);
+print "-----END PGP MESSAGE-----\n";
+
+

@@ -1,0 +1,5 @@
+To compile -lucre, edit the Makefile to reflect the locations of the include
+files for SSLeay and Berkeley db on your system (if you don't have them,
+read the README file to find out where to get them).  Then just do "make".
+You should end up with "libucre.a".  If you want to make a shared library
+instead, edit the Makefile as appropriate for your system.

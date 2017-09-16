@@ -1,0 +1,55 @@
+From msuinfo!caen!zaphod.mps.ohio-state.edu!pacific.mps.ohio-state.edu!linac!att!ucbvax!windsor.a92104.sai.com!mark Sat Mar 28 18:51:45 1992
+Path: msuinfo!caen!zaphod.mps.ohio-state.edu!pacific.mps.ohio-state.edu!linac!att!ucbvax!windsor.a92104.sai.com!mark
+From: mark@windsor.a92104.sai.com (Mark Windsor)
+Newsgroups: sci.crypt
+Subject: Phil Karn's encryption
+Message-ID: <29cd43f5@windsor.a92104.sai.com>
+Date: 23 Mar 92 02:37:00 GMT
+Sender: daemon@ucbvax.BERKELEY.EDU
+Lines: 44
+
+On around Feb 13, 1992, Phil Karn, <karn@chicago.qualcomm.com>,
+described an unnamed secret-key cryptosystem based on any secure
+one-way-hash function, such as MD4 or MD5.  Here is what he wrote:
+
+> The cipher works on 32-byte blocks of plaintext and ciphertext. It
+> takes a two-part key, Ka and Kb. (Ka and Kb can be the same value if
+> desired).  Ka and Kb can be of any length, though the implementation
+> with MD-4 or MD-5 is much faster if they're limited to 48 bytes (which
+> should be strong enough to resist most brute-force attacks!)
+> 
+> To encrypt, you split the plaintext block into two 16-byte halves, Pa
+> and Pb.  Append Ka to Pa and hash with MD-4 or MD-5.  XOR the 16-byte
+> hash result with Pb to produce the second half of the ciphertext, Cb.
+> Now take Cb and append to it Kb, the second half-key.  Hash this value
+> and XOR the result with Pa to produce the first half of the
+> ciphertext, Ca. Combine Ca and Cb to produce your 32-byte ciphertext
+> block.
+> 
+> To decrypt, simply apply the steps in reverse order: Append Kb to Cb,
+> hash and XOR with Ca to produce Pa. Append Ka to Pa, hash and XOR with
+> Cb to produce Pb.
+
+I've implemented it and played with it a little, and I have two comments.
+I think Karn's encryption, which is similar in some ways to
+Peter Gutmann's system which he described here, has a lot of potential.
+
+But first, I've found that the algorithm doesn't mix up the bits as much as
+you'd like.  As described, a one-bit change to the 2nd half of the plain-
+text leads to a one-bit change in the 2nd half of the ciphertext, because
+it's XOR'd straight through.  I think it will be necessary to iterate
+the algorithm twice (requiring four calls to the MD5 hash), swapping the
+two halves between iterations.  This should cause a one-bit change to
+totally change the whole 32 bytes of output.
+
+Second, in doing this, I discovered that if Ka = Kb, then this fix
+of swapping and repeating the algorithm causes the repeat to basically
+undo the initial encryption!  The algorithm is close to being its own
+inverse if Ka=Kb.  I fixed this by ensuring that Ka != Kb; this is
+done by flipping the MSb in Ka if they are otherwise going to be equal,
+when the keys are created or read.
+
+With these two changes, the algorithm seems to randomize things nicely.
+And as Phil says, the strength of the MD4 and MD5 algorithms would
+seem to provide strength to the Karn system as well.
+

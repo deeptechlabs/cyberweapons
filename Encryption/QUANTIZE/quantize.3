@@ -1,0 +1,54 @@
+.TH QUANTIZE 3 ""
+.SH NAME
+start_quantize, end_quantize - start/end CPU time quantization
+.SH SYNOPSIS
+\fBint\fP start_quantize(\fBint quantum\fP);
+.sp
+\fBint\fP end_quantize();
+.sp
+\fBint\fP min_quantum();
+.SH DESCRIPTION
+The quantize functions provide a simple method to encapsulate code
+blocks that should run in a multiple of a coarse-grained "quantized"
+amount of CPU time.  They are mainly useful in building certain
+on-line cryptographic protocols in which an attacker could learn key
+information by observing the time the target takes to perform
+calculations that use the secret (c.f., Paul Kocher's attacks against
+various public-key cryptosystems).
+.LP
+start_quantize(quantum) begins a quantized execution environment that
+will run in multiples of \fBquantum\fP milliseconds.  end_quantize()
+ends the environment, busy-waiting until (approximately) the next
+quantum multiple.  min_quantum() returns the minimum quantization
+interval (in milliseconds) available on the local environment.
+.LP
+The quantum should be at least the expected range of normal CPU
+runtime.  100 ms is a good starting point for exponentiation-based
+protocols on typical processors, but one should measure each
+implementation for safest results.  Quanta that are too small leak
+timing information; quanta that are too large are wasteful of CPU
+usage.
+.SH DIAGNOSTICS
+start_quantize() and end_quantize() return 0 on normal exit.  If an
+error occurred (quantization could not be scheduled or a non-positive
+quantum with start_quantize, or no previous active start_quantum() on
+end_quantum()) -1 is returned.
+.SH EXAMPLE
+start_quantize(100); RSA_Decrypt(...); end_quantize();
+.SH SEE ALSO
+setitimer(2), signal(2)
+.SH BUGS
+Quantized environments do not nest.
+.LP
+The quantization is only approximate, based (under Unix) on the
+setitimer(2) function.  In particular, the actual quanta will vary
+with each call (but are independent of the encapsulated code runtime /
+quantum).  Do not rely on fine-grained quanta (less than about 20
+milliseconds).
+.LP
+There is no mechanism to adjust the quantum for MIPS.
+.LP
+min_quantum only really works under WIN32.
+.SH AUTHORS
+Matt Blaze and Jack Lacy, AT&T Bell Laboratories.  WIN32 port by Frank
+O'Dwyer, Rainbow Diamond Ltd.

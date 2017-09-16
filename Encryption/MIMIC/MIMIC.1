@@ -1,0 +1,81 @@
+.\"
+.\"  Copyright 1991 Peter Wayner
+.\"  All rights reserved.
+.\"
+.\"  See global.h for a full copyright notice.
+.TH mimic 1 "12 June 1991"
+.SH NAME
+mimic -- Encryption Toy
+.SH SYNOPSIS
+.nf
+mimic grammarFile [-cde] [-m mimicryFile]
+         [-r rightMargin] [-s plainTextFile]
+         [-p key] [-t tableDebugFile]
+
+-c don't add carriage returns
+-d decode
+-e encode (default)
+.fi
+.SH DESCRIPTION
+.LP
+.I mimic
+encrypts and decrypts messages using a unique algorithm that encodes the
+bits into the surface syntax of another message.
+
+This program was written by Peter Wayner, wayner@cs.cornell.edu.  It is
+.I not
+public domain, however you are free to duplicate it and distribute it, with
+certain descriptions outlined in the source code.
+
+.SH PARAMETERS
+.PP
+.TP
+.I \fIgrammarFile
+This is a file describing the surface syntax of the message to be generated.
+A complete description of this file is to be found in
+.I mimic.doc.
+This argument
+.I must
+be given.
+.TP
+.I -c
+Do not insert carriage returns.  This may be useful output for certain
+word processors.
+.TP
+.I -d
+Decode, reading input from
+.I mimicryFile
+and writing output to
+.I plainTextFile.
+.TP
+.I -e
+Encode, reading input from
+.I plainTextFile
+and writing output to
+.I mimicryFile.
+This is the default.
+.TP
+.I -m \fImimicryFile
+This is a file containing the encrypted message.  If you are encoding, the
+default is stdout.  If you are decoding, the default is stdin.
+.TP
+.I -r \fIrightMargin
+This sets the default right hand margine, if carriage returns are enabled.
+The default is 50.
+.TP
+.I -s \fIplainTextFile
+This is a file containing the unencrypted message.  If you are encoding, the
+default is stdin.  If you are decoding, the default is stdout.
+.TP
+.I -p \fIkeyInt
+This is a secondary key to provide additional security above and beyond the
+surface grammar.
+.TP
+.I -t \fItableDebugFile
+If this is specified, the contents of the grammar table are dumped.
+.SH "SEE ALSO"
+.SH BUGS
+When encrypting, a line is written at the beginning of the file giving the
+exact length of the encrypted message in bytes.  Since you cannot get the
+length of a pipe, this means that an encrypted message may have this length
+line at its top and garbage characters at the bottom.

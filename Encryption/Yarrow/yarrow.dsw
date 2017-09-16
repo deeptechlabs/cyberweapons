@@ -1,0 +1,107 @@
+Microsoft Developer Studio Workspace File, Format Version 5.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "DataCollection"=.\DataCollection\DataCollection.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name entropyhooks
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "entropyhooks"=.\entropyhooks\entropyhooks.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name smf
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "frontend"=.\frontend\frontend.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name entropyhooks
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name prngcore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "prngcore"=.\prngcore\prngcore.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name smf
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "smf"=.\smf\smf.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "testapp"=.\testapp\testapp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name prngcore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

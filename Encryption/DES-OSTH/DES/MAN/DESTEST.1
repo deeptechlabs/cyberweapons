@@ -1,0 +1,78 @@
+.TH DESTEST 1 "Version 1.0" "Chalmers University"
+.SH NAME
+destest \- Simple test program for DES functions.
+.SH SYNOPSIS
+.B destest
+[
+.B \-h
+]
+.I key
+.SH DESCRIPTION
+.PP
+.I destest
+makes a simple test of the
+.IR des_dea (3)
+and
+.IR des_key (3)
+algorithms.
+.PP
+The following options are available:
+.TP
+.B \-h
+makes 
+.I destest
+treat the key is an ascii string of hexadecimal number representing
+the actual DES key. The key may have an optional
+.B 0x
+or
+.B 0X
+prepended.
+.PP
+If the
+.B \-h
+flag is omitted,
+.I key
+is converted to a DES key by using
+.IR des_string_to_key (3).
+.PP
+The program is useful to test that new modifications do not break the
+algorithm. This program does NOT certify that the implementation conforms to
+the DES standard.
+.PP
+The output from the program shows the following information.
+.TP
+1
+The input key.
+.TP
+2
+The generated 64-bit DES key.
+.TP
+3
+The key parity.
+.TP
+4
+Number of different generated key schedules.
+.TP
+5
+The key schedules 1..16.
+.TP
+6
+An iteration of all 64-bits showing the input data, encrypted data and
+decrypted data. The first iteration is on the first bit of the 64-bit block,
+the second on the second bit, and so on.
+.SH SEE ALSO
+.IR des (3).
+.SH AUTHOR
+.ie t .ds O: \\kz\\h'+(\w'O'-\w'..')/2'\v'-0.8m'..\v'+0.8m'\\h'|\\nzu'O
+.el .ds O: O
+Stig \*(O:stholm <ostholm@ce.chalmers.se>
+.br
+Department of Computer Engineering
+.br
+Chalmers University of Technology
+.SH RESTRICTIONS
+This software may be freely distributed an modified without any restrictions
+from the author.
+Additional restrictions due to national laws governing the use, import or
+export of cryptographic software is the responsibility of the software user,
+importer or exporter to follow.

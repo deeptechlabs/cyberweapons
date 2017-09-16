@@ -1,0 +1,183 @@
+
+
+
+RCERTS(1)            UNIX Programmer's Manual             RCERTS(1)
+
+
+
+NAME
+     rcerts, certificate Manager for RIPEM, version 2.1.
+     Menu-driven utility for managing certificates and CRLs.
+
+SYNOPSIS
+     rcerts
+          [-M pkcs] [ -u myusername ] [ -H home_directory ]
+          [ -p publickey_infile ] [ -s privatekey_infile ]
+          [ -k {key_to_private_key|-} ]
+          [ -y pub_key_server_name ] [ -Y fgs ]
+          [ -D debug_level ] [ -Z debug_file ]
+
+RCERTS Options
+     -D   (debug) specifies the debug level.  0 disables debug
+          output; larger values (up to about 4) specify increas-
+          ing amounts of debug output.  The output is written to
+          the destination specified by the "-Z" option.
+
+     -H   (home directory) specifies the RIPEM home directory
+          where all the user's "local" data is kept, including
+          the private key and certificates created by the user.
+          The public and private keys files in the RIPEM home
+          directory are searched before files given by -p and -s.
+
+          If -H is not specified, the value of the environment
+          variable RIPEM_HOME_DIR is used.  If this is not specified,
+          ~/.ripemhome is used (on Unix) or C:\RIPEMHOM (on MS-DOS).
+
+          If the RIPEM home directory does not exist, RCERTS
+          creates it.
+
+     -k   (key) specifies the key used to encrypt the RSA private
+          key that resides in the file referenced by the "-s"
+          option.  If the "-k" option is not used, RCERTS looks
+          for a non-empty environment variable named
+          "RIPEM_KEY_TO_PRIVATE_KEY"; if it is found, its value
+          is used as the key to decrypt the private component of
+          the user's public key.  If neither the "-k" option nor
+          the environment variable can be found, RCERTS prompts
+          the user interactively for the private key.  Use of the
+          "-k" option on a multiuser system is discouraged, as it
+          increases the chances that another user can discover
+          the key to your private key.
+
+          As a special case, if the key is specified as "-",
+          RCERTS will read the first line from standard input and
+          use it as the key the the private key.  This capability
+          is intended for use by programs that invoke RCERTS.
+
+     -M   (message compatibility) specifies the message format of
+          outgoing messages.  By default, RCERTS produces PEM-compliant
+          messages.  "-M pkcs" makes RCERTS produce PKCS-compliant messages.
+
+     -p   (public key) specifies a file containing the public
+          components of users' RSA public keys to be searched after
+          the file pubkeys in the RIPEM home dir has been searched.
+          The program also looks in files given by the environment variable
+          named RIPEM_PUBLIC_KEY_FILE if found.
+
+          Multiple values can be specified; RCERTS will search
+          these public key files in the order specified.
+
+     -s   (secret key) specifies a file containing the user's secret
+          (or private) component of the RSA keypair to be searched after
+          the file privkey in the RIPEM home dir has been searched.
+          The program also looks in files given by the environment variable
+          named RIPEM_PRIVATE_KEY_FILE if found.
+
+          Multiple values can be specified; RCERTS will search
+          these private key files in the order specified.
+
+     -u   (username) specifies your username--actually, your
+          email address.  This is used to look up your self-signed
+          certificate when logging into RCERTS.
+
+          If "-u" is not specified, RCERTS uses the value of the
+          environment variable RIPEM_USER_NAME, if non-empty.
+          Otherwise, the username defaults to
+          <loginname>@<hostname> or "me" under MS-DOS and most
+          other operating systems.
+
+     -Y   (key sources) specifies the source(s) RCERTS should use
+          to obtain public keys.  Following -Y must be a string
+          of option letters selected from below.  The sources are
+          contacted in the order given; if a key cannot be
+          obtained from the first source, the second source, if
+          any, is used.  Default is "sf".
+          f
+               specifies that RCERTS should look in the public key
+               file; see the -p option.
+          s
+               specifies that RCERTS should contact a network
+               RIPEM key server; see the -y option.
+          g
+               specifies that RCERTS should attempt to contact the
+               recipient's host via "finger" to obtain the public
+               key.  The recipient must have included the -P out-
+               put from "ripem -g" in his/her ".plan" file.
+
+     -y   (server) specifies the domain name of an Internet RIPEM
+          key server.  Depending upon the value of the -Y option,
+          RCERTS may try to contact this server to obtain public
+          keys.  The default server port is 1611; to override
+          this, follow the name of the server with a ":" followed
+          by the server port number in decimal.  This feature may
+          be disabled on some platforms, depending upon the
+          development and networking environment.  If -y is not
+          specified, the value of the environment variable
+          RIPEM_SERVER_NAME, if any, is used.  There is no
+          default value.
+
+          If -y is specified as a comma-separated list of
+          servers, when consulting a key server RCERTS will try
+          the servers in the order listed until the desired key
+          is obtained.
+
+     -Z   (debug output) specifies the file to which debug out-
+          put, if any, should be written.  The default is stan-
+          dard error.
+
+
+     If the environment variable RIPEM_ARGS is present, rcerts
+     uses its value to obtain additional command-line options.
+     Any conflicts are resolved in favor of the actual command-
+     line arguments.
+
+     RCERTS accepts but ignores all other options which RIPEM
+     supports.  This allows the same RIPEM_ARGS to be used for
+     both RCERTS and RIPEM so that RCERTS will not return an error.
+
+DESCRIPTION
+     On entry, RCERTS logs in the RIPEM user based in the values
+     in the command line arguments and/or environment variables.
+     RCERTS presents a main menu and interacts with the user by
+     prompting for commands.
+
+     Many RCERTS commands (such as Revoke or Modify Chain Length
+     Allowed) operate in the "currently selected user" which is
+     selected using the main menu command S.  The command V can
+     be used to view full certification details for the currently
+     selected user.  When the currently selected user is the logged-
+     in RIPEM user (such as at startup), the command V also shows
+     the user's self-signed certificate digest.
+
+     When RCERTS exits, it returns a status of 0 indicating suc-
+     cessful completion, else a non-zero error code indicating
+     that a problem occured.  In the latter case, an error mes-
+     sage is written to standard error.
+
+HISTORY
+     Written in May-September 1994.  Uses RSAREF 2.0 released March 1994.
+
+     RCERTS itself is in the public domain.  However, it requires
+     the RSAREF toolkit from RSA Data Security, Inc.  RSAREF is
+     distributed freely for personal use within the USA, but is
+     not in the public domain.  Contact RSA Data Security for
+     terms and conditions.
+
+     Author:
+
+     Jeff Thompson
+     This is based on RIPEM written originally by Mark Riordan.
+     See the RIPEM man page for credits.
+
+SUPPORT
+     Questions should be sent to the Usenet newsgroup alt.security.ripem.
+
+DISCLAIMER
+     No representations are made concerning either the merchantability of
+     this software or the suitability of this software for any particular
+     purpose. It is provided "as is" without express or implied warranty
+     of any kind.  
+
+     License to copy and use this software is granted provided that these
+     notices are retained in any copies of any part of this documentation
+     and/or software.  

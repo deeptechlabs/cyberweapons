@@ -1,0 +1,8 @@
+This code is an implementation of CHI-square tests from Knuth Vol. 2.
+Run make.  An executable called chisquare will be created.
+
+chisquare inputfile
+
+will return CHI-square results.  Read Knuth for interpretation.
+inputfile should be at least 1Mbyte of random binary data.
+This has been tested only under Unix.

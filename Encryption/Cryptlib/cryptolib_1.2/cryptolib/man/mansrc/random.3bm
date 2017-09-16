@@ -1,0 +1,67 @@
+.\" @(#)random.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH RANDOM 3BM
+.SH NAME
+randomBytes, bigRand, getRandBetween
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBvoid randomBytes(unsigned char *buf, int numbytes, int type)\fR
+.LP
+\fBbigRand(int numbytes, BigInt result, int type)\fR
+.LP
+\fBgetRandBetween(BigInt big1, BigInt big2, BigInt result, int type, BigInt randomStart)\fR
+.LP
+\fBseed_rng(unsigned char *seed, int seedlen)\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+$randomBytes$ generates truly random bytes and puts them into
+a buffer if $type = REALLY$.  It is based on the randomness in system interrupts.  It
+is very slow relative to pseudo random number generators.  It is
+primarily useful for initiating a search for primes or initializing
+pseudo random number generators or when a truly random number is
+necessary.
+
+If $type = PSEUDO$ $randomBytes$ generates random bytes using a 
+generator based on 3DES in counter mode using a random key.  The
+64 bit output of 3DES is xor'd with SHA(prefix, counter, suffix).
+he 64 bit counter is incrememnted for every call to desRandom().  The 3DES
+keys, prefix and suffix are initialized using truerand() by default
+or using seed_rng(seed, seedlen).  If the latter is used, the seed
+must be 64 bytes and seedlen = 64.  If truerand() is used, the seeding
+happens only once.  
+
+$bigRand$ creates a $BigInt$ from random bytes generated in the above
+ways. $type$ can be $REALLY$ or $PSEUDO$ as above.
+
+$getRandBetween$ returns a random $BigInt$ which is between
+$big1$ and $big2$.  $type$ is either $REALLY$ or $PSEUDO$.
+$randomStart$ is a random starting point for the new value.
+If it is NULL, then either truerand (if type = REALLY) or
+desRandom() (type = PSEUDO) are used for a starting value.
+If $randomStart$ is not NULL, it should contain as many bytes
+as the \fIlarger\fR of $a$ and $b$.
+
+$seed_rng$ seeds the pseudo random number generator to allow
+for repeatable random bytes.  Seeding the generator with
+one's password can be used to avoid storing private
+El Gamal exponents.  They can just be regenerated at the time of
+use.
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM)
+

@@ -1,0 +1,10 @@
+echo "Can you read this message?" >msg.in  
+desx -e -k ThisIsATest <msg.in >msg.out -D
+desx -d -k ThisIsATest <msg.out >msg.fin -D
+echo
+cat msg.fin
+echo
+ls -laF msg.in msg.out msg.fin
+diff msg.in msg.fin
+diff msg.in msg.fin
+

@@ -1,0 +1,276 @@
+/*
+ * This is version 1.2 of CryptoLib
+ *
+ * The authors of this software are Jack Lacy, Don Mitchell and Matt Blaze
+ *              Copyright (c) 1991, 1992, 1993, 1994, 1995 by AT&T.
+ * Permission to use, copy, and modify this software without fee
+ * is hereby granted, provided that this entire notice is included in
+ * all copies of any software which is or includes a copy or
+ * modification of this software and in all copies of the supporting
+ * documentation for such software.
+ *
+ * NOTE:
+ * Some of the algorithms in cryptolib may be covered by patents.
+ * It is the responsibility of the user to ensure that any required
+ * licenses are obtained.
+ *
+ *
+ * SOME PARTS OF CRYPTOLIB MAY BE RESTRICTED UNDER UNITED STATES EXPORT
+ * REGULATIONS.
+ *
+ *
+ * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+ * REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+ * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+ */
+
+/***********RELEASE 1.2 NOTES***************************************/
+This is CryptoLib 1.2.  There are some fairly MINOR changes from 1.1.
+I decided to release these immediately though.  They are mostly minor
+bug fixes in the Makefile.  desRandom had a bug in it as well.
+Please continue to send new bug reports...
+/***********END OF RELEASE 1.2 NOTES********************************/
+
+/***********RELEASE 1.1 NOTES***************************************/
+In previous releases, generating keysets for the various pubic key schemes
+forced you to rely exclusively on my pseudo random number generator,
+fsrRandom().  We decided that 1) this generator has not been analyzed
+thoroughly enough for this reliance and 2) some may never trust any
+random number source other than their own.  So, now we allow the inclusion
+of random starting points, in the form of BigInts, to be included with
+the various key generating functions.  Different schemes require
+different amounts of random material.  This is detailed below.
+We also include a different, pseudo random number generator, desRandom()
+and seedDesRandom(unsigned char *seed, int seedlen).  Seedlen should be
+64 bytes.  desRandom() is based on 3des in counter mode with the output
+xor'd with SHA(20 byte prefix, 8 byte counter, 20 byte suffix).  It
+returns an unsigned long.
+
+/* A short description of the changes is here.  Look also at the manpages
+ * and at libcrypt.h
+ */
+
+/* NEW STUFF */
+/*========================================================================*/
+	desRand.c
+/*========================================================================*/
+void seedDesRandom(unsigned char *seed, int seedlen) -- /* seedlen >= 64 byts */
+/* If seedDesRandom is not called, the first call to desRandom calls it with
+ * truerand() .
+ */
+unsigned long desRandom()
+
+/* CHANGES */
+/*========================================================================*/
+	libcrypt.h
+/*========================================================================*/
+#define seed_rng seedDesRandom
+
+/* in all of the following, randoMStart should be NULL if you want the default
+ * pseudo random number generator to be used -- desRandom() seeded with truerand().
+ */
+
+/*========================================================================*/
+	getrand.c
+/*========================================================================*/
+/* this function randomizes a BigInt using DES in ECB mode with a constant
+ * key.  It assumes that r is random to begin with and private.  randomize()
+ * is used to tweek randomStarting points in some algorithms in which a new
+ * random value is required.  E.g. generating primes.
+ */
+void randomize(BigInt r)
+
+/* randomStart should have as many bytes as the larger of a and b */
+void getRandBetween (BigInt a, BigInt b,
+		     BigInt randbig, int type, BigInt randomStart)
+
+/*========================================================================*/
+	primes.c
+/*========================================================================*/
+/* Not a strong prime -- lengths are in bits.
+ * randomStart = NULL ==> use pseudo RNG seeded by truerand.
+ * randomStart != NULL, randomStart should be number of bytes desired in p.
+ */
+void getPrime (int plen, BigInt p, BigInt randomStart);
+
+/* Returns number of random bytes needed if randomStart is not to be NULL.
+ * qlen = 0 for type=GORDON.  Use this for each of the 2 following functions.
+ */
+int randBytesNeededForPrime (int plen, int qlen, PrimeType type)
+
+void genStrongPrimeSet (int plen, BigInt p,
+			int qlen, BigInt q,
+			PrimeType type, BigInt randomStart)
+
+/* GORDON is default */
+void genStrongPrime (int plen, BigInt p, BigInt randomStart)
+
+/* Return number of bytes needed for getPrimitiveElement if randomStart != NULL
+ */
+void randBytesNeededForRoot(int plen)
+
+/* Return primitive element mod p.  q is a factor of p-1 */
+void getPrimitiveElement (BigInt el, BigInt p,
+			  BigInt q, BigInt randomStart)
+
+/*========================================================================*/
+	rsa.c
+/*========================================================================*/
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForRSA(int nbits, int ebits)
+/*
+ * If randomStart is not NULL, it should contain bytes in n + bytes in e.
+ */
+RSAKeySet *genRSAKeySet (int nbits, int ebits,
+			 BigInt e, BigInt randomStart)
+
+
+/*========================================================================*/
+	elgamal.c
+/*========================================================================*/
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForEGParams(int pbits, int qbits)
+/*
+ * randomStart, if not NULL should contain 2*bigBytes(p) + bigBytes(q)
+ */
+EGParams *genEGParams (int pbits, int qbits, BigInt randomStart)
+
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForEGKeySet(int qbits)
+
+/* generate public and private keys corresponding to params.
+ * if a new parameter set is to be used per keyset, set params = NULL
+ * and send pbits and qbits.
+ * If params is NULL: randomStart (if not NULL) should contain bigBytes(q)
+ * (for the secret exponent).  If params is not NULL add in what is needed
+ * for params.
+ */
+EGKeySet *genEGKeySet (EGParams *params, int pbits, int qbits,
+		       BigInt randomStart)
+
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForEGSign(int qbits)
+
+/* El Gamal signature
+ * randomStart (if not NULL) should contain bigBytes(q) (one time per message
+ * secret exponent).
+ */
+EGSignature *EGSign (BigInt big, EGPrivateKey *key, BigInt randomStart)
+
+EGSignature *quantized_EGSign (BigInt big, EGPrivateKey *key,
+				BigInt randomStart));
+
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForEGEncrypt(int qbits)
+
+/* randomStart (if not NULL) should contain q bytes (one time per message
+ * secret exponent).
+ */
+BigInt EGEncrypt (BigInt message, EGPublicKey *key, BigInt randomStart)
+
+/*========================================================================*/
+	dsa.c
+/*========================================================================*/
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForDSASign(int qbits)
+
+/* randomStart (if not NULL) should contain q bytes (bigBytes(key->q))
+ */
+DSASignature *DSASign (BigInt big, DSAPrivateKey *key, BigInt randomStart)
+
+DSASignature *quantized_DSASign (BigInt big, DSAPrivateKey *key,
+				 BigInt randomStart)
+
+/*========================================================================*/
+	dh.c
+/*========================================================================*/
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForDHSet(int pbits, int qbits)
+
+/* This Set must be agreed upon by the participants in the exchange.
+ * randomStart, if not NULL should contain 2*bytes in p + bytes in q.
+ */
+DiffieHellmanSet *GenDiffieHellmanSet (int pbits, int qbits,
+					BigInt randomStart)
+
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForDHInit(int qbits)
+
+/*
+ * randomStart if not NULL should contain bigBytes(myDHset->q) bytes.
+ */
+void DiffieHellmanInit (DiffieHellmanSet *myDHset,
+			BigInt my_exponent,
+			BigInt my_msg1,
+			BigInt randomStart)
+
+void quantized_DiffieHellmanInit (DiffieHellmanSet *myDHset,
+				  BigInt my_exponent,
+				  BigInt my_msg1,
+				  BigInt randomStart));
+
+/*========================================================================*/
+	rabin.c
+/*========================================================================*/
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForRabinSet(int modbits)
+
+/* If randomStart is not NULL is should contain the number of bytes required
+ * for the modulus.
+ */
+RabinKeySet *genRabinKeySet (int modbits, BigInt randomStart)
+
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForRabinEncrypt(int modbits)
+
+/* randomStart, if not NULL should contain the number of bytes in the modulus.
+ * This is true for both encrypting and signing.
+ */
+BigInt RabinEncrypt (BigInt message,
+		     RabinPublicKey *pubkey,
+		     int digestType,
+		     int digestLen,
+		     BigInt randomStart)
+
+/* Returns the number of random material to be included in randomStart
+ * if it is not to be NULL.
+ */
+int randBytesNeededForRabinSign(int modbits)
+
+RabinSignature *RabinSign (BigInt message,
+			   RabinPrivateKey *privkey,
+			   int digestType,
+			   int digestLen,
+			   BigInt randomStart)
+
+RabinSignature *quantized_RabinSign (BigInt message,
+				     RabinPrivateKey *privkey,
+				     int digestType,
+				     int digestLen,
+				     BigInt randomStart)
+
+
+
+
+

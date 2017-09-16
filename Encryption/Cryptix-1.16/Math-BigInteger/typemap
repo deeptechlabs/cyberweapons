@@ -1,0 +1,2 @@
+TYPEMAP
+Math::BigInteger	T_PTROBJ

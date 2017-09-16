@@ -1,0 +1,20 @@
+-*- text -*-
+Copyright 1989 Antti Louko. All Rights Reserved.
+
+This is a DES implementation written by Antti Louko
+(alo@kampi.hut.fi). It is based on DES description found in D.E.R.
+Denning's book Cryptography and Data Security.  At this time you may
+use this program for non-commercial use. If you modify the program,
+you must add a comment in the modified file indicating who modified
+it. For commercial purposes please contact me.
+
+If you find bugs or otherwise modify this program, please send
+changes back to me.
+
+It may be that this package becomes a part of the next BSD
+distribution. In that case it is possible that licensing terms may
+become less strict.
+
+In any case, I would greatly appreciate if I would get credit for
+development of this package and support to develop more cryptographic
+software which can be used all over the world.

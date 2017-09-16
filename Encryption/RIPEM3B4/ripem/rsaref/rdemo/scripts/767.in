@@ -1,0 +1,38 @@
+#
+# Generate a 767-bit key pair.
+#
+g
+767
+767.key
+#
+# Sign and verify with MD5.
+# All operations in this script use the new key pair.
+#
+s
+file
+3
+5
+767-5.sig
+v
+file
+3
+5
+767-5.sig
+#
+# Seal and open with DES.
+#
+e
+file
+767-1.env
+3
+1
+767-1.key
+767-1.iv
+o
+767-1.env
+-
+3
+1
+767-1.key
+767-1.iv
+q

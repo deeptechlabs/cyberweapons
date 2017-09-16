@@ -1,0 +1,60 @@
+#! /bin/sh
+#
+#  This is a short shell script to test the 256-bit
+#  4-pass (SECURITY_LEVEL set to 4) version of the hash function.
+#
+<<EOF /bin/cat | ./snefru256 >snefru256Output
+
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+1
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+12
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+123
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+1234
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+12345
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+123456
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+1234567
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+12345678
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+123456789
+EOF
+<<EOF /bin/cat | ./snefru256 >>snefru256Output
+The theory of quantum electrodynamics has now lasted for
+more than fifty years, and has been tested more and more
+accurately over a wider and wider range of conditions.
+At the present time I can proudly say that there is no
+significant difference between experiment and theory!
+
+Just to give you an idea of how the theory has been put
+through the wringer, I'll give you some recent numbers:
+experiments have Dirac's number at 1.00115965221 (with
+an uncertainty of about five times as much). To give you
+a feeling for the accuracy of these numbers, it comes
+out something like this:  If you were to measure the
+distance from Los Angeles to New York to this accuracy,
+it would be exact to the thickness of a human hair.
+That's how delicately quantum electrodynamics has, in the
+past fifty years, been checked -- both theoretically and
+experimentally.
+EOF
+diff snefru256Output correctSnefru256Output
+if [ $? -eq 0 ] ;  then
+	/bin/echo Test Passed
+else
+	/bin/echo Test Failed
+fi

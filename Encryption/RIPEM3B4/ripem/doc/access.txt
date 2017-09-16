@@ -1,0 +1,52 @@
+Dear FTP user,
+
+To access the RIPEM cryptographic software archive at ripem.msu.edu,
+you must have an "account" on my custom FTP server.  Traditional
+anonymous FTP login is allowed, but anonymous users are prevented
+from doing GETs on files containing cryptographic software.
+Anonymous access is allowed so that you can get README-type files
+like this one, and files containing descriptions of software
+licensing terms.
+
+To apply for FTP access to rpub.cl.msu.edu, send an email message
+to ripem@ripem.msu.edu.   State your citizenship (must be USA or
+Canadian) and your willingness to comply with relevant export laws
+and software licenses.  (You should get and read the file
+"rsaref-license.txt" on this host, so you know what you are agreeing
+to.)  Also state the "canonical" Internet domain name of your host.
+(If you are not sure of the primary name of your host, FTP to
+ripem.msu.edu under user anonymous.  The FTP server will inform
+you of your hostname.)  Also state the country in which your host
+resides.
+
+*****
+***** NOTE:  It is very important that you get the hostname correct.
+*****        As odd as it may seem, most requestors to date have
+*****        not correctly specified their host address.  This
+*****        causes extra effort for both of us.  Please check
+*****        (via anonymous FTP) unless you are certain of your
+*****        hostname as known by domain name servers.
+*****
+
+Here's a sample email message you might send to ripem@ripem.msu.edu:
+
+   Dear Mark,
+
+   Please give me access to ripem.msu.edu.  I am an American
+   citizen, and I agree to comply with crypto export laws and
+   RSAREF license terms.  My hostname is hobbit.egr.bigu.edu;
+   this host is located in the United States.
+
+   Thank you.
+
+When I receive your message, with luck I'll promptly issue you
+a special FTP username and password by return email.  This username 
+will work only from the hostname you specify in your message.
+
+In the case of RIPEM, you may redistribute the code, but only
+to others in the USA and Canada, and only under the terms of
+the RSAREF license agreement mentioned above.
+
+Thank you.
+
+Mark Riordan   mrr@scss3.cl.msu.edu

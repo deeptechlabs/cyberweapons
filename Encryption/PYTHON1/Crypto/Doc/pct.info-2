@@ -1,0 +1,626 @@
+This is Info file pct.info, produced by Makeinfo-1.55 from the input
+file crypt.texi.
+
+
+File: pct.info,  Node: rotor built-in module,  Next: Demo Programs,  Prev: ufcrypt built-in module,  Up: Odds and Ends
+
+Built-in module `rotor'
+=======================
+
+   This module implements a rotor-based stream encryption algorithm,
+contributed by Lance Ellinghouse.  The design is derived from the
+Enigma device, a machine used during World War II to encipher messages.
+A rotor is simply a permutation.  For example, if A is the origin of
+the rotor, then a given rotor might map A to A+71, A+1 to A-13, and so
+on; all additions and subtractions will be performed modulo the number
+of characters in the alphabet.  To encrypt, we use several different
+rotors.  We set the origins of the rotors to known positions; their
+initial position is the ciphering key.  To encipher a character, we
+permute the original character by the first rotor, and then apply the
+second rotor's permutation to the result.  We continue until we've
+applied all the rotors; the resulting character is our ciphertext.  We
+then change the origin of the final rotor by one position; if the final
+rotor has made a complete revolution, then we rotate the next-to-last
+rotor by one position, and apply the same procedure recursively.  In
+other words, after enciphering one character, we advance the rotors in
+the same fashion as a car's odometer. Decoding works in the same way,
+except we reverse the permutations and apply them in the opposite order.
+
+   The available functions in this module are:
+
+ - Function: newrotor (KEY, [NUMROTORS])
+     Returns a rotor object. KEY is a string containing the encryption
+     key for the object; it can contain arbitrary binary data. The key
+     will be used to randomly generate the rotor permutations and their
+     initial positions.  NUMROTORS is the number of rotor permutations
+     in the returned object; if it is omitted, the default value of 6
+     will be used.
+
+   Rotor objects have the following methods:
+
+ - Function: setkey ()
+     Resets the rotor to its initial state.
+
+ - Function: encrypt (PLAINTEXT)
+     Resets the rotor object to its initial state and encrypts
+     PLAINTEXT, returning a string containing the ciphertext.  The
+     ciphertext is always the same length as the original plaintext.
+
+ - Function: encryptmore (PLAINTEXT)
+     Encrypts PLAINTEXT without resetting the rotor object, and returns
+     a string containing the ciphertext.
+
+ - Function: decrypt (CIPHERTEXT)
+     Resets the rotor object to its initial state and decrypts
+     CIPHERTEXT, returning a string containing the ciphertext.  The
+     plaintext string will always be the same length as the ciphertext.
+
+ - Function: decryptmore (CIPHERTEXT)
+     Decrypts CIPHERTEXT without resetting the rotor object, and
+     returns a string containing the ciphertext.
+
+   An example usage:
+     >>> import rotor
+     >>> rt = rotor.newrotor('key', 12)
+     >>> rt.encrypt('bar')
+     '\2534\363'
+     >>> rt.encryptmore('bar')
+     '\357\375$'
+     >>> rt.encrypt('bar')
+     '\2534\363'
+     >>> rt.decrypt('\2534\363')
+     'bar'
+     >>> rt.decryptmore('\357\375$')
+     'bar'
+     >>> rt.decrypt('\357\375$')
+     'l(\315'
+     >>> del rt
+
+   The module's code is not an exact simulation of the original Enigma
+device; it implements the rotor encryption scheme differently from the
+original. The most important difference is that in the original Enigma,
+there were only 5 or 6 different rotors in existence, and they were
+applied twice to each character; the cipher key was the order in which
+they were placed in the machine.  The Python rotor module uses the
+supplied key to initialize a random number generator; the rotor
+permutations and their initial positions are then randomly generated.
+The original device only enciphered the letters of the alphabet, while
+this module can handle any 8-bit binary data; it also produces binary
+output.  This module can also operate with an arbitrary number of
+rotors.
+
+   The original Enigma cipher was broken in 1944.  The version
+implemented here is probably much more difficult to crack (especially
+if you use many rotors), but as far as I know it hasn't been subjected
+to many analyses over an extended period of time; it may not be
+impossible for a truly skilful and determined attacker to break the
+cipher.  (On the other hand, perhaps it might.)  So if you want to keep
+the US National Security Agency out of your files, this rotor cipher
+may well be unsafe, but it will be fine for discouraging casual
+snooping, and safer than using the Unix `crypt' command.
+
+
+File: pct.info,  Node: Demo Programs,  Next: Extending the Toolkit,  Prev: Odds and Ends,  Up: Top
+
+The Demonstration Programs
+**************************
+
+   The Python Cryptography Toolkit comes with various demonstration
+programs, located in the `Demo/crypto/' directory.  None of them is
+particularly well-finished, or suitable for serious use.  Rather,
+they're intended to illustrate how the toolkit is used, and to provide
+some interesting possible uses.  Feel free to incorporate the code (or
+modifications of it) into your own programs.
+
+* Menu:
+
+* cipher Demo::                 File encryption program.
+* voice Demo::                  Crude voice encryption.
+* Secure import::               A secure `import' statement.
+
+
+File: pct.info,  Node: cipher Demo,  Next: voice Demo,  Prev: Demo Programs,  Up: Demo Programs
+
+Demo 1: `cipher'
+================
+
+   `cipher' encrypts and decrypts files.  On most Unix systems, the
+`crypt' program uses a variant of the Enigma cipher.  This is not
+secure, and there exists a freely available program called "Crypt
+Breaker's Workbench" which helps in breaking the cipher if you have
+some knowledge of the encrypted data.
+
+   `cipher' is a more secure file encryption program.  Simply list the
+names of the files to be encrypted on the command line.  `cipher' will
+go through the list and encrypt or decrypt them; `cipher' can recognize
+files it has previously encrypted.  The ciphertext of a file is placed
+in a file of the same name with '`.cip'' appended; the original file is
+not deleted, since I'm not sure that all errors during operation are
+caught, and I don't want people to accidentally erase important files.
+
+   There are two command-line options: `-c' and `-k'.  Both of them
+require an argument.  `-c CIPHERNAME' uses the given encryption
+algorithm CIPHERNAME; for example, `-c des' will use the DES algorithm.
+The name should be the same as an available module name; thus it
+should be in lowercase letters.  The default cipher is IDEA.
+
+   `-k KEY' can be used to set the encryption key to be used.  Note
+that on a multiuser Unix system, the `ps' command can be used to view
+the arguments of commands executed by other users, so this is insecure;
+if you're the only user (say, on your home computer running Linux) you
+don't have to worry about this.  If no key is set on the command line,
+`cipher' will prompt the user to input a key on standard input.
+
+Technical Details
+-----------------
+
+   The encrypted file is not pure ciphertext.  First comes a magic
+string; this is currently the sequence `ctx' and a byte containing 1
+(the version number of `cipher').  This is followed by the
+null-terminated name of the encryption algorithm, and the rest of the
+file contains the ciphertext.
+
+   The plaintext is encrypted in CBC mode.  The initial value for the
+feedback is always set to a block filled with the letter 'A', and then
+a block of random data is encrypted.  This garbage block will be
+discarded on decryption.  Note that the random data is not generated in
+a cryptographically secure way, and this may provide a tiny foothold for
+an attacker.
+
+   After the random block is generated, the magic string, length of the
+original file, and original filename are all encrypted before the file
+data is finally processed.  Some extra characters of padding may be
+added to obtain an integer number of blocks.  This padding will also be
+discarded on decryption.  Note that the plaintext file will be
+completely read into memory before encryption is performed; no
+buffering is done.  Therefore, don't encrypt 20-megabyte files unless
+you're willing to face the consequences of a 20-megabyte process.
+
+   Areas for improvements to `cipher' are: cryptographically secure
+generation of random data for padding, key entry, and buffering of file
+input.
+
+
+File: pct.info,  Node: voice Demo,  Next: Secure import,  Prev: cipher Demo,  Up: Demo Programs
+
+Demo 2: `voice'
+===============
+
+   `voice' is a crude demonstration of a very interesting idea:
+encryption of voice data.  This means that two people can engage in
+voice communication with no fear of eavesdropping.
+
+   First, do not imagine that `voice' is a user-friendly secure phone,
+or that it's very useful in its current state.  Secondly, `voice' is
+not completely reliable; occasionally it can be made to crash if events
+occur in an unlucky sequence.  Thirdly, `voice' requires that the
+operating system supports the `/dev/audio' special device file for
+audio input and output.
+
+   Two people must run `voice' on different computers, using the `-H'
+command-line flag to set the machine where the other user will be
+running `voice'.  For the first person to run it, `voice' will wait,
+listening to a given port for a connection.  The second user's process
+will connect to that port.
+
+   Once both processes are communicated, either user can hit the Enter
+key to start recording input from `/dev/audio'.  The audio data is kept
+in memory until the user hits Enter again.  The data is then optionally
+encrypted, and sent over the network connection to the other process.
+The other process will then play the data.
+
+   By default, encryption is disabled.  To enable it, use the `-k'
+option to set an encryption key.  The algorithm used can be set by the
+`-c' flag; the default is to use IDEA.  `voice' has several other
+options; the `-h' flag displays a help message.
+
+   If you want good-quality, stable voice encryption, you could rewrite
+`voice' completely, but I recommend you wait for VoicePGP, from the
+same development team as PGP.
+
+Technical Details
+-----------------
+
+   `voice' is fairly simple in concept: the program waits for input
+from a socket or from the keyboard; in recording mode, the sound card is
+polled as often as possible.  The implementation gets nasty, however, by
+trying to ensure that everything is checked properly, and occasionally
+the program works itself into a frozen state.  I don't recommend that
+you try to enhance `voice' until it's usable; instead I'd suggest that
+you start from scratch and do a good job from the ground up.
+
+
+File: pct.info,  Node: Secure import,  Prev: voice Demo,  Up: Demo Programs
+
+Demo 3: `secimp' and `sign'
+===========================
+
+   `secimp' demonstrates an application of the Toolkit that may become
+important in the event Python is used as an extension language for mail
+and Web clients: secure importing of Python modules.  To use it, run
+`sign.py' in a directory with several compiled Python files present.
+It will use the key in `testkey.py' to generate digital signatures for
+the compiled Python code, and save both the signature and the code in a
+file ending in `.pys'.  Then run `python -i secimp.py', and import a
+file by using `secimport'.
+
+   For example, if `foo.pys' was constructed, do `secimport('foo')'.
+The importation should succeed.  Now fire up Emacs or some other
+editor, and change a string in the code in `foo.pys'; you might try
+changing a letter in the name of a variable.  When you run
+`secimport('foo')', it should raise an exception reporting the failed
+signature.  If you execute the statement `__import__ = secimport', the
+secure import will be used by default for all importations.
+
+
+File: pct.info,  Node: Extending the Toolkit,  Prev: Demo Programs,  Up: Top
+
+Extending the Cryptography Toolkit
+**********************************
+
+   Preserving a common interface for cryptographic routines is quite a
+powerful idea.  You may want to implement your own routines, but don't
+want to lose compatibility with other algorithms.  This chapter
+explains how to interface your own routines to the Toolkit.
+
+   The basic process is as follows:
+  1. Modify the default definition of a certain Python object to include
+     whatever instance data your algorithm requires.
+
+  2. Write 3 or 4 standard routines.  Their names and parameters are
+     specified in the following subsections.
+
+  3. Add a line to `config.pct' describing your new algorithm.
+
+  4. Run `buildkit' to rebuild everything.
+
+  5. Send a copy of the code to me, if you like; code for new
+     algorithms will be gratefully accepted.
+
+* Menu:
+
+* Creating a Custom Object::    Defining a C structure.
+* Standard Routines::           What functions need to be written.
+* The config.pct File::         Modifying the configuration file.
+* Portability macros::          Macros to help writing portable modules.
+* Informing the author::        Getting your code into the PCT.
+
+
+File: pct.info,  Node: Creating a Custom Object,  Next: Standard Routines,  Prev: Extending the Toolkit,  Up: Extending the Toolkit
+
+Creating a Custom Object
+========================
+
+   In the C code for the interpreter, Python objects are defined as a
+structure.  The default structure is the following:
+     typedef struct
+     {
+      PCTObject_HEAD
+     } ALGobject;
+
+   `PCTObject_HEAD' is a preprocessor macro which will contain various
+internal variables used by the interpreter; it must always be the first
+item in the structure definition, and must not be followed by a
+semicolon.  Following it, you can put whatever instance variables you
+require.  Data that does not depend on the instance or key, such as a
+static lookup table, need not be encapsulated inside objects; instead,
+it can be defined as a variable interior to the module.
+
+   As an example, for IDEA encryption, a schedule of encryption and
+decryption data has to be maintained, resulting in the following
+definition:
+     typedef struct
+     {
+      PCTObject_HEAD
+      int EK[6][9], DK[6][9];
+     } IDEAobject;
+
+
+File: pct.info,  Node: Standard Routines,  Next: The config.pct File,  Prev: Creating a Custom Object,  Up: Extending the Toolkit
+
+Standard Routines
+=================
+
+   The interface to Python is implemented in the files ending in `.in',
+so `hash.in' contains the basic code for modules containing hash
+functions, for example.  The `config.pct' file contains the information
+that changes in different algorithms.  `buildkit', a Python script,
+reads the configuration file and generates source code by interweaving
+the interface files and the implementation file.
+
+   If your algorithm is called ALG, the implementation should be in the
+file `alg.c'. Note the lowercase--`buildkit' gets the module name by
+folding the algorithm name to lowercase.  The names of the functions
+you must construct use the algorithm name in the same form as in the
+configuration file.
+
+Hash functions
+--------------
+
+`void ALGinit(ALGobject *self);'
+`void ALGupdate(ALGobject *self, char *buffer, int length);'
+`PyObject *ALGdigest(ALGobject *self);'
+`void ALGcopy(ALGobject *source, ALGobject *dest);'
+ - Hashing function: void ALGinit (ALGobject *SELF)
+     This function should initialize the hashing object, setting state
+     variables to their expected initial state.
+
+ - Hashing function: void ALGupdate (ALGobject *SELF,
+     char *BUFFER, int LENGTH) This function should perform a hash on
+     the region pointed to by BUFFER, which will contain LENGTH bytes.
+     The contents of the object pointed to by SELF should be updated
+     appropriately.
+
+ - Hashing function: void ALGdigest (ALGobject *SELF)
+     This function returns a string containing the value of the hash
+     function.  The object should not be changed in any way by this
+     function.  Some hash functions require some computation to be
+     performed before returning a value; for example, the number of
+     bytes may be hashed into the final value.  If this is the case for
+     your hash function, you must make a copy of the object's data,
+     perform the final computation on that copy, and return the result.
+
+   Results are returned by calling a Python function,
+`PyString_FromStringAndSize(char *STRING, int LENGTH)'.  This function
+returns a string object which should be returned to the caller.  So,
+the last line of the `ALGdigest' function might be:
+       return PyString_FromStringAndSize(digest, 16);
+
+ - Hashing function: void ALGcopy ALGobject *SOURCE, ALGobject *DEST)
+     Given the source and destination objects, the state variables of
+     the SOURCE object should be copied to the DEST object; the source
+     object should not be altered in any way by the operation.
+
+Block ciphers
+-------------
+
+`void ALGinit(ALGobject *SELF, unsigned char *KEY, int LENGTH);'
+`PyObject *ALGencrypt(ALGobject *SELF, unsigned char *BLOCK);'
+`PyObject *ALGdecrypt(ALGobject *SELF, unsigned char *BLOCK);'
+ - Block encryption function: void ALGinit (ALGobject *SELF, unsigned
+          char *KEY, int LENGTH)
+     This function initializes a block cipher object to encrypt and
+     decrypt with KEY.  If the cipher requires a fixed-length key, then
+     the buffer pointed to by KEY will always of that length, and the
+     value of LENGTH will be a random value that should be ignored.  If
+     the algorithm accepts a variable-length key, then LENGTH will be
+     nonzero, and will contain the size of the key.
+
+ - Block encryption function: void ALGencrypt (ALGobject *SELF,
+          unsigned char *BLOCK)
+     This function should encrypt the data pointed to by BLOCK, using
+     the key-dependent data contained in SELF.  Only ECB mode needs to
+     be implemented; `blockcipher.in' takes care of the other ciphering
+     modes.
+
+ - Block encryption function: void ALGdecrypt (ALGobject *SELF,
+          unsigned char *BLOCK)
+     This function should decrypt the data pointed to by BLOCK, using
+     the key-dependent data contained in SELF.
+
+
+File: pct.info,  Node: The config.pct File,  Next: Portability macros,  Prev: Standard Routines,  Up: Extending the Toolkit
+
+The `config.pct' File
+=====================
+
+   The Toolkit's configuration file follows a simple format.  Comments
+are preceded by a '`#''; you shouldn't need to include one in the
+actual configuration information.
+   * Hash functions: `hash ALGNAME'
+
+   * Block ciphers: `blockcipher ALGNAME BLOCKSIZE KEYSIZE' The key and
+     block sizes are measured in bytes.
+
+   * Simple modules: `simple MODULENAME'
+
+   Simple modules are compiled directly into object files; the other
+modules are combined with the appropriate `*.in' framework file before
+being compiled.  A sample `config.pct' file follows:
+     # Sample config.pct file
+     hash MD5
+     blockcipher super 256 256 # Buggy!
+     simple rotor
+
+
+File: pct.info,  Node: Portability macros,  Next: Informing the author,  Prev: The config.pct File,  Up: Extending the Toolkit
+
+Portability macros
+==================
+
+   Implementation code must be carefully written to produce the same
+results with any machine or compiler, without having to set any
+compile-time definitions.  Code that is simply portable by nature is
+preferable, but it is possible to detect features of the host machine
+when new objects are created, and then execute special code to convert
+data to a preferred form.
+
+   While portability macros are written for speed, there's no need to
+execute them on every encryption or updating operation.  Instead, add
+variables to your object to hold the values of the portability macros,
+and execute the macros only once per object, in your `ALGinit'
+function.  Then the code can simply check the results of the macros and
+act appropriately.
+
+   Currently there is only one portability macro defined:
+
+ - Macro: void TestEndianness (VARIABLE)
+     Determines the endianness of the current machine, and sets
+     VARIABLE to a constant representing the value for this machine.
+     Possible constants are `BIG_ENDIAN' and `LITTLE_ENDIAN'; they are
+     defined along with the `TestEndianness' macro.
+
+
+File: pct.info,  Node: Informing the author,  Prev: Portability macros,  Up: Extending the Toolkit
+
+Informing the author
+====================
+
+   Code for additional cryptographic algorithms can be mailed to me at
+`andrewk@cst.ca'.  You can make things much easier for me by doing the
+following:
+   * If you wrote the code, please release it under the GPL or some
+     similarly liberal license.  If you didn't write it, please tell me
+     where to find the original author or source code, so that I can
+     check the licensing conditions.
+
+   * If the algorithm is patented, tell me the terms of its use.  Is it
+     free for non-commercial use, like IDEA? Do commercial users have to
+     get a license?
+
+   * Include some test data.  It is not sufficient to check that
+     encryption and decryption cancel out properly.  An implementation
+     might work fine on a single platform, but two machines with
+     different endianness might produce different results.  This would
+     be fatal for portability and interoperating programs.  So, please
+     include test data; you can either send me patches to `test.py', or
+     simply send me documents describing the data.
+
+
+File: pct.info,  Node: Concept Index,  Prev: Extending the Toolkit,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* addEvent on randpool objects:         randpool module.
+* ALGcopy:                              Standard Routines.
+* ALGcopy:                              Standard Routines.
+* ALGdecrypt:                           Standard Routines.
+* ALGdecrypt:                           Standard Routines.
+* ALGdigest:                            Standard Routines.
+* ALGdigest:                            Standard Routines.
+* ALGencrypt:                           Standard Routines.
+* ALGencrypt:                           Standard Routines.
+* ALGinit:                              Standard Routines.
+* ALGinit:                              Standard Routines.
+* ALGinit:                              Standard Routines.
+* ALGinit:                              Standard Routines.
+* ALGupdate:                            Standard Routines.
+* ALGupdate:                            Standard Routines.
+* ARC4 (stream cipher):                 Credits for Encryption Algorithms.
+* ARC4 (stream cipher):                 Encryption Algorithms.
+* ARC4 (stream cipher):                 Encryption Algorithms.
+* bits:                                 randpool module.
+* blocksize:                            Encryption Algorithms.
+* Blowfish (block cipher):              Credits for Encryption Algorithms.
+* Blowfish (block cipher):              Encryption Algorithms.
+* Brown, Lawrence:                      Credits for Encryption Algorithms.
+* buildkit:                             Standard Routines.
+* buildkit:                             Standard Routines.
+* Bush, Kate:                           Acknowledgements.
+* bytes:                                randpool module.
+* C language:                           Design Goals.
+* canencrypt on public-key objects:     Public Key Algorithms.
+* cansign on public-key objects:        Public Key Algorithms.
+* cipher:                               cipher Demo.
+* cipher (demo program):                cipher Demo.
+* comp.lang.python:                     Acknowledgements.
+* config.pct:                           The config.pct File.
+* construct:                            Public Key Algorithms.
+* copy on hashing objects:              Hash Functions.
+* crypt:                                cipher Demo.
+* crypt:                                crypt built-in module.
+* Crypt Breaker's Workbench:            cipher Demo.
+* crypt(3):                             ufcrypt built-in module.
+* crypt(3):                             crypt built-in module.
+* Cyphers, Graven:                      Credits for Encryption Algorithms.
+* decrypt:                              rotor built-in module.
+* decrypt on encryption objects:        Encryption Algorithms.
+* decrypt on public-key objects:        Public Key Algorithms.
+* decryptmore:                          rotor built-in module.
+* DES (block cipher):                   Credits for Encryption Algorithms.
+* DES (block cipher):                   Encryption Algorithms.
+* DES3 (block cipher):                  Encryption Algorithms.
+* Diamond (block cipher):               Encryption Algorithms.
+* digest on hashing objects:            Hash Functions.
+* digestsize:                           Hash Functions.
+* encrypt:                              rotor built-in module.
+* encrypt on encryption objects:        Encryption Algorithms.
+* encrypt on public-key objects:        Public Key Algorithms.
+* encryptmore:                          rotor built-in module.
+* English2Key:                          rfc1751 built-in module.
+* Enigma:                               cipher Demo.
+* Enigma:                               rotor built-in module.
+* Enigma:                               rotor built-in module.
+* Enigma:                               rotor built-in module.
+* entropy:                              randpool module.
+* entropy:                              randpool module.
+* feedback mode, CBC:                   cipher Demo.
+* feedback mode, CBC:                   Encryption Algorithms.
+* feedback mode, CFB:                   Encryption Algorithms.
+* feedback mode, ECB:                   Encryption Algorithms.
+* generate:                             Public Key Algorithms.
+* getBytes on randpool objects:         randpool module.
+* Glad, Michael:                        ufcrypt built-in module.
+* Glass, Philip:                        Acknowledgements.
+* Gutmann, Peter:                       Credits for Hash Functions.
+* hash.in:                              Standard Routines.
+* hasprivate on public-key objects:     Public Key Algorithms.
+* IDEA (block cipher):                  Credits for Encryption Algorithms.
+* IDEA (block cipher):                  Encryption Algorithms.
+* Intel:                                ufcrypt built-in module.
+* Intel:                                Design Goals.
+* ITAR, regulations:                    Design Goals.
+* IV:                                   Encryption Algorithms.
+* Jacobs, Jeffrey:                      Acknowledgements.
+* Johnson, Michael Paul:                Credits for Encryption Algorithms.
+* Key2English:                          rfc1751 built-in module.
+* keysize:                              Encryption Algorithms.
+* Kuchling, Andrew:                     Credits for Hash Functions.
+* Kwan, Matthew:                        Credits for Encryption Algorithms.
+* language, C:                          Design Goals.
+* licensing terms:                      Design Goals.
+* Linux:                                cipher Demo.
+* Majewski, Steve:                      crypt built-in module.
+* McKennitt, Loreena:                   Acknowledgements.
+* MD2 (hash function):                  Hash Functions.
+* MD5 (hash function):                  Hash Functions.
+* MD5 (hash function):                  Hash Functions.
+* National Security Agency:             rotor built-in module.
+* new:                                  Encryption Algorithms.
+* newrotor:                             rotor built-in module.
+* Nyman, Michael:                       Acknowledgements.
+* Oldfield, Mike:                       Acknowledgements.
+* Olson, Bryan:                         Credits for Encryption Algorithms.
+* Outerbridge, Richard:                 Credits for Encryption Algorithms.
+* PGP:                                  voice Demo.
+* Plumb, Colin:                         Credits for Hash Functions.
+* Pretty Good Privacy (PGP):            voice Demo.
+* publickey on public-key objects:      Public Key Algorithms.
+* random numbers:                       randpool module.
+* randpool:                             randpool module.
+* RC4 (stream cipher):                  Encryption Algorithms.
+* RC5 (block cipher):                   Encryption Algorithms.
+* REDOC III (block cipher):             Credits for Encryption Algorithms.
+* REDOC III (block cipher):             Encryption Algorithms.
+* regulations, ITAR:                    Design Goals.
+* RSA Data Security, Inc.:              Encryption Algorithms.
+* RSA Data Security, Inc.:              Hash Functions.
+* Sapphire (stream cipher):             Credits for Encryption Algorithms.
+* Sapphire (stream cipher):             Encryption Algorithms.
+* Schneier, Bruce:                      Credits for Encryption Algorithms.
+* Schneier, Bruce:                      Acknowledgements.
+* sci.crypt:                            Credits for Encryption Algorithms.
+* sci.crypt:                            Encryption Algorithms.
+* setkey:                               rotor built-in module.
+* SHA (hash function):                  Hash Functions.
+* sign on public-key objects:           Public Key Algorithms.
+* size on public-key objects:           Public Key Algorithms.
+* Snefru (hash function):               Hash Functions.
+* stir on randpool objects:             randpool module.
+* stream cipher:                        Encryption Algorithms.
+* TestEndianness:                       Portability macros.
+* Tobin, Alison Veronica:               Acknowledgements.
+* Triple DES (block cipher):            Encryption Algorithms.
+* update on hashing objects:            Hash Functions.
+* validate on public-key objects:       Public Key Algorithms.
+* van Rossum, Guido:                    Acknowledgements.
+* voice:                                voice Demo.
+* voice (demo program):                 voice Demo.
+* voice (demo program):                 voice Demo.
+* VoicePGP:                             voice Demo.
+* Young, Eric:                          Credits for Encryption Algorithms.
+
+

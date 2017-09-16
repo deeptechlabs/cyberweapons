@@ -1,0 +1,106 @@
+
+			DES Implementation 1.0
+
+
+
+This software may be freely distributed an modified without any restrictions
+from the author.
+
+Some files are based on other implementations and may contain restrictions
+from the original author.
+
+Additional restrictions due to national laws governing the use, import or
+export of cryptographic software is the responsibility of the software user,
+importer or exporter to follow.
+
+
+This software is an implementation of the Data Encryption Standard (DES) as
+described in "Federal Information Processing Standards Publication 46",
+1977 January 15.
+
+The implementation contains a general purpose DES library and user programs
+for file encryption/decryption. The library is compatible with the DES
+library from MIT (Massachusetts Institute of Technology) at function call
+level, as described in the manual DES_CRYPT(3). There are also functions
+available in this implementation that are not a part of the MIT library.
+
+The header file "des.h" contains ANSI C function prototypes for all library
+functions.
+
+This library has only been compared against the MIT library through the
+manual page due to export restrictions of the MIT library outside the US.
+
+
+Changes from the MIT library:
+
+	* Encryption methods using an initialization vector may return
+	  a modified vector from the last iteration, making it possible
+	  to chain calls to an encryption/decryption function into an
+	  unbroken sequence.
+
+	* Additional functions not in the MIT library are:
+
+		des_dea		    - Identical to des_ecb_encrypt.
+		des_key		    - Same as des_set_key without any parity
+				      or weak-key test.
+		des_ecb2_encrypt    - The Electronic Code Book mode of
+				      encryption/decryption on a user
+				      specified number of bytes.
+		des_cfb8_encrypt    - The 8-bit Cipher FeedBack mode of
+				      encryption/decryption on a user
+				      specified number of bytes.
+		des_ofb8_encrypt    - The 8-bit Output FeedBack mode of
+				      encryption/decryption on a user
+				      specified number of bytes.
+		des_is_weak_key	    - Tests if the key is weak.
+		des_is_semiweak_key - Tests if the key is semi-weak.
+		des_no_key_schedule - Returns the number of different keys
+				      in a key schedule.
+		des_test_key_parity - Tests the key parity.
+		des_set_key_parity  - Sets the key parity.
+		des_random_cblock   - Generates a random value in a 64-bit
+				      block.
+		des_hex_to_cblock   - returns the value of a string with a
+				      64-bit hexadecimal number in a 64-bit
+				      block.
+		des_print_cblock    - Prints a 64-bits block as a 64-bit
+				      hexadecimal value on stdout.
+		des_read_hexkey	    - Similar to des_read_password but
+				      accepts only 64-bit hexadecimal
+				      numbers.
+
+User programs:
+
+	* descrypt	- General purpose file encryption/decryption
+			  program.
+
+	* deskey	- Show the actual DES key generated from a string,
+			  or returns a random key.
+
+	* destest	- A simple test of the DES algorithm, useful when
+			  modifying or optimizing the code. This program
+			  does NOT verify that the implementation follows
+			  the DES description.
+
+	* desbench	- Simple benchmark program for the base DES
+			  algorithm and key schedule generation.
+
+
+The implementation has been tested on the following systems:
+
+	SUN 4,			SUN OS 4.1 
+	SUN 3,			SUN OS 4.1 
+	VAX 11/750,		BSD 4.3
+	IBM RT/PC,		AOS 4.3
+	IBM RS/6000 320,	AIX 3.1
+	IBM PS/2,		AIX 1.2 + TCF
+	IBM 3090-150S/VF,	AIX/370 + TCF
+
+					     _
+					Stig Ostholm
+					Department of Computer Engineering
+					Chalmers University of Technology
+					----------------------------------
+					Email: ostholm@ce.chalmers.se
+					Phone: +46 31 721703
+					Fax:   +46 31 721561

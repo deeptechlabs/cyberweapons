@@ -1,0 +1,2 @@
+lib/amp.h usr/include/amp.h data
+lib/libamp.a usr/lib/libamp.a lib

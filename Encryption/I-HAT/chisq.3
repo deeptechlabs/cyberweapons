@@ -1,0 +1,190 @@
+'\" e
+.TH CHISQ 3V VMB
+'\"	last edit:	91/04/01	D A Gwyn
+'\"	SCCS ID:	@(#)chisq.3	1.3 (export version)
+.EQ
+delim @@
+.EN
+.SH NAME
+chisq \- independence tests for	2-way contingency tables
+.SH SYNOPSIS
+.ds cW (CW\" change to I (without the paren) if	you don't have a CW font
+.ds cB (CB\" change to B (without the paren) if	you don't have a CB font
+\f\*(cB#include	"chisq.h"
+.br
+/* \fPThe following functions are declared in this header file.\f\*(cB */
+.sp
+double ChiSqTbl(int r, int c, const long *f, int *df);
+.br
+double InfoTbl(int r, int c, const long	*f, int	*df);\fP
+.SH DESCRIPTION
+\f\*(cBChiSqTbl\fP
+returns	Pearson's @chi sup 2@ statistic
+for the	\f\*(cBr\fP-by-\f\*(cBc\fP contingency table
+of observed frequencies	of occurrence for each combination of
+row and	column categories stored in row-major order
+in the vector starting at \f\*(cBf\fP.
+The computed number of degrees of freedom is stored into the location
+pointed	to by \f\*(cBdf\fP.
+.br
+.EQ
+chi sup	2 ~==~ roman sum from i=0 to r-1 roman sum from	j=0 to c-1
+{ left ( { f sub ij ~-~	{ f sub	{ i. } f sub { .j }} over N } right ) sup 2 }
+over { { f sub { i. } f	sub { .j }} over N }
+.EN
+where the row and column sums are denoted
+@f sub { i. }~==~roman sum from	j=0 to c-1 f sub ij@
+and
+@f sub { .j }~==~roman sum from	i=0 to r-1 f sub ij@
+and the	total number of	occurrences is
+@N~==~roman sum	from i=0 to r-1	roman sum from j=0 to c-1 f sub	ij@.
+Terms involving	zero row or column sum are omitted and the returned
+number of degrees of freedom are
+correspondingly	reduced	from the nominal value
+@(r-1)(c-1)@.
+.P
+\f\*(cBInfoTbl\fP
+returns	2 times	Kullback's
+@"\v'-0.2'^\v'0.2'\h'-\w;^;u'I\^" ( H sub 1 : H	sub 2 )@ statistic
+for a similar contingency table.
+The number of degrees of freedom to be used when relating this statistic
+to the @chi sup	2@ distribution	is stored into the location
+pointed	to by \f\*(cBdf\fP.
+(See \s-1DISCUSSION\s0 below.)
+.br
+.EQ
+2 "\v'-0.2'^\v'0.2'\h'-\w;^;u'I\^" ( H sub 1 : H sub 2 ) ~==~
+2 roman	sum from i=0 to	r-1 roman sum from j=0 to c-1
+{ f sub	ij log { { N f sub ij }
+over { f sub { i. } f sub { .j } } } }
+.EN
+where the row and column sums @f sub { i. }@ and @f sub	{ .j }@
+and the	total number of	observations @N@
+are the	same as	for Pearson's @chi sup 2@.
+.SH DISCUSSION
+@2 "\v'-0.2'^\v'0.2'\h'-\w;^;u'I\^" ( H	sub 1 :	H sub 2	)@
+represents twice the estimated information
+in favor of hypothesis @H sub 1@ over hypothesis @H sub	2@
+contained in the observed frequencies,
+where the \fInull hypothesis\fP	@H sub 2@ is that the row and column
+categorizations	are statistically independent and
+the \fIalternative hypothesis\fP @H sub	1@ is that they	aren't.
+This statistic is asymptotically distributed as	@chi sup 2@
+with @(r-1)(c-1)@ degrees of freedom;
+therefore by use of the	\f\*(cBQChiSq\fP function (see \fIgamma\fP(3V))
+it can be converted to the probability that
+the statistic would be as large	as was observed
+if the categorizations really are independent.
+This is	of course the traditional use of Pearson's @chi	sup 2@ statistic,
+which @2 "\v'-0.2'^\v'0.2'\h'-\w;^;u'I\^"@ approaches for large	samples
+when @H	sub 2@ is true.
+The main difference is that Pearson's @chi sup 2@ is not useful
+for small sample sizes,
+whereas	@2 "\v'-0.2'^\v'0.2'\h'-\w;^;u'I\^"@ fully takes into account
+all available information for even the smallest	samples.
+.P
+@2 "\v'-0.2'^\v'0.2'\h'-\w;^;u'I\^" ( H	sub 1 :	H sub 2	)@
+(along with its	corresponding degrees of freedom
+for use	with \f\*(cBQChiSq\fP) is \fIadditive\fP for independent samples,
+so that	the information	can be accumulated over	the course of many
+independent experiments	in order to improve one's ability
+to detect a violation of the null hypothesis.
+.SH CAVEATS
+Pearson's @chi sup 2@ test is unreliable for low frequencies;
+consequently it	is usually recommended that
+categories be chosen to	tally at least
+5 occurrences in each bin.
+However, excessive combination of bins causes loss of information and
+consequently loss of discriminating power.
+Because	@2 "\v'-0.2'^\v'0.2'\h'-\w;^;u'I\^"@ is	correct	for any	sample size,
+it does	not require combination	of bins
+and is therefore immune	from this problem.
+.bp
+.SH EXAMPLE
+\f\*(cW
+.ta 8n 16n 24n 32n 40n 48n 56n 64n
+.nf
+\&
+/*
+	Example	program	to read	table dimensions, then frequencies,
+	and to print both statistics along with	significance levels.
+*/
+#include	<stdio.h>
+#include	<stdlib.h>			/* for EXIT_SUCCESS */
+#include	"/vld/include/chisq.h"
+#include	"/vld/include/gamma.h"	/* for QChiSq(\|) */
+ 
+#define	MAXTBL	1000
+static long	f[MAXTBL];		/* frequency tallies */
+static int	r;			/* # of	rows */
+static int     	c;			/* # of	columns	*/
+#define	x(i,j)	f[(i)*c+(j)]	/* convenient way to access freqs */
+ 
+static void Calc(char *name, double (*func)(int, int, const long *, int	*))
+{
+	int	df;			/* degrees of freedom for chi-square */
+	double	stat = (*func)(r, c, f,	&df);		/* computed statistic */
+ 
+	/* print results */
+	if ( stat >= 0.0 )
+		(void)printf("%s = %5.2f\etdf =	%2d\etq	= %7.4f\en",
+			     name, stat, df, QChiSq(stat, df)
+			    );
+	else
+		(void)printf(stat < -3.5 ? "out	of memory\en"
+			   : stat < -2.5 ? "table too small\en"
+			   : stat < -1.5 ? "negative frequency\en"
+			   : "too many zeros\en"
+			    );
+}
+ 
+int main(int argc, char	*argv[])
+{
+	register int	i;		/* row index */
+	register int	j;		/* column index	*/
+ 
+	while (	scanf("%d %d\en", &r, &c) == 2 )	/* start new table */
+		{
+		/* input tallies */
+		for ( i	= 0; i < r; ++i	)
+			for ( j	= 0; j < c; ++j	)
+				(void)scanf(" %ld", &x(i,j));
+ 
+		/* compute statistics and print	results	*/
+		Calc("chisq", ChiSqTbl);
+		Calc("2info", InfoTbl);
+		}
+	return EXIT_SUCCESS;
+}\fP
+.bp \" XXX -- suitable for my particular printer, perhaps not for yours
+.ta .5i	1i 1.5i	2i 2.5i	3i 3.5i
+.fi
+.SH FILES
+\f\*(cBchisq.h\fP		header file containing definitions
+.SH REFERENCE
+Solomon	Kullback, \fIInformation Theory	and Statistics\fP (Dover, 1968).
+.SH "SEE ALSO"
+gamma(3V).
+.SH DIAGNOSTICS
+Both these functions a return negative value for the statistic
+when it	cannot be meaningfully computed, as follows:
+.RS
+.PD 0
+.TP
+\-1.0
+too many 0 entries in the table
+(for \f\*(cBChiSqTbl\fP, this means insufficient degrees of freedom;
+for \f\*(cBInfoTbl\fP, this means \fIevery\fP entry in the table was 0)
+.TP
+\-2.0
+some frequency was specified as	less than 0
+.TP
+\-3.0
+specified number of rows or columns was	less than 2
+.TP
+\-4.0
+unable to dynamically allocate enough working storage
+.PD
+.RE
+.SH AUTHOR
+Douglas	A.\& Gwyn, U.S.\& Army BRL/VLD-VMB

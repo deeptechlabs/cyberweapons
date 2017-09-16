@@ -1,0 +1,587 @@
+
+			    Elliptic Curve Crypto
+				Version 2.0
+
+	The first release document is included as a subset of this next
+version.  There are 2 major changes I made to version 2.0 which makes
+it run twice as fast.  I also added one more subroutine to play with the
+math to create a symmetric crypto system based on elliptic curves.  As
+before, comments are welcome.
+
+	First, I want to thank Richard Schroeppel (rcs@cs.arizona.edu)
+from U. of Arizona for pointing me at his CRYPTO '95 paper.  In the 
+failed attempt at trying something similar to his division algorithm 
+over polynomial basis Galois Fields for normal basis fields I learned 
+a lot more math.  One of the dead ends I pursued included using matrix 
+inversion (an order n^2 operation) to perform a normal basis GF inversion.  
+This led me to use a matrix of shifted elements in the opt_mul routine 
+instead of the shift_index subroutine.  This is the majority of the speed 
+up in version 2.0. Instead of shifting every element twice, it's only 
+shifted once and stored.  Obvious, the second time thru.
+
+	In the process of staring at the inversion algorithm and 
+discussing the pros and cons of polynomial vs normal basis, I discovered
+that the cross over point for projective coordinates vs inversion was
+beyond the bit field length I am using.  15 multiplies are required to
+do a single projective coordinate elliptic sum, but only 12 multiplies
+are required to implement Schroeppel's sum and doubling formulas for 148 
+bit field lengths.  So the second major change was to code up the inversion
+routine specificly for the 148 bit field length, expanding the term
+to be inverted once and saving it for later multiplies and using a
+special form of the multiply routine for each 2^m+1 step.  This is then
+used by the esum and edbl routines instead of the projective math of
+version 1.  See the file bigint.c for more complete documentation.  This 
+is only a few per cent time savings, but it is still faster than the first 
+version.
+
+	The formulas used for summing are:
+
+	L = (y_1 + y_2)/(x_1 + x_2)
+
+	x_3 = L^2 + L + x_1 + x_2 + a_2
+
+	y_3 = L(x_1 + x_3) + x_3 + y_1
+
+and for doubling:
+
+	L = x + y/x
+
+	x_2 = L^2 + L + a_2
+
+	y_2 = x^2 + (L + 1)x_2
+
+The math is much easier to follow this way.  For details, ask Schroeppel
+for his latest update, or get the proceedings to CRYPTO '95.  I leave the
+projective coordinate math intact for those who plan on creating larger
+bit fields which have more than 15 multiplies for inversion.
+
+	Secondly, I'd like to thank Steve Albrecht <steve@eh.pd.mcs.net>
+for reading the docs and pointing out a couple of mistakes.  I've 
+corrected them in this file.  He had some trouble compiling this code on 
+a Sun, and has the following advice:
+
+1) I changed two instances of memmove(dest, src, cnt) in  support.c to
+   bcopy(src, dest, cnt) to please SunOS(which doesn't have memmove() in its
+   libc).  Unfortunately, most libs no not have bcopy, so conditional code
+   is probably the only way to fix this.
+
+2) All of the gcc compilers complained about use of the reference operator(&)
+   on the first argument of each invocation of get_string() in support.c .
+   Since each was a pointer to a character string, the reference operator was
+   not necessary.  Removing it got rid of the warning.
+
+Steve is in the process of porting this code to various platforms, including
+Sun and Borland C++.  I've asked him to post his code to the net too.  He's
+got lots of great ideas for making this more accessable.  And he's fixing
+bugs too (like one in the makefile).
+
+	Several others have pointed out that the call to fpurge() does
+not exist on most systems.  Remove it!  The I/O here is very crude.  The
+system it was compiled on is gcc, but running on a Mac under the Mach
+kernel.  The behavior isn't really very good (in fact, I spend most of
+the time fixing things in the debugger and use that for I/O ;-) and any
+one who wants to help is welcome to send me a fix!
+
+	The one additional subroutine is a symmetric crypto system based
+on elliptic curves.  The idea is to hide data on points and add key 
+generated (encryptor) points to create hidden data points.  It is similar to 
+XOR in concept, i.e.  a very simple operation is performed.  The section 
+explaining this system has been added at the end of the "More Work Ahead" 
+section.
+
+                Public Key Cryptosystems: Next Generation
+                                Introduction
+
+        The purpose of this document is to describe a set of subroutines
+which implement elliptic curves over an optimal normal basis to share
+secrets over an open channel.  The academic community has long recognized
+[1] the power of elliptic curves, but only special implementations have
+appeared, and those in patented forms.  Very little documentation exists
+in the "amateur" community: one is expected to have the mathematical
+preliminaries required to read the papers.
+
+        Reference [1] makes an excellent attempt at breaking this barrier,
+but without code examples it is difficult for the amateur to comprehend.
+My hope is that these subroutines will aid in creating an alternate public
+domain public key crypto system.  I class it as "next generation" because
+the complexity of computation is higher than that required for exponentials
+in finite fields.  The ability to mash bits into random patterns is also
+much better - almost perfect in fact.  The task facing the cryptanalyst is
+as difficult as finding the discreet logarithm in a finite field.  The
+mapping from an elliptic curve to a finite field multiplies the exponent
+of the field size by factors of 3 to 6.  A 200 bit normal basis elliptic
+curve is as difficult to crack as a 1200 bit finite field exponential.
+Since all that's required to hide is 128 bits for a symmetric key, it is
+more than adequate.
+
+        The first part of this document discusses the basic math 
+associated with normal bases and attempts to explain where "optimal"
+comes from.  The second part covers elliptic curves as used in
+this implementation.  This field of mathematics is quite vast and has
+been explored for 100's of years.  It will continue to be explored for
+a long time to come.  Finally, I explain how a secret key can be hidden
+using the above math.
+
+                        Optimal Normal Basis
+
+        A basis refers to a set used to describe numbers.  For base 10
+the basis is {10^0, 10^1, 10^2, ... }.  Any number can be constructed
+using coefficients in the range 0 <= a < 10.  Thus "347" is 3*10^2 +
+4*10^1 + 7*10^0 and in general
+
+        x = sum a_i*10^i        i = 0, 1, ...
+
+        A normal basis [2] has the form {b^p^0, b^p^1, b^p^2, ... }.
+For finite fields (Galois Fields or GF) over p^n the number of elements
+in the set is fixed.  Any "number" can be represented by
+
+        A = sum a_i*b^p^i       i = 0, 1, ..., n-1      0 <= a_i < p
+
+Notice the difference: we don't care what b means.  It can be any
+bizzare concept we like (although calling it complex makes me feel
+better).  For integer bases we know how to count, for normal basis we
+don't.  Well, _I_ don't anyway.  The reason it doesn't matter is
+because the coefficients of each element in the set does make sense
+and we can easily keep track of the symbols even if we can't attach
+physical meaning.
+
+        For p = 2 the symbols are 0 and 1.  Adding two numbers we get
+
+        C = sum a_i*b^2^i + sum d_i*b^2^i
+          = sum ((a_i + d_i) * b^2^i)
+
+The terms are independent so each c_i coeficient is just the exclusive
+or of a_i and d_i.  That's easy to do even in C.
+
+        Multiplication gets a bit sticky.  References [2],[3] and [4]
+explain this much better, but it boils down to finding what they call
+the "lambda" matrix.  Let A = sum a_i*b^2^i, D = sum d_i*b^2^i and 
+C = A*D = sum c_i*b^2^i, then:
+
+        c_k = sum(i) sum(j) lambda(i,j,k)*a_i*d_j
+
+Every normal basis can be represented.  They show that some normal bases
+have the minimum number of non-zero terms (maximum number of zeros) in
+the lambda matrix of 2n-1.  These few are called "optimal normal bases".
+
+        One of the files included is optprime.dat.  This lists all
+the optimal normal basis primes allowed for the variable "field_prime"
+in bigint.h.  The formulas extracted from the references WILL NOT WORK
+for any other primes.  The routine gen_lambda in bigint.c is based on
+very particular rules associated with these primes, 2 being a generator
+being the main one.
+
+                        Mathematical properties
+
+        There are several interesting and useful things to know
+about normal bases.  The first is the "trace" function.  This is the
+sum of all the coefficients (usually refered to as parity).  Adding
+and subtracting are the same thing in GF(2): just do an exclusive or.
+Multiplication of coefficients in GF(2) is the and operation.  This
+is easy huh?  Well, here's a weird one for you: the number 1 is represented
+by 1 = sum b^2^i.  When we store this, it's all bits set.  Adding or
+subtracting 1 to any normal basis number is the same thing as taking
+the complement, exclusive or against a word with all bits set.
+
+        Another useful property is squaring a normal basis number.
+This is simply a rotaion.  In the representation I've chosen the
+coefficient of b^2^0 is the lsb and b^2^n-1 is msb.  Squaring
+amounts to a rotate left and square rooting is a rotate right.  This is
+very useful when we get to multiplication.
+
+        The lambda table used by the opt_mul routine is used as an
+index to determine how many powers of 2 are needed to generate a factor
+of b^2^k.  The subroutine shift_index moves a source block the correct
+shift amount faster than a bunch of rotates.
+
+        A type one optimal normal basis has two non zero terms for
+each value of k.  A type two optimal normal basis has four terms.  Only the
+type one version is coded here.  It is similar to a feistal type
+network with NUMBITS rounds:  there is a swap of right and left half
+words exclusive ored (added) to a permutation (or rotation) of the original
+block.  It's not really the same, but similar enough to give cryptographers
+a good feeling that we're really scrambling bits well here.
+
+        Taking an inverse is another trick.  The routine opt_inv is based 
+on [1] pg 85.  This was fun to code because each bit determines what operation
+to do next.  The routine first finds the msb, then works down squaring and
+or multiplying new terms depending on the lsb in the window being set or clear.
+
+        Before getting into elliptic curves, there's one more math problem
+we need to solve.  It is the quadradic equation.  The solution is not really
+written down in any of the references that I have, but they hint at it.
+In the file elliptic.c you'll find the function gf_quadradic which explains
+the gory details.  Koblitz (in private communication) explained why it's
+obvious to mathematicians (i.e. they don't need to read this).  Given a
+quadradic equation of the form y^2 + a*y + b = 0: we can determine if it
+has a solution or not by first computing the trace of u = b/a^2.  There is
+a solution only if the trace is zero.  Let w = y/a.  Cast the original
+quadradic as w^2 + w + u = 0.  Since squaring is a rotation and summation
+is just exclusive or we can view this equation one coefficient at a time
+and come up with a series solution.  Picking the lsb of w as zero, and adding
+in lsb of u gives us the next bit of w.  It's easy to walk our way up the
+solution for w.  If we had picked lsb as 1 we'd get the complement, and in
+fact if s is a solution then so is s+1.  To recover the two possible soltutions
+we multiply s by a for the first term and then add a for the second.  We'll 
+see why finding solutions to quadradics is important in the next section.
+
+                        Elliptic Curves
+
+        There are so many buzz words in this field it's really hard to
+keep track of it all.  There are supersingular and non-supersingular curves,
+curves with K=2, K=3, and all the rest, and there are subclasses of subclasses.
+It's really fascinating, and lots of people have chosen various branches
+and subclasses depending on what they wanted to do.  The particular subclass
+coded in krypto_knot comes from open literature and is not patented.  Previous
+to 100 MHz processors it was considered too slow a mehtod.  The advent
+of 64 bit, 300 MHz processors changes the meaning of slow.
+
+        Because our coefficients are 0 and 1, we're stuck on characteristic two
+(K=2) curves.  The arguments given in [1] (pg 89) point to non-supersingular
+curves.  The elliptic equation in this case is
+
+        E:      y^2 + x*y = x^3 + a_2*x^2 + a_6.
+
+        In the structure for CURVE I've left room for both a_2 and a_6.
+Having a_2 non zero slows things down.  I do not know the cryptographic
+significance of having a_2, but if you would like to try, Menezes [1] says 
+its trace must be 1.
+
+        To find points on any curve E it is simplest to compute the right
+hand side of E (what I call fofx in eliptic.c) and then see if there is a
+solution to y^2 + xy + f(x) = 0 with gf_quadradic.  This is easy to do.
+The function rand_curv_pnt in support.c does exactly this when searching
+for random points on a random curve.
+
+        Like, uh, so what?  Well, the cool part is that once we have points
+on an elliptic curve we can add and subtract them.  Adding two points on
+a curve in a standard geometric sense is the same as connecting a line
+between the points and finding the third intersection with the curve.  Over 
+the normal basis math we use the same formulas, but where we end up in 
+coefficient space is difficult to see.
+
+        Why does this have cryptographic significance?  Given one point,
+it is impossible to know what other two points were added together to
+get there.  If the order of the curve (the number of points which satisfy
+E) is greater than 2^128, a key can be well hidden.
+
+        To crack a hidden key one first has to compute the order of the
+curve being used and check to see which factor of that number matches the
+order of the observed point (the number of other points that could be added
+together to get there).  Then you have to solve a logarithm problem over
+an elliptic curve (which involves mapping to a log problem over a bigger
+field size).  This seems hard, but only because I haven't done it yet.
+
+                Multiplication over an Elliptic Curve
+
+        Multiplication of a point P by a factor k is just P added to itself
+k times.  In reference [5] a method of converting any factor k into the
+minimum number of calculations using addition, doubling and subtraction is
+described.  The routines in eliptic.c that perform these operations on
+points over a curve are esum, edbl and esub.  The formulas used are derived
+in the references as well as attached in the appendix.
+
+        There are 3 sets of math here, so don't be supprised if you are a 
+touch confused.  The formulas for adding points are standard algebra.  The 
+math they are performed over is a normal basis.  And the multiplication factor
+is an integer basis.
+
+        To make calculations go faster, projective coordinates are introduced.
+The reason for this comes from the formulas for adding and doubling points.
+A division operation is required for the algebra to work.  This is very costly
+in cpu cycles - it requires (log_2(NUMBITS) + hamming_weight(NUMBITS) - 1) 
+multiplications.  Reference [1] describes how to add and double points over 
+projective coordinates.  I've expanded those formulas in an appendix.  They 
+aren't hard, but for some reason it took me a long time to get them right.
+
+        The routine flaten in eliptic.c removes the divisor term (z) by dividing
+it into the x and y coordinates.  All POINTs are given as (x,y,z) structures.
+Given a curve and a point we can reduce the storage requirements by flatening
+a point back to 2D and then only keeping the last bit of y/x.  The routines save_
+and restore_pub_key in support.c use a_6 from the CURVE, the value of x and one
+bit of y/x to pack or reconstruct a full point.
+
+                        Cryptography
+
+        A good cryptographic scheme produces random output.  Using Marsaglia's
+"Mother of all random number generators" to create random curves, points and
+multiplicands, a comparison was made between the input multiplicand and the 
+output x value.  Using n-dimensional serial digit tests, chi-square tests, 
+autocorrelation, runs up-down and spectral tests, the output x values passed 
+as uniformly random and serially independent.  The results of one spectral 
+test pertaining to certain pattern frequencies were inconclusive since  they 
+didn't show up using another FFT test.  A given point on a given curve 
+doesn't tell you very much and that's why the academics like elliptic curves.  
+[Special thanks to Prof. Pat for doing the work.]
+
+        The particular method I chose to hide points was described by
+Koblitz in [14], pg 85.  The idea is to set up a public key using a point
+on a curve.  The owner of the key has a secret multiplier "a".  Call the
+curve E, the point P, and compute Q = aP.  The public key is (E, P, Q).
+A sender embeds a secret onto point S and choses a random multiplier r.
+The secret is then sent to the owner as (E, rP, S+rQ).  The owner recovers
+the secret by computing a(rP) = rQ.  Subtracting this from the second point
+reveals S.
+
+        It appears that the density of points is uniformly distributed
+for any curve over an optimal normal basis.  I leave it to the mathematicians
+to prove it.  To embed a 128 bit key onto a point only requires that the field 
+size be greater than 128 bits.  For the 148 bit field used in my testing, this 
+leaves 20 bits to play with to find one point with fixed 128 bits for x that 
+satisfies a specific curve.  What it means mathematically to increment the upper 
+20 bit block until we hit a point on the curve is beyond me - it's an easy 
+operation to perform, it embeds specific patterns on a curve, and it is very 
+difficult to find.
+
+                        More Work Ahead
+
+        The references explain how to compute the cardinality of curves (#E).
+To be secure, a curve should have large numbers of points.  It turns out
+that all the points which are connected to each other belong to a group
+whose size depends on one of the factors of #E.  To be really secure, we
+want to pick a point that is a memeber of a very large prime factor group.
+
+        Chosing random curves and random points is probably secure given a
+large enough field size.  The cardinality of the curve is on the order of
+2^(n +/- n/2 + 1), where n is NUMBITS.  Once you find #E, you get to factor
+it.  Knowing these factors it is easy to find the order of any point on a
+given curve.  The structure of large numbers is a few small factors and one
+really big one (on average, see [15] pg 171).  Finding a weak point with 
+low order (i.e. one with few other commrads on a curve) is hard.
+
+        Even more security is possible using type two optimal normal bases.
+This scrambles bits better because the lambda matrix contains 4 shift 
+parameters per bit position, not just a swap and 1 shift parameter.  It 
+takes 3 times longer to compute but that holds for cryptanalysis too - in 
+the exponent!
+
+        Solving for a or r in the public or secret key exchange requires 
+an intense amount of work.  At this point I don't understand Weil pairing,
+divisor theory, or Schoof's algorithm.  I hope that the basic math routines
+will help elliptic curve logarithm solutions.  It should give an estimate
+on required field sizes for good security.
+
+		Symmetric Cipher Based on Elliptic Curves
+
+	Using elliptic curves for symmetric ciphers is not usually done.
+It's too slow and creates double (or more) expansion of the data.  However,
+because it's possible, I've coded it.
+
+	The principle of symmetric key ciphers is to use the same key for
+encryption and decryption.  What makes elliptic curves interesting is that
+a "salt", or random bit section, is concatenated with every block to be
+encrypted.  This does not affect the decryption process and ensures that
+the same message (or data block) is never encrypted the same way twice.
+The cost is message expansion, which is another reason this is impractical.
+
+	The key is used several ways.  First, it is used to create a
+curve.  Second, it is used to create a point on that curve.  Finally, it
+is used to find "encryptor" points for each successive block of data.
+
+	A source curve and point are set up as constants within the
+program.  These were chosen at random.  For a truely secure key generated
+curve the source data should be chosen with maximal order.
+
+	The first step is accomplished by multiplying the key times the
+source point over the source curve.  The x component of this multiply is
+used as the secret curve which the data will be encrypted over.  Even if
+an attacker can determine the curve, the problem of finding the key is
+the same elliptic curve log problem as in the public key case.
+
+	The second step combines the key in the lower ELEMENTs with the
+upper portion of the x source point.  The gf_quadradic routine is used
+to put this point on the secret curve.  This point is r_0, the key based
+initial encryptor point.  It is not used to encrypt any data.  It is
+used to generate each successive encrypto point.  The first point r_1
+is found as 2r_0.  All other points are found using:
+
+	r_i = r_i-1 + r_i-2	if bit K_i = 1
+
+	r_i = 2r_i-1		if bit K_i = 0
+
+The subscript on K_i is taken modulo the key length.
+
+	A large amount of data is first broken up into key length
+block sizes.  Each block is combined with a random block of bits to
+fill in the rest of the field.  For the example code the block size is
+64 bits and field size is 148 bits, so the salt is 84 bits.  This x
+value is embedded on the secret curve by incrementing the salt until
+gf_quadradic is satisfied.  This point (called p_i in the program)
+is added with the encryptor point: q_i = p_i + r_i.  The q_i point
+is compressed to limit y to 1 bit and stored in the cipher block.
+
+	Decryption is the same except that the one bit for y is used
+to reconstruct q_i and p_i is found by subtracting r_i: p_i = q_i - r_i.
+Only the last key size bytes are copied from this point to the output
+plain text area.
+
+	Cryptanalysis is difficult because even knowing plaintext-
+ciphertext pairs leaves a salt which is larger than the key (in this
+example anyway, for a 226/128 field the salt is "only" 96 bits).  I
+did post a request for comments on this cipher method but got no
+specific responses.  Hopefully with a subroutine to play with, an
+expert or two will have some fun trying to find shorter methods than
+brute force.  Brute force is to compare all the possible salts (assuming
+you know the plaintext) and trace points which match as either sums
+or doubles of previous points.  With this the key can be reconstructed.
+However, with 2^84 points to check, it will take awhile.
+
+                        Conclusion
+
+        Without a doubt elliptic curves over optimal normal bases are strong
+crypto.  Combined with compression and fast symmetric key routines the
+public key exchange using elliptic curves creates nuclear grade security.
+
+        It is cost effective to build specialized cryptographic hardware
+if everyone uses the same algorithms.  Once many crypto algorithms are in
+use with equal security, such devices become less likely, or at least more
+expensive.  Further, as more people learn that the math isn't really that
+hard (just a touch confusing the first time you see it) a much broader
+choice will be created.
+
+        Please help to improve, enhance and test this initial offering.
+Use it to learn the math and try out some of the other methods described
+in the references.  With 100 MHz processors now classed as slow, elliptic
+curves deserve strong scrutiny for real cryptographic applications.
+Mathematicians don't need code to understand the math or what it means.
+For the rest of us, examples help a lot.
+
+Mike Rosing
+Sept. 10, 1995
+cryptech@mcs.com
+
+                        References and Bibliography
+
+[1] "Elliptic Curve Public Key Cryptosystems", A. J. Menezes, Kluwer Acad.
+        Pub. 1993
+
+[2] "Optimal Normal Bases in GF(p^n)", R.C. Mullin, I.M. Onyszchuk, S.A.
+        Vanstone, R.M. Wilson, Discreet Applied Math. V22, p149-161, 1988/9
+
+[3] "Low Complexity Normal Bases", D.W. Ash, I.F.Blake, S.A. Vanstone, Discreet
+        Applied Math., V25, p191-210, 1989
+
+[4] "An Implementation for a Fast Public-Key Cryptosystem", G.B. Agnew, R.C.
+        Mullin, I.M. Onyszchuk, S.A. Vanstone, J. Cryptology, (1991), V3, p63-79
+
+[5] "CM-Curves with Good Cryptographic Properties", N. Koblitz, CRYPTO '91, LNCS
+        576, p279, 1992, Springer-Verlag
+
+[6] "Elliptic Curves Over Finite Fields and the Computation of Square Roots
+        mod rho", R. Schoof, Math. of Computation, V44, p483-494, (1985)
+
+[7] "Cryptology and Computational Number Theory", Proc. of Symp. on App. Math.
+        V42, 1990, Am. Math. Soc.
+
+[8] "Efficient Algorithms for the Construction of Hyperelliptic Cryptosystems",
+        T. Okamoto, K. Sakurai, CRYPTO '91, LNCS 579, 1992, p267, Springer-Verlag
+
+[9] "Non Supersingular Elliptic Curves for Public Key Cryptosystems", T. Beth,
+        F. Schaefer, EUROCRYPT '91, LNCS 547, pg316, Springer-Verlag
+
+[10] "Use of Elliptic Curves in Cryptography", V. Miller, CRYPTO '85, LNCS 218,
+        pg 417, Springer-Verlag
+
+[11] "On the Implementation of Elliptic Curve Cryptosystems", A. Bender, G.
+        Castagnoli, CRYPTO '89, LNCS 435, pg 186.
+
+[12] "Elliptic Curve Cryptosystems", N. Koblitz, Math. of Computation, V48,
+        (1987), p203-209
+
+[13] "Introduction to Elliptic Curves and Modular Forms", N. Koblitz, Springer-
+        Verlag, Second edition, 1993
+
+[14] "A Course on Number Theory and Cryptography", N. Koblitz, Springer-Verlag,
+        1987
+
+[15] "Prime Numbers and Computer Methods for Factorization", H. Riesel,
+        1987, Birkhauser, second printing
+
+                        Appendix
+
+Derivation of arbitrary projective points over non-supersingular characteristic
+two curves used in esum and edbl routines in file eliptic.c
+
+        To implement an efficient elliptic multiply it is necessary to sum and
+double arbitrary projective points.  This derivation has identical results to [1]
+except I assume both points are arbitrary projections.  The only reason I
+include this derivation is because esum and edbl took me a long time to get
+right.  I doubt they have been optimally coded.  Intimate familiarity with the
+math is required before attempting to optimze these routines.  If the math
+doesn't scare you, feel free to hack the code into better shape.
+
+        Copying from [1] the formulas for summing and doubling over curve E
+are
+
+        1)      g = (y_1 + y_2)/(x_1 + x_2)
+
+        2)      x_3 = g^2 + g + x_1 + x_2 + a_2
+
+        3)      y_3 = g*(x_1 + x_3) + x_3 + y_1
+
+        4)      x_4 = x_1^2 + a_6/x_1^2
+
+        5)      y_4 = x_1^2 + (x_1 + y_1/x_1 + 1)*x_4
+
+where P_3 = P_1 + P_2 and P_4 = 2P_1.  Transforming from (x,y) to (x,y,z)
+coordinates allows us to easily clear out divisors and replace a costly
+division operation with a few extra multiplies.  The projective form of
+the curve E is given by
+
+        6)      y^2*z + x*y*z = x^3 + a_2*x^2*z + a_6*z^3
+
+and the transfer to projective coordinates is (x,y,1).  To flatten
+projective coordinates back to E we simply find (x/z, y/z).
+
+                        Summing
+
+        Replacing y_i with y_i/z_i and x_i with x_i/z_i in equations 1-5
+we get
+
+        7)      g = A/B
+where
+        8)      A = y_1*z_2 + y_2*z_1
+
+        9)      B = x_1*z_2 + x_2*z_1
+and
+        10)     x_3' = (A/B)^2 + A/B + B/(z_1*z_2) + a_2
+
+        11)     y_3' = (A/B)*(x_1/z_1 + x_3') + x_3' + y_1/z_1
+
+clearing denominators gives
+
+        12)     z_1*z_2*B^2*x_3' = (A^2 + A*B)*z_1*z_2 + B^3 +
+                        a_2*B^2*z_1*z_2
+
+        13)     z_1*z_2*B^3*y_3' = z_2*A*B^2*(x_1 + z_1*x_3') +
+                        z_1*z_2*B^3*x_3' + z_2*y_1*B^3
+Let
+        14)     z_3 = z_1*z_2*B^3
+and
+        15)     D = A*(A + B)*z_1*z_2 + B^2*(B + a_2*z_1*z_2)
+then
+        16)     x_3 = B*D
+
+        17)     y_3 = (A + B)*D + B^2*(x_1*z_2*A + y_1*z_2*B)
+
+                        Doubling
+
+        Replacing x_1 and y_1 in 4 and 5, then clearing denominators gives
+
+        18)     x_1^2*z_1^2*x_4' = x_1^4 + a_6*z_1^4
+
+        19)     x_1^3*z_1^3*y_4' = x_1^5*z_1 + 
+                        (x_1^4 + a_6*z_1^4)*(x_1^2 + y_1*z_1 + x_1*z_1)
+
+Let
+        20)     z_4 = (x_1*z_1)^3
+and
+        21)     T = x_1^4 + a_6*z_1^4
+we get
+        22)     x_4 = x_1*z_1*T
+
+        23)     y_4 = x_1*z_1*x_1^4 + T*(x_1^2 + y_1*z_1 + x_1*z_1)
+
+
+
+

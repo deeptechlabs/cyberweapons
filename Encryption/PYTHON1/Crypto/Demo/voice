@@ -1,0 +1,176 @@
+#!/usr/local/bin/python --
+# -*-Python-*-
+# Voice 1.00
+#
+# Part of the Python Cryptography Toolkit, version 1.0.0
+#
+# Copyright (C) 1994, A.M. Kuchling
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
+import select, socket, string, sys, getopt, marshal
+
+host = ''
+port = 50007                             # Default port number
+key = ''
+cipher = 'idea'
+
+def Str2Int(strg):
+    value=0L
+    for i in range(0, 8):
+        value=value*256+ord(strg[i])
+    return(value)
+
+def Int2Str(value):
+    strg=''
+    for i in range(0, 8):
+        strg=chr(value & 255) + strg
+        value=value >> 8
+    return(strg)
+
+def PrintUsage():
+    print 'Usage: voice [OPTIONS] '
+    print '\n -c ciphername             Force use of ciphername to encrypt/decrypt'
+    print   ' -h                        Display this usage message'
+    print   ' -H hostname               Hostname to connect to'
+    print   ' -k key                    Key to use for encryption/decryption'
+    print   ' -p num                    Port number to connect to'
+    print '\nThe default cipher algorithm is IDEA; if no key is set on the command'
+    print 'line, encryption will not be used.'
+    
+options, args = getopt.getopt(sys.argv[1:], 'H:p:hk:c:')
+
+for opt in options:
+    letter, param = opt
+    if (letter=='-c'):
+        cipher = param
+    if (letter=='-h'):
+        PrintUsage()
+        sys.exit(1)
+    if (letter=='-H'):
+        host = param
+    if (letter=='-k'):
+        key = param
+    if (letter=='-p'):
+        port = string.atoi(param)
+
+if (key!=''):
+    exec ('import '+cipher)
+    exec ('module='+cipher)
+    import md5
+    key=md5.new(key).digest()
+    if (module.keysize==0):
+        cipherobj=module.new(key, module.ECB)
+    else:
+        cipherobj=module.new(key[0:module.keysize], module.ECB)
+
+
+s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print 'Trying to connect...'
+try:
+    s.connect(host, port)
+except socket.error, (number, message):
+    if (message!='Connection refused'):
+        raise socket.error, (number, message)
+    del s                               # We have to recreate the socket
+    s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind('', port)
+    print 'Waiting for connection attempt...'
+    s.listen(1)
+    s, addr = s.accept()
+    print 'Connection made from', addr
+
+print 'Connected.'
+print 'Hit <Enter> to turn recording on and off, and "q" to quit.'
+
+# Handle request
+
+Exit = 0
+Recording=0
+speech = ''
+
+while (not Exit):
+    input = [sys.stdin, s]
+    input, output, exc = select.select(input, [], [], 0)
+    if (Recording):
+        print 'reading...'
+        data=sound.read(512)
+        speech=speech+data
+    if not input: continue
+    for i in input:
+        if (i==sys.stdin):
+            print 'stdin'
+            data=i.read(1)
+            if (data[0]=='Q' or data[0]=='q'):
+                s.send('\002Dummy characters to fill a packet')
+                s.close()
+                sys.exit(0)
+            elif (data[0]=='\n'):
+                Recording=not Recording
+                if (not Recording):
+                    sound.close()
+                    print 'Recording complete'
+                    print 'Encrypting'
+                    if (key!=''):
+                        l=module.blocksize-(len(speech) % module.blocksize)
+                        speech=speech+'\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000'[0:l]
+                        speech=cipherobj.encrypt(speech)
+                    print 'Sending', len(speech), 'bytes of audio data'
+                    s.send('\001'+Int2Str(len(speech)) + speech)
+                    print 'Sent.'
+                    speech=''
+                else:
+                    sound=open('/dev/audio', 'r')
+                    print 'Now recording...'
+            else: print data
+        elif i==s: # i must be equal to the socket
+            print 'Receiving data from socket...'
+            data=''
+            while 1:
+                temp = s.recv(1)
+                data=data+temp
+                if len(data)>9: break
+    # Dumb assumption #3: there are only 2 packet types
+            if (data[0]=='\002'):
+                s.close()
+                print 'Connection closed by other end'
+                sys.exit(0)
+            elif (data[0]=='\001'):
+                length = Str2Int(data[1:9])
+                print 'Reading', length, 'bytes of data...'
+                data = data[9:]
+                l=len(data)
+                data = data + s.recv(length-l)
+                print len(data)
+                if (key!=''):
+                    print 'Decrypting...'
+                    data=cipherobj.decrypt(data)
+                print 'Data complete; playing sound'
+                sound=open('/dev/audio', 'w')
+                sound.write(data)
+                sound.flush()
+                sound.close()
+            else:
+                print 'Dumb assumption #3 failed.'
+
+        else:
+    # Dumb assumption #2: No other I/O events could occur        
+            print 'Dumb assumption #2 failed.'
+
+    
+
+
+

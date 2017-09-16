@@ -1,0 +1,28 @@
+This package is a DES-compatible encipherement package which makes it easy
+to send and receive secret mail through electronic mailers.  
+
+The most interesting products are:
+   cipher (decipher) - the actual encipherment/decipherment program.
+   cipher.1	     - the nroff compatible manual page for cipher (please read)
+   atob, btoa	     - Binary to ASCII converters from compress 4.0 package
+   cmail	     - A script to interface above with your mailer
+
+To install:
+
+Edit the Makefile:
+   Define -DBSD or not as appropriate
+   Change MANDIR and BINDIR as appropriate
+
+Type "make"
+
+   You may get some compiler warnings about & in front of arrays, invalid
+   pointer combinations and optimization problems.  These are OK.  The
+   important thing is too see if the testsuite passes.  If it does, the
+   make will terminate normally.
+
+Type "make install"
+
+   You may want to read about the "~|" option to the BSD mailer and compose
+   "encr" and "decr" scripts.
+
+Send bug reports to "barrett%asgard@boulder.Colorado.EDU"

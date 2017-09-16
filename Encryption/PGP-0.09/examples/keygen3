@@ -1,0 +1,77 @@
+#!/usr/local/bin/perl -w
+
+use strict;
+use Getopt::Long;
+
+use PGP::UserId;
+use PGP::CmdLine;
+use PGP::RandomStream;
+use PGP::PublicKeyRing;
+use PGP::SecretKeyRing;
+use PGP::PublicKeyRingEntry;
+use PGP::SecretKeyRingEntry;
+use PGP::SecretKeyCertificate;
+
+
+my $size = 1024;
+my $name;
+
+my %opts = (
+	'-size=i' => \$size,
+	'-id=s' => \$name,
+);
+
+sub usage
+{
+    my $progname = $0;
+	$progname =~ s,.*/,,;
+	die "Usage: $progname [-size=1024] -id=<your name>\n";
+}
+
+GetOptions(%opts) || usage "Options Failed" ;
+defined $name || usage();
+
+
+#
+#	Create a random input stream
+#
+my $ris = new PGP::RandomStream;
+ref($ris) || die $ris;
+$ris->goodSeed();
+
+my $ui = new PGP::CmdLine;
+
+
+my $skc = generate PGP::SecretKeyCertificate(
+			-size => $size,
+			-ris => $ris
+		);
+ref($skc) || die $skc;
+
+my $passphrase = $ui->getNewPassphrase();
+$skc->encrypt($passphrase, $ris);
+
+
+my $id = new PGP::UserId "$name";
+ref $id || die $id;
+my $key = new PGP::SecretKeyRingEntry $skc;
+ref $key || die $key;
+$key->addId($id);
+
+my $kr = PGP::SecretKeyRing->open();
+ref $kr || die $kr;
+$kr->add($key);
+$kr->update();
+
+
+my $pkc = $skc->publicKeyCertificate();
+ref $pkc || die $pkc;
+
+my $key = new PGP::PublicKeyRingEntry $pkc;
+ref $key || die $key;
+$key->addId($id);
+
+$kr = PGP::PublicKeyRing->open();
+ref $kr || die $kr;
+$kr->add($key);
+$kr->update();

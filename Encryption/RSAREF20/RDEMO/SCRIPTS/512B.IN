@@ -1,0 +1,32 @@
+#
+# Sign and verify with MD5.
+# All operations in this script use the second built-in key pair.
+#
+s
+file
+2
+5
+512b5.sig
+v
+file
+2
+5
+512b5.sig
+#
+# Seal and open with DES.
+#
+e
+file
+512b1.env
+2
+1
+512b1.key
+512b1.iv
+o
+512b1.env
+-
+2
+1
+512b1.key
+512b1.iv
+q

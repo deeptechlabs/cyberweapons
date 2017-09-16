@@ -1,0 +1,183 @@
+format.txt   Mark Riordan  mrr@scss3.cl.msu.edu    May - July 1992
+
+This file describes data formats for RIPEM.  
+I have tried to conform to existing standards, namely RFC's 1113-1115
+and RSA's Public Key Cryptography Standards (PKCS) as much as 
+possible.  However, since I have not implemented certificates,
+complete conformance is not possible.
+
+I address here the formats of three types of information:
+
+  1.  Headers ("fields") in encapsulated PEM messages.
+  2.  Public components of keys, stored in a database of keys
+      for many users.
+  3.  Encrypted private components of keys, stored alone or
+      in small groups, usually for a single user.
+
+1.  Encapsulated PEM Message Headers
+
+1.1 Discussion
+
+I tried to follow RFC 1113 (10 April 92) as much as practical, but I
+decided to eschew certificate-related fields and instead introduce new
+headers to communicate information normally addressed by certificates.
+
+Although we don't really have certificates, there are a number of ways
+that I could have nevertheless used certificate syntax to communicate
+the desired names and public key components.  For instance, a special
+bogus Issuer Name could indicate that the certificate has not really
+been certified.
+
+The primary reason that I did not choose this approach is that names
+inside certificates are X.500 Distinguished Names (DN's), which look
+like, to use RFC1114's example, [C="US" SP="Massachusetts" L="Boston"
+O="Pseudonyms R US" CN="Paul Revere"].  As far as I'm concerned, the
+use of DN's is out of the question for our purposes, as few people are
+currently using X.500.
+
+I use ordinary email addresses to identify individuals,
+with an individual potentially having many email addresses that map to
+the same public key.  I don't think it's right to put email addresses
+in a certificate field intended for DN's, though this *could* be
+encoded unambiguously by special-casing a bogus Issuer Name or version
+number.  
+
+1.2 List of Allowable RIPEM Headers
+
+Upon Mark Windsor's suggestion, I added the "Recipient-Name",
+"Originator-Name" and "Originator-Key-Asymmetric" fields to the list
+in RFC 1113.
+
+Thus, the allowable headers in RIPEM are:
+
+Proc-Type:        [As per RFC 1113, identifies version of standard
+                   and whether message is ENCRYPTED.  Always the first line]
+DEK-Info:         [As per RFC 1113, lists message encryption algorithm
+                   (always DES-CBC) and IV.  Always the second line
+                   if Proc-Type is ENCRYPTED]
+Originator-Name:  [Occurs once, before recipients.  Lists originator's
+                   email address in the same syntax as a "From:" line,
+                   in plaintext.]
+Originator-Key-Asymmetric:  [Contains RFC1113 printable-encoding of
+                             DER encoding of originator's public key.
+                             Uses type SubjectPublicKeyInfo, as
+                             defined in PKCS #6, page 8.]
+MIC-Info:         [As per RFC 1113, contains message digest
+                   algorithm, algorithm used to encrypt message
+                   digest, and the encrypted and encoded message
+                   digest.  Unlike RFC 1113, can occur no more
+                   than once per message, to simplify implementation.]
+Recipient-Name:   [Email address of a recipient.  Used only for
+                   ENCRYPTED messages.  May occur multiple times.
+                   Plaintext.]
+Key-Info:         [As per RFC 1113, lists encrypted message key and
+                   & algorithm (always RSA) for most recently-named
+                   recipient.  Only for ENCRYPTED.]
+
+As per RFC1113, the encapsulated message begins and ends with
+delimiters (e.g., -----BEGIN PRIVACY-ENHANCED MESSAGE-----),
+and the headers are separated from the message text by a blank line.
+
+
+2.  Public Key Database
+
+Public keys can be stored either in flat ASCII line files that are read directly by RIPEM, or in a random-access GDBM database that resides on a server that is queried by RIPEM.
+
+2.1  Flat files
+
+For each user, there are several consecutive
+lines in the file describing the user's name and public key.
+For each user, there are the fields:
+
+User:  <email address>  [Can be repeated to give synonyms.  Email
+                         address is in plaintext.]
+PublicKeyInfo:
+  <user's public key>   [RFC 1113 ASCII-encoded DER-encoded version of
+                         public key, in PKCS #6's SubjectPublicKeyInfo
+                         form.]
+
+Information for different users is separated by a blank line.
+No provision is made for a user having more than one public key,
+aside from the user also having corresponding different email
+addresses.  Comments can be made by starting a line with "#".
+
+An example:
+
+-------------- Beginning of file -------------------
+User: John_Smith@host1.domain
+User: smith@host1.domain
+PublicKeyInfo:
+ MFkwCgYEVQgBAQICAgQDSwAwSAJBCcVXx4EuHCsiJgidWtNPyWyTuA5CiTqcKWT8
+ IujdiMqcSh/iRVO8+nugWDTNwG3LaERzfNe5wLznNpyNSKBwoQcCAwEAAQ==
+MD5OfPublicKey: E50F516A4626002DF9B877A8D265BBF8
+
+User: Mary_Jones@host2.domain
+User: jones@host2.domain
+  GHNEW43h4qhav34tLKJflknv793gGGOgof974q74gfAqVagsgf74g134fgq4aPd
+  5gmsmJJH7gvTFUYjjOHUEAFCW
+--------------- End of file -------------------------
+
+2.2  Random-Access Database on the Server
+
+A UDP-accessible server uses a GDBM (Gnu's version of the ubiquitous ndbm Unix database facility) database to store keys in the same format as they appear in line files.  See server.txt for details.
+
+3.  Encrypted Private Components of Public Keys
+
+Private components are stored only in encrypted form, in ASCII line files.
+
+A private key will be stored in an RFC 1113 ASCII-encoded version
+of PKCS #8's EncryptedPrivateKeyInfo form.  The algorithm used
+will always be pbeWithMD5AndDES-CBC in practice.
+
+Usually, a file will contain keys only for a single user, but for
+generality the syntax of the file identifies users and
+allows multiple users per file.  The practise of clearly linking
+a user with his/her private key (albeit in encrypted form) constitutes
+a mild security problem, but as the key is encrypted the practice
+seems acceptable.
+
+The syntax is:
+
+User: <email address>  [Can occur multiple times, as with public
+                        keys files.]
+EncryptedPrivateKeyInfo:
+ <private component>
+
+An example:
+
+-------------- Beginning of file -------------------
+User: John_Smith@host1.domain
+User: smith@host1.domain
+PublicKeyInfo:
+ MFkwCgYEVQgBAQICAgQDSwAwSAJBCcVXx4EuHCsiJgidWtNPyWyTuA5CiTqcKWT8
+ IujdiMqcSh/iRVO8+nugWDTNwG3LaERzfNe5wLznNpyNSKBwoQcCAwEAAQ==
+MD5OfPublicKey: E50F516A4626002DF9B877A8D265BBF8
+EncryptedPrivateKeyInfo:
+ MIIBgDAaBgkqhkiG9w0BBQMwDQQIt+KFvj9ONl8CAWQEggFg0qUo3ApbO5dF5Cee
+ fGSD8Sia80yzAuhwbrpaGrs0xhg9eLgsoVVsJFZPJfKTrG2Lq/7CwpeKgJCt3IXb
+ PFN2xy59Spu+rsSbn+3GepB/H9EYE5gkUq4N9+vuogvrH1J5+hz8UOGgivmS0+eD
+ QHAgVqG+xUcCb1uGCFKqZLIuhVtzWeA2+vQYIEF2e/hDwhK56rxQAVpgAXH+vlCJ
+ M87018ieZXJUs9wiYGgv0sUXe17A17mvqqpU/wbj1Utgi7HvjtpRhQ+AlY464NX+
+ i7wAeldmJEFtzqIzFMwZlxBiRfFNJPCzh8EgKILKT2WhKBymleMLFSuLSN+6S5RI
+ aV5KirsPviPVNEvmbEmNwzgxMFQXfJQ2B7N1Bh4WVaLhNOi+WTiptIS2pSkoUhch
+ JkIKS2VC+3cZyQcsCvq4tluvDVnzL8oQik2eQs6Nm+KNXVDYtyzDyULiX1JmeVKE
+ VR6RvQ==
+
+# This is a different key for John Smith.  He has to use a different
+# email address to make this work.
+User: jsmith@host1.domain
+PublicKeyInfo:
+ MFkwCgYEVQgBAQICAgADSwAwSAJBAPSHNTKPrXNl8m8vG9yNe4YtNkawR75jOuWI
+ pYwuKzNLNfg/zTVppGeClCxm/wiesl//StEAK2DAbQg3MRL/d40CAwEAAQ==
+MD5OfPublicKey: F18E594CAE6831A256871D4E4BB2E914
+EncryptedPrivateKeyInfo:
+ MIIBeDAaBgkqhkiG9w0BBQMwDQQI6wy7KKtFp90CAWQEggFYOf3EFBPEuFIMsVlF
+ VW9JnBO5vB7GZzyEUTFYEIQYE4fhJ+HOVRxHzFc9uBgqd7DMfx2qq9u0o6S9zPui
+ MV6ycJAw7BdMGL0cdh95ti1BKRq/BpHhflCDFy6qb4XHjOVW/7WaMiGTr6hyzW0i
+ Klq7wLnzR37Ly7s5tCg2jvoA9jdutXWf9WgHjsNdIhyhTZnZ/qk61T9LRTSUXHWE
+ IXI6L3TLkoycau6Xxyvc4xzjeifzuD7vNEylkyX14skJJksKqMu6aG/xOqoxhNx5
+ 1+IS2UozJXh5rfFG+34EoWglvXdu+v/7udFKrC/ywaR3OaEiphG7TF32IsOkhqbq
+ kHeTEL9EOHce0FNDelJONNknVaXRcs7zbd4y6sCrBB6r0s4HCKSnS51w16uWynPV
+ z7bQsCkQo/NVpfkcFj6+ux7cvZlbdq0eqSp5h7N/+tbv23O/fXjITCRyxHg=
+--------------- End of file -------------------------
+

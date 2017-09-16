@@ -1,0 +1,12 @@
+7/8/96:
+	Added next_block and reset methods to Crypt::CFB
+	Modified encrypt method so that encrypt("xy") is
+	now the same as encrypt("x") and encrypt("y")
+	concatenated together.
+	This may break some existing code, but is hopefully
+	for the better.  As a workaround, call next_block
+	before your encrypts.
+
+5/12/96:
+	Added SHA0 and HashSHA0, since Crypt::SHA now uses
+	the fixed SHA (ie SHA-1).

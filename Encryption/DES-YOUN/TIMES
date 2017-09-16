@@ -1,0 +1,46 @@
+New version 1.92 - slight speedup.
+
+PA-RISC 1.1 HP 710, 16 MB memory, NFS mounted disks:
+set_key       per sec =     38916.86
+DES ecb bytes per sec =    505971.82
+DES cbc bytes per sec =    515381.13
+crypt         per sec =      2438.24
+
+sun sparc 2 - gcc2 -O2
+set_key       per sec =     21559.10
+DES ecb bytes per sec =    305566.92
+DES cbc bytes per sec =    303497.50
+crypt         per sec =      1410.48
+
+RS/6000 model 320
+set_key       per sec =     14371.93
+DES ecb bytes per sec =    222231.26
+DES cbc bytes per sec =    223926.79
+crypt         per sec =       981.20
+
+68030 HP400, 16 MB memory, local 660 MB disk
+set_key       per sec =      5251.28
+DES ecb bytes per sec =     56186.56
+DES cbc bytes per sec =     58681.53
+crypt         per sec =       276.15
+
+80386/???mh MSDOS Turbo C v 2.0
+set_key       per sec =       918.39
+DES ecb bytes per sec =     15568.23
+DES cbc bytes per sec =     15575.90
+crypt         per sec =        74.67
+
+8088/4.77mh MSDOS Turbo C v 2.0
+set_key       per sec =        35.09
+DES ecb bytes per sec =       563.63
+crypt         per sec =         2.69
+
+libdes Version 1.90 (5% slower)
+
+From Robert Withrow <witr@rwwa.COM>
+386/33 - cc -O
+set_key       per sec =      5475.44
+DES ecb bytes per sec =     64527.52
+DES cbc bytes per sec =     67086.06
+crypt         per sec =       298.54
+

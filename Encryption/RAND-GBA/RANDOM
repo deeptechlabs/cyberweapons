@@ -1,0 +1,252 @@
+The following is a simple hardware noise generator which you can throw together
+using junk box parts in about 10 minutes.  It's based on thermal noise in a
+zener diode, and is powered by its own supply to reduce the chance of noise
+from the computers supply being coupled in.
+
+There are three stages to the circuit:
+
+1. The noise generator, a reverse-biased zener.  The random motion of
+   electrons inside it causes random fluctuations in the voltage across it.
+   I had a BZX85 9V1 zener so I used that (or at least that's what I assume it
+   is - the lettering's worn off).  You could probably use a special noise
+   diode if you can find one.  A quick flip through about 2 feet of suppliers
+   catalogues hasn't turned up anything, and even then they're probably just
+   std. diodes which have passed some sort of noise certifying test.
+
+2. An amplifier for the diode noise.  The output from the zener is fairly low-
+   level, so I fed it through an op-amp.  The diode noise is fed in through a 
+   0.1uF capacitor to the 741, which is set up as a differential amplifier, ie
+   one which amplifies the difference in the signals at its two inputs.
+
+3. A pulse shaper to get a nice square wave from the noise output of the 741,
+   fed in via another 0.1uF capacitor.  You can use anything here, a schmitt
+   trigger or some sort of buffer - I ripped a 4049 out of a logic probe.
+   You can just use anything that can be wired up to buffer/clean up a signal.
+
+Here's the circuit diagram ("schematic" to US people):
+
++9V
+ O-o----o-----------------------+
+   |    |                       |                 Res.
+   |   Res.                     |            +-- 8.2M --+
+   |   100k                     |            |          |       Schmitt trigger
+   |    |   Zener        Cap.   |      Res.  |  |\      |             or
+  Res.  o--|BZY88<--o-- 0.1uF --)----- 10k --o--|- \    |    Cap.   Buffer
+  10k   |    9V1    |           |               |Op- \--o-- 0.1uF ----|>----o-O
+   |   Cap.        Res.        Pot.    Res.     |amp /                      |
+   |  0.1uF        68k         10k <-- 10k -----|+ /                  BZY88 5V1
+0V |    |           |           |               |/                          |
+ O-o----)-----------)-----------)-------------------------------------------o-O
+   |    |           |           |
+  Res.  |           |           |              eg 741           eg 2 inverters
+  10k   |           |           |                                 from 4049
+   |    |           |           |
+ O-o----o-----------o-----------+
+-9V
+
+The component values are very noncritical - I had a batch of 10k resistors left
+over from an R-2R D/A converter (not that you can tell from looking at the
+circuit :-), as well as a generic boxfull of 0.1uF decoupling capacitors.  The
+op-amp used was a 741, the buffer was two gates from a 4049 but you could wire
+in just about anything.
+
+If you were feeling really paranoid about noise from the computer PSU getting
+into the circuit, you could feed the final signal through an optocoupler.  I
+just clipped it at 5V and fed it into the printer port "Ready" input.  You
+could probably get away with the 9V driving one of the serial port handshaking
+signals if you don't have a printer port.
+
+Ideally the generator should be powered by two 9V batteries.  I never have any
+that aren't flat so I used a conventional mains power supply.
+
+The only thing which needs adjusting is the duty cycle, which can be changed by
+varying the 10k pot.  If you've got one, you can hook an oscilloscope to the
+output of the op-amp and check for a 50/50 duty cycle.  However a much more
+precise measurement can be made by hooking the thing to your computer and
+timing the duty cycle.  The control afforded by the pot is a bit rough, it may
+be better to substitute a multiturn one for better control.  However the final
+product will still drift a bit with temperature.  It's probably easier to
+compensate in software for any bias or drift in the signal.  Alternatively you
+could take advantage of the fact that buffers come six to a chip (4050) and use
+an LM348 (quad 741) to get 4 bits at a time, with one bit in each pair set up
+to cancel the bias on the second bit.  If you were feeling really ambitious you
+could get an octal buffer and two 348's and generate a byte at a time.
+
+As to the performance of the circuit, for it's simplicity it performs amazingly
+well.  It may not use a NIST-certified noise generator, but it is a reasonably
+good random noise generator, provided it's driven off it's own power supply,
+has compensation for bias in the duty cycle, and possibly an optocoupler in the
+output.
+
+If anyone has any comments or improvements I'd be interested in hearing from
+them.  I'm also interested in any construction hints people have, or comments
+on important details I've neglected to mention, or alternative components which
+can be used - I've assumed some knowledge of electronics for this, I wasn't
+quite sure what level to pitch it at.  Finally, if anyone builds one of the
+more ambitious setups (4 or 8 bits at a time) I'd be interested in what sort of
+results they give.
+
+Peter.
+--
+    pgut1@cs.aukuni.ac.nz || peterg@kcbbs.gen.nz || peter@nacjack.gen.nz
+              (In order of preference)
+
+>Path: kcbbs!aukuni.ac.nz!waikato.ac.nz!decwrl!elroy.jpl.nasa.gov!sdd.hp.com!hp-cv!hp-pcd!hplsla!ericb
+>Newsgroups: sci.crypt
+>Subject: Re: Simple hardware RNG
+>Message-ID: <5830006@hplsla.hp.com>
+>From: ericb@hplsla.hp.com (Eric Backus)
+>Date: Thu, 22 Oct 1992 23:28:55 GMT
+>References: <1992Oct22.070717.28400@cs.aukuni.ac.nz>
+>Organization: HP Lake Stevens, WA
+>Lines: 62
+
+Peter writes:
+>The following is a simple hardware noise generator which you can
+>throw together using junk box parts in about 10 minutes.  It's based
+>on thermal noise in a zener diode, and is powered by its own supply
+>to reduce the chance of noise from the computers supply being coupled
+>in.
+...
+>The only thing which needs adjusting is the duty cycle, which can be
+>changed by varying the 10k pot.
+...
+>If anyone has any comments or improvements I'd be interested in
+>hearing from them.
+
+Fundamentally, I think this idea works.  I have built a zener-diode
+noise source similar to this, that I then xor'ed into a hardware
+feedback-shift-register PRN generator.  The noise coming out of this
+appears to be quite random.
+
+Some ideas for you:
+
+1. I don't understand the need for the 10K pot.  Isn't your noise
+   source AC-coupled into the op-amp?  Seems like adjusting the pot
+   shouldn't have much effect.  My noise source had no pot.
+
+2. You are relying on the noise from the zener diode, which we assume
+   to be completely unpredictable.  However, people have spent years
+   figuring out how to make zener diodes with low noise levels.  So,
+   your noise signal may be small.  You want to ensure that other
+   signals don't get coupled in and swamp out your good random noise
+   with other junk.  (If your op-amp input voltage noise is very big,
+   it could swamp out the zener noise, but that's probably not bad.)
+
+   One thing I did was take the output of the op-amp, and run it
+   through two different R-C first-order low-pass filters.  These two
+   signals went into a comparator, effectively making a bandpass
+   filter and at the same time giving me a TTL signal output.  On the
+   low frequency end, I wanted to avoid picking up 60 Hz stuff.  On
+   the high end, I wanted to ensure that no high-frequency system
+   clocks got in.
+
+   I'm not sure that how much high-frequency stuff needs to be
+   filtered out.  One problem with filtering it, is that it limits how
+   fast you can grab random bits out of the noise source.  With no
+   high-freqeuncy filter, you are effectively using the bandwidth of
+   the op-amp as your high-frequency cutoff.
+
+3. As I recall, 6.2V is the magic zener voltage level which has the
+   lowest noise, so you want to design your circuit with a zener that
+   is either much bigger or much smaller than this value.  My noise
+   source used a 10V zener.  You probably want the cheapest zener
+   diode you can find.
+
+4. Although the noise from a zener is supposed to be completely
+   unpredictable, it does not have a flat frequency spectrum or very
+   many other properties that are desired for random numbers.
+   Therefore, you must use this noise source along with some other
+   noise source.  My design used a hardware feedback shift register,
+   but there is no reason you couldn't use a good software random
+   number generator.
+----------
+                    Eric Backus
+                    ericb@hplsla.hp.com
+
+>Path: kcbbs!aukuni.ac.nz!waikato.ac.nz!wupost!gumby!destroyer!uunet!pipex!pavo.csi.cam.ac.uk!cam-cl!rja14
+>Newsgroups: sci.crypt
+>Subject: Re: Simple hardware RNG
+>Message-ID: <1992Oct24.103753.8032@infodev.cam.ac.uk>
+>From: rja14@cl.cam.ac.uk (Ross Anderson)
+>Date: Sat, 24 Oct 1992 10:37:53 GMT
+>Reply-To: rja14@cl.cam.ac.uk (Ross Anderson)
+>Sender: news@infodev.cam.ac.uk (USENET news)
+>References: <1992Oct22.070717.28400@cs.aukuni.ac.nz> <5830006@hplsla.hp.com>
+>Organization: U of Cambridge, England
+>Nntp-Posting-Host: ely.cl.cam.ac.uk
+>Lines: 37
+
+In article <5830006@hplsla.hp.com>, ericb@hplsla.hp.com (Eric Backus) writes: 
+
+> Peter writes:
+> >The following is a simple hardware noise generator which you can
+> >throw together using junk box parts in about 10 minutes.  It's based
+> >on thermal noise in a zener diode, and is powered by its own supply
+> >to reduce the chance of noise from the computers supply being coupled
+> >in.
+> .
+> Fundamentally, I think this idea works.  I have built a zener-diode
+> noise source similar to this, that I then xor'ed into a hardware
+> feedback-shift-register PRN generator.  The noise coming out of this
+> appears to be quite random.
+
+You have to be a bit careful here. The bitstream from the feedback shift
+register will look random even if there is not a lot of noise coming out
+of the zener, or if the entropy of the noise source is being killed by a
+circuit resonance somewhere.
+
+The Intel KEYPROM used a similar idea for an on-chip noise generator
+which was used to generate random challenges. Instead of a zener, they
+used the relative drift of three oscillators as the random source.
+
+Earlier this year, we took a look at their test results and estimated
+that this random source only contributed about one bit of noise per
+fifty bits of output. The other forty-nine were just the shift register
+sequence.
+
+If you do use a shift register to condition the output of a generator, it
+would seem prudent to do a linear equivalence test on the output - that is,
+check that the linear complexity of n bits of output is about n/2.
+
+There's no inherent reason why a zener-plus-shift-register design should
+be bad, but there are a lot of things that can go subtly wrong with the
+implementation, so testing is vital,
+
+Ross Anderson
+
+>Path: kcbbs!aukuni.ac.nz!waikato.ac.nz!decwrl!elroy.jpl.nasa.gov!usc!news.service.uci.edu!unogate!mvb.saic.com!ncr-sd!sdd.hp.com!scd.hp.com!hpscdm!cupnews0.cup.hp.com!news1.boi.hp.com!hp-pcd!hplsla!ericb
+>Newsgroups: sci.crypt
+>Subject: Re: Simple hardware RNG
+>Message-ID: <5830007@hplsla.hp.com>
+>From: ericb@hplsla.hp.com (Eric Backus)
+>Date: Mon, 26 Oct 1992 17:17:52 GMT
+>References: <1992Oct22.070717.28400@cs.aukuni.ac.nz>
+>Organization: HP Lake Stevens, WA
+>Lines: 25
+
+rja14@cl.cam.ac.uk (Ross Anderson) writes:
+> ericb@hplsla.hp.com (Eric Backus) writes: 
+> > Fundamentally, I think this idea works.  I have built a zener-diode
+> > noise source similar to this, that I then xor'ed into a hardware
+> > feedback-shift-register PRN generator.  The noise coming out of this
+> > appears to be quite random.
+> 
+> You have to be a bit careful here. The bitstream from the feedback shift
+> register will look random even if there is not a lot of noise coming out
+> of the zener, or if the entropy of the noise source is being killed by a
+> circuit resonance somewhere.
+>
+> Ross Anderson
+
+Agreed.  The analog noise source must first be verified before hooking
+it to the digital noise source.  One thing to verify is that the
+high-frequency cutoff (whether due to an explicit filter or due to
+bandwidth limit of your op-amp) is much higher than the frequency at
+which you will sample the noise source.  Another thing to verify is
+that the frequency spectrum of the noise output doesn't contain any
+suspicious peaks, especially at frequencies related to the frequency
+at which you will sample the noise source.
+----------
+                    Eric Backus
+                    ericb@hplsla.hp.com

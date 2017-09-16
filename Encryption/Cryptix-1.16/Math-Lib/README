@@ -1,0 +1,12 @@
+This module requires the following Perl extensions:
+
+	Math-BigInteger
+	Math-PRSG
+	Math-TrulyRandom
+
+and the following modules:
+
+	Stream
+
+
+mail bug reports to cryptix-perl-bugs@systemics.com

@@ -1,0 +1,51 @@
+- -----BEGIN PGP SIGNED MESSAGE-----
+
+95/09/20 19:07:53 EDT
+Graven Imagery Technical Note
+Compiling des3_port.c and des3_68k.c for the 68030 processor
+
+Summary: For maximum performance, ensure that the SP tables
+are guaranteed to be long-word alligned.
+
+On the 68030 a considerable performance penalty is incurred
+if the SP tables are not long-word alligned.  This table gives
+representative results on a 68030 running at 50Mhz:
+
+Blocks-per-second:        Alligned    Unalligned  Ratio
+
+des3_port.c               4352        3840        1.133
+des3_68k.c                6784        5632        1.204
+
+These results may not pertain to execution on other processors.
+
+Using the THINKC 5.04 compiler there is no way to force long-word
+allignment.  Instead, after the penultimate link the resulting
+object code must be manually inspected (using, for example, ResEdit)
+to ensure:
+
+(1) In the case of des3_port.c, that the in-line references in
+the code itself have zero-mod-4 indirect indices from A5.  If not,
+a two-byte padd (unsigned short Pad = 0x0123;) must be appended
+immediately >following< the last entry of the SP8 array.
+
+(2) In the case of des3_68.c, that searching the code for the hex
+value "01010400" reports a find located on a zero-mod-4 address.
+If not, a two-byte padd (dc.w 0x0123) must be inserted immediately
+>before< the declaration of SP0.
+
+These unpleasant niceties may not be required when using compilers
+that permit or enforce long-word allignment of long-word data.
+
+Richard Outerbridge
+Graven Imagery
+
+- -----BEGIN PGP SIGNATURE-----
+Version: 2.6.2
+
+iQCVAwUBMKNTk9NcQg4O6q8hAQGKsAP8DX/kVGa8Cgak6M8zMi3MhnBHfyY2k+z4
+6mEGBE0M0wh7M57QYSRc4VkCJZx1STsjDV4HwuwmajRgaqe89AvmGex7TNA5GY0v
+lXxK/9AKvQjh2YeELkbcvZi9/j064wjQe/hspUPSG0wWGywvnigs7bhgfYrcrQLQ
+WiwcLy2NmNs=
+=0vKn
+- -----END PGP SIGNATURE-----
+

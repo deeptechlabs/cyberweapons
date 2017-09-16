@@ -1,0 +1,106 @@
+Changes in 3.0
+==============
+
+cryptlib 3.0 features a number of improvements over 2.1, the most visible one
+being that there is now a unified object model which applies to all cryptlib
+objects, so that the old object-type-specific functions like
+cryptGetCertComponentString() and cryptSetEnvelopeComponentNumeric() have been
+replaced by cryptSetAttribute() which works across all object types.  This
+means that cryptlib 3.0 has a much simpler interface than 2.1 did (even with
+all the features added in 3.0, the manual is 25 pages shorter than the 2.1
+manual).  You can find more information on new features at
+http://www.cs.auckland.ac.nz/~pgut001/cryptlib/new30.html (also available via
+the download section of the cryptlib page).
+
+Backwards compatibility with 2.1 is maintained through the use of the 2.1
+include file capi.h, which contains macros which map the 3.0 functions and
+attributes back to 2.1 versions.  Three of the more obscure functions don't
+translate cleanly, these are documented at the start of capi.h.  If you've got
+existing 2.1 code then it should work with 3.0 with a recompile (the cryptlib
+self-test code is still the 2.1 version and uses capi.h to translate the calls
+for the 3.0 library).
+
+This is a beta release of the code, some sections are still subject to change
+because the standards they are based on haven't been finalised yet. The most
+obvious one is the PKCS #15 keyset format, when the cryptlib code was frozen
+the PKCS #15 file format existed only in an informal manner so that some of the
+data formatting used by cryptlib is speculative and will probably change when
+the standard stabilises.  What this means in practice is that you shouldn't
+store any long-term keys in file keysets since the format will have to change
+in the future to track changes in the standard.
+
+To a lesser extent, the compressed-data and password-protected-data formats are
+based on S/MIME drafts which may also be changed at some point.
+
+Finally, the AS/400, MVS, and VM/CMS versions have somewhat specialised
+requirements (some of this is covered in the manual), please contact me before
+trying to do anything with these versions.
+
+Changes in 3.0 beta 2
+=====================
+
+Beta 2 has three minor API changes over beta 1 which are intended to clarify
+areas which have caused problems for users in the past.
+
+The first change is that the third, usually unnecessary, parameter for
+cryptCreateContext() has been eliminated:
+
+  cryptCreateContext( &cryptContext, cryptAlgo );
+
+Only the conventional-encryption algorithms required the encryption mode
+parameter, the default is CBC but if another value is required you can specify
+it using the CRYPT_CTXINFO_MODE attribute:
+
+  cryptSetAttribute( cryptContext, CRYPT_CTXINFO_MODE, cryptMode );
+
+This attribute isn't required for anything except conventional encryption
+algorithms, and even then it's only required for the use of encryption modes
+other than the default mode of CBC.  This change simplifies the creation of
+contexts, since there's no longer any need to juggle CRYPT_USE_DEFAULT,
+CRYPT_MODE_PKC, CRYPT_MODE_NONE, or any of the other special cases which were
+used for algorithms which don't have different encryption modes.
+
+The second change (which probably won't affect most users since it's rather
+obscure) is that previously when loading raw public keys with the
+CRYPT_PKCINFO_RSA or CRYPT_PKCINFO_DLP structure the attribute used was
+CRYPT_CTXINFO_KEY and the length was given as CRYPT_UNUSED.  This required a
+number of special-case checks in the code and made error-checking of user-
+supplied data impossible because it wasn't possible to determine how much data
+was being passed in.
+
+In beta 2 this attribute now follows the pattern for every other attribute in
+that it's necessary to give the structure size (ie sizeof( CRYPT_PKCINFO_xxx ))
+as the length parameter rather than CRYPT_UNUSED.  In addition the attribute
+for key components is now CRYPT_CTXINFO_KEY_COMPONENTS to make explicit the
+fact that what's being loaded is a composite structure containing multiple
+components, not just a single byte string as with CRYPT_CTXINFO_KEY.
+
+The third change is that the functionality of cryptCreateEnvelopeEx() has been
+folded into cryptCreateEnvelope(), which now takes a second parameter
+specifying the type of envelope to create
+
+  cryptCreateEnvelope( &cryptEnvelope, formatType );
+
+The envelope buffer size can optionally be specified with the
+CRYPT_ATTRIBUTE_BUFFERSIZE attribute once the envelope has been created:
+
+  cryptSetAttribute( cryptEnvelope, CRYPT_ATTRIBUTE_BUFFERSIZE, size );
+
+although this should only be necessary in special cases when enveloping
+larger-than-usual data quantities.  This change both simplifies the interface
+and makes it easier for cryptlib to efficiently handle resources, since it can
+allocate a small envelope buffer when enveloping begins rather than having to
+create a one-size-fits-all one on envelope creation.
+
+In addition to these changes, beta 2 includes the ability to read the label for
+the private key which is required for de-enveloping data, so you can use the
+key name in prompts when asking the user for a password.  You can do this with:
+
+  char label[ CRYPT_MAX_TEXTSIZE + 1 ];
+  int labelLength;
+
+  cryptGetAttributeString( cryptEnvelope, CRYPT_ENVINFO_PRIVATEKEY_LABEL,
+                           label, &labelLength );
+  label[ labelLength ] = '\0';
+
+See the manual for more information on this.

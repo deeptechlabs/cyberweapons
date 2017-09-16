@@ -1,0 +1,50 @@
+ezusage.txt   Mark Riordan   mrr@scss3.cl.msu.edu    20 July 1992
+
+This document tells you the bare essentials for running RIPEM.
+It assumes a Unix environment, but PC users should be able to 
+make the necessary adjustments
+
+Let's assume you already have RIPEM compiled, and that
+you are sitting in the ripem/test directory.
+
+First, you must generate a public key for yourself.  Run:
+
+   ripem -g -S ~/mypriv -P ~/mypub -R eks 
+
+You'll be prompted:  
+
+   Enter random string:
+	
+Enter a random string; you don't have to remember it later.
+
+After some serious number-crunching, RIPEM will prompt you:
+
+   Enter password:
+	
+Type a password used to encrypt your private key component.  You *do*
+have to remember this.  You'll be prompted to type it again:
+
+   Enter again to verify:
+	
+Just type it again.
+
+Examine ~/mypub to make sure that RIPEM got your email address right.
+Edit if necessary.
+
+Now register the key with the server (optional):
+
+   mail <~/mypub ripem-register-keys@rpub.cl.msu.edu
+
+To encrypt a message stored in file "msg1",
+
+setenv RIPEM_SERVER_NAME rpub.cl.msu.edu
+setenv RIPEM_PRIVATE_KEY_FILE ~/mypriv
+setenv RIPEM_PUBLIC_KEY_FILE ~/mypub
+ 
+   ripem -e  -r <recipient> -i msg1 -o msg1.enc 
+	
+To decipher a message you've stored in "msgin":
+	
+	ripem -d -i msgin
+
+See the User's Guide for a more detailed writeup.

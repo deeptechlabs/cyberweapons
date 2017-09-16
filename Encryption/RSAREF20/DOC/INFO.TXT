@@ -1,0 +1,234 @@
+                 RSAREF(TM): A Cryptographic Toolkit
+                         General Information
+
+                           RSA Laboratories
+                            March 21, 1994
+
+                             Version 2.0
+
+This document copyright (C) 1994 RSA Laboratories, a division of RSA
+Data Security, Inc. License is granted to reproduce, copy, post, or
+distribute in any manner, provided this document is kept intact and
+no modifications, deletions, or additions are made.
+
+
+WHAT IS IT?
+
+The name "RSAREF" means "RSA reference." RSA Laboratories intends
+RSAREF to serve as a portable, educational, reference implementation
+of cryptography.
+
+RSAREF supports the following algorithms:
+
+     o    RSA encryption and key generation, as defined by RSA
+          Laboratories' Public-Key Cryptography Standards (PKCS)
+
+     o    MD2 and MD5 message digests
+
+     o    DES (Data Encryption Standard) in cipher-block chaining mode
+
+     o    Diffie-Hellman key agreement
+
+     o    DESX, RSA Data Security's efficient, secure DES enhancement
+
+     o    Triple-DES, for added security with three DES operations
+
+Version 2.0 offers three other improvements over RSAREF 1.0:
+the ability to process messages of arbitrary length in
+parts; the option to process either binary data, or data
+encoded in printable ASCII; and support for encrypting
+messages for more than one recipient.
+
+RSAREF is written in the C programming language as a library
+that can be called from an application program. A simple
+Internet Privacy-Enhanced Mail (PEM) implementation can be
+built directly on top of RSAREF, together with message
+parsing and formatting routines and certificate-management
+routines. RSAREF is distributed with a demonstration program
+that shows how one might build such an implementation.
+
+
+WHAT YOU CAN (AND CANNOT) DO WITH RSAREF
+
+The RSAREF license agreement gives legal terms and conditions. Here's
+the layman's interpretation, for information only and with no legal
+weight:
+
+     1.   You can use RSAREF for any purpose, as long as you follow
+          the interface described in the RSAREF documentation. You
+          can't sell RSAREF or provide a service of any type, where
+          you charge in any way. You can use RSAREF in a commercial
+          facility.
+
+          For information on commercial licenses of RSAREF-compatible
+          products, please contact RSA Data Security. (Special
+          arrangements are available for educational institutions and
+          non-profit organizations.)
+
+     2.   You can give others RSAREF and programs that interface to
+          RSAREF, under the same terms and conditions as your RSAREF
+          license.
+
+     3.   You can modify RSAREF as required to port it to other
+          operating systems and compilers, or to improve its
+          performance, as long as you give a copy of the results to
+          RSA Laboratories. Other changes require written consent.
+
+     4.   You can't send RSAREF outside the United States or Canada, or
+          give it to anyone who is not a U.S. or Canadian citizen and
+          doesn't have a U.S. "green card." (These are U.S. State and
+          Commerce Department requirements, because RSA and DES are
+          export-controlled technologies.)
+
+
+HOW TO GET IT
+
+To obtain RSAREF, read the RSAREF license agreement and return a copy
+of the following paragraph by electronic mail to
+<rsaref-administrator@rsa.com>:
+
+     I acknowledge that I have read the RSAREF Program License
+     Agreement and understand and agree to be bound by its terms and
+     conditions, including without limitation its restrictions on
+     foreign reshipment of the Program and information related to the
+     Program. The electronic mail address to which I am requesting
+     that the program be transmitted is located in the United States
+     of America or Canada and I am a United States citizen, a Canadian
+     citizen, or a permanent resident of the United States. The RSAREF
+     Program License Agreement is the complete and exclusive agreement
+     between RSA Laboratories and me relating to the Program, and
+     supersedes any proposal or prior agreement, oral or written, and
+     any other communications between RSA Laboratories and me relating
+     to the Program.
+
+RSAREF is distributed by electronic mail in UNIX(TM) "uuencoded" TAR
+format. When you receive it, store the contents of the message in a
+file, and run your operating system's "uudecode" and TAR programs.
+For example, suppose you store the contents of your message in the
+file 'contents'. You would run the commands:
+
+     uudecode contents             # produces rsaref.tar
+     tar xvf rsaref.tar
+
+You can also get a "uuencoded" PKZIP(TM) version of RSAREF. Just ask
+for the ZIP file when you return the acknowledgment.
+
+RSAREF includes about 60 files organized into the following
+subdirectories:
+
+     doc       documentation
+     install   makefiles for various operating systems
+     rdemo     demonstration programs and test scripts
+     source    source code and include files
+
+RSAREF is also available via anonymous FTP to 'rsa.com'. Along with
+RSAREF you can get RIPEM, Mark Riordan's RSAREF-based privacy-enhanced
+mail application, and an Emacs command interface to RIPEM. See the
+file 'README' in the FTP directory 'rsaref' for more information.
+
+
+USERS' GROUP
+
+RSA Laboratories maintains the electronic-mail users' group
+<rsaref-users@rsa.com> for discussion of RSAREF applications, bug
+fixes, etc. To join the users' group, send electronic mail to
+<rsaref-users-request@rsa.com>.
+
+
+REGISTRATION
+
+RSAREF users who register with RSA Laboratories are entitled to free
+RSAREF upgrades and bug fixes as soon as they become available and a
+50% discount on selected RSA Data Security products. To register,
+send your name, address, and telephone number to
+<rsaref-registration@rsa.com>.
+
+
+PUBLIC-KEY CERTIFICATION
+
+RSA Data Security offers public-key certification services conforming
+to PEM standards. For more information, please send electronic mail
+to <pem-info@rsa.com>.
+
+
+PKCS: PUBLIC-KEY CRYPTOGRAPHY STANDARDS
+
+To obtain copies of RSA Laboratories' Public-Key Cryptography
+Standards (PKCS), send electronic mail to <pkcs-info@rsa.com>.
+
+
+OTHER QUESTIONS
+
+If you have questions on RSAREF software, licenses, export
+restrictions, or other RSA Laboratories offerings, send electronic
+mail to <rsaref-administrator@rsa.com>.
+
+
+AUTHORS
+
+RSAREF is written and maintained by RSA Laboratories with assistance
+from RSA Data Security's software engineers. The DES code was written
+by Richard Outerbridge, with help from Phil Karn and Dan Hoey. Jim
+Hwang of Stanford wrote parts of the arithmetic code under contract
+to RSA Laboratories.
+
+
+ABOUT RSA LABORATORIES
+
+RSA Laboratories is the research and development division of RSA Data
+Security, Inc., the company founded by the inventors of the RSA
+public-key cryptosystem. RSA Laboratories reviews, designs and
+implements secure and efficient cryptosystems of all kinds. Its
+clients include government agencies, telecommunications companies,
+computer manufacturers, software developers, cable TV broadcasters,
+interactive video manufacturers, and satellite broadcast companies,
+among others.
+
+RSA Laboratories draws upon the talents of the following people:
+
+Len Adleman, distinguished associate - Ph.D., University of
+  California, Berkeley; Henry Salvatori professor of computer
+  science at University of Southern California; co-inventor of
+  RSA public-key cryptosystem; co-founder of RSA Data Security, Inc.
+
+Taher Elgamal, senior associate - Ph.D., Stanford University;
+  inventor of Elgamal public-key cryptosystem based on discrete
+  logarithms
+
+Martin Hellman, distinguished associate - Ph.D., Stanford University;
+  professor of electrical engineering at Stanford University;
+  co-inventor of public-key cryptography, exponential key exchange;
+  IEEE fellow; IEEE Centennial Medal recipient
+
+Burt Kaliski, chief scientist - Ph.D., MIT; former visiting assistant
+  professor at Rochester Institute of Technology;  editor of Public-Key
+  Cryptography Standards; general chair of CRYPTO '91
+
+Cetin Koc, associate - Ph.D., University of California, Santa
+  Barbara; assistant professor at Oregon State University
+ 
+Ron Rivest, distinguished associate - Ph.D., Stanford University;
+  professor of computer science at MIT; co-inventor of RSA public-key
+  cryptosystem; co-founder of RSA Data Security, Inc.; member of
+  National Academy of Engineering; director of International
+  Association for Cryptologic Research; program co-chair of ASIACRYPT
+  '91
+
+Matt Robshaw, research scientist - Ph.D., University of London; member
+  of EUROCRYPT '91 organizing committee
+
+RSA Laboratories seeks the talents of other people as well. If you're
+interested, please write or call.
+
+
+ADDRESSES
+
+RSA Laboratories                   RSA Data Security, Inc.
+100 Marine Parkway                 100 Marine Parkway
+Redwood City, CA  94065            Redwood City, CA  94065
+
+(415) 595-7703                     (415) 595-8782
+(415) 595-4126 (fax)               (415) 595-1873 (fax)
+
+PKCS, RSAREF and RSA Laboratories are trademarks of RSA Data
+Security, Inc. All other company names and trademarks are not.

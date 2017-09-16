@@ -1,0 +1,2 @@
+#! /bin/sh
+shar -tX README clean get-file-names copy-files.perl > shar

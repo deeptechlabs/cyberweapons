@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+# This makes inline-code for initial and final permutations.
+
+$i = 0;
+while (<>) {
+    @a = split(" ",$_);
+    while ($x = shift(@a)) {
+	$T[$i] = $x - 1;
+	$i++;
+    }
+}
+
+for($i = 0; $i < 64; $i++) {
+    $ibit = $T[$i];
+    $Iname = ($ibit >= 32) ? "R" : "L";
+    $Oname = ($i >= 32) ? "R_result" : "L_result";
+    printf "if (%s & 0x%08x) %s |= 0x%08x;\n"
+      ,$Iname,1<<($ibit%32),$Oname,1<<($i%32);
+}
+
+# Local variables:
+# mode: c
+# tab-width: 8
+# c-indent-level: 4
+# end:

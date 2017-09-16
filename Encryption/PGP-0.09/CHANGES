@@ -1,0 +1,11 @@
+$Log: CHANGES,v $
+Revision 1.1.1.1  1997/04/12 17:40:13  gary
+CVSing the Perl PGP library
+
+
+0.04
+	Added KeyRing::allKeysByUserID()
+
+0.03: 10/8/96:
+	Improved key ring mangement
+	Added examples/keygen3 as a nice example of key geneeration

@@ -1,0 +1,159 @@
+manifest.txt -- Mark Riordan   mrr@scss3.cl.msu.edu   December 1992
+
+This file describes the contents of the RIPEM distribution package.
+
+=== (base directory):
+makefile			Dummy makefile 
+makedos.bat    MS-DOS batch file to make RIPEM w/ Microsoft C.
+
+=== doc directory:
+access.txt     How to get access to RIPEM from my server.
+benchmrk.txt   List of supported machines & benchmark results.
+betatest.txt	Description of issues relating to RIPEM beta-test.
+announce.txt   RIPEM Beta test announcement.
+change12.txt   Describes major changes between RIPEM 1.1 and 1.2.
+changes.txt    Changes made since previous releases.
+ezusage.txt    Quick guide to RIPEM usage.
+format.txt     Describes the format of RIPEM messages and key files.
+install.txt    Quick description of installation process.
+makeMac.txt    Outerbridge's description of how to build RIPEM on a
+               Macintosh using Think C.
+manifest.txt   This document.
+noncommercial.txt  Preliminary description of allowable RSAREF use.
+pemdirec.txt   Describes RIPEM's PEM-style "direct-trust" certificates.
+posting.txt    Original sci.crypt posting announcing RIPEM 1.0.
+ripem.1	       "man" page for RIPEM.
+ripem.man      Formatted version of ripem.1
+ripembeg.*     RIPEM Beginner's Guide.
+ripemfmt.doc   Description of message formats.
+ripemsrv.*     Documentation on using the key server.
+ripemusr.doc   RIPEM User's Guide, Word for Windows format.
+ripemusr.ps    Omitted due to size; get this via FTP from ripem.msu.edu.
+ripemusr.txt   RIPEM User's Guide, ASCII text format.
+rsaref-license.txt
+               Updated RSAREF license agreement, with more liberal terms
+               than the agreement distributed with RSAREF.
+server.txt     Description of how server works, and possible changes.
+todo.txt       The "To-do" list of changes not yet made.
+
+=== mac68K directory:
+This directory contains Richard Outerbridge's Motorola 68020
+assembler versions of certain time-critical routines.  The code
+is written for the inline assembler in the Macintosh THINK C 
+version 5 compiler.
+
+=== main directory:
+adduser.c		Functions to add user to list of recipients.
+adduserp.h			[Function prototypes]
+bemparse.c		Functions to parse Basic Encoding Rules structures; used only
+					for debugging and exploration.
+bemparse.h			[Function prototypes]
+boolean.h		Simple header defining a few symbols.
+crackhed.c		Functions to parse PEM headers.
+crackhpr.h			[Function prototypes]
+ddes.c			DES functions used to encrypt private keys.  
+ddes.h			Prototypes and documentation for above.
+derkey.c			Mark Windsor's functions to convert from DER encoding to raw 
+               keys
+derkeypr.h     	[Function prototypes]
+do_djgcc.bat	MS-DOS batch file to compile with DJGCC (386 GNU C).
+getopt.c			A slightly modified Unix "getopt" command line argument cracker.
+getoptpr.h			[Function prototypes]
+getsys.c			Various system-dependent routines.  
+getsyspr.h			[Function prototypes]
+global.h			Copied from RSAREF package; just a few typedef's for RSAREF. 
+hexbin.c			Function to convert between ASCII hex and binary.
+hexbinpr.h			[Function prototypes]
+keyder.c			Windsor's routines to covert from raw keys to DER encoding.
+keyderpr.h			[Function prototypes]
+keyfield.h		Constants relating to RIPEM key format.
+keyman.c			Functions to search for/store/encrypt/dump public keys.
+keymanpr.h			[Function prototypes]
+list.c			Functions to implement doubly-linked lists.
+list.h			Typedefs for above.
+listprot.h			[Function prototypes]
+makefile			Makefile for RIPEM main program.
+msc7.c			Redefinitions of "write", et al, for the lousy Microsoft C 7.0.
+p.h				Unused header file for non-ANSI compilers.
+parsit.c			Function to tokenize input line, used for RIPEM_ARGS env
+               variable
+parsitpr.h			[Function prototypes]
+prcodepr.h			[Function prototypes]
+prencode.c		Routines to convert between binary and RFC 1113 ASCII encoding.
+prencode.h			[Function prototypes]
+protserv.h		Constants defining protocol used to talk to key server.
+pubinfo.c		Functions to extract public key info from file or server packet.
+pubinfop.h		set tabstop=3 shiftwidth=3
+rdwrmsg.c		Functions to read/write RIPEM messages.
+rdwrmsgp.h			[Function prototypes]
+ripem.h			Various symbols and typedefs.
+ripem.mak		Microsoft NMAKE makefile for RIPEM.
+ripemgcc.lrf	Helper file for do_djgcc.bat (Linker Response File).
+ripemglo.h		Global variable definitions.
+ripemmai.c		RIPEM main program.
+ripempro.h			[Function prototypes]
+ripemsoc.c		Functions to talk to the RIPEM key server.
+ripemsop.h			[Function prototypes]
+ripemsoc.mak   Microsoft NMAKE makefile for RIPEM with FTP Software drivers.
+strutil.c		Functions to do string manipulation.
+strutilp.h			[Function prototypes]
+usage.c			Function to print out "Usage:" message.
+usagemsg.c		Text of "Usage:" message, derived from doc/ripem.hlp.
+usagepro.h			[Function prototypes]
+
+=== rsaref directory:
+	This entire directory is a nearly verbatim distribution of the RSAREF 1.0
+	toolkit from RSA Data Security, Inc.  It includes its own documentation.
+   (The only changes are in the makefile.)
+	
+=== server directory:
+copymail.c		Program to copy incoming mail to an "incoming" directory.
+credumpb.c		Useless test program to create dummy public key files.
+crekeydb.c		Unused program to read flat key files & create GDBM database.
+crekeydp.h			[Function prototypes]
+db2flat.c      Program to create a flat key file from GDBM database.
+getreta.c      Function to get return address from mail message.
+getretap.h        [Function prototype]
+givepubs.c     Program to respond to email request for a file.
+givepubp.h        [Function prototypes]
+makefile			Server makefile
+opeclo.c       Functions to open/close GDBM database.
+readsock.c		Unused socket test program.
+redirsrv.c     Simple key server program which simply redirects inquirer
+               to another server.
+ripem-attacks  Discusses possible attacks on RIPEM (by Marc VanHeyningen).
+ripem-faq      RIPEM Frequently-Asked Questions (by Marc VanHeyningen).
+rkeyreg.c		Key registration program--writes to GDBM database.
+rkeyregp.h			[Function prototypes]
+rkeyserp.h			[Function prototypes]
+rkeyserv.c		Key server--listens on UDP port and reads from GDBM database.
+run.c          Function to run a program and collect its output.
+run-server     Simple script to run the RIPEM key server.
+sendnetmail.c	Function to send mail via "sendmail".
+sendnetp.h			[Function prototypes]
+sendsock.c		Unused socket comm test program.
+srvfiles.h		Header containing names of files used by server programs.
+startnetmail.c Function to initiate sending email in Unix.
+testmail.c		Unused test program for sendnetmail.
+testrun.c      Unused test program for run.c.
+update-key-database  Sample script to update the GDBM database from flat file.
+
+=== test directory:
+(various files related to testing RIPEM)
+
+=== util directory:
+display-ripem  MH-based script to decrypt RIPEM messages.
+emacs/ripem.el EMACS functions to facilitate use of RIPEM.
+hex2bin.c		Unused program to convert between binary and hex ASCII.
+mailrc         Sample Unix .mailrc file.
+makefile			Makefile
+man2code.c		Program to convert ASCII to C source strings. 
+mushrc         Sample Unix .mushrc file (startup file for Mush mail program).
+nobksp.c       Eliminates backspaces from files; useful for man pages.
+quote.c        Utility program to "quote" a mail message (for replies).
+ripem-encrypt  Short shell script used by .mailrc.
+ripemd         Short shell script for decryption.
+send-ripem     Perl script that uses MH to encrypt & send messages.
+stripmsg.c		Unused program to strip headers from PEM messages.
+tprencod.c		Unused program to convert between binary and RFC 1113 encoding.
+tstbem.c			Unused program to test "bemparse.c".

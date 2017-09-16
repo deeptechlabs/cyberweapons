@@ -1,0 +1,25 @@
+cme@ellisun.sw.stratus.com (Carl Ellison) writes:
+:
+: In fact, I think the world needs a good, simple transposition program --
+: one which takes all input (up to 8192 bytes, for example) and transposes
+: bytes based on a PRNG initialized from a password, so that the second block
+: has a different transposition from the first block.  The password
+: could even be augmented by the sum of the bytes in the first block -- to
+: get a per-message salt.
+:
+: Care to write one?
+
+Sure :-)
+
+The one below isn't the fastest in the world (it clocks in at about
+30k chars/sec), but hey, it does everything else mentioned above.
+It's a quick hack, so I'm certain many improvements can be made.
+Enjoy.
+
+
+William
+
+Usage: tran [<key> [<infile> [<outfile>]]]
+
+
+(William Setzer  setzer@math.ncsu.edu)

@@ -1,0 +1,115 @@
+This directory defines 5 executables: ranG, ranH, ranA, ranT and ranM.
+These can be used in a UNIX pipe to confuse and diffuse values from stdin
+to stdout.  One use is to take a source of non-repeatable measurements and
+yield what passes for true random numbers.  Eg.,
+
+	gzip -c </dev/audio | ranH -n 2 -x 4 | ranM >random-pipe
+
+These can be mixed and matched at will.  Each takes a certain amount of
+input from the stdin for its own use , so if you drive from a constant
+length input, too many rounds might leave you with no output bytes.
+
+
+				 - Carl Ellison  (cme@acm.org)
+
+==============================================================================
+
+			Directory Contents
+
+======================================== Makefile
+
+Basic makefile
+
+======================================== README
+
+This file.
+
+======================================== global.h
+from ../md5/
+
+======================================== md5.h
+from ../md5/
+
+======================================== rannos.sh
+
+This is a sample shell script generating a medium size batch of
+pseudo-random numbers based on system parameters which are unlikely ever to
+repeat and which are difficult for others to know with precision.
+
+======================================== ranG.c
+
+	ranG
+or
+	ranG md5
+
+takes about 512 bytes from stdin to initialize the PRNG -- either
+subtract-with-borrow (rnd.c) or MD5.  It takes remaining bytes of stdin and
+XORs them with PRNG output, writing those to stdout.  It then writes PRNG
+output straight to stdout, forever.  You might use this before ranM because
+ranM takes over 32KB of input without producing any output.  You can also
+drive ranG with a seed file, in case you want to produce a repeatable set
+of PRNs (e.g., for running a simulation which you're debugging).
+
+======================================== ranH.c
+
+	ranH -n y -x z
+
+takes MD5 of (16+w) bytes of stdin (y <= w <= z) and puts out 16 bytes to
+stdout (or 15 bytes if a ranno value is needed to choose the next w), then
+loops until EOF.
+
+======================================== ranA.c
+
+	ranA f1 f2 f3 f4 f5 ... fn <f0 >Aout
+
+interleaves bytes from all the named files, in order (f0,f1,f2,...,fn).
+When EOF is reached on each file, that file drops out of the contribution
+to Aout.  When the last EOF is reached, ranA exits.
+
+For maximum PRNG strength, assuming all the files are PRNG streams, this
+should be followed by ranM.
+
+======================================== ranT.c
+
+	ranT <Tin >f0 f1 f2 f3 f4 f5 ... fn
+
+reads bytes from Tin and appends them, interleaved to all the named files,
+in order (f0,f1,f2,...,fn).  When EOF is reached on Tin, ranT exits.
+
+This is probably not a safe way to distribute a single stream unless you
+are certain that each of the destination pipes will need exactly the same
+number of bytes.  Otherwise, ranT is likely to back up on one of the pipes,
+starving all the others.  However, you can send each of these split streams
+to the same kind of pipeline (e.g., ranM|ranH) and then collect the outputs
+with ranA|ranM.  That kind of construct would keep from backing up one of
+the pipes.  You can also send one sub-stream through DES and another
+through IDEA, both with keys specified on the command line, and another
+through ranH -n 0 -x 0.  All three of those would consume the same number
+of bytes per output byte and therefore keep from backing up ranT.  However,
+sending one to ranH and another to ranM would almost certainly lock up
+ranT.
+
+======================================== ranM.c
+
+	ranM
+
+takes stdin to initialize rnd()'s array, then uses rnd() output to do
+Algorithm M (cf., Knuth Vol.2) on stdin, writing that to stdout.
+
+or
+	ranM <fname>
+
+takes a stream of inputs from <fname> (possibly a UNIX named pipe being
+driven by a ranno generation chain) to drive Algorithm M in moving bytes
+from stdin to stdout.
+
+Note: ranM starts by taking over 32KB of input from stdin for its own use.
+stdin should probably not be a file.
+
+======================================== rnd.c
+
+Utility to ranM
+
+	This is a standard subtract-with-borrow byte generator.
+
+

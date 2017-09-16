@@ -1,0 +1,170 @@
+#!/usr/bin/perl
+
+# encrypt-ripem
+# version 1.0
+# by Marc VanHeyningen <mvanheyn@whale.cs.indiana.edu>, January 1993
+
+# Use: encrypt-ripem filename
+
+# This is a program for encrypting files under RIPEM.  It is intended to be
+# an improved version of the ripem-encrypt program discussed in the
+# user manual.  It has a few improvements; most notably, it will selectively
+# process headers as the author considers appropriate for encrypted mail.
+
+# This is actually a dumbed-down version of the send-ripem program, a RIPEM
+# encryption package for MH.
+
+umask 077;
+$tmpfile = "/tmp/rmhts." . $$;
+
+sub do_nothing { }
+
+sub clobber {
+    local($filename) = @_;
+    local($size, $i);
+
+    $size = (stat($filename))[7];
+
+    open(FD, ">> $filename");
+    seek(FD, 0, 0);
+    for($i = 0; $i < $size; $i++) {
+	syswrite(FD, $i, 1);
+    }
+    close(FD);
+
+    unlink $filename;
+}
+
+
+sub parse_headers {
+    local($filedes, $default, %rules) = @_;
+    local($label, $contents, $label_index, $bogus);
+
+    $_ = <$filedes>;
+    while($_ ne "" && ! /^$|^-/) {
+	($label, $contents) = /^([0-9A-Za-z\-]*):[ \t]*(.*\n)/;
+	($label_index = $label) =~ tr/[A-Z]/[a-z]/;
+	$_ = <$filedes>;
+
+	while($_ ne "" && /^[ \t]/) {
+	    $contents .= $_;
+	    $_ = <$filedes>;
+	}
+
+	if(defined $rules{$label_index}) {
+# the variable name indicates what I think about the fact that
+# perl won't allow associative array values as arguments to "do".
+	    $bogus = $rules{$label_index};
+	    do $bogus ($label, $contents);
+	}
+	else {
+	    do $default($label, $contents);
+	}
+    }
+}
+
+
+# This is a simple subroutine which, given a time, generates the
+# string containing that time in proper RFC 822 date format.
+# Note that the way it find out its timezone is portable (if a bit ugly)
+# and it assumes that January 1st is never DST.
+
+sub proper_time {
+    local($time) = @_;
+
+    local($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
+	localtime($time);
+
+    local(@DoW) = ('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
+    local(@MoY) = ('Jan','Feb','Mar','Apr','May','Jun',
+		   'Jul','Aug','Sep','Oct','Nov','Dec');
+
+    local($daytime) = sprintf("%s, %d %s %02d %02d:%02d:%02d ",$DoW[$wday],
+			      $mday, $MoY[$mon], $year % 100, $hour, $min, $sec);
+
+    ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
+	localtime(3600 * $isdst);
+    if($year == 70) {
+	$daytime .= sprintf("+%02d%02d", $hour, $min);
+    } else {
+	$daytime .= sprintf("-%02d%02d", (24 - $hour), ($min == 0) ? 0 :
+			    60 - $min);
+    }
+}
+
+$date = &proper_time(time);
+
+if(defined $ENV{"SIGNATURE"}) { $fullname = $ENV{"SIGNATURE"}; }
+elsif(defined $ENV{"FULLNAME"}) { $fullname = $ENV{"FULLNAME"}; }
+else { ($fullname = ((getpwuid($<))[6])) =~ s/,.*//; }
+
+($ripem_user = $ENV{"RIPEM_USER_NAME"}) =~ s/,.*//;
+
+sub generate_enclosed_headers {
+    print "From: $ripem_user ($fullname)\n";
+    print "Date: $date\n";
+}
+
+sub print_header {
+    local($label, $contents) = @_;
+    print $label, ": ", $contents;
+}
+
+
+
+sub do_encrypted {
+    local(%orules, %erules);
+    local($recipients) = "";
+
+    print "Encrypted: RIPEM, ENCRYPTED\n";
+
+    $orules{"subject"} = $orules{"comments"} = $orules{"summary"} =
+	$orules{"keywords"} = $orules{"encrypted"} = "do_nothing";
+
+    sub die_bcc_recipients {
+	local($label, $contents) = @_;
+	die "Cannot do Bcc: lines";
+    }
+    $orules{"bcc"} = "die_bcc_recipients";
+    $orules{"content-type"} = $orules{"content-description"} =
+	$orules{"content-transfer-encoding"} = "do_nothing";
+    sub is_mime_version { $mime = 1; }
+    $mime = 0;
+    $orules{"mime-version"} = "is_mime_version";
+
+    &parse_headers(MESSAGE_FD, "print_header", %orules);
+    if($mime) {
+	print "MIME-Version: 1.0\n";
+	print "Content-Type: application/x-ripem\n";
+    }
+    print "\n";
+    close TOSEND_FD;
+    seek(MESSAGE_FD, 0, 0);
+
+    open(RIPEM_FD, "|ripem -e -h ir >> $tmpfile");
+    select(RIPEM_FD);
+    &generate_enclosed_headers();
+    $erules{"encrypted"} = "do_nothing";
+    &parse_headers(MESSAGE_FD, "print_header", %erules);
+    print "\n";
+    while(<MESSAGE_FD>) { print; }
+    close RIPEM_FD || die "RIPEM terminated with errors";
+}
+
+$filename = shift || die "use: $0 filename";
+
+open(MESSAGE_FD, $filename) || die "Cannot read $message";
+open(TOSEND_FD, "> $tmpfile") || die "Cannot write to $tosend";
+select(TOSEND_FD);
+
+seek(MESSAGE_FD, 0, 0);
+	
+&do_encrypted();
+
+open(FILE, $tmpfile);
+open(NEWFILE, ">> $filename");
+seek(NEWFILE, 0, 0);
+while(<FILE>) { print NEWFILE; }
+close FILE;
+close NEWFILE;
+&clobber($tmpfile);

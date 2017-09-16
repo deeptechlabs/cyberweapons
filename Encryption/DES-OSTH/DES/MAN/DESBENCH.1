@@ -1,0 +1,45 @@
+.TH DESBENCH 1 "Version 1.0" "Chalmers University"
+.SH NAME
+desbench \- Simple benchmark program for DES functions.
+.SH SYNOPSIS
+.B desbench
+[
+.B \-k
+]
+.I iterations
+.SH DESCRIPTION
+.PP
+.I desbench
+is a program that calls the base DES encryption algorithm,
+.IR des_dea (3),
+a number of times as specified by
+.IR iterations .
+.PP
+The following options are understood by
+.IR desbench .
+.TP
+.B \-k
+Selects key schedule generation
+.IR des_key (3)
+instead of
+.IR des_dea (3).
+.PP
+The program is useful for testing how the speed is affected by modifications
+to the algorithms. This is by no means any official benchmark program for
+software implementations of the DES standard.
+.SH SEE ALSO
+.IR des (3).
+.SH AUTHOR
+.ie t .ds O: \\kz\\h'+(\w'O'-\w'..')/2'\v'-0.8m'..\v'+0.8m'\\h'|\\nzu'O
+.el .ds O: O
+Stig \*(O:stholm <ostholm@ce.chalmers.se>
+.br
+Department of Computer Engineering
+.br
+Chalmers University of Technology
+.SH RESTRICTIONS
+This software may be freely distributed an modified without any restrictions
+from the author.
+Additional restrictions due to national laws governing the use, import or
+export of cryptographic software is the responsibility of the software user,
+importer or exporter to follow.

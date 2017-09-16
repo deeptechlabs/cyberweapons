@@ -1,0 +1,94 @@
+Patch2 posted to comp.sources.misc
+Version 1.95 13/05/92 eay
+	Added an alternative version of the D_ENCRYPT macro in
+	ecb_encrypt and fcrypt.  Depending on the compiler, one version or the
+	other will be faster.
+
+Version 1.94 05/05/92 eay
+	Fixed an incompatiblity between my string_to_key and the MIT
+	 version.  When the key is longer than 8 chars, I was wrapping
+	 with a different method.  To use the old version, define
+	 OLD_STR_TO_KEY in the makefile.  Thanks to
+	 viktor@newsu.shearson.com (Viktor Dukhovni).
+
+Version 1.93 28/04/92 eay
+	Fixed the VMS mods so that echo is now turned off in
+	 read_password.  Thanks again to brennan@coco.cchs.su.oz.AU.
+	MSDOS support added.  The routines can be compiled with
+	 Turbo C (v2.0) and MSC (v5.1).  Make sure MSDOS is defined.
+
+Patch1 posted to comp.sources.misc
+Version 1.92 13/04/92 eay
+	Changed D_ENCRYPT so that the rotation of R occurs outside of
+	 the loop.  This required rotating all the longs in sp.h (now
+	 called spr.h). Thanks to Richard Outerbridge <71755.204@CompuServe.COM>
+	speed.c has been changed so it will work without SIGALRM.  If
+	 times(3) is not present it will try to use ftime() instead.
+
+Version 1.91 08/04/92 eay
+	Added -E/-D options to des(1) so it can use string_to_key.
+	Added SVR4 mods suggested by witr@rwwa.COM
+	Added VMS mods suggested by brennan@coco.cchs.su.oz.AU.  If
+	anyone knows how to turn of tty echo in VMS please tell me or
+	implement it yourself :-).
+	Changed FILE *IN/*OUT to *DES_IN/*DES_OUT since it appears VMS
+	does not like IN/OUT being used.
+
+Libdes posted to comp.sources.misc
+Version 1.9 24/03/92 eay
+	Now contains a fast small crypt replacement.
+	Added des(1) command.
+	Added des_rw_mode so people can use cbc encryption with
+	enc_read and enc_write.
+
+Version 1.8 15/10/91 eay
+	Bug in cbc_cksum.
+	Many thanks to Keith Reynolds (keithr@sco.COM) for pointing this
+	one out.
+
+Version 1.7 24/09/91 eay
+	Fixed set_key :-)
+	set_key is 4 times faster and takes less space.
+	There are a few minor changes that could be made.
+
+Version 1.6 19/09/1991 eay
+	Finally go IP and FP finished.
+	Now I need to fix set_key.
+	This version is quite a bit faster that 1.51
+
+Version 1.52 15/06/1991 eay
+	20% speedup in ecb_encrypt by changing the E bit selection
+	to use 2 32bit words.  This also required modification of the
+	sp table.  There is still a way to speedup the IP and IP-1
+	(hints from outer@sq.com) still working on this one :-(.
+
+Version 1.51 07/06/1991 eay
+	Faster des_encrypt by loop unrolling
+	Fixed bug in quad_cksum.c (thanks to hughes@logos.ucs.indiana.edu)
+
+Version 1.50 28/05/1991 eay
+	Optimized the code a bit more for the sparc.  I have improved the
+	speed of the inner des_encrypt by speeding up the initial and
+	final permutations.
+
+Version 1.40 23/10/1990 eay
+	Fixed des_random_key, it did not produce a random key :-(
+
+Version 1.30  2/10/1990 eay
+	Have made des_quad_cksum the same as MIT's, the full package
+	should be compatible with MIT's
+	Have tested on a DECstation 3100
+	Still need to fix des_set_key (make it faster).
+	Does des_cbc_encrypts at 70.5k/sec on a 3100.
+
+Version 1.20 18/09/1990 eay
+	Fixed byte order dependencies.
+	Fixed (I hope) all the word alignment problems.
+	Speedup in des_ecb_encrypt.
+
+Version 1.10 11/09/1990 eay
+	Added des_enc_read and des_enc_write.
+	Still need to fix des_quad_cksum.
+	Still need to document des_enc_read and des_enc_write.
+
+Version 1.00 27/08/1990 eay

@@ -1,0 +1,20 @@
+This module requires the following Perl extensions:
+
+	Crypt-Blowfish
+	Crypt-DES
+	Crypt-IDEA
+	Crypt-MD5
+	Crypt-SHA
+	Crypt-SHA0
+	Math-BigInteger
+	Math-PRSG
+	Math-TrulyRandom
+
+and the following modules:
+
+	Math-Systemics
+	Stream
+
+
+Mail bug reports to cryptix-perl-bugs@systemics.com
+

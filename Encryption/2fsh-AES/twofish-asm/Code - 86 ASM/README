@@ -1,0 +1,54 @@
+               Optimized ANSI C + 386 Assembler Diskette
+
+
+Files on this diskette:
+
+File Name           Description
+========================================================================
+
+README          This file
+
+PLATFORM.H      Platform-specific definitions (e.g., endianness, rotates)
+
+TABLE.H         Macros and tables for Twofish internal structures
+
+AES.H           AES header file, function prototypes
+
+DEBUG.H         Debug i/o macros and functions
+
+TWOFISH2.C      Optimized ANSI C source code
+
+TST2FISH.C      Test code, links with TWOFISH2.C to generate KAT/MCT
+
+COMPILE.BAT     Batch file used to compile TST2FISH.EXE.  See this file for
+                the set of compiler options used to optimize performance.
+ 
+2FISH_86.ASM    Optimized assembly language for Pentium/PentiumPro/PentiumII.
+
+CPUTYPE.ASM     Intel code to detect CPU type.
+
+STRUCMAC.INC    Portable structured programming macros for assembly language.
+
+TST2FISH.EXE    Executable 32-bit console app of TST2FISH.C, TWOFISH2.C,
+                and 2FISH_86.ASM linked together.  Use the -a switch to
+                run the assembly language version.
+
+========================================================================
+
+Notes:
+
+The program TST2FISH.EXE will generate the full set of KAT/MCT/Tables 
+files (excluding the intermediate values file) in the current directory,
+if run with the -M switch:
+ 
+	TST2FISH -M -a
+
+When run without command-line parameters, it will generate a partial MCT set,
+since the full set takes a long time.
+
+When run with a question mark character ('?') as a parameter, TST2FISH.EXE
+will display a help screen of command line options.
+
+The -t switch will time the encryption, decryption, and key schedule setup
+routines, down to the clock cycle.  Use it in conjunction with -a to
+time both C and assembly language versions.

@@ -1,0 +1,43 @@
+miscnote.txt -- Mark Riordan   mrr@scss3.cl.msu.edu   6 December 1992
+
+Miscellaneous notes on this distribution of RIPEM.
+
+WHAT IS HERE
+
+The full source to the RIPEM main program is here.  All of the
+source to the key server is here, except for the GNU gdbm package,
+which is widely available from the usual GNU FTP sites.  (cf.
+gatekeeper.dec.com, /.1/GNU, for instance.)  I include the source
+to RSAREF, which can now be distributed freely (read the license).
+
+
+WHAT I'D LIKE FROM YOU
+
+For the User's Guide, I am looking for more tips on how to use
+RIPEM with various mail packages.
+
+Ports to other platforms would be gratefully accepted.
+
+
+MISCELLANEOUS COMMENTS ON THE CONTENTS OF THIS PACKAGE
+
+Filenames in the package tend to be in all lower case, with short
+names to ease porting to/from MS-DOS.
+
+All files assume tabs every 3 columns.  My Unix .exrc file reads
+"set tabstop=3 shiftwidth=3".
+
+RIPEM (optionally) uses UDP socket communication to talk to the
+key server.  I've found this to be pretty portable amoung various
+Unix implementations.  The socket code also works on PC's running
+FTP Software Inc.'s PC/TCP package.  To compile and link on a PC
+with the socket code enabled, though, you'll need the PC/TCP
+Programmer's Toolkit.  If you have PC/TCP but not the toolkit,
+contact me and I'll send you a .EXE file.
+
+The key management routines contain some duplicated functionality,
+especially between keyman.c and pubinfo.c.  This reflects some
+design changes and indecision during the development of the key
+server.  There's a good chance I'll never get around to cleaning
+this up.
+

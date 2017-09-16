@@ -1,0 +1,23 @@
+MD5 Extension Version 1.6
+
+This is a Perl5 extension interface to the RSA Data Security Inc. MD5
+Message Digest algorithm. Documentation is in MD5.pod.
+
+To build the extension, unpack this distribution under the ext/
+directory of your Perl source distribution, create the Makefile using
+'perl Makefile.PL' and do a 'make'.
+
+The test script gives a simple example of how to use the routines.
+In particular 'make test' will perform a test of the routines to see
+if they produce the expected output.
+
+This version fixes the problem with dynamic linking of the module
+under Solaris 2.x which happend in releases prior to 1.4. Thanks to Ken
+Pizzini (ken@spry.com) for nailing this.
+
+This implementation was originally based on one by:
+
+*   Neil Winton			Post Point P5		*
+*   N.Winton@axion.bt.co.uk	BT Laboratories		*
+*   Tel +44 1473 646079		Martlesham Heath	*
+*   Fax +44 1473 643306		IPSWICH IP5 7RE, UK	*

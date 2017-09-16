@@ -1,0 +1,1 @@
+ripem -e -r test3 -u test3 -s test3.priv -p test3.pub -i message -D 5 -Z test3.dbg -o test3.out

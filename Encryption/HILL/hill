@@ -1,0 +1,79 @@
+# Hill interface routine
+cd /tmp
+TEMP=hill$$
+SED="sed s#junk#${TEMP}#"
+trap 'rm -f ${TEMP}*' 0 1 2 3
+# parse arguments
+set -- `getopt cCpsued $*`
+if [ $? != 0 ]
+then
+	echo "usage: $0 { -e | -d } [ { -c | -C | -p } ] [ -u ] [ key ]"
+	exit 1
+fi
+# set internal flags
+for i in $*
+do
+	case $i in
+	-c | -C | -p)	REDUCTION=$i;	shift;;
+	-e | -d)		MODE=$i;	shift;;
+	-u)			UU=$i;		shift;;
+	--)			shift;		break;;
+	esac
+done
+if [ x$MODE = x ]
+then
+	echo "$0: must specify -e to encode or -d to decode"
+	exit 1
+fi
+if [ x$1 = x ]
+then
+	HILL="hill0 $MODE"
+else
+	HILL="hill0 $MODE \"$1\""
+fi
+# do the work
+if [ $MODE = -e ]
+then
+	case ${REDUCTION}${UU} in
+	-c-u)	compact | $HILL >$TEMP
+		uuencode $TEMP $TEMP.uu junk
+		cat $TEMP.uu;;
+	-c)	compact | $HILL;;
+	-C-u)	compress | $HILL >$TEMP
+		uuencode $TEMP $TEMP.uu junk
+		cat $TEMP.uu;;
+	-C)	compress | $HILL;;
+	-p-u)	cat >$TEMP
+		pack $TEMP >/dev/null
+		$HILL <$TEMP.z >$TEMP
+		uuencode $TEMP $TEMP.uu junk
+		cat $TEMP.uu;;
+	-p)	cat >$TEMP
+		pack $TEMP >/dev/null
+		$HILL <$TEMP.z;;
+	-u)	$HILL >$TEMP
+		uuencode $TEMP $TEMP.uu junk
+		cat $TEMP.uu;;
+	*)	$HILL;;
+	esac
+else
+	case ${REDUCTION}${UU} in
+	-c-u)	$SED | uudecode
+		$HILL <$TEMP | uncompact;;
+	-c)	$HILL | uncompact;;
+	-C-u)	$SED | uudecode;
+		$HILL <$TEMP | uncompress;;
+	-C)	$HILL | uncompress;;
+	-p-u)	$SED | uudecode
+		$HILL <$TEMP >$TEMP.z
+		rm -f $TEMP
+		unpack $TEMP.z >/dev/null
+		cat $TEMP;;
+	-p)	$HILL >$TEMP.z
+		unpack $TEMP.z >/dev/null
+		cat $TEMP;;
+	-u)	$SED | uudecode
+		$HILL <$TEMP;;
+	*)	$HILL;;
+	esac
+fi

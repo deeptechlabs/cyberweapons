@@ -1,0 +1,59 @@
+#!/bin/csh -f
+#
+#		RIPEM encryption/decryption script
+#
+#	Should be assigned to the EDITOR variable in your .mailrc file.
+#	(Or assign it to VISUAL if you're an EMACS fan. 8-)
+#	"editheaders" should also be set, so RIPEM can suck them through
+#	to pick off the To: address.
+#
+#	Brent Chivers	1993-mar-30
+#
+#	Brent Chivers	1993-mar-31
+#	Check for a record=file in .mailrc -- if found, save the clear text.
+#	This means the message gets logged twice (clear and encrypted) if you
+#	send it (and possibly still logged in the clear even if you don't send
+#	it).  But saving just the encrypted message seems a lot less useful.
+#	Sure, you can still re-send something if requested, but you can't be
+#	sure what you're resending; and you don't have anything useful for
+#	personal reference.
+#
+unalias *
+#
+# name a work file
+#
+set output = "$home/.ripem.$$"
+#
+# Received mail starts with "From " line.
+#
+head -1 $1 | grep '^From '
+if ($status) then
+	ripem -e -h pr -i $1 -o $output
+	set ripem_status = $status
+	if ( $ripem_status ) then
+		cat $1 > $output
+		echo "" >> $output
+		echo "RIPEM encryption of $1 failed with status $ripem_status" >> $output
+	    else
+		set record = `grep record= ~/.mailrc | sed 's/.*=//'`
+		if ( "$record" != "" ) then
+			set sender = `whoami`
+			set timestamp = `date`
+			echo "From $sender $timestamp (clear-text copy for log file)" >> $record
+			cat $1 >> $record
+			echo "" >> $record
+		    endif
+	    endif
+	cat $output > $1
+	/bin/rm $output
+    else
+	ripem -d -h pr -i $1 -o $output
+	set ripem_status = $status
+	if ( $ripem_status ) then
+		cat $1 > $output
+		echo "" >> $output
+		echo "RIPEM decryption of $1 failed with status $ripem_status" >> $output
+	    endif
+	cat $output > $1
+	/bin/rm $output
+    endif

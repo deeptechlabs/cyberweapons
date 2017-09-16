@@ -1,0 +1,90 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+
+
+	This is version 1.0.0 of the Python Cryptography Toolkit, a
+collection of cryptographic routines for the Python programming
+language.  
+
+Changes since version 0.0.4a:
+
+	* The PGP and SSLeay interfaces have been removed; they'll be
+in separate distributions from now on.
+
+	* Bug in the generation of DSA keys fixed; previously
+generated keys should be discarded and new ones generated, since the
+value of q is outside of the range allowed by the standard.
+
+	* HAVAL hashing algorithm added.
+
+	* Test data for Triple DES and HAVAL added.
+
+	* Restored this (accidentally-erased) README file.
+
+	* ftplib.py, httplib.py, nntplib.py, and urllib.py upgraded to
+the versions in the final Python 1.3 distribution.
+
+	* Sped up the generation of prime numbers for the public key
+algorithms through faster primality testing.  
+	
+	* Added optional 'verbose' parameter to the generate()
+function of the public-key modules; it's intended to let programs
+inform the user of their progress as keys are generated.  See the
+documentation for an explanation.
+
+	* Added rfc1751.py, which contains functions to map between
+arbitrary keys and strings of English words; this should make it
+easier to remember long keys.
+
+	The PCT is a collection of secure hash functions (such as MD5
+and SHA), and various encryption algorithms (IDEA, DES, RSA, ElGamal,
+etc.).  The package is structured to make adding new modules easy.  I
+consider this section to be essentially complete, and the software
+interface will almost certainly not change in an incompatible way in
+the future; all that remains to be done is to fix any bugs that show
+up.  If you encounter a bug, please inform me immediately.  If you
+implement a new algorithm, please send me a copy.
+
+	A sample usage of the MD5 module is:
+>>> import md5
+>>> hash=md5.new()
+>>> hash.update(message)
+>>> hash.digest()
+'\235\361\034\357\217MX\2246\226\367\366Ebx\326'
+
+	A sample use of an encryption algorithm (IDEA, in this case) is:
+>>> import idea
+>>> obj=idea.new('This is a key456', idea.ECB)
+>>> message="The answer is no"
+>>> ciphertext=obj.encrypt(message)
+>>> ciphertext
+'\2325$\343=)d\341^\025<\344\013\204 T'
+>>> obj.decrypt(ciphertext)
+'The answer is no'
+
+	One possible application of the PCT is writing secure
+administration tools.  Another application is in writing daemons and
+servers.  Clients and servers can encrypt the data being exchanged and
+mutually authenticate themselves; daemons can encrypt private data for
+added security.  Python also provides a pleasant framework for
+prototyping and experimentation with cryptographic algorithms; thanks
+to its arbitrary-length integers, public key algorithms based on
+number theory are easily implemented.
+
+	Please send me any comments or questions about the PCT; my PGP
+public keys are in the file "key.amk".  Good luck!
+
+	
+	Andrew Kuchling
+	andrewk@cst.ca
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.2
+
+iQCVAwUBML61hgRXhWZuGe+lAQFTLgP+OjfixiOPUeE2U8UA7xOR/VbiRzFM814L
+bmNL8nW2uhBQ3rHwMKhvXpUQq5ZbeZYm6Prv6Jp0QfAasj3DxSjKZGSiaNfflBIw
+uC2WSCCybrTuWBOBA9SocOAJxOGr8YeoFFRwRwyy9kwiNKkIFWImq5rTDQ0DPqcI
+lWb9YwO2YdQ=
+=bvcz
+-----END PGP SIGNATURE-----

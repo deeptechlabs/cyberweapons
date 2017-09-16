@@ -1,0 +1,21 @@
+-*- text -*-
+
+A new release of my encryption program package is available at
+kampi.hut.fi (128.214.3.9). The package has now arbitrary precision
+integer arithmetic library with all the necessary functions for RSA
+and other exponentiation ciphers. I didn't include the RSA program in
+this release because I don't want anyone having a patented software
+if one don't want to. I will release a RSA program later.
+
+Instead, there is program share-secret which allows two parties to
+communicate securely over insecure communication channel. Only a
+low-bandwidth channel which is free from active taps, is required.
+
+There are some enhancements in des program, too. It has now flag which
+makes it compatible with standard SUN des(1) program.
+
+Package has been tested on VAX (BSD 4.3) and SUN-3 (SUNOS 4.0). For
+best results, you should use GNU C-compiler, but other compilers
+should also work.
+
+	Antti Louko (alo@kampi.hut.fi)

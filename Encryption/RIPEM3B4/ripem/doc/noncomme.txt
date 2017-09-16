@@ -1,0 +1,26 @@
+Date: Fri, 9 Apr 93 17:25:06 PDT
+From: jim@RSA.COM (Jim Bidzos)
+To: mrr@scss3.cl.msu.edu
+Subject: Definition of "non-commericial" (RSAREF)
+
+
+I am currently working on a detailed definition of commercial use. So
+far, all I can say definitively is this:
+
+1. Selling is commercial.  
+
+2. Using in support of a profit-making enterprise is *probably*
+commercial. (This is the tough one.)
+
+3. Using in support a non-profit enterprise will likely fall under
+non-commercial. I'm almost certain that the use described in your
+email would be allowed. (We'll grant specific permission if you like.)
+
+4. Using for yourself on computers at a place like that in (2) will
+likely fall under non-commercial.
+
+5. Any personal use will be non-commercial.
+
+-Jim
+
+

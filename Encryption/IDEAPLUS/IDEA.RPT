@@ -1,0 +1,52 @@
+
+**************************************************
+*          IDEA Algorithm Test Program           *
+**************************************************
+*                                                *
+* This program encrypts and decrypts  3 times    *
+* the initial block of data {0, 1, 2, 3}.        *
+* The last block must be the same as the initial *
+* block.                                         *
+*                                                *
+* Optionaly, some suggestions regarding the size *
+* of the data can be printed out.                *
+*                                                *
+**************************************************
+
+
+ Key:               1      2      3      4
+                    5      6      7      8
+ Input block:       0      1      2      3
+ encryption  1   4603  60715    408  28133
+ encryption  2  23407  46110    155  41024
+ encryption  3  39006  57127  58235  24568
+ decryption  2  23407  46110    155  41024
+ decryption  1   4603  60715    408  28133
+ Last block:        0      1      2      3
+
+
+ Key:            1000   2000   3000   4000
+                 4000   3000   2000   1000
+ Input block:       0      1      2      3
+ encryption  1  53639  44649  47227  45445
+ encryption  2   7523    801  39439  60622
+ encryption  3   8323  20539   9858  16404
+ decryption  2   7523    801  39439  60622
+ decryption  1  53639  44649  47227  45445
+ Last block:        0      1      2      3
+
+
+ Key:            1111   2222   3333   4444
+                 5555   1111   2222   3333
+ Input block:       0      1      2      3
+ encryption  1   9805   2541  22514  21290
+ encryption  2  14987  36547  50872   4082
+ encryption  3  41876  28574  41139  56041
+ decryption  2  14987  36547  50872   4082
+ decryption  1   9805   2541  22514  21290
+ Last block:        0      1      2      3
+
+ Optimum size for uint16.
+ Optimum size for uint32.
+ Optimum size for int32.
+

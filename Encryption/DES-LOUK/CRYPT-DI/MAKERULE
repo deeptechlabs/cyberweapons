@@ -1,0 +1,127 @@
+VPATH:=	libdir
+RPAR:=)
+LPAR:=(
+DONE:=0
+all::
+
+Ignore::
+	 rm -f .Ignore.all
+
+ifeq ($(origin SUBDIRS),file) # This is a subdir Makefile
+DONE:=1
+all::
+
+Makefile::	GNUmakefile .
+	make-makefile subdir $(SUBDIRS) > Makefile
+
+endif
+ifeq ($(origin LIBNAME),file) # This is a library directory Makefile
+DONE:=1
+SOURCES:=	$(wildcard *.c)
+OBJS:=	$(addsuffix .o,$(basename $(SOURCES)))
+S_FILES:=	$(addsuffix .s,$(basename $(SOURCES)))
+ARS:=	$(addprefix $(LIBNAME)$(LPAR),$(addsuffix $(RPAR),$(OBJS)))
+PRINTFILES:=	des-private.h des.h $(SOURCES)
+
+.PHONY:	all
+
+all::	$(LIBNAME)(__.SYMDEF) $(OBJS)
+
+Makefile::	GNUmakefile .	# This is for standard make
+	make-makefile library "CC=$(oCC)" "CFLAGS=$(CFLAGS)" $(LIBNAME) $(OBJS) > Makefile
+
+Ignore::
+	make-ignore $(LIBNAME) $(OBJS)  >> .Ignore.all
+
+clean::
+	rm -f $(LIBNAME) $(OBJS)
+
+$(LIBNAME)(%.o):	%.o
+
+$(LIBNAME)(__.SYMDEF):	$(ARS)
+	ranlib $(LIBNAME)
+
+endif
+ifeq ($(origin PROGS),file) # This is a programs directory Makefile
+DONE:=1
+SOURCES:=	$(addsuffix .c,$(PROGS))
+OBJS:=	$(addsuffix .o,$(PROGS))
+PRINTFILES:=	$(SOURCES)
+
+all::	$(PROGS) $(OBJS)
+
+Makefile::	GNUmakefile .
+	make-makefile prog "CC=$(oCC)" "LDFLAGS=$(LDFLAGS)" "CFLAGS=$(CFLAGS)" "LIBS=$(LIBS)" "ELIBS=$(ELIBS)" "OBJS=$(OBJS)" $(PROGS) > Makefile
+
+Ignore::
+	make-ignore $(PROGS) $(OBJS) $(EXTRACLEAN) >> .Ignore.all
+
+clean::
+	rm -f $(PROGS) $(OBJS) $(EXTRACLEAN)
+
+$(PROGS):	$(LIBS) $(ELIBS)
+
+endif
+
+ifeq ($(DONE),0)
+Makefile::	GNUmakefile .
+	make-makefile default > Makefile
+endif
+
+oCC:=		cc
+CC:=		gcc
+CFLAGS:=	-g -O -Ilibdir #SUN -msoft-float
+LDFLAGS:=	-g -Llibdir #SUN -msoft-float
+PRINT:=		enscript
+
+MAINTOPS:=	all clean print s-files Makefile Ignore
+.PHONY:		$(MAINTOPS)
+
+REMOVABLE:=	miten.meni* .mmseq Makefile
+
+ifneq ($(origin SUBDIRS),file)
+SUBDIRS:=
+endif
+
+ifdef SUBDIRS
+$(MAINTOPS)::
+	for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
+else
+$(MAINTOPS)::
+endif
+
+ifdef PRINTFILES
+print:
+	$(PRINT) $(PRINTFILES)
+endif
+
+ifdef LMAINTOPS
+$(LMAINTOPS):	%:	%-local
+
+.PHONY:		$(addsuffix -local,$(LMAINTOPS))
+endif
+
+ifdef SUBDIRS
+$(SUBDIRS):
+	$(MAKE) -C $@
+endif
+
+ifneq ($(origin S_FILES),file)
+S_FILES:=
+endif
+
+s-files:	$(S_FILES)
+
+%.s:	%.c
+	$(CC) -S $(CFLAGS) $^
+
+Ignore::
+	make-ignore $(REMOVABLE) >> .Ignore.all
+
+clean::
+	rm -f $(REMOVABLE)
+
+EXTRA_DEP:=$(strip $(wildcard Dependencies))
+ifneq '$(EXTRA_DEP)' ''
+include $(EXTRA_DEP)
+endif

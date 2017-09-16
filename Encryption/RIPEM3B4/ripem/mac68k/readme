@@ -1,0 +1,5 @@
+The routines in this directory tree are Macintosh 68020
+versions of time-critical functions written by Richard
+Outerbridge.  They speed up RIPEM by a factor of four
+on Macintoshes.
+/mrr

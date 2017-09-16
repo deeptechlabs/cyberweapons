@@ -1,0 +1,41 @@
+From msuinfo!caen!zaphod.mps.ohio-state.edu!pacific.mps.ohio-state.edu!linac!att!ucbvax!windsor.a92104.sai.com!mark Sat Mar 28 18:51:46 1992
+Path: msuinfo!caen!zaphod.mps.ohio-state.edu!pacific.mps.ohio-state.edu!linac!att!ucbvax!windsor.a92104.sai.com!mark
+From: mark@windsor.a92104.sai.com (Mark Windsor)
+Newsgroups: sci.crypt
+Subject: Re: Phil Karn's encryption
+Message-ID: <29d1d044@windsor.a92104.sai.com>
+Date: 26 Mar 92 13:32:00 GMT
+Sender: daemon@ucbvax.BERKELEY.EDU
+Lines: 99
+
+I got some requests for the source to the implementation I made of
+the encryption algorithm described by Phil Karn here a few weeks ago.
+Phil mentioned a couple of references for earlier discoveries of the
+same basic idea.  I was able to look up the one in Crypto '89 (see
+the comment below for the exact reference).  It uses the basic idea
+of a one-way function iterated three times, but doesn't specifically
+choose the MD4/MD5 functions.
+
+Here is the source to the basic module which encrypts a 32-byte block
+of data using two 48-byte keys to produce a 32-byte output.  To make
+this into an actual encryption program you have to build the framework
+that reads the keys and reads and writes the data.  You also need to
+decide whether you will use a simple ECB mode or a CBC.  I wrote code
+to do CBC but I'm not that happy with it.  I'd want to take a look
+at some other examples before I would upload it.
+
+This code relies on the library function "bcopy", which copies bytes from
+its first argument to its second argument, with the number of bytes in
+the third argument.  Some systems may have to change this to "memcpy"
+or something similar, and possibly reverse the order of the first two
+arguments.
+
+It calls the function "Transform" to do the hashing.  This is in MD5.C
+available through FTP from <rsa.com>.  You can discard the other routines
+in MD5.C, since they aren't used, and you will have to remove the "static"
+declaration from Transform in that module so that it can be callable from
+outside.
+
+This code has compiled and run.
+
+[ See code in enclosed .c file.   /mrr ]

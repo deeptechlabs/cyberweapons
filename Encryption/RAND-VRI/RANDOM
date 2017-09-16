@@ -1,0 +1,249 @@
+
+Survey "Nico's random generator"
+================================
+
+As many readers of sci.crypt probably noticed I posted a random
+generator for the IBM-PC a while ago. I asked for testing comment
+and discussion and I got them! I would like to thank everyone
+who has contributed.
+
+The basic principle.
+--------------------
+The idea behind the algo is the use of phase noise in crystals (notice
+I have refered to this as jitter which was a huge mistake of mine). To
+measure the phase shift of a crystal a second crystal is used. I use
+for this purpose the microprocessor clock and the real time clock.
+The microprocessor raises a counter in a loop and an (real time
+clock controlled) interrupt handler samples the counter. The last
+bit of these "samples" is used. On fast computers this is all what
+is needed on slower computers the microprocessor controlled
+loop seems to become too slow. To correct that problem the basic process
+is repeated 8 times and the results are exclusive orred. This solution
+has been chosen to make the algo machine independent.
+
+Practical experiments.
+----------------------
+Many tests have been performed (I HOPE TO GET EVEN MORE RESULTS ???). Noone
+of them found any problems (notice that this proves nothing). Some test
+performed are:
+   - basic statistic tests (freq etc)
+   - graphical tests
+   - patern analyzation using higher order data compressors
+   - some of Knuths tests (I hope to get all of them)
+
+Theory.
+-------
+The most major consern seems to be if my algo is capable of actually
+measuring phase noise. The possibility if this can be done with IBM-PC
+software is debated. No hard evidence on either side of this has been
+found yet.
+
+Removing the repeat counter (8) still leaves us with a "working" random
+generator (if CTR is fast enough, working defined as noone found problems
+with practical tests yet). If the phase noise is NOT measured one should
+be capable of explaining its working. Two major arguments have risen:
+
+- the cycle size (number of different states) is very large
+- other hardware events (e.g. DMA refresh) enhance the cycle size
+
+Notice that in both these cases it is possible (in theory) to predict
+the output of the generator given the EXACT specifications of the
+machine on which it runs. This means the generator can be "safely" (in
+the context of cryptographics) used to generate a SMALL amount of
+data (the position in the cycle at start of the algo etc).
+
+If the phase noise IS measured than this argumentation is less
+interesting.
+
+Improvements.
+-------------
+Some possible improvements.
+
+A reversing the scheme, timer loops, uP samples
+B using more or other crystals (video retrace, COM ports)
+C postprocessing the output with MD5
+
+C is debatable. One could claim it makes the basic generator useless
+but in an open environment ("Cheater" has all the algo's and info)
+it does improve the safeness without having large disadvantages. A
+simple seed based generator postprocessed by MD5 might be easier to
+crack if a cheater knows the exact procedure used.
+
+"Conclusion".
+-------------
+I don't have any for now but I'll try one.
+The generator is, accorfing to many, "usefull". For heavy duty environments
+advanced (and expensive) hardware is probably a better choice. For "poor
+mans" random generation it might turn out to be usefull.
+
+
+// RANDOM.C
+// (C) 1993 AIP, all rights reserved
+// AIP is not responsible for any damages resulting from use of this program.
+//
+// Use of this source or derivates of this source is allowed only
+//   * for non commercial use (no fee asked)
+//   * if this copyright is not changed in any way
+//   * if the name AIP is not used in the executable or its docs
+//     (use of the name Nico de Vries is allowed if he agrees)
+//   * and if AIP is notified of its use in a specific program
+// No permision is needed. Notification is sufficient.
+//
+// (Notifications can be sent to Nico de Vries or directly to AIP)
+//
+// Notes:
+//    This routine only works in MS-DOS real mode. Not under Windows,
+//    DesqView, OS/2 etc.
+
+
+#include <dos.h>
+#include <stdlib.h>
+
+// onld interrupt handler
+static void interrupt (*vivOld)(void);
+
+// needed to make clock run OK
+static int iIntCtr;
+
+// storage for temporary information
+static volatile int iActive;
+static volatile unsigned uCtr;
+static int iPtr;
+static unsigned puArray[32];
+
+static void interrupt Handler (void){
+   // 0.86 ms timeslice
+   outportb (0x43,0x36);
+   outportb (0x40,0x0);
+   outportb (0x40,0x4);
+
+   if (iActive){
+      if (iPtr==32){
+Á
+Á
+      } else {
+Á
+Á
+      }
+   }
+
+   if (++iIntCtr==64){
+      (*vivOld)(); // 18.2 times per second call
+      iIntCtr=0;
+   }else
+      outportb (0x20, 0x20);
+}
+
+// remove handler
+void RemHan (void){
+   disable();
+   setvect (0x08, vivOld);
+   enable();
+
+   // set timer to 18.2 times/second
+   outportb (0x43,0x36);
+   outportb (0x40,0);
+   outportb (0x40,0);
+}
+
+// install handler
+void InstHan (void){
+   disable();
+   vivOld = getvect (0x08); // timer
+   setvect (0x08, Handler);
+   enable();
+}
+
+// generate true random number
+unsigned long Random (void){
+   int i,j;
+   unsigned long res=0;
+   unsigned long tmp;
+   InstHan();
+   // to be on the safe side we intialize uCtr with the timer
+   uCtr = peek(0x40,0x6c) & 0xFF;
+
+   // repeat 8 times to change random "bursts" into random numbers
+   for (j=0;j<8;j++){
+      iActive=1;
+      while (iActive){
+Á
+Á
+      }
+      for (i=0;i<32;i++)
+Á
+      res^=tmp;
+   }
+   RemHan();
+   return res;
+}
+
+#if 0 // TEST SOFTWARE
+
+void main (void){
+   int i,j;
+   unsigned long r;
+   printf ("RANDOM [1.0] 'generates 16 true random numbers'\n");
+   printf ("(C) Copyright 1992, All rights reserved, AIP.\n");
+   printf ("'AS IS' use allowed for non commercial use only.\n");
+   printf ("AIP is not responsible for any damages resulting from use of this program.\n\n");
+   for (i=0;i<16;i++){
+      r = Random();
+      printf ("%08lX ",r);
+      for (j=0;j<32;j++){
+Á
+      }
+      printf ("\n");
+   }
+}
+#endif
+
+#if 1 // TEST SOFTWARE #2, graphical investigation
+
+// Can be used for testing AIP random generator.
+// At least hercules, EGA or VGA needed.
+// Source uses Borland BGI.
+
+#include <graphics.h>
+
+static int ctr[256];
+
+// update histogram
+void upd (int i){
+   ctr[i]++;
+   line (i+266,255-ctr[i],i+266,255-ctr[i]);
+}
+
+void main (void){
+   int i,j;
+   unsigned long r;
+
+   // INITIALIZE GRAPHICS
+   int gdriver = DETECT, gmode, errorcode;
+   initgraph(&gdriver, &gmode, "");
+   errorcode = graphresult();
+   if (errorcode != grOk){exit(1);}
+
+
+   for (;;){
+      // get 4 values in the range 0..255
+      unsigned long r = Random();
+      int x1 = r&255;
+      int x2 = (r>>8)&255;
+      int y1 = (r>>16)&255;
+      int y2 = (r>>24)&255;
+
+      // update histogram
+      upd (x1); upd (x2); upd (y1); upd (y2);
+
+      // update 2D image
+      line (x1,y1,x1,y1);
+      line (x2,y2,x2,y2);
+
+      if (kbhit()) break;
+   }
+
+   closegraph();
+}
+#endif
+

@@ -1,0 +1,52 @@
+.\" @(#)md5.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH MD5 3BM
+.SH NAME
+MD5Init, MD5Update, MD5Final
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBMD5Init(MD5_CTX *mdContext)\fR
+.LP
+\fBMD5Update(MD5_CTX *mdContext, unsigned char *data, int numbytes)\fR
+.LP
+\fBMD5Final(unsigned char digest[16], MD5_CTX *mdContext)\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+$MD5Init$ takes a $MD5_CTX$ structure as input initialized simply
+as:
+.ce
+\fC mdContext = (MD5_CTX *)malloc(sizeof(MD5_CTX));\fR
+This function must be called to start the digest process.
+
+$MD5Update$ is the digest work routine.  It is fed 16 byte chunks
+of data and updates the digest.
+
+$MDFinal$ is called to terminate the digest.
+
+$bigMessageDigest$ uses these three functions to create a digest
+for a buffer of characters.  The digest is returned in a $BigInt$.
+
+$MD5Print$ prints the digest to stdout.
+
+MD2 and MD4 are also supported and have exactly the same interface except
+that MD4Final leaves the digest in the context structure: $MD4Final(MD4_CTX *context)$.
+
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM)

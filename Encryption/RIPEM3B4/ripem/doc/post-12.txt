@@ -1,0 +1,111 @@
+Announcing the release of RIPEM version 1.2.
+
+RIPEM 1.2 contains extensive modifications by Jeff Thompson of RSA
+Data Security to provide a measure of true Internet PEM interoperability,
+and to implement a "direct-trust" model for public keys.  This new
+certificate-based trust model is more secure than RIPEM 1.1's but
+less hierarchical than Internet PEM's.
+
+RIPEM 1.2 can read all RIPEM 1.1-formatted messages, and can also
+read genuine MIC-ONLY and MIC-CLEAR Internet PEM messages.  RIPEM
+1.2 cannot read or produce encrypted Internet PEM messages.  RIPEM
+1.2's outputed messages can be read by RIPEM 1.1.
+
+Before using RIPEM 1.2 to produce messages, you must first generate
+a "self-signed" certificate.  This is done automatically during
+key generation.  For current RIPEM users, you can create a self-signed
+certificate by simply invoking RIPEM in change-password mode:
+
+  ripem -c -S output-private-key-file -P output-public-key-file
+
+The old field of Originator-Name is only supported for backward compatibility.
+RIPEM 1.2 really uses the self-signed cert in the Originator-Certificate
+field.  When you receive a message from a sender for the first time, 
+RIPEM will tell you that you don't have a validated certificate for 
+the sender and will display the sender's self-signed certificate digest.  
+You can call the sender and verify that it's correct.  Then, you 
+receive the message in -v validation mode which will create and store 
+a certificate from you to the sender.  From now on, RIPEM uses it.
+
+When you encrypt a message, the message includes something like
+
+Recipient-Name: jefft@chirality.rsa.com
+Recipient-Key-Asymmetric:
+ MFkwCgYEVQgBAQICAgUDSwAwSAJBFc8Mu+7j0iRqZ7eY39hyLUVSKPIRB+oVaGOJ
+ 9ttcJrBDPaucqCcp50leLhh48n9eUbvkQW9L7Yu8RiaLjeaNlU0CAwEAAQ==
+Key-Info: RSA,
+ Ep8yateOeP3bCBZzh4JYs9ZhlsZJ9B1WSM64nFnV2Y5gCExnKwIT/lhZssZTN0as
+ V/i1ysZIp5QUPsRz/mlF0Ck=
+
+Recipient-Name is only included for backwards compatibility.
+RIPEM 1.2 really uses Recipient-Key-Asymmetric, which is the DER
+encoding of my public key.  When jefft sees this while receiving the
+message, he knows the associated Key-Info is for him.  Using the public
+key is nice because you don't have to know what your correspondant's
+issuer and serial number are. It supports this direct trust model nicely.
+
+RIPEM 1.2 uses a home directory which currently holds two files:
+privkey and pubkeys.  privkey is the same as the old RIPEM -s private
+key file.  The pubkeys file holds the user's self-signed certificate
+and the direct-trust certificates they make for other users:
+
+User: jefft@chirality.rsa.com
+UserDistinguishedName: CN = jefft@chirality.rsa.com, OU = Persona Certificate, O = RSA Data Security, Inc., C = US
+CertificateInfo:
+ MIIB0zCCAX0CEHvlDG8l4VHdqec4RvFBuGIwDQYJKoZIhvcNAQECBQAwbzELMAkG
+ A1UEBhMCVVMxIDAeBgNVBAoTF1JTQSBEYXRhIFNlY3VyaXR5LCBJbmMuMRwwGgYD
+ VQQLExNQZXJzb25hIENlcnRpZmljYXRlMSAwHgYDVQQDFBdqZWZmdEBjaGlyYWxp
+ dHkucnNhLmNvbTAeFw05MzExMzAxOTE1NTFaFw05NTExMzAxOTE1NTFaMG8xCzAJ
+ BgNVBAYTAlVTMSAwHgYDVQQKExdSU0EgRGF0YSBTZWN1cml0eSwgSW5jLjEcMBoG
+ A1UECxMTUGVyc29uYSBDZXJ0aWZpY2F0ZTEgMB4GA1UEAxQXamVmZnRAY2hpcmFs
+ aXR5LnJzYS5jb20wWDAKBgRVCAEBAgIB/gNKADBHAkAtAto1Bdion6FnjY2qkliO
+ 7n6RxmL68IJ8r5XMMPX5IERpo4pSEiE/Fbrw2jVlFUTbdQ36Y65tezhS1E4oNsUX
+ AgMBAAEwDQYJKoZIhvcNAQECBQADQQAK/hg100zdjSCapJusmVSzwDaj6YKAa0p3
+ GJBYYMMIMZbGlE2gx1bnMiI+twftqA2nRj7v7zlaWv3WiP+pihyx
+
+Notice that there is no public key by itself, since it is now
+validated inside the certificate.  For RIPEM 1.2, a user's
+distinguished name is formed with the old RIPEM username as the common
+name in a Persona distinguished name.
+
+Important: During ripem -e -m encrypted -u username, RIPEM looks up
+the recipient's certificate by scanning pubkeys for a "User:" field as
+specified by -u and uses the first one it finds.  It is possible that
+there are multiple users with the same common name, so RIPEM always
+displays the full distinguished names of the recipients it finds when
+encrypting.  If one of these is the wrong DN, the user can abort
+sending the message.
+
+Notice that the Originator-Certificate field is a self-signed cert, a
+RIPEM signed message conforms closely to RFC 1424.  In fact, since the
+names are already Persona names, you can send it to
+persona-request@rsa.com and it will return a real Persona certificate.
+(The RIPEM 1.2 documentation doesn't mention this because there's
+really nothing a 1.2 user can do with a hierarchical cert right now,
+but you can see what the future plans are.)
+
+Lastly, RIPEM 1.2 doesn't make use of key servers except for backwards
+compatibility.  Quoting from the user manual:
+
+  Note:  RIPEM 1.2 does not use key servers or finger to manage 
+  certificates.  RIPEM 1.2 only transmits a self-signed 
+  certificate, and the only other certificates that are made are 
+  direct peer-to-peer.  As a RIPEM 1.2 user, you make a 
+  certificate from yourself to, say, fred@snark.edu.  No one other 
+  than you and fred  would be interested in this certificate.  
+  Hence, RIPEM 1.2 makes no provision for these certificates to be 
+  on key servers.  A future version of RIPEM is planned which will 
+  allow certificate chaining.  This will allow you to indirectly 
+  trust users directly certified by users of your choice.  You 
+  will be able to say "I trust all users certified by fred".  When 
+  this future version of RIPEM is available, it will become 
+  meaningful to place certificates on key servers.
+
+RIPEM 2.0, with certificate chaining ("web-of-trust") and full Internet
+PEM interoperability, is expected to be available within a few
+months. 
+
+As usual, this distribution can be found on ripem.msu.edu.
+Only US and Canadian citizens/permanent residents are allowed
+access; see ripem.msu.edu:/pub/crypt/GETTING_ACCESS.
+

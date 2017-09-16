@@ -1,0 +1,36 @@
+LOKI97 C Source (Reference)
+===========================
+
+loki97.c	- LOKI97 Algorithm C source
+loki97.h	- LOKI97 Algorithm C header (adapted from aes.h)
+
+aestest.c	- main program to run all AES test files on LOKI97
+aestime.c	- main program to compute timing stats on LOKI97
+
+test_cbc.c	- simple LOKI97 CBC mode test harness
+test_cfb1.c	- simple LOKI97 CFB1 mode test harness
+test_ecb.c	- simple LOKI97 ECB mode test harness
+
+Makefile	- Unix makefile to compile and link above programs
+
+
+To build programs either use do:
+	make
+or alternatively, compile and link each main program with loki97.o,
+ie do something like:
+	cc -c loki97.c
+	cc -o aestest aestest.c loki97.o
+	cc -o aestime aestime.c loki97.o
+	cc -o test_ecb test_ecb.c loki97.o etc
+
+To run the main programs:
+  aestest:	change into the directory with the test files, and run
+		aestest
+
+		aestest -h	lists other options available
+
+  aestime:	just run with no arguments to print timing stats,
+		aestime
+
+  test_ecb, test_cbc, test_cfb1:	all run with no args for a single test
+

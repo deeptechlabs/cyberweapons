@@ -1,0 +1,92 @@
+CC=gcc
+CFLAGS=-g -pedantic -Wall
+#CFLAGS=-g 
+TARGETS=block caesar capital chi-sq entropy kappa n-gram rotor \
+        textstrp vigenere
+
+# If you want to use the system getopt (if there is one) define 
+# GETOPT to an empty string
+GETOPT=getopt.o
+
+all: $(TARGETS)
+
+
+
+block.o: block.c header.h
+	$(CC) $(CFLAGS) -c block.c
+
+caesar.o: caesar.c header.h
+	$(CC) $(CFLAGS) -c caesar.c
+
+capital.o: capital.c header.h
+	$(CC) $(CFLAGS) -c capital.c
+
+chi-sq.o: chi-sq.c
+	$(CC) $(CFLAGS) -c chi-sq.c
+
+entropy.o: entropy.c header.h
+	$(CC) $(CFLAGS) -c entropy.c
+
+kappa.o: kappa.c header.h
+	$(CC) $(CFLAGS) -c kappa.c
+
+rotor.o: rotor.c header.h
+	$(CC) $(CFLAGS) -c rotor.c
+
+n-gram.o: n-gram.c header.h
+	$(CC) $(CFLAGS) -c n-gram.c
+
+textstrp.o: textstrp.c header.h
+	$(CC) $(CFLAGS) -c textstrp.c
+
+vigenere.o: vigenere.c header.h
+	$(CC) $(CFLAGS) -c vigenere.c
+
+
+getopt.o: getopt.c
+	$(CC) $(CFLAGS) -c getopt.c
+
+get_key.o: get_key.c
+	$(CC) $(CFLAGS) -c get_key.c
+
+
+
+block: block.o $(GETOPT)
+	$(CC) -o block block.o $(GETOPT)
+
+caesar: caesar.o get_key.o $(GETOPT)
+	$(CC) -o caesar caesar.o get_key.o $(GETOPT)
+
+capital: capital.o $(GETOPT)
+	$(CC) -o capital capital.o $(GETOPT)
+
+chi-sq: chi-sq.o $(GETOPT)
+	$(CC) -o chi-sq chi-sq.o $(GETOPT)
+
+entropy: entropy.o $(GETOPT)
+	$(CC) -o entropy entropy.o $(GETOPT) -lm
+
+kappa: kappa.o $(GETOPT)
+	$(CC) -o kappa kappa.o $(GETOPT)
+
+rotor: rotor.o get_key.o $(GETOPT)
+	$(CC) -o rotor rotor.o get_key.o $(GETOPT)
+
+n-gram: n-gram.o $(GETOPT)
+	$(CC) -o n-gram n-gram.o $(GETOPT)
+
+textstrp: textstrp.o $(GETOPT)
+	$(CC) -o textstrp textstrp.o $(GETOPT)
+
+tom_rotor: tom_rotor.o get_key.o $(GETOPT)
+	$(CC) -o tom_rotor tom_rotor.o get_key.o $(GETOPT)
+
+vigenere: vigenere.o get_key.o $(GETOPT)
+	$(CC) -o vigenere vigenere.o get_key.o $(GETOPT)
+
+
+clean:
+	rm -f *.o *~ core
+
+spotless: clean
+	rm -f $(TARGETS)

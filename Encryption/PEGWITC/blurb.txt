@@ -1,0 +1,22 @@
+Pegwit v8 is a new program for performing public key file
+encryption and authentication.
+
+General features:
+  Available as portable public domain 'C' source code
+  Also available in compiled form Win95 or MSDOS
+  No installation process, no hidden 'state'
+  Public domain, no licensing restrictions
+  Probably no patent restrictions [ more definite from October '97 ]
+  Compact source code, small executable ( less than 64k bytes )
+  Very simple command line interface
+
+Cryptographic components:
+  Elliptic curves over GF(2^255)
+  SHA1 for hashing
+  Square for encryption
+
+It is freely available from
+
+http://ds.dial.pipex.com/george.barwood/v8/pegwit.htm
+
+George Barwood

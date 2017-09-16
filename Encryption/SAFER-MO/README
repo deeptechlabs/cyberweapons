@@ -1,0 +1,88 @@
+DESCRIPTION
+===========
+
+This software package is an implementation of the block-cipher algorithm SAFER
+(Secure And Fast Encryption Routine). Four versions of that algorithm are
+implemented, namely: SAFER K-64, SAFER K-128, SAFER SK-64 and SAFER SK-128. The
+numerals 64 and 128 stand for the length of the user-selected key, 'K' stands
+for the original key schedule and 'SK' stands for the strengthened key schedule.
+A user-interface is also provided to use this algorithms as UNIX, MS-DOS,
+VMS, ... commands.
+
+Any compiler based on Kernighan & Ritchie C, ANSI C or C++ can be used to
+compile the source code. Moreover, the input-output behaviour of the executable
+programs are identical, i.e. the user-command 'safer' functions in a compatible
+manner on any computer.
+
+The source code belongs to the public domain.
+
+
+RESTRICTIONS FOR V1.1
+=====================
+
+UNIX:         No restrictions.
+
+MS-DOS:       MS-DOS pipes (|) cannot be used. [Comment: Since the input and
+              output of the user-command 'safer' are binary-streams, it cannot
+              be used with an MS-DOS pipe whose input and output must be
+              text-streams]
+
+VMS:          VMS translates all upper-case letters given on the command-line 
+              to lower-case letters. Thus all key-strings are mapped to their
+              lower-case representation.
+
+
+FILES ON DISKETTE
+=================
+
+README        this documentation
+
+safer.c       SAFER K-64, SAFER K-128, SAFER SK-64 and SAFER SK-128 source code
+safer.h       header file to 'safer.c'
+safercmd.c    source code for user-command 'safer' (applicable to UNIX, MS-DOS,
+              VMS, ...)
+makefile      describes how to generate user-command 'safer'
+
+safer.exe     executable user-command 'safer' for MS-DOS
+
+man1/safer.1  UNIX manual page of user-command 'safer'
+SAFERCMD.TXT  description of user-command 'safer'
+SAFER_SK.TXT  paper: Massey, J.L., "Announcement of a Strengthened Key Schedule
+              for the Cipher SAFER", Sept. 9, 1995.
+
+check.c       source code for a program used to check the correctness of
+              user-command 'safer'. Type 'make checking' to run this test which
+              produces 'check.out' as output file. If the user-command 'safer'
+              functions correctly, the files 'check.out' and 'check.ref' are
+              identical.
+check.ref     examples of encrypted data
+
+
+FTP-SERVER
+==========
+
+This software package can be obtained by executing the following commands:
+
+     [] ftp isidor.ethz.ch          (or: ftp 129.132.1.136)
+      or
+     [] ftp isibee.ethz.ch          (or: ftp 129.132.38.1)
+     Name: anonymous
+     Password: your_e-mail_address
+     cd pub/simpl
+     get safer.V1.1.tar.Z
+     quit
+     [] uncompress safer.V1.1.tar.Z
+     [] tar -xf safer.V1.1.tar
+     [] cd safer
+
+
+INSTALLATION
+============
+
+1. Modify the "CC..." line in 'makefile' (and no other lines!!)
+
+2. Execute the following commands:
+
+     [] man -M . safer         display the manual page of safer (UNIX only)
+     [] make                   produce the user-command 'safer'
+     [] make checking          check the correctness of the user-command 'safer'

@@ -1,0 +1,171 @@
+.\" @(#)netIface.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH BIGUTILS 3BM
+.SH NAME
+
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+Stdio-based functions:
+.LP
+\fBlong fgetLength P((FILE *stream);\fR
+.LP
+\fBvoid fputLength P((long length, register FILE *stream);\fR
+.LP
+\fBint fgetBoolean P((FILE *stream, int form);\fR
+.LP
+\fBvoid fputBoolean P((int value, register FILE *stream, int form);\fR
+.LP
+\fBlong fgetInteger P((FILE *stream, int form);\fR
+.LP
+\fBvoid fputInteger P((long value, register FILE *stream, int form);\fR
+.LP
+\fBlong fgetString P((unsigned char *string, int limi,\fR
+			   register FILE *stream, int form));
+.LP
+\fBvoid fputString P((unsigned char *cp, long lengt,\fR
+			   register FILE *stream, int form, int stringtype));
+.LP
+\fBunsigned char *fgetBitString P((unsigned char *bstring, int limi,\fR
+					register FILE *stream, int form));
+.LP
+\fBvoid fputBitString P((unsigned char *bstring, int blengt,\fR
+			      register FILE *stream,int form));
+.LP
+\fBint featDataUnit P((FILE *stream, int form, register tag);\fR
+.LP
+\fBvoid fgetEOC P((FILE *stream, int form);\fR
+.LP
+\fBvoid fputEOC P((FILE *stream);\fR
+.LP
+\fBvoid fputBigInt P((BigInt big, FILE *stream);\fR
+.LP
+\fBBigInt fgetBigInt P((FILE *stream);\fR
+.LP
+\fBvoid fputTable P((Table *table, FILE *stream);\fR
+.LP
+\fBTable * fgetTable P((FILE *stream);\fR
+.LP
+\fBvoid fputRSAPublicKey P((RSAPublicKey *key, FILE *stream);\fR
+.LP
+\fBRSAPublicKey * fgetRSAPublicKey P((FILE *stream);\fR
+.LP
+\fBvoid fputRSAPrivateKey P((RSAPrivateKey *key, FILE *stream);\fR
+.LP
+\fBRSAPrivateKey * fgetRSAPrivateKey P((FILE *stream);\fR
+.LP
+\fBvoid fputRSASignature P((RSASignature *sig, FILE *stream);\fR
+.LP
+\fBRSASignature * fgetRSASignature P((FILE *stream);\fR
+.LP
+\fBRSAPublicKey * nfgetRSAPublicKey P((char *);\fR
+.LP
+\fBRSAPrivateKey * nfgetRSAPrivateKey P((char *);\fR
+.LP
+\fBvoid fputEGParams P((EGParams *params, FILE *stream);\fR
+.LP
+\fBEGParams * fgetEGParams P((FILE *stream);\fR
+.LP
+\fBvoid fputEGPublicKey P((EGPublicKey *key, FILE *stream);\fR
+.LP
+\fBEGPublicKey * fgetEGPublicKey P((FILE *stream);\fR
+.LP
+\fBvoid fputEGPrivateKey P((EGPrivateKey *key, FILE *stream);\fR
+.LP
+\fBEGPrivateKey * fgetEGPrivateKey P((FILE *stream);\fR
+.LP
+\fBvoid fputEGSignature P((EGSignature *sig, FILE *stream);\fR
+.LP
+\fBEGSignature * fgetEGSignature P((FILE *stream);\fR
+.LP
+\fBvoid fputDSASignature P((DSASignature *sig, FILE *stream);\fR
+.LP
+\fBDSASignature * fgetDSASignature P((FILE *stream);\fR
+.LP
+
+Buffer-based functions:
+.LP
+\fBlong bufGetLength P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutLength P((long length, register unsigned char **buffer);\fR
+.LP
+\fBint bufGetBoolean P((unsigned char **buffer, int form);\fR
+.LP
+\fBvoid bufPutBoolean P((int value, register unsigned char **buffer, int form);\fR
+.LP
+\fBlong bufGetInteger P((unsigned char **buffer, int form);\fR
+.LP
+\fBvoid bufPutInteger P((long value, register unsigned char **buffer, int form);\fR
+.LP
+\fBlong bufGetString P((unsigned char *string, int limit,
+			   register unsigned char **buffer, int form));\fR
+.LP
+\fBvoid bufPutString P((unsigned char *cp, long length,
+			   register unsigned char **buffer, int form, int stringtype));\fR
+.LP
+\fBunsigned char *bufGetBitString P((unsigned char *bstring, int limit,
+					register unsigned char **buffer, int form));\fR
+.LP
+\fBvoid bufPutBitString P((unsigned char *bstring, int blength,
+			      register unsigned char **buffer,int form));\fR
+.LP
+\fBint bufEatDataUnit P((unsigned char **buffer, int form, register tag);\fR
+.LP
+\fBvoid bufGetEOC P((unsigned char **buffer, int form);\fR
+.LP
+\fBvoid bufPutEOC P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutBigInt P((BigInt big, unsigned char **buffer);\fR
+.LP
+\fBBigInt bufGetBigInt P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutTable P((Table *table, unsigned char **buffer);\fR
+.LP
+\fBTable * bufGetTable P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutRSAPublicKey P((RSAPublicKey *key, unsigned char **buffer);\fR
+.LP
+\fBRSAPublicKey * bufGetRSAPublicKey P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutRSAPrivateKey P((RSAPrivateKey *key, unsigned char **buffer);\fR
+.LP
+\fBRSAPrivateKey * bufGetRSAPrivateKey P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutRSASignature P((RSASignature *sig, unsigned char **buffer);\fR
+.LP
+\fBRSASignature * bufGetRSASignature P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutEGParams P((EGParams *params, unsigned char **buffer);\fR
+.LP
+\fBEGParams * bufGetEGParams P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutEGPublicKey P((EGPublicKey *key, unsigned char **buffer);\fR
+.LP
+\fBEGPublicKey * bufGetEGPublicKey P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutEGPrivateKey P((EGPrivateKey *key, unsigned char **buffer);\fR
+.LP
+\fBEGPrivateKey * bufGetEGPrivateKey P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutEGSignature P((EGSignature *sig, unsigned char **buffer);\fR
+.LP
+\fBEGSignature * bufGetEGSignature P((unsigned char **buffer);\fR
+.LP
+\fBvoid bufPutDSASignature P((DSASignature *sig, unsigned char **buffer);\fR
+.LP
+\fBDSASignature * bufGetDSASignature P((unsigned char **buffer);\fR
+
+.LP
+.SH DESCRIPTION
+.LP
+These functions may be used to move various cryptolib structures in and out of
+buffers or stdio streams.  Functions of the form bufPut or bufGet use usigned char **
+buffers and are useful for creating messages out of various structures.
+Stdio-based functions are useful for moving objects in and out of files.
+ASN.1 (abstract syntax notation 1) is used to push these structures around.
+This is not BER or DER (Basic and Distinguished Encoding rules).
+.LP
+\fIThis part of CryptoLib is probably most subject to change and should not be
+relied upon too strictly.\fR

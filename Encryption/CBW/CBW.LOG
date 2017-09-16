@@ -1,0 +1,195 @@
+
+Who:   Bob Baldwin
+Why:   
+When:  6/16/85
+What:  
+
+
+
+Who:   Bob Baldwin
+Why:   Had to learn about terminal independence sometime.
+When:  10/8/86
+What:  
+- Change outline of lookup window to use graphics.
+- Change graphics bit to 128 from 256.
+- Change screen plstring to check graphics bit.
+- The dictionary file found via a shell variable DICTIONARY.
+  - Defaults to /usr/dict/words.
+- Require that all control characters except \n and \t be
+  quoted before they are inserted into the block.
+  - Note problem with making C-Q or C-S active.
+- Avoid the disperr() routine until the screen is initialized.
+  - This fixes problems caused when termcap doesn't specify screen size.
+  --> Don't avoid, just fix disperr not to call setcursor().
+- Send init term sequence to terminal (if any).
+- Speed up the graphic printing by remembering whether the term
+  is in graphics mode.
+- Fix bug that allowed the cursor to move off the screen, which caused
+  the program to exit.
+  - Force screen size to 24 x 80.
+  - Change go_down behavior in user window.
+- Have the PF4 key jump the cursor to the command line (if any).
+  - Have C-X also do this.
+- Fix formatting problems due to 4 char tab versus 8 char tab bug.
+- Send sequence to active keypad.
+- Have C-Z abort the current command (what about C-C?).
+- Add a command to suspend the program and return to the shell.
+  - This avoids the long wait on reading stats.
+- In general need to provide a way to re-init terminal when
+  program is exited and entered.
+- Get the PF key definitions from the termcaps file.
+- Add general keymap which can handle long sequences generated
+  by a single keystroke.
+- Init keymap from shell variable.
+- Add graphics character map.
+- Init from defaults and shell variable.
+
+
+Who:   Bob Baldwin
+Why:   Remove references to buggy word lookup features.
+When:  6/16/85
+What:  dbsaux.c
+
+Who:   Bob Baldwin
+Why:   Make start up faster.
+When:  1/15/86
+What:  stats.c
+
+Who:   Bob Baldwin
+Why:   More work on word lookup.
+When:  6/16/85
+What:  specs.h, lpair.c, dbsaux.c, webster.c
+
+Who:   Bob Baldwin
+Why:   Fix formatting.
+When:  6/13/85
+What:  cipher.h
+
+Who:   Bob Baldwin
+Why:   Add word lookup cmd to dblock. (^S)
+When:  6/13/85
+What:  dblock.c, dbsaux.c, webster.c, window.h, specs.h
+
+Who:   Bob Baldwin
+Why:   Make ^T use bigram stats.
+When:  5/11/85
+What:  dbsaux.c
+
+Who:   Bob Baldwin
+Why:   Fix decryption block help message to indicate ^L and ^G.
+When:  5/11/85
+What:  dblock.c
+
+Who:   Bob Baldwin
+Why:   Added routine to clear guess window, gbsclear().
+When:  5/11/85
+What:  gblock.c
+
+Who:   Bob Baldwin
+Why:   Integrate bigram guessing into cbw.
+When:  5/11/85
+What:  user.c, specs.h
+
+Who:   Bob Baldwin
+Why:   Add fast approx for sqrt and exp.
+When:  5/11/85
+What:  approx.c
+
+Who:   Bob Baldwin
+Why:   Try bigram equiv class guessing strategies.
+When:  5/2/85
+What:  lpair.c, cipher.h
+
+Who:   Bob Baldwin
+Why:   Add bigram statistics.
+When:  4/28/85
+What:  stats.c, bdriver.c, specs.h, cipher.h
+
+Who:   Bob Baldwin
+Why:   Add new scoring alg based on prob sample drawn from english.
+When:  3/3/85
+What:  stats.c, sdriver.c, specs.h
+
+Who:   Bob Baldwin
+Why:   Make merge only show changes.
+When:  2/15/85
+What:  dblock.c
+
+Who:   Bob Baldwin
+Why:   Fix duplicate bug in permvec_from_string.
+When:  2/15/85
+What:  cipher.c
+
+Who:   Bob Baldwin
+Why:   Experimenting with new scoring functions.
+When:  2/15/85
+What:  stats.c
+
+Who:   Bob Baldwin
+Why:   Add command to try probable words from a file.
+When:  2/15/85
+What:  user.c
+Added: pword.c
+
+Who:   Bob Baldwin
+Why:   Change interface to ec_init().
+When:  2/15/85
+What:  autotri.c, dbsaux.c, eclass.c, edriver.c
+
+Who:   Bob Baldwin
+Why:   Make equiv class assume wiring in dblock window.
+When:  2/15/85
+What:  eclass.c
+
+Who:   Bob Baldwin
+Why:   Make clear zee command leave cursor on cmd line.
+When:  2/4/85
+What:  knit.c
+
+Who:   Bob Baldwin
+Why:   Bug of knit and propagate not properly restoring user area cursor.
+When:  2/4/85
+What:  user.c
+
+Who:   Bob Baldwin
+Why:   Bug overflowing string on bad argument parsing.
+When:  2/4/85
+What:  pgate.c, knit.c
+
+Who:   Bob Baldwin
+Why:   Make knit command take an arg which is the minimum guess count to show.
+When:  2/4/85
+What:  user.c, knit.c
+
+Who:   Bob Baldwin
+Why:   Make ^T try all char command smarter
+When:  2/3/85
+What:  dbsaux.c, Makefile
+Added: pqueue.c
+
+Who:   Bob Baldwin
+Why:   Divide by zero bug in pvec_1score
+When:  2/2/85
+What:  stats.c
+
+Who:   Bob Baldwin
+Why:   Fix crufty acceptance criteria for equiv class maximizing.
+When:  2/2/85
+What:  eclass.c, user.c
+
+Who:   Bob Baldwin
+Why:   Termcap file doesn't have enter graphics mode for vt100v
+When:  2/1/85
+What:  screen.c
+
+Who:   Bob Baldwin
+Why:   Add initial guess based on equivalence classes.
+When:  2/1/85
+What:  Makefile, user.c, gblock.c
+Added: eclass.c, edriver.c (test program)
+
+Who:   Bob Baldwin
+Why:   Make better abstractions for the cipher system and statistics.
+When:  1/31/85
+What:  stats.c, specs.h
+Added: cipher.c, cipher.h

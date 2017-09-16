@@ -1,0 +1,98 @@
+
+*ArtSentence = These people who could *artaction  / .1/
+	My ancestors who could *artaction /.1/
+	My people who could *artaction /.1/
+	My parents who could *artaction /.1//
+*artaction = sing *artagain /.1/
+	dance *artagain /.1/
+	recite poetry *artagain /.1/
+	write poetry *artagain /.1/
+	write epic poems *artagain /.1/
+	make wonderful things with their hands *artagain /.1/
+	make beautiful things *artagain/.1/
+	dream dreams *artagain /.1/
+	see visions *artagain/.1//
+
+	*artagain = and *artaction /.1/ ? /.1//
+
+
+*StrengthQuestion = Was it because they were weak ?/.1/
+	Were they not strong enough ? /.1/
+	Were they too weak? /.1/
+	Was it because they were not strong enough ?/.1//
+
+*StrengthAssertion = Those people who could work 8 hours underground  /.1/
+	The people who would work underground for 8 hours /.1/
+	The miners who could work underground for 8 hours /.1/
+	Those people who worked underground for 8 hours /.1//
+
+*GameTime = and then come up and play football ? /.1/
+	and come up to play football ? /.1/
+	and come out of the ground to play football ? /.1/
+	and spend the evening playing football ? /.1/
+	and play football long past when work was done ? /.1/
+	and play football long into the evening ? /.1/
+	and come out to play football for the evening ? /.1/
+	and play football for the rest of the night ? /.1//
+
+*StrengthSentence  = Why didn't they get the chance ? *StrengthQuestion *StrengthAssertion *GameTime/.1/
+	Why were they left out ? *StrengthQuestion *StrengthAssertion *GameTime/.1/
+	Why didn't they get it ? *StrengthQuestion *StrengthAssertion *GameTime/.1/
+	Why couldn't they have it ? *StrengthQuestion *StrengthAssertion *GameTime/.1//
+
+
+
+*AdjectiveSentence = Does anybody really think that *Middle *adjectivelink *Phooey *Platform/.1/
+Does anyone here really think that *Middle *adjectivelink *Phooey *Platform/.1/
+Do you think that *Middle *adjectivelink *Phooey *Platform /.1/
+Does anyone really think that *Middle *adjectivelink *Phooey *Platform/.1//
+
+*Middle = they didn't get what we had because they didn't have /.1/
+they never got what we had because they didn't have /.1/
+they didn't get anywhere because they didn't have /.1/
+they didn't get where we did because they never had /.1//
+
+*adjectivelink = the fortitude *OneMore /.1/
+	the talent *OneMore /.1/
+	the endurance *OneMore /.1/
+	the committment *OneMore /.1/
+	the strength *OneMore /.1/
+	the ability *OneMore /.1/
+	the stamina *OneMore /.1/
+	the intellegence *OneMore /.1/
+	the drive *OneMore /.1/
+	the determination *OneMore /.1/
+	the strength of spirit *OneMore /.1/
+	the desire to succeed *OneMore /.1//
+
+*OneMore = or *adjectivelink /.1/ ? /.1//
+
+*Phooey = Of course not . /.1/ No . /.1/ Never . /.1/ Nonsense . /.1//
+
+*Platform = It was because they didn't have a platform on which to stand . /.1/ They never had a platform on which to stand . /.1/
+	It was because they never had a platform on which to stand . /.1/
+	There was no platform on which they could stand /1.//
+
+
+*UniFication = Why am I the first Kinnock in a thousand generations *unify *thicko/.1/
+	Why is Glenys the first woman in her family *unify *thicko/.1/
+	Why am I the first man in my family *unify *thicko/.1/
+	Why should Glenys be the first woman in her family *unify *thicko /.1//
+
+*unify = to get to University ?/.1/
+	to go to University ?/.1/
+	to be able to get to University ? /.1/
+	to go up to University ? /.1//
+
+*thicko = Was it because all of our predicessors were thick ? /.1/
+	Were our predicessors stupid ? /.1/
+	Was it because our predicessors were too thick ?/.1/
+	Were our ancestors too thick ? /.1/
+	Was it because our ancestors were too thick ?/.1//
+
+*AAStart = Why were my ancestors shut out of life ? *ArtSentence *ArtSentence *StrengthSentence *AdjectiveSentence *UniFication /.1/
+	 Why did my ancestors get nothing beyond jobs in coal mines ? *ArtSentence *ArtSentence *StrengthSentence *AdjectiveSentence *UniFication /.1/
+	Why did my predicessors get nothing beyond jobs in coal mines ? *ArtSentence *ArtSentence *StrengthSentence *AdjectiveSentence *UniFication /.1/
+	Why were the Coal Mines all my ancestors had ? *ArtSentence *ArtSentence *StrengthSentence *AdjectiveSentence *UniFication /.1/
+Why were the Mines all my predicessors could count on ? *ArtSentence *ArtSentence *StrengthSentence *AdjectiveSentence *UniFication /.1//
+

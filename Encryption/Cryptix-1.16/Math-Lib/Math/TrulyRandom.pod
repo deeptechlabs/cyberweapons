@@ -1,0 +1,39 @@
+#
+# Copyright (C) 1995, 1996 Systemics Ltd (http://www.systemics.com/)
+# All rights reserved.
+#
+
+=head1 NAME
+
+TrulyRandom - Perl interface to a truly random number generator function
+
+=head1 SYNOPSIS
+
+    use Math::TrulyRandom;
+    
+    $random = truly_random_value();
+
+=head1 DESCRIPTION
+
+The B<TrulyRandom> module provides an ability to generate truly random
+numbers from within Perl programs.
+The source of the randomness is from interrupt timing discrepancies.
+
+
+=head1 EXAMPLE
+
+    $random = truly_random_value();
+
+=head1 BUGS
+
+The random numbers take a long time (in computer terms) to generate,
+so are only really useful for seeding pseudo random sequence generators.
+
+
+=head1 COPYRIGHT
+
+This implementation derives from the truly random number generator function
+developed by Matt Blaze and Don Mitchell, and is copyright
+of AT&T.
+Other parts of this perl extension are
+copyright of Systemics Ltd ( http://www.systemics.com/ ).

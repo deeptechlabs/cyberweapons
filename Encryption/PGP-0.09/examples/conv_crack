@@ -1,0 +1,40 @@
+#!/usr/local/bin/perl -w
+
+#
+# Copyright (C) 1995, 1996 Systemics Ltd (http://www.systemics.com/)
+# All rights reserved.
+#
+
+use Stream::IO;
+use PGP::PacketFactory;
+
+use PGP::Armoury;
+
+my $fis = new Stream::FileInput "x.asc";
+my $dis = new Stream::DataInput $fis;
+my ($pkt, $err);
+($pkt, $err) = PGP::Armoury::readPacket($dis);
+defined($err) && die $err;
+my $sis = new Stream::StringInput $pkt;
+$dis = new Stream::DataInput $sis;
+
+my $packet = PGP::PacketFactory::restore($dis);
+die $packet unless ref($packet);
+
+
+open(FH, "</usr/share/dict/words");
+my @words = <FH>;
+close(FH);
+
+my $md = new Crypt::MD5;
+foreach (@words)
+{
+	chop;
+	my $passphrase = $_;
+	$md->reset();
+	$md->add($passphrase);
+	my $key = $md->digest();
+	my ($plain, $err);
+	($plain, $err) = $packet->decrypt($key);
+	(defined($plain)) && print "Sone success using $passphrase\n";
+}

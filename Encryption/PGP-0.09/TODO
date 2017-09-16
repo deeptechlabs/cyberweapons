@@ -1,0 +1,11 @@
+At present this library does not:
+
+	Handle compressed data
+	Handle signature packets correctly
+
+Interesting things to do in the future
+
+	Write a key generator that embeds an encrypted factor of n in n,
+	in order to allow key escrow via a master key
+
+	

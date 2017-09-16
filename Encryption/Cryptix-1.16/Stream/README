@@ -1,0 +1,49 @@
+We have written a few modules for reading/writing objects to/from
+strings and files in a portable and flexible manner, but most importantly
+(for us, anyway), in a manner that is compatible with Java primitives,
+and in a similar style to the Java classes, allowing the design of our
+Java/Perl code to remain similar.
+
+
+
+	DataEncoding
+	DataInputStream
+	DataOutputStream
+
+		Classes for reading/writing primitives in a portable fashion.
+		These classes implement DataInput & DataOutput interfaces.
+		They read and write to InputStream and OutputStream
+
+
+	InputStream & OutputStream are imaginary classes
+	The following classes derive from InputStream and OutputStream:
+
+		FileInputStream
+		FileOutputStream
+
+		StringInputStream
+		StringOutputStream
+
+
+	Streamable
+
+		When this class is inherited from, the derived class should
+		defined two methods:
+
+			readFromDataStream
+			writeToDataStream
+
+		Classes defining these can then save and restore themselves
+		from DataInput/DataOutput streams, and use other methods defined
+		in Streamable, such as save, restore, saveToFile, readFromFile etc.
+
+
+
+We will be making other modules available at a later data, such as
+MessageDigestOutputStream (to go with the MD5 and SHA cryptographic
+hash functions), and perhaps SocketInputStream and SocketOutputStream.
+The beauty of these extra "Stream" modules deriving from InputStream and
+OutputStream is that all objects deriving from Streamable will automatically
+be able to save/restore themselves to/from the new stream module.
+
+mail bug reports to cryptix-perl-bugs@systemics.com

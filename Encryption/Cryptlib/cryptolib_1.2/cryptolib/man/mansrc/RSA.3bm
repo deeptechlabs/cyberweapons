@@ -1,0 +1,137 @@
+.\" @(#)RSAkeys.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH "RSA FUNCTIONS" 3BM
+.SH NAME
+genRSAKeySet, getRSAPublicKey, getRSAPrivateKey, RSAEncrypt, RSADecrypt, RSASign, RSAVerify, randBytesNeededForRSA,
+freeRSAKeys, freeRSASig, RSAPrivateKeyDesEncrypt, RSAPrivateKeyDesDecrypt
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBint randBytesNeededForRSA(int modbits, int publicExpBits)\fR
+.LP
+\fBRSAKeySet *genRSAKeySet(modulusBits, publicExpBits, publicExponent, randomStart)\fR
+\fBint modulusBits, publicExpBits;\fR
+\fBBigInt publicExponent;\fR
+\fBBigInt randomStart;\fR
+.LP
+\fBRSAPublicKey *getRSAPublicKey(RSAKeySet)\fR
+\fBRSAKeySet *RSAKeySet;\fR
+.LP
+\fBRSAPrivateKey *getRSAPrivateKey(RSAKeySet)\fR
+\fBRSAKeySet *RSAKeySet;\fR
+.LP
+\fBBigInt RSAEncrypt(message, RSAPubKey)\fR
+\fBBigInt message;\fR
+\fBRSAPublicKey *RSAPubKey;\fR
+.LP
+\fBBigInt RSADecrypt(message, RSAPrivKey)\fR
+\fBBigInt message;\fR
+\fBRSAPrivateKey *RSAPrivKey;\fR
+.LP
+\fBBigInt quantized_RSADecrypt(message, RSAPrivKey)\fR
+\fBBigInt message;\fR
+\fBRSAPrivateKey *RSAPrivKey;\fR
+.LP
+\fBRSASignature *RSASign(message, RSAPrivKey)\fR
+\fBBigInt message;\fR
+\fBRSAPRivateKey *RSAPrivKey;\fR
+.LP
+\fBRSASignature *quantized_RSASign(message, RSAPrivKey)\fR
+\fBBigInt message;\fR
+\fBRSAPRivateKey *RSAPrivKey;\fR
+.LP
+\fBBoolean RSAVerify(message, signature, RSAPubKey)\fR
+\fBBigInt message;\fR
+\fBRSASignature *signature;\fR
+\fBRSAPublicKey *RSAPubKey;\fR
+.LP
+\fBfreeRSAKeys(RSAKeySet)\fR
+\fBRSAKeySet *RSAKeySet;\fR
+.LP
+\fBfreeRSASig(RSASig)\fR
+\fBRSASignature *RSASig;\fR
+.LP
+\fBvoid RSAPrivateKeyDesEncrypt(rsakey, deskey)\fR
+\fBRSAPrivateKey *rsakey;\fR
+\fBunsigned char deskey[8];\fR
+.LP
+\fBvoid RSAPrivateKeyDesDecrypt(rsakey, deskey)\fR
+\fBRSAPrivateKey *rsakey;\fR
+\fBunsigned char deskey[8];\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+.LP
+These functions assume the general RSA cryptosystem in which
+a public exponent $e$, a private exponent $d$, and a modulus $n$
+are needed to do encryption and decryption.  For message $m$,
+encryption is done by calculating $E(m) = m sup size +2 e mod~n$ and
+decryption by calculating $D(E(m)) = m = E(m) sup size +2 d mod~ n$.
+Decryption may be sped up using the Chinese Remainder Theorem if
+the factorization of $n$ is known.
+.LP
+$randBytesNeededForRSA$ returns the number of bytes needed for a non-NULL
+$randomStart$ in the key generation routine following.
+.LP
+$genRSAKeySet$ takes as input the length needed for the modulus and
+the length (in bits) needed for the public exponent and generates $n$, $e$
+and $d$.  It also takes a BigInt value for the public exponent if you want
+to specify its value (E.g. publicExponent = bigInit(0x10001);).
+If you don't care, pass NULL as the third argument.
+It also generates the necessary pieces for Chinese
+Remainder Theorem modular exponentiation.  These pieces are included
+as part of the private key.  The structure which $genRSAKeySet$
+returns contains both the public and private keys.  These can be
+retrieved by using $getRSAPublicKey$ and $getRSAPrivateKey$ with the key
+set as argument.  If $randomStart$ is NULL, the default, pseudo-random number
+generator (desRandom()) is used.  If it is not NULL, fill it with the
+appropriate number of bytes retrieved using $randBytesNeededForRSA$
+using the RNG of your choice.
+
+.LP
+$RSAEncrypt$ does the modular exponentiation $m sup size +2 e mod~ n$.
+and returns the $BigInt$ result.
+.LP
+$RSADecrypt$ uses the private key and the Chinese Remainder Theorem
+to do the same calculation much more quickly.  The quantized version
+use STD_QUANTUM milliseconds as the quantum for execution to defend against
+Kocher-style timing attacks.  (The same is true of quantized_RSASign).
+STD_QUANTUM is defined in libcrypt.h and should be tuned to your environment.
+.LP
+$RSASign$ computes an RSA signature using an RSA private key (actually
+just an RSA Decryption).
+.LP
+$RSAVerify$ verifies that an RSA signature was indeed generated using the
+given message (actually an RSA encryption of the signature using an RSA public
+key is compared to the message).
+.LP
+$freeRSAKeySet$ frees the key set structure and all of its associated
+BigInts.
+.LP
+$freeRSASig$ frees the RSA signature (actually just a BigInt).
+.LP
+$RSAPrivateKeyDes[En/De]crypt$ should be used to use DES to [en/de]crypt
+an RSA private key.  $f[put/get]RSAPrivateKey$ can then be used to store/retrieve
+the private key.
+
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+.BR bigPow (3BM),
+.BR randomBytes (3BM),
+.BR fputRSAPrivateKey (3BM),
+.BR start_quantize (3BM),
+.BR end_quantize (3BM)

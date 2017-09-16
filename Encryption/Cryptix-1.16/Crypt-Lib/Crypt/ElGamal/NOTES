@@ -1,0 +1,15 @@
+Performance
+
+512 bit key:
+	Create: 14s
+	Encrypt: .31s
+	Decrypt: .13s
+	Sign: .17s
+	Verify: .47s
+
+1024 bit key:
+	Create: 90s
+	Encrypt: 2.26s
+	Decrypt: 1.12s
+	Sign: 1.13s
+	Verify: 3.49s

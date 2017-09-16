@@ -1,0 +1,128 @@
+.ds ]T 4 Dec 90
+.ds CP \s-2\(co\f3 Copyright 1991 by David G. Koontz\f1\s+2
+.de}F
+.ev1
+.}E
+.if\\n()s 'sp |\\n(.pu-1v-1p
+.if\\n()t 'sp |\\n(.pu-3v
+.ifn 'sp |\\n(.pu-4v
+.ifn .tl Page %\\*(]T
+.if\\n()s .tl - % -
+.if\\n()t \{.if o .tl Page %\\*(CP\\*(]T
+.ife .tl \\*(]T\\*(CPPage % \}
+'bp
+.ev
+..
+.de}C
+..
+.po 1.0i
+.nrIN 0.5i
+.nr)S 12
+.TH \f3DES 3 "" "\s+1\f6/dev/ktz\f1\s-1"
+.SH \f3NAME
+des, no_ip_des, loadkey, set_des_mode, \- fast NBS DES encryption routines
+.SH \f3SYNOPSIS
+.B void des (block)
+.br
+.B void no_ip_des (block)
+.br
+.sp
+.B union LR_block *block;
+.br
+.sp
+.B union LR_block {
+.br
+.B unsigned long LR[2];
+.br
+.B unsigned char string[8];
+.br
+.B };
+.br
+.sp
+.B void loadkey (key,shift)
+.br
+.B char *key;
+.br
+.B int shift;
+.br
+.sp
+.B void set_des_mode(encode)
+.br
+.B int encode;
+.br
+.sp
+.SH \f3DESCRIPTION
+.B des\^ 
+is a fast implementation of the NBS Digital Encryption Algorithm (DEA), found
+in FIPS PUB 46, Data Encryption Standard (DES).
+While software implementations of DES are not certified, compliance 
+can be verified by the use of the program des in test mode with test data 
+derived from FIPS Special Publication 5000-20.
+.PP
+Data input is via the long aligned 8 byte string
+.B block\^.
+.PP
+.B no_ip_des
+interfaces identically, and does not perform the
+initial permutation (
+.B IP
+), and inverse initial permutation (
+.B IIP
+), and is consequentially faster.
+.I des\^
+performs the initial permutation, calls
+.I no_ip_des\^,
+and on return, performs the inverse initial permutation.
+.PP
+.B set_des_mode\^
+determines encryption (
+.B encode = 1
+) or decryption (
+.B encode = 0
+) by setting a global pointer to the beginning or end of the key schedule
+array and setting the increment value to be either 
+.B +1 
+or 
+.B -1 
+for traversing the key schedule.
+.PP
+.B loadkey
+is used to load a 
+.B key\^
+comprised of 8 characters into the key scheduler for
+.I des\^.
+The
+.B shift
+flag is used to determine whether or not each byte in the key string is
+shifted left one position or not.  A 
+.B `1'
+indicates that a shift is required.  Bit 0 is used as an optional parity
+bit for 7 significant bits per byte of key.  Shifting the key up one bit,
+preserves all the bits in an ascii key string.  Preformatted keys can be
+used with
+.I shift\^
+reset to
+.B `0'.
+.PP
+The routines 
+.B loadkey
+and 
+.B set_des_mode
+must be invoked before execution of 
+.I des\^
+or
+.I no_ip_des\^.
+Failure to do so results in an undefined key value.  Traversing the key
+schedule with an uninitialized pointer can result in catestrophic runtime
+failure.
+.SH \f3SEE ALSO
+des(1), encrypt(3), setkey(3), crypt(3)
+.SH \f3BUGS
+.I des\^
+uses a union between unsigned longs (32 bit) and a character array.
+This is sensitive to host CPU byte ordering.  Portability is provided for
+by the use of compiler flags.
+.PP
+There is no checking for mode initialization performed by calling
+.I set_des_mode.
+.br

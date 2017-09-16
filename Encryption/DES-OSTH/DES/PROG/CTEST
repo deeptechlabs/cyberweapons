@@ -1,0 +1,41 @@
+#! /bin/sh
+
+ TEXT=/usr/dict/words
+CRYPT=/usr/tmp/CRYPT_FILE
+CLEAR=/usr/tmp/CLEAR_FILE
+STATUS=0
+
+ALGORITHMS='-C -P -E -F -O'
+
+HEXKEY=`./deskey -r`
+
+trap 'rm -f $CRYPT $CLEAR; exit 1' 1 2 3 15
+
+
+for A in $ALGORITHMS; do
+
+	echo -n "Test of algorithm '${A}' ... "
+	./descrypt -e -h -k $HEXKEY $A $TEXT  $CRYPT
+	./descrypt -d -h -k $HEXKEY $A $CRYPT $CLEAR
+	if cmp -s $TEXT $CLEAR; then
+		echo "Ok."
+	else
+		echo "Error."
+		STATUS=1
+	fi
+	rm -f $CRYPT $CLEAR
+
+	echo -n "Test of algorithm '${A}' in ascii mode ... "
+	./descrypt -e -a -h -k $HEXKEY $A $TEXT  $CRYPT
+	./descrypt -d -a -h -k $HEXKEY $A $CRYPT $CLEAR
+	if cmp -s $TEXT $CLEAR; then
+		echo "Ok."
+	else
+		echo "Error."
+		STATUS=1
+	fi
+	rm -f $CRYPT $CLEAR
+
+done
+
+exit $STATUS

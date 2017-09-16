@@ -1,0 +1,87 @@
+.\" @(#)shs.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH SHS 3BM
+.SH NAME
+shs, bigMessageDigest, shsInit, shsUpdate, shsFinal
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fB(unsigned long *)shs(unsigned char *message, int messageLength)\fR
+.LP
+\fBvoid shsInit (SHS_CTX *context)\fR
+.LP
+\fBvoid shsUpdate (SHS_CTX *context, unsigned char *buffer, int length)\fR
+.LP
+\fBvoid shsFinal (SHS_CTX *context)\fR
+.LP
+\fBbigMessageDigest(unsigned char *message, int messageLength, BigInt digest, int type)\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+$shs$ is an implementation of the NIST proposed Secure Hash Standard.
+$shs$ returns a pointer to 5 unsigned longs which make up a hash value
+for the message.
+
+\fCW
+struct SHS_CTX {
+.sp .1
+	long totalLength;
+.sp .1
+	unsigned long h[5];
+.sp .1
+	unsigned long w[80];
+.sp .1
+} SHS_CTX;
+\fR
+
+The normal way to use $shs$ is to do the following:
+.P
+\fC
+SHS_CTX context;
+.sp .1
+char buffer[BUF_SIZE];
+.sp .1
+long length;
+.sp .1
+FILE *fp;
+.sp .1
+.sp .1
+
+shsInit(&context);
+.sp .1
+while (length = fread(buffer, 1, BUF_SIZE, fp)
+.sp .1
+	shsUpdate(&context, buffer, length);
+.sp .1
+shsFinal(&context);
+.sp .1
+\fR
+
+Using this method allows for digest seeding.  There are times when
+$shsUpdate$ will be called with a password in the buffer, before entering
+the read loop.  After $shsFinal()$ is called, the digest is in
+context.h[i], with i = 0 to 4.
+$bigMessageDigest$ calls shs to create a digest
+for a buffer of characters.  The digest is returned in a $BigInt$.
+Ing $bigMessageDigest$, the type argument can be SHS, MD2, MD4 or MD5.  MD*
+syntax is identical to that for SHS substituting "MD2, MD4 or MD5" for "SHS"
+in structures and commands.
+
+.fi
+.SH "SEE ALSO"
+.BR MD5 (3BM),
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM)

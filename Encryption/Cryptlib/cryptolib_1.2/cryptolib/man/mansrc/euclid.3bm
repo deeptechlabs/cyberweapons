@@ -1,0 +1,49 @@
+.\" @(#)euclid.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH EUCLID 3BM
+.SH NAME
+getInverse, extendedGcd, gcd
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBvoid getInverse(p, q, result)\fR
+\fBBigInt p, q, result;\fR
+.LP
+\fBvoid extendedGcd(u, v, $font B u'$, $font B v'$, \fBgcd\fR)\fR
+\fBBigInt u, v, $font B u'$, $font B v'$, \fBgcd\fR;\fR
+.LP
+\fBBigInt gcd(u, v)\fR
+\fBBigInt u, v;\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+$getInverse$ returns $p sup size +2 -1 mod~q$ in $result$.
+
+$extendedGcd$ is Euclid's extended Greatest Common Divisor
+algorithm.  It is based on the equation:
+.ce
+$u*u' - v*v' ~=~ gcd(u,~v)$.
+$getInverse$ is just a call to $extendedGcd$ when it is known that
+$gcd(p, ~q) = 1$.
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+.BR bigMod (3BM),
+.BR bigDivide (3BM),
+.BR bigSubtract (3BM),
+.BR bigMultiply (3BM)
+

@@ -1,0 +1,45 @@
+Notes on NewDE
+921221
+
+NewDE is the DES with a 64-bit key schedule and without the initial
+and inverse permutations.  It was used in the first two versions of
+the defacto standard Macintosh archiver "StuffIt" (shareware version
+V1.51 and the first commercial release, V2.0).  The current release,
+"StuffIt Deluxe", supports decryption of NewDE-encrypted archives,
+and uses NewDE for its key management, but only provides (exportable)
+period-512 XOR as encryption.
+
+NewDE uses the "KSX" key schedule described in CRYPTOLOGIA, Volume 10,
+Number 3, July 1986, pp. 142-156, by Richard Outerbridge (the author
+of NewDE), "Some Design Criteria for Feistel-Cipher Key Schedules".
+
+In comparison to the standard DES key schedule it suffers from two
+weaknesses.  First, it provides for 256 weak or semi-weak keys (as 
+opposed to the standard 16).  Second, by using a schedule of key bit
+rotations that never results in an odd offset (that is, throughout
+all 16 rounds each bit of key is either an odd S-box input or an even
+S-box input, but not both), KSX suffers from an additional pair of
+complementation identities.
+
+First, the identity it shares with the standard DES:
+
+	E(k)[0] = {E(k*F)[F]}*F
+
+That is, encryption using key 'k' of a block of zeroes yields the
+same ciphertext as does encryption using the complement of 'k' of
+a block of ones, complemented (where 'k * F' means 'k' XOR'd with
+a block of eight hexadecimal 'F's).
+
+But besides this it has two additional identities:
+
+	E(k)[0] = {E(k*F)[F]}*F = {E(k*A)[5]}*5 = {E(k*5)[A]}*A
+
+One of the functions of the peculiar one and two bit shifts of the
+original DES key scheduling is probably to avoid similar algebraic
+complementation identities.
+
+===========================
+
+
+ 
+on succeeding rounds is always an even number of bits

@@ -1,0 +1,71 @@
+NOTE>>>>>>>>>>
+	rsa.c contains only routines for generating and managing rsa keys.
+	RSAEncrypt, RSADecrypt, RSASign and RSAVerify are left out.
+	rsaEncrypt and rsaVerify are just modular exponentiations.  RSASign
+	and RSAVerify can be done that way or by making use of crtCombine (bigmath.c).
+	Implementing these functions is easy but please do not post the
+	implementation with cryptolib.
+
+The Makefile assumes a directory hierarchy of the following form:
+
+cryptolib
+	bin include lib obj src tests
+
+lib
+	dos iris sun4 80x86
+
+bin
+	dos iris sun4 80x86
+
+obj
+	dos iris sun4 80x86
+
+
+The un-tar-ing process should have set this up.
+
+Under Visual C++ 1.5 and Windows (16 bit)
+	Define: MSVC15 and NTRUERAND and NO_QUANTIZE
+	Load *.c with the exception of nt_truerand.c and unix_truerand.c.
+	lmult16.asm will assemble under Borland TASM (4.0)
+	Need to load lmult16.obj after this assembly.
+
+Under Microsoft Visual C++ 2.0 or 4.0 and Windows NT or 95:
+	Define: MSVC20 and TRUERAND
+	Load *.c with the exception of  unix_truerand.c.
+	No need for assembly here as 32 bit mult done using inline capabilities.
+	Be sure to turn on optimizations for inline.
+	You also need to make sure winmm.lib is loaded for the quantization
+	stuff to work.
+
+Under dos:
+	If you use gcc everything is as it is for unix except with
+	Do "make dos".  This works ONLY for gcc as far as I know.
+	This also relies on 80x86_dos_lmult.s.
+
+
+Under Unix:
+	cd src
+	make [sgi, sunos_sparc2, sunos_sparc10, solaris_sparc2, solaris_sparc10,
+	80x86_unix] or 	libcrypt for default.
+
+	The sparc10 versions are also good
+	for sparc20.  If no architecture is chosen, no assembly module for
+	longmult.c is used.  The only architectures for which
+	I currently have longmult.s are dos(80x86) and unix(80x86),
+	sgi,(mips) sparc2, sparc10 (and 20).
+	If "make libcrypt" is used with gcc and if your arch is one of the
+	above, the correct inline asm 32 bit multiplication will be added
+	in longmult.c compilation.  If gcc is not used or your architecture is NOT
+	covered by the included *mult.s files, contact me.  In this case
+	longmult.c will be compiled with a non-assembly 32bit multiplication
+	operation.  (look at longmult.h).  THanks to the gnu folks for
+	their inline-asm extensions under gcc and to SUN for showing me
+	how to do 32x32 bit multiplication on a sparc2.
+	
+To run tests:
+	cd ../tests
+	make
+
+	You get 10 tests.  Run each without args and you'll be told the
+	expected args.
+

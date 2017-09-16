@@ -1,0 +1,27 @@
+#!/usr/local/bin/perl -w -I.
+
+use FileInputStream;
+use DataInputStream;
+
+my $fis1 = new FileInputStream "/etc/hosts";
+my $fis2 = new FileInputStream "/etc/passwd";
+my $fis3 = new FileInputStream "/etc/group";
+my $fis4 = new FileInputStream "/etc/networks";
+
+disp($fis1);
+disp($fis2);
+disp($fis3);
+disp($fis4);
+
+
+sub disp
+{
+	my $fis = shift;
+
+	my $dis = new DataInputStream $fis;
+
+	while (defined($_ = $dis->readLine()))
+	{
+		print $_, "\n";
+	}
+}

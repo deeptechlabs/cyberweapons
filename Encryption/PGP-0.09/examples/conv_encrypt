@@ -1,0 +1,44 @@
+#!/usr/local/bin/perl -w
+
+use FileHandle;
+use Stream::IO;
+use Crypt::MD5;
+use PGP::PacketFactory;
+use PGP::LiteralData;
+use PGP::ConvEncryptedData;
+use PGP::RandomStream;
+use PGP::Armoury;
+
+
+#
+#	Create random stream
+#
+my $ris = new PGP::RandomStream;
+ref($ris) || die $ris;
+$ris->goodSeed();
+
+#
+#	Read from stdin
+#
+my @data = <STDIN>;
+my $msg = '';
+foreach(@data) { $msg .= $_; }
+
+my $lit = new PGP::LiteralData $msg;
+ref($lit) || die $lit;
+my ($litpkt, $err);
+($litpkt, $err) = PGP::PacketFactory::saveAsString($lit);
+defined $err && die $err;
+
+my $hash = Crypt::MD5->hash("secret");
+
+my $cep = new PGP::ConvEncryptedData $hash->data(), $litpkt, $ris;
+die $cep unless ref($cep);
+	   
+($pkt, $err) = PGP::PacketFactory::saveAsString($cep);
+defined $err && die $err;
+
+print "-----BEGIN PGP MESSAGE-----\n\n";
+print PGP::Armoury::messageWithChecksum($pkt);
+print "-----END PGP MESSAGE-----\n";
+

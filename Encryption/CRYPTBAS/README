@@ -1,0 +1,199 @@
+**********************************************************************
+			       _Crypto-Basics_
+			      Joseph M. Reage Jr
+		   University of Maryland, Baltimore County
+
+	The following are some basic cryptographic programs I wrote for my own 
+purposes or for Dr. Stephens cryptography class with Dorothy Dennings
+"Cryptography and Data Security" and Sinkov as (necessary) references.
+	The documentation is sketchy, and I may improve it in time, but
+most of the programs are quite small and simple and perform algorithms
+that are quite well known.
+	The following may be copied and modified freely provided that 
+Joseph M. Reagle Jr. is acknowledged within the code as the
+originator.
+
+reagle@umbc7.umbc.edu
+jreagl1@umbc8.umbc.edu
+
+Joseph M. Reagle Jr.
+3327 Hiss Ave.
+Balto., Md. 21234
+
+
+File Name			Purpose
+------------------------------------------------------------------------
+c6.c				A tool for solving transposition ciphers. 
+				(Method of Sinkov)
+
+crt.c				Solves for the inverse of a number (mod n) 
+				using the Chinese Remainder Theorem.
+                                                      
+freq.c				Gives a frequency list of characters in
+				a file.
+
+ic.c				Give the Index of Coincidence for a
+				given text file.
+
+jac.c				Lists the probable prime numbers between
+				two integer values.
+
+knap.c				Exhaustively breaks small knapsack
+				ciphers.
+
+rprime.c			Finds the percentage of two random
+				numbers happening to be relatively prime.
+
+
+
+                                                        Page
+                   Documentation for c6.c
+                     By Joseph M. Reagle
+
+Data Structures:
+
+     The data structure is that of single dimension array which
+is filled in a row order manner from left to right.
+	There are two arrays, one is the original array
+original_matrix, the other is the working array matrix.  The
+procedures such as get_element and put_element are
+interfaced as if it were a 2 dimensional matrix, they take
+care of the indexing into the array.
+     I also use the data structure history.  Which is an
+array which keeps track of swaps done.  It's place keeper is
+place.
+
+Flow:
+
+     My program first reads the data file (without control
+characters such as line feeds), determining the
+size of the cipher text.  Then it reads it into the matrix.
+This allows a conservative use of system memory.
+     My program, then essentially gives control to the
+rather large procedure interface.  interface determines what
+the user wants to do by the minimum number of keystrokes.
+The user can type the whole command out (he or she can get a
+listing by typing 'help'), or the a abbreviated version of
+the command, that is not ambiguous.  For instance 's' is
+ambiguous, since the user may want to 'save', or 'swap'.
+
+Procedures:
+
+     Most procedure's are self-evident in their purpose, and
+I have tried to document confusing code, but a quick run-
+down of the procedures follows:
+
+is_vowel(char token): is the token a vowel?
+
+get_size (char *argv[1], int *size) : reads the size of the
+  file using the command line file name passed in through
+  main.  It returns the value size by dereferencing the
+  value.
+
+get_matrix(char *argv[1], char *matrix, int size) : reads
+  the file once again to read it into the array matrix, of
+  size size.
+
+get_element(char *matrix, int x, int y) : gets an element
+  from matrix in a virtual, 2 dimensional format.
+
+put_element(char *matrix, int x, int y, int element) :
+  places the element into matrix in a virtual 2 dimensional
+  format.
+
+save_matrix(char *matrix, int size) : saves the matrix to
+  'crypt.log' without the analysis done in print_matrix.
+
+print_matrix(char *matrix, int size) : this procedure is
+  perhaps the least cohesive procedure since it not only
+  prints out the procedure, but also prints out vowel
+  counts, and calculated the statistics.  I have documented
+  this code pretty heavily, and the subtitles should help
+  one to understand the function of each section of code.
+  Such headings are Print the Header, Print and Update the
+  Stat_Info, Print the Footer, and Compute Average and
+  Variance Statistics.
+
+swap (char *matrix, int first, int second) : Swaps two
+  columns by first recording what columns are being swapped
+  (for undo).  Then it swaps the two elements (in the
+  columns first and second) in the first row, then the
+  second row, down to the height of the matrix.
+
+undo (char *matrix) : Undoes the last step, all they way
+  back to the beginning if the user so desires it.  It
+  looks at the last two swaps in the history array, does a
+  swap using those two numbers, then decrements the pointer
+  in the history array by 4.  This is because I want to
+  take back the original swap that I wanted undone, and the
+  swap that undid that swap!
+
+resize (int x, int y) : changes the size of the matrix.
+
+advise (int size) : this uses Kinkov's algorithm for finding
+  possible size of a incompletely filled, rectangular
+  matrix.  It creates a range from the square root of the
+  size, to it's half.  Then within this range, decrements
+  through it, using each number as the row.  Then with this
+  row, I use Kinkov's method to provide possible columns.
+  An asterisk denotes a full matrix.
+
+interface (char* argv[], char *matrix, int size, FILE *fp) :
+  a procedure that reads input from the keyboard, then
+  parses the input on the first couple of significant
+  characters, and performs the appropriate function.
+
+main (int argc, char* argv[]) : main reads the size,
+  initializes the two matrixes "original_matrix", and
+  "matrix".  Prints the matrix out, and then runs advise.
+
+----------------------------------------------------------------
+
+The following is the cipher
+
+temmaticshtra*stio*repl*ceeael*ity*wiah*rtdeaam*of*rrd*o*te*is*peiharr*opr*thisfres*o*athat*mnthsaaiecians*tremauh**strance*sgdsaociall**inyp*npeoplettoe*eo*te*oneveldst*fmathemoti*a*sc*to*tuin*sra*afrom*tye*whyipcal*wosldhr
+
+------------------------------
+
+The following is in the correct size matrix
+
+temmaticshtra*
+stio*repl*ceea
+el*ity*wiah*rt
+deaam*of*rrd*o
+*te*is*peiharr
+*opr*thisfres*
+o*athat*mnthsa
+aiecians*trema
+uh**strance*sg
+dsaociall**iny
+p*npeoplettoe*
+eo*te*onevelds
+t*fmathemoti*a
+*sc*to*tuin*sr
+a*afrom*tye*wh
+yipcal*wosldhr
+
+--------------------------------
+
+The following is the solution:
+
+mathematics*tr
+ies*to*replace
+*reality*with*
+a*dream*of*ord
+er*it*is*perha
+ps*for*this*re
+ason*that*math
+ematicians*are
+*such*strange*
+and*socially*i
+nept*people*to
+*devote*onesel
+f*to*mathemati
+cs*is*to*turn*
+away*from*the*
+physical*world
+   14 x 16
+   14 x 16
+

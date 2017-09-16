@@ -1,0 +1,217 @@
+From jim@RSA.COM Tue Dec 22 15:12:47 1992
+Received: from RSA.COM (CHIRALITY.RSA.COM) by scss3.cl.msu.edu (4.1/4.7)  id AA17130; Tue, 22 Dec 92 15:12:44 EST
+Received: by RSA.COM 
+	id AA22792; Tue, 22 Dec 92 12:10:27 PST
+Date: Tue, 22 Dec 92 12:10:27 PST
+From: jim@RSA.COM (Jim Bidzos)
+Message-Id: <9212222010.AA22792@RSA.COM>
+To: mrr@scss3.cl.msu.edu
+In-Reply-To: Mark Riordan's message of Tue, 22 Dec 1992 13:21:03 -0500 <9212221821.AA16897@scss3.cl.msu.edu>
+Subject: RIPEM message for your approval
+Status: ORSr
+
+
+
+Mark-
+
+As you can imagine, many changes have been proposed, and, I think,
+some good ones incorporated, in the most current form of the RSAREF
+license. These changes are based on constructive comments from over
+twenty people. These changes may encourage folks to distribute RSAREF
+and RIPEM who otherwise would not have.
+
+We plan to make all RSAREF applications (such as RIPEM) availble WITH
+RSAREF.  Why shouldn't someone get all the stuff built on it if they
+get RSAREF? (Including helpful code such as the Thompson/Schiller
+emacs adapter.) I assume you have no objection.
+
+I'm hopeful that you see these changes as positive; please let me know
+if that's not true! I offer a summary of them, the rationale,
+perceived benefits, and a complete copy of the revised license.
+
+------------------------------------------------------------------
+
+Here's a summary of the changes between what's attached (the one we
+plan to now "standardize" on for RSAREF) and what you sent me:
+
+changed 1(a) and added (8): the license is now perpetual. Some have
+claimed RSA might "suddenly" decide to cancel RSAREF licenses. It is
+now crystal clear that the license can only be cancelled by violating
+the agreement. RSA cannot cancel it at its discretion. And even if you
+violate it, it doesn't cancel the license of those who got it from
+you. I think this is an importnat clarification, from what I've heard.
+
+changed 1(c) and added 2(d): We don't care about any porting or
+performance mods, but we don't feel we should allow automatic access
+under the normal interface. We've granted it to you since RIPEM
+predates RSAREF (also to John Gilmore for a secure RLOGIN using
+Diffie-Hellman) and we'll grant it to anyone for any reasonable use.
+(We state so in the Agreement.)  We just want to know what it is we're
+allowing to go around the interface.
+
+End of Section 1 - a clarification in the form of an addition is made
+here. Some have said that unrelated software on a tape with RSAREF
+could be covered by the restrictions imposed on RSAREF Application
+Programs. This should clear that up. (I believe this helps you in the
+separate distribution of the RIPEM code minus the RSAREF code.)
+
+changed (6): We simply have removed RSA's $5,000 cap on protecting
+RSAREF users against charges from some other patent holders. (Like
+PKP!) Some have claimed that RSAREF was posibly a way to "set up"
+users for PKP (the patent holders) since $5K was hardly enough to
+defend against patent infringement.  (They actually thought RSAREF was
+a way to get people to infringe just so that PKP could sue them! RSA
+pays $5,000, but PKP collects more, therefore it's a 'you hold em, and
+I'll hit em' thing, or so I guess they thought.) I believe this makes
+it clear we intend to sue no one for using RSAREF, and in fact defend
+users ALL THE WAY if someone else does.
+
+I think these are all for the better, and will engender trust in RSA's
+intentions with RSAREF, to support free PEM.
+
+---------------------------------------------------------------------
+
+New RSAREF License  (December 1992 version)
+
+----------------------------------------------------------------------
+                           RSA LABORATORIES
+                      PROGRAM LICENSE AGREEMENT
+
+
+
+RSA LABORATORIES, A DIVISION OF RSA DATA SECURITY, INC. ("RSA")
+GRANTS YOU A LICENSE AS FOLLOWS TO THE "RSAREF" PROGRAM:
+
+1.   LICENSE. RSA grants you a non-exclusive, non-transferable,
+     perpetual (subject to the conditions of section 8) license
+     for the "RSAREF" program (the "Program") and its associated
+     documentation, subject to all of the following terms and
+     conditions:
+
+     a.   to use the Program on any computer in your possession;
+
+     b.   to make copies of the Program for back-up purposes;
+
+     c.   to modify the Program in any manner for porting or
+          performance improvement purposes (subject to Section 2)
+          or to incorporate the  Program into other computer programs 
+          for your own personal or internal use, provided that you 
+          provide RSA with a copy  of any such modification or 
+          Application Program by electronic mail, and grant RSA 
+          a perpetual, royalty-free license to use and distribute 
+          such modifications and Application Programs on the terms 
+          set forth in this Agreement.
+
+     d.   to copy and distribute the Program and Application Programs
+          in accordance with the limitations set forth in Section 2.
+
+"Application Programs" are programs which incorporate all or any
+portion of the Program in any form. The restrictions imposed on
+Application Programs in this Agreement shall not apply to any software
+which, through the mere aggregation on distribution media, is
+co-located or stored with the Program.
+
+2.   LIMITATIONS ON LICENSE.
+
+     a.   RSA owns the Program and its associated documentation and
+          all copyrights therein. You may only use, copy, modify and
+          distribute the Program as expressly provided for in this
+          Agreement. You must reproduce and include this Agreement,
+          RSA's copyright notices and disclaimer of warranty on any
+          copy and its associated documentation.
+
+     b.   The Program and all Application Programs are to be used only
+          for non-commercial purposes. However, media costs associated
+          with the distribution of the Program or Application Programs
+          may be recovered.
+
+     c.   The Program, if modified, must carry prominent notices
+          stating that changes have been made, and the dates of any
+          such changes. 
+
+     d.   Prior permission from RSA is required for
+          any modifications that access the Program through ways
+          other than the published Program interface or for 
+          modifications to the Program interface. RSA will grant
+          all reasonable requests for permission to make such
+          modifications.
+
+3.   NO RSA OBLIGATION. You are solely responsible for all of your
+     costs and expenses incurred in connection with the distribution
+     of the Program or any Application Program hereunder, and RSA
+     shall have no liability, obligation or responsibility therefor.
+     RSA shall have no obligation to provide maintenance, support,
+     upgrades or new releases to you or to any distributee of the
+     Program or any Application Program.
+
+4.   NO WARRANTY OF PERFORMANCE. THE PROGRAM AND ITS ASSOCIATED
+     DOCUMENTATION ARE LICENSED "AS IS" WITHOUT WARRANTY AS TO THEIR
+     PERFORMANCE, MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR
+     PURPOSE. THE ENTIRE RISK AS TO THE RESULTS AND PERFORMANCE OF
+     THE PROGRAM IS ASSUMED BY YOU AND YOUR DISTRIBUTEES. SHOULD THE
+     PROGRAM PROVE DEFECTIVE, YOU AND YOUR DISTRIBUTEES (AND NOT RSA)
+     ASSUME THE ENTIRE COST OF ALL NECESSARY SERVICING, REPAIR OR
+     CORRECTION.
+
+5.   LIMITATION OF LIABILITY. EXCEPT AS EXPRESSLY PROVIDED FOR IN
+     SECTION 6 HEREINUNDER, NEITHER RSA NOR ANY OTHER PERSON WHO HAS
+     BEEN INVOLVED IN THE CREATION, PRODUCTION, OR DELIVERY OF THE
+     PROGRAM SHALL BE LIABLE TO YOU OR TO ANY OTHER PERSON FOR ANY
+     DIRECT, INCIDENTAL OR CONSEQUENTIAL DAMAGES, EVEN IF RSA HAS BEEN
+     ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+6.   PATENT INFRINGEMENT OBLIGATION. Subject to the limitations set
+     forth below, RSA, at its own expense, shall: (i) defend, or at
+     its option settle, any claim, suit or proceeding against you on
+     the basis of infringement of any United States patent in the
+     field of cryptography by the unmodified Program; and (ii) pay
+     any final judgment or settlement entered against you on such
+     issue in any such suit or proceeding defended by RSA. The
+     obligations of RSA under this Section 6 are subject to: 
+     (i) RSA's having sole control of the defense of any such claim, 
+     suit or proceeding; (ii) your notifying RSA promptly in writing
+     of each such claim, suit or  proceeding and giving RSA authority
+     to proceed as stated in this  Section 6; and (iii) your giving 
+     RSA all information known to you relating to such claim, 
+     suit or proceeding and cooperating  with RSA to defend any such 
+     claim, suit or proceeding. RSA shall have no obligation under 
+     this Section 6 with respect to any claim to the extent it is 
+     based upon (A) use of the Program  as modified by any person 
+     other than RSA or use of any Application Program, where use 
+     of the unmodified Program would not constitute an infringement, 
+     or (B) use of the Program in a manner other than that permitted 
+     by this Agreement.  THIS SECTION 6 SETS FORTH RSA'S ENTIRE 
+     OBLIGATION AND YOUR EXCLUSIVE REMEDIES CONCERNING CLAIMS FOR  
+     PROPRIETARY RIGHTS INFRINGEMENT.
+
+     NOTE: Portions of the Program practice methods described in and
+     subject to U.S. Patents Nos. 4,200,770, 4,218,582 and 4,405,829,
+     and all foreign counterparts and equivalents, issued to Leland
+     Stanford Jr. University and to Massachusetts Institute of
+     Technology. Such patents are licensed to RSA by Public Key
+     Partners of Sunnyvale, California, the holder of exclusive
+     licensing rights. This Agreement does not grant or convey any
+     interest whatsoever in such patents.
+
+7.   RSAREF is a non-commercial publication of cryptographic
+     techniques. Portions of RSAREF have been published in the
+     International Security Handbook and the August 1992 issue of Dr.
+     Dobb's Journal. Privacy applications developed with RSAREF may be
+     subject to export controls. If you are located in the United States
+     and develop such applications, you are advised to consult with the
+     State Department's Office of Defense Trade Controls.
+
+8.   TERM. The license granted hereunder is effective until
+     terminated. You may terminate it at anytime by destroying
+     the Program and its associated documentation. The termination
+     of your license will not result in the termination of the
+     licenses of any distributees who have received rights to the
+     Program through you so long as they are in compliance with
+     the provisions of this license.
+
+
+-----------------------------------------------------------------
+
+
+
+

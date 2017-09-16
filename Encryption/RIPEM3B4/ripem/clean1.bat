@@ -1,0 +1,10 @@
+del *.$$$
+del *.bak
+del *.bsc
+del *.exe
+del *.lib
+del *.map
+del *.obj
+del *.pch
+del *.sbr
+del *.tmp

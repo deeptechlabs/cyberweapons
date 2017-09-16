@@ -1,0 +1,198 @@
+
+
+/* This program enciphers files using one of Vigenere, Beauford or
+   Variant Beauford ciphers. Note inverses means this code also
+   decrypts - eg encipherment by Vigenere can be deciphered by
+   enciphering with Variant Beauford with the same key. Similarly,
+   Beauford is its own inverse.
+
+   Input via file or keyboard is of the following format:
+	cipher-type
+	key
+	the message in free format, of any desired length
+   Output will be of the form:
+	theen ciphe redme ssage
+
+   The cipher type is given by the single letter V (or v) for Vigenere,
+   B (or b) for Beauford and A (or a) for Variant Beauford. Should a 
+   different letter be used, a message will be printed to the screen and 
+   Vigenere used.
+
+   Currently the maximum allowed key is 10 characters. Excess is discarded
+   with a warning message sent to the screen. MAXKEYLENGTH can be changed
+   for longer or shorter limits. The key can be *any* ASCII characters, not
+   just alphabetics.
+
+   Note upper and lower case plaintext are enciphered by converting all to 
+   lower case first, with the output solely lower case. Non-alphabetics are 
+   discarded, however relatively minor adjustments could be made to allow 
+   longer alphabets.
+
+   The output is given in the traditional 5 letter chunks, but BLOCKLENGTH
+   can be changed to suit personal taste. Similarly, 80 character lines are
+   assumed, but other lengths can be set with LINELENGTH.
+
+   Two versions of main are given: one for input from the keyboard or from
+   file redirection, the other for input from a file named on the command
+   line. Just uncomment which you wish to use. Note both send output to the
+   screen by default, and allow output redirection to a file (eg ... > outfile)
+   If you wish to specify the output file, the modification is minor.
+
+   An example for program verification:
+	V
+	orbit
+	An ambassador is an Honest man sent to Lie and Intrigue abroad for 
+	the benefit of his Country
+   produces output:
+	oebuu ojtiw cijat bypvx gknig gvobm ccjmt bujvm fzhcx osswt rwpzm 
+	vvcmg swjbh tyjav clobk m
+
+   Note no padding at the end to hide the message length: this is easily added.
+   For instance, the final message letter can be enciphered repeatedly (still
+   with progression through the key to hide the effect) until a block is full.
+
+	Author: Dr Leisa Condie, December 1992.
+	phoenix@neumann.une.edu.au
+	Dept of Mathematics, Statistics and Computing Science,
+	University of New England - Armidale,
+	New South Wales, 2351, AUSTRALIA.
+*/
+
+#define ALPHA        26         /* length of alphabet for modulo */
+#define MAXKEYLENGTH 10         /* maximum length of the key used */
+#define BLOCKLENGTH   5         /* for output, how many chars in a block */
+#define LINELENGTH   80         /* maximum output characters per line */
+
+char key[MAXKEYLENGTH+1];       /* encipherment key: +1 for possible newline */
+int  blockcount = 0;            /* counts of chars in printed block */
+int  linechars = 0;             /* count of chars printed on current line */
+int  keylength = 0;             /* holds actual length of the key */
+int  vigenere=0,beauford=0,varbeau=0;
+				/* cipher type is set to 1 (TRUE) if chosen */
+FILE *fp;                       /* set to stdin if interactive, else file */
+
+void getsetup(void)
+{
+	char ch;                /* generic character variable */
+	char *tmp = key;        /* pointer to key array */
+
+	/* find cipher type */
+	ch = getc(fp);
+	if (ch == 'V' || ch == 'v')          vigenere =1;
+	else if (ch == 'B'|| ch == 'b')      beauford =1;
+	else if (ch == 'A'|| ch == 'a')      varbeau  =1;
+	else {  /* otherwise error, so notify by stderr and use Vigenere */
+		fprintf(stderr,"V/B/A ciphers only - Vigenere assumed\n");
+		vigenere =1;
+	}
+
+	while ((ch=getc(fp)) != '\n');      /* if extraneous input, clear it! */
+
+
+	/* get key - anything after the MAXKEYLENGTH'th char is discarded */
+
+	for (keylength=0; keylength < MAXKEYLENGTH; keylength++)
+		if ((key[keylength]= getc(fp)) == '\n') break;
+
+	if (key[keylength] != '\n'){
+		while ((ch=getc(fp)) != '\n');  /* if excess key, clear it! */
+		fprintf(stderr,"Key truncated to %d characters\n",keylength);
+	}
+}
+
+int encipher(int i)
+{
+	/* Takes argument i - where we are in the key,
+	   Returns tmp - the ciphertext equivalent of the input if
+		the input was alphabetic, else the input character unchanged */
+	char ch;                /* character read in */
+	int tmp;                /* for cipher char calculation */
+
+	ch = getc(fp);
+	if (ch >= 'A' && ch <= 'Z') {   /* convert to lowercase */
+		ch = ch - 'A' + 'a';    /* don't trust tolower() */
+	}
+	if (ch >= 'a' && ch <= 'z') {   /* encipher */
+		if (vigenere)
+			tmp = (ch + key[i] - 2*'a') % ALPHA;
+		else if (beauford)
+			tmp = (key[i] - ch) % ALPHA;
+		else    tmp = (ch - key[i]) % ALPHA;
+
+		/* make offset positive and convert to lowercase char */
+		while (tmp < 0) tmp += ALPHA;
+		tmp += 'a';
+	}
+	else    tmp = ch;               /* else return character unchanged */
+	return(tmp);
+}
+
+void outputcipher(void)
+{
+	int cipherch, i=0;              /* cipher character */
+
+	while (!feof(fp)) {             /* keep going whilst there is input */
+		cipherch = encipher(i); /* generate cipher character */
+		if (cipherch < 'a' || cipherch > 'z') /* invalid char in */
+			continue;       /* ignore code below - restart loop */
+
+		/* check we haven't finished key and need to restart it */
+		if (i == keylength-1)   i=0;
+		else                    i++;
+
+		/* if a BLOCKLENGTH block is finished print a space */
+		if (blockcount == BLOCKLENGTH) {
+			/* check whether a newline is needed yet */
+			if (linechars > LINELENGTH - BLOCKLENGTH) {
+				putchar('\n');
+				linechars = 0;
+			}
+			else {
+				putchar(' ');
+				linechars++;
+			}
+			blockcount = 0;
+		}
+		/* print enciphered character */
+		putchar(cipherch);
+		blockcount++;
+		linechars++;
+	}
+	putchar('\n');
+}
+
+/* This version of main is set for input to come from the keyboard either 
+   directly or through file redirection: e.g. program < input_file
+*/
+/*
+void main(void)
+{
+	fp = stdin;
+	getsetup();
+	outputcipher(); 
+}
+*/
+
+/* This version of main looks for an input file whose name is specified on
+   the argument line: e.g. program input_file
+*/
+void main(int argc, char *argv[])
+{
+	if (argc != 2) {
+		fprintf(stderr,"Usage: program <input_file>\n");
+		exit(1);
+	}
+
+	if ((fp = fopen(argv[1],"r")) == NULL) {
+		fprintf(stderr,"File %s cannot be read from\n",argv[1]);
+		exit(1);
+	}
+
+	getsetup();
+	outputcipher(); 
+}
+
+
+
+
+

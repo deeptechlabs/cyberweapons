@@ -1,0 +1,41 @@
+#!/usr/local/bin/perl -w
+
+use strict;
+
+use Stream::IO;
+use Crypt::RSAKeyGen;
+use Crypt::RSASecretKeyPair;
+use PGP::Armour;
+use PGP::SecretKeyCertificate;
+use PGP::UserId;
+use PGP::CmdLine;
+use PGP::RandomStream;
+use PGP::PacketFactory;
+
+
+#
+#	Create a random input stream
+#
+my $ris = new PGP::RandomStream;
+ref($ris) || die $ris;
+$ris->goodSeed();
+
+my $ui = new PGP::CmdLine;
+
+
+my $sk = Crypt::RSAKeyGen::generateKeys($ris, 512, sub { print shift; });
+ref($sk) || die $sk;
+
+my $passphrase = $ui->getNewPassphrase();
+my $skc = new PGP::SecretKeyCertificate $sk, $passphrase, $ris;
+
+
+my $fos = new Stream::FileOutput("secring.pgp");
+my $dos = new Stream::DataOutput($fos);
+
+my $ret = PGP::PacketFactory::save($dos, $skc);
+defined $ret && die $ret;
+
+my $id = new PGP::UserId 'joe';
+$ret = PGP::PacketFactory::save($dos, $id);
+defined $ret && die $ret;

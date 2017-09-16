@@ -1,0 +1,72 @@
+     ****************************************
+     * Original algorithm by Bruce Schneier *
+     ****************************************
+     Note: Check is book named "Applied Cryptography"
+     Its 2th Edition is THE BEST reference available!
+
+(BLOWPAS.zip)
+   - First assembly implementation by  John Lots and Walter van Holst.
+   - Assembly rewrite by Jeroen Pluimers
+
+(BLWCBC10.zip)
+   - CBC Mode Implementations by Dutra Lacerda using the BlowPas Unit.
+
+(BLWCBC11.zip)
+   + Unit Rewrite improving 15X the Pascal Code (1500%)
+
+(BLWCBC12.zip)
+   + Unit  Assembly  Use improving 5X the previous Pascal Code  (500%)
+     and therefore being twice as fast  than  the  BLOWPAS  386  code.
+
+(BLCBC13.zip)
+   ! Discovered the Initialization Bug in the  Lots-Holst BLOWPAS Unit
+     used in previou versions while making a complete code rewrite.
+     Meaning: PREVIOUS VERSIONS ARE NOT SECURE.
+   + Correction made and Source code released,  before  its  time,  to
+     protect users and developers.
+   * Improvements in progress in the assembly and general code  to  be
+     made  public  domain  when  I  get  TASM 4.0 to make the 386 code
+     (twice faster) and the general routines are converted to Objects.
+
+(BLWCBC14.zip)
+   ! Discovered a small Bug still herited from the the BlowPas Unit in
+     the init routine of the algorithm... (again!) This one is smaller
+     than the one corrected in version 1.3  but still affects security
+     though in a  much lesser degree   ( one of the 4 P-Boxes  was not
+     initialized... meaning that the program was  still safe,  but not
+     as  much  as desired and/or expected)
+   + Added a random CBC Init Vector. Forgotten  in  demo  version 1.3.
+     This small change makes the cipher text less vulnerable to known
+     text attack. And also means that:
+     THIS  VERSION  IS  NOT COMPATIBLE WITH PREVIOUS ONES.
+   * This also means this version is no longer a  demo  but  a  strong
+     cipher program.
+   * Also changed my idea of making the ASM code public.
+     Still waiting to get my hands on TASM 4.0 (This is a hard life!)
+     Now only the TP7 will be public.
+
+(BLWCBC15.zip)
+   + Added  a  New  Field  in  the EOF Header to restore the  original
+     encrypted file extension (used only if  NO  output  argument  has
+     been declared).
+   + Full COMPATIBILITY with 1.4 and FUTURE versions.
+   + Added I/O check routines and a RunTime Error Trap routine.
+     (This demo is becoming a little bit more than that... Humm!)
+
+   = Full COMPATIBILITY with 1.4 and FUTURE versions.
+   ! A 'Writeln' in a wrong place produced a incorrect layout.
+   + Better I/O errors control
+   + Disk Full check added
+   + ErrorLevel file added to benefit Power-Users
+   + Read-me file with important TIPS was also added
+
+(BLWCB15B.zip)
+   + Small code change to make it compatible with Delphi's Object Pascal.
+
+---
+
+For  comments,  questions or suggestions do not hesitate to contact me
+by InterNet E-Mail, FidoNet NetMail or trough Compuserve.
+
+Addresses are in the Header Comments.
+Dutra Lacerda. <dulac@ip.pt>

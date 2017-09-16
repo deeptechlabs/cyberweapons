@@ -1,0 +1,40 @@
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+# Additional restrictions due to national laws governing the use, import or
+# export of cryptographic software is the responsibility of the software user,
+# importer or exporter to follow.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+      SUBDIRS = util lib include fips prog man
+
+         DIST = des.tar.Z
+
+# Some make programs (old 4.3) don't define the MAKE macro automaticly
+         MAKE = make
+
+ MAKE_SUBDIRS = for D in ${SUBDIRS}; do \
+			echo "Making $@ in $$D/"; \
+			( cd $$D; ${MAKE} ${MFLAGS} $@ ); \
+		done
+
+all	:
+	@ ${MAKE_SUBDIRS}
+
+install	:
+	@ ${MAKE_SUBDIRS}
+
+clean	:
+	@ ${MAKE_SUBDIRS}
+
+depend	:
+	@ ${MAKE_SUBDIRS}
+
+dist	: clean
+	PWD=`pwd`; cd ..; tar cf - `basename $$PWD` | compress > ${DIST}
+	@echo 'Compressed tar file ../${DIST} created'

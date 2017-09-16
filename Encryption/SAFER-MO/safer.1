@@ -1,0 +1,381 @@
+.TH SAFER 1 "Sep. 9, 1995"
+.GN 2
+.SH NAME
+safer \- encryption and decryption using SAFER
+.SH SYNOPSIS
+.TP
+.B safer
+[
+.B \-e
+|
+.B \-d
+] [
+.B \-ecb
+|
+.B \-cbc
+|
+.B \-cfb
+|
+.B \-ofb
+]
+.br
+(
+.B \-k
+.I keyString
+|
+.B \-kx
+.I keyHexString
+) 
+.br
+[
+.B \-r
+.I nofRounds
+] [ 
+.B \-s
+] [ 
+.B \-v
+]
+.br
+[
+.I inputFile
+[
+.I outputFile
+] ]
+.TP
+.B safer
+[
+.B \-h
+|
+.B \-hc
+] [
+.B \-tan
+|
+.B \-abr
+]
+.br
+[
+.B \-k
+.I keyString
+|
+.B \-kx
+.I keyHexString
+]
+.br
+[
+.B \-r
+.I nofRounds
+] [
+.B \-s
+] [
+.B \-v
+]
+.br
+[
+.I inputFile
+[ [
+.I outputFile
+]
+.I hashvalFile
+]
+.SH DESCRIPTION
+.I Safer
+reads
+.I inputFile
+and writes the encrypted or decrypted data to
+.I outputFile
+or writes the hash value to
+.I hashvalFile\c
+\&.
+If a file name is not given in command line, 
+.I safer 
+uses the standard input or output.
+If the input file name is given as '-', 
+.I safer 
+reads from the standard input.
+.br
+
+.br
+.B SAFER
+[1] (Secure And Fast Encryption Routine) is a block cipher developed 
+by Prof. J.L. Massey at the Swiss Federal Institute of Technology.
+There exist four versions of this algorithm, namely: 
+.B SAFER K-64
+[1], 
+.B SAFER K-128
+[2],
+.B SAFER SK-64
+[3] and
+.B SAFER SK-128
+[3]. The numerals 64 and 128 stand for the length of the user-selected
+key, 'K' stands for the original key schedule and 'SK' stands for the
+strengthened key schedule (in which some of the "weaknesses" of the
+original key schedule have been removed).
+.SH OPTIONS
+.TP
+.B \-e
+Encryption (default).
+.TP
+.B \-d 
+Decryption.
+.TP
+.B \-k 
+The key is specified with 
+.I keyString\c
+\&.
+If the length of
+.I keyString
+is less than 10 characters,
+.I keyString
+is interpreted as a 64-bit key, otherwise as a 128-bit key. 
+.TP
+.B \-kx 
+The key is specified with
+.I keyHexString\c
+\&.
+If the length of
+.I keyHexString
+is less than 17 hex digits,
+.I keyHexString
+is interpreted as a 64-bit key, otherwise as a 128-bit key. 
+For the modes 
+.B -cbc\c
+, 
+.B -cfb
+and
+.B -ofb\c
+, it is possible to specify an initial value denoted by y[0]. In this 
+case the key and the initial value are separated by a colon, e.g. '1234:9A'.
+.TP
+.B \-r
+.I nofRounds
+gives the number of rounds in the encryption (resp. decryption) process.
+Default values are 6 rounds for 
+.B SAFER  K-64\c
+, 8 rounds for
+.B SAFER SK-64 
+and 10 rounds for
+.B SAFER K-128 and
+.B SAFER SK-128\c
+\&. 
+.TP
+.B -s
+The strengthened key schedule contained in
+.B SAFER SK-64
+or
+.B SAFER SK-128
+is used,
+instead of the original key schedule contained in
+.B SAFER K-64
+or
+.B SAFER K-128\c
+\&.
+.TP
+.B \-h 
+Compute a 128-bit hash value from the input data. The
+hash value is written to 
+.I hashvalFile
+(or standard output).
+.TP
+.B \-hc 
+Compute a 128-bit hash value from the input data. The input is copied to 
+.I outputFile
+(or standard output) and the hash value is written to 
+.I hashvalFile
+(or standard error).
+.TP
+.B \-v
+Verbose mode. The selected parameters are written to standard error.
+.TP
+.B Notation:
+.br
+.ta 1.3i 1.5i
+.in +1.5i
+.ti -1.5i
+z	=	64-bit or 128-bit key
+.br
+.ti -1.5i
+x[i]	=	i-th 64-bit plaintext block (i = 1..L+1)
+.br
+.ti -1.5i
+y[i]	=	i-th 64-bit ciphertext block (i = 1..L+1)
+.br
+.ti -1.5i
+x[1]..x[L]	=	actual plaintext (last block is filled with zeros)
+.br
+.ti -1.5i
+x[L+1]	=	length of actual plaintext in bits
+.br
+.ti -1.5i
+x[1]..x[L+1]	=	plaintext
+.br
+.ti -1.5i
+y[1]..y[L+1]	=	ciphertext
+.br
+.ti -1.5i
+<a, b>	=	128-bit block composed of two 64-bit blocks
+.br
+.ti -1.5i
+E(z, .)	=	encryption function under the key z
+.br
+.ti -1.5i
+D(z, .)	=	decryption function, x = D(z, E(z, x))
+.br
+.ti -1.5i
+^	=	bit-by-bit exclisive-OR
+.br
+.ti -1.5i
+~	=	bit-by-bit complement
+.in -1.5i
+.TP
+.B Encryption / Decryption Modes:
+.TP
+.B \-ecb 
+electronic code book mode
+.br
+y[i] = E(z, x[i])
+.br
+x[i] = D(z, y[i])
+.TP
+.B \-cbc 
+cipher block chaining mode (default)
+.br
+y[i] = E(z, x[i] ^ y[i-1])
+.br
+x[i] = D(z, y[i]) ^ y[i-1]
+.TP
+.B \-cfb 
+ciphertext feedback mode
+.br
+y[i] = x[i] ^ E(z, y[i-1])
+.br
+x[i] = y[i] ^ E(z, y[i-1])
+.TP
+.B \-ofb 
+output feedback mode
+.br
+h[i] = E(z, h[i-1])
+.br
+y[i] = x[i] ^ h[i]
+.br
+x[i] = y[i] ^ h[i]
+.TP
+.B Hash Functions:
+.br
+If no key is given, 
+.I safer 
+uses the all zero key.
+.br
+<h[0], g[0]> = z
+.br
+hash value = <h[L+1], g[L+1]>
+.TP
+.B \-tan 
+tandem Davies-Meyer scheme (default)
+.br
+w[i] = E(<g[i-1], x[i]>, h[i-1])
+.br
+h[i] = h[i-1] ^ w[i]
+.br
+g[i] = g[i-1] ^ E(<x[i], w[i]>, g[i-1])
+.TP
+.B \-abr 
+abreast Davies-Meyer scheme
+.br
+h[i] = h[i-1] ^ E(<g[i-1], x[i]>, h[i-1])
+.br
+g[i] = g[i-1] ^ E(<x[i], h[i-1]>, ~g[i-1])
+.TP
+.B Key Formats:
+.br
+.I keyHexString
+= z:y[0] = { '0'..'9' | 'a'..'f' | 'A'..'F' | ':' } 
+.br
+.I keyString
+= z = { ' '..'~' }
+.SH EXAMPLES
+To encrypt and decrypt a file in ciphertext feedback mode:
+.LP
+.RS
+.nf
+.ft B
+safer -e -cfb -kx 123456:cDd7 data data.cr
+safer -d -cfb -kx 123456:cDd7 data.cr data.ori
+data and data.ori are identical
+.ft R
+.fi
+.RE
+.br
+.ne 10
+.LP
+To compute the hash value:
+.LP
+.RS
+.nf
+.ft B
+safer -h data
+.ft R
+.fi
+.RE
+.br
+.ne 10
+.LP
+To compute the hash value and encrypt the data in one step:
+.LP
+.RS
+.nf
+.ft B
+safer -hck "k e y" data | safer -kx 12E3 - data.cr
+.ft R
+.fi
+.RE
+.SH PATENT
+"Although our design of
+.B SAFER K-64
+was sponsored by Cylink Corporation (Sunnyvale, CA, USA), Cylink has
+explicitly relinquished any proprietary rights to this algorithm.
+This largesse on the part of Cylink was motivated by the reasoning that
+the company would gain more from new business than it would lose from
+competition should many new users adopt this publicly available cipher.
+.B SAFER K-64
+has not been patented and, to the best of our knowledge, is free for use
+by anyone without fees of any kind and with no violation of any rights of
+ownership, intellectual or otherwise." [2]
+.SH REFERENCES
+.TP
+.B [1]
+Massey, J.L.,
+"SAFER K-64: A Byte-Oriented Block Ciphering Algorithm",
+pp. 1-17 in
+.I Fast Software Encryption
+(Ed. R. Anderson), Proceedings of the Cambridge Security Workshop,
+Cambridge, U.K., Dec. 9-11, 1993, Lecture Notes in Computer Science No. 809.
+Heidelberg and New York: Springer, 1994.
+.br
+.TP
+.B [2]
+Massey, J.L.,
+"SAFER K-64: One Year Later",
+preliminary manuscript of a paper presented at the K. U. Leuven Workshop
+on Cryptographic Algorithms, Dec. 14-16, 1994. To be published in the
+Proceedings of this workshop by Springer.
+.br
+.TP
+.B [3]
+Massey, J.L.,
+"Announcement of a Strengthened Key Schedule for the Cipher SAFER",
+Sept. 9, 1995,
+(see file 'SAFER_SK.TXT' on distribution).
+.SH AUTHOR
+Richard De Moliner (demoliner@isi.ee.ethz.ch)
+.br
+Signal and Information Processing Laboratory
+.br
+Swiss Federal Institute of Technology
+.br
+CH-8092 Zurich, Switzerland
+.SH BUGS
+This program is at most as strong as SAFER itself. So, we urge the user to 
+use this program only after he has assured himself that SAFER is strong 
+enough AND he has read the source code of this program and its libraries AND 
+he has compiled the program himself with a troyan-free compiler. WE DO NOT 
+GUARANTEE THAT THIS PROGRAM IS A SECURE ENCRYPTION PROGRAM.

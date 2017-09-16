@@ -1,0 +1,3 @@
+prog/des usr/bin/des
+lib/des.h usr/include/des.h data
+lib/libdes.a usr/lib/libdes.a lib

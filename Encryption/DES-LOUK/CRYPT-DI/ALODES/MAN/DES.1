@@ -1,0 +1,102 @@
+'	# -*- nroff -*-
+.TH DES 1 "March 9, 1989"
+.GN 2
+.SH NAME
+des \- encrypt and decrypt using DES algorithm
+.SH SYNOPSIS
+.B des
+[
+.B -k
+.I keystring
+] [
+.B -e
+] [
+.B -d
+] [
+.B -x
+] [
+.B -X
+] [
+.B -S
+] [
+.B -c
+.I count
+] [
+.B -p
+] [
+.I inputfile
+[
+.I outputfile
+] ]
+.SH DESCRIPTION
+.I Des
+reads
+.I inputfile
+and writes the en/decrypted data to
+.I outputfile\c
+\&.
+If file name is not given in command line, des uses standard input or output.
+The
+.I keystring
+is transformed by a one-way funtion into a 8-byte key,
+which is then used by the algorithm. If no
+.I keystring
+is given on command line,
+des asks one with getpass(3).
+.PP
+Des encrypts when given
+.B -e
+flag and decrypts with
+.B -d\c
+\&.
+With
+.B -x
+flag des encrypts normally, but it doesn't produce any encrypted
+output, instead it prints 8-byte cryptographic checksum of input data.
+The checksum is printed to standard output file.
+This checksum can be used to verify whether the input data has been modified.
+It is computationally hard to change the input data in such a way that
+the checksum wouldn't change.
+.B -X
+is similar to
+.B -x
+but it prints the input data to output file unchanged and prints the
+checksum to standard error file.
+Using this feature you can for example produce a compressed tar archive
+and its checksum
+at the same time with command:
+.PP
+(tar cf - dir | des -X | compress > dir.tar.Z) >& dir.cksum
+.PP
+With
+.B -c
+des makes encryption
+.I count
+times for each 8kbyte block.
+This possibly makes the encrypted data harder to break.
+.PP
+By default, des encrypts the data using cipher block chaining (CBC) mode.
+With
+.B -p
+flag, des uses
+PCBC mode, which makes it possible to detect if the data have been tampered
+after encryption.
+.PP
+.B -S
+flag enables SUN compatiblity mode. In this mode des is compatible
+with the des program distributed with SUNOS in United States. In SUN mode
+des uses user supplied keyword without hashing it. This means that only first
+eight characters of the key are used. SUN mode should be used only for
+compatibility reasons. -b flag (ECB mode) of SUN des is not supported.
+.SH FILES
+/dev/tty is used to read a keystring by getpass(3)
+.SH AUTHOR
+Antti Louko (alo@kampi.hut.fi), Helsinki University of Technology
+Computing Centre
+.SH BUGS
+This program is at most as strong as DES algorithm itself.
+So, we urge the user to use this program only after he has assured
+himself that DES is strong enough AND he has read the source code of this
+program and its libraries AND he has compiled the program himself with a
+trojan-free compiler. I DON'T GUARANTEE THAT THIS PROGRAM IS A DECENT
+ENCRYPTION PROGRAM.

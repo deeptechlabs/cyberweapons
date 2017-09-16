@@ -1,0 +1,48 @@
+diff --recursive -u lch025/asmgen/makefile.ms lch025a/asmgen/makefile.ms
+--- lch025/asmgen/makefile.ms	Thu May 22 20:50:22 1997
++++ lch025a/asmgen/makefile.ms	Sat May 24 05:40:07 1997
+@@ -37,7 +37,7 @@
+ #
+ 
+ md5cp.c :	cmd5.exe 
+-	cmd5.exe masm-inl-cdecl > md5cp.c
++	cmd5.exe masm-inl-fastcall > md5cp.c
+ 
+ md5g.obj :	asmgen.hpp  a2r128.hpp md5g.hpp md5g.cpp
+ 	$(CPP) $(CPPQUIET) $*.cpp
+@@ -58,7 +58,7 @@
+ # SHA1
+ 
+ sha1cp.c :	csha1.exe 
+-	csha1.exe masm-inl-cdecl > sha1cp.c
++	csha1.exe masm-inl-fastcall > sha1cp.c
+ 
+ sha1g.obj :	asmgen.hpp  a2r160.hpp shag.hpp sha1g.hpp sha1g.cpp
+ 	$(CPP) $(CPPQUIET) $*.cpp
+@@ -75,7 +75,7 @@
+ # SHA0
+ 
+ sha0cp.c :	csha0.exe 
+-	csha0.exe masm-inl-cdecl > sha0cp.c
++	csha0.exe masm-inl-fastcall > sha0cp.c
+ 
+ sha0g.obj :	asmgen.hpp  a2r160.hpp shag.hpp sha0g.hpp sha0g.cpp
+ 	$(CPP) $(CPPQUIET) $*.cpp
+@@ -94,7 +94,7 @@
+ #
+ 
+ rmd128cp.c : 	crmd128.exe  
+-	crmd128.exe masm-inl-cdecl > rmd128cp.c
++	crmd128.exe masm-inl-fastcall > rmd128cp.c
+ 
+ rmd128g.obj :	asmgen.hpp  a2r128.hpp rmd128g.hpp rmd128g.cpp
+ 	$(CPP) $(CPPQUIET) $*.cpp
+@@ -113,7 +113,7 @@
+ #
+ 
+ rmd160cp.c : 	crmd160.exe  
+-	crmd160.exe masm-inl-cdecl > rmd160cp.c
++	crmd160.exe masm-inl-fastcall > rmd160cp.c
+ 
+ rmd160g.obj :	asmgen.hpp a2r160.hpp rmd160g.hpp rmd160g.cpp
+ 	$(CPP) $(CPPQUIET) $*.cpp

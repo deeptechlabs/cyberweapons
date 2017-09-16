@@ -1,0 +1,72 @@
+#!/usr/local/bin/perl -w -I.. -I/home/gary/dev/PGP
+
+use strict;
+use integer;
+
+use Crypt::ElGamal::SecretKey;
+use Crypt::ElGamal::PublicKey;
+use Crypt::ElGamal::KeyGen;
+use Math::BigInteger;
+use Math::Random;
+use PGP::RandomStream;
+use PGP::DEK;
+
+
+my $ris = new PGP::RandomStream;
+my $sk = Crypt::ElGamal::KeyGen::createKey $ris, 512;
+
+my $pk = $sk->publicKey();
+print "Public key = ", $pk->asString(), "\n";
+
+my $key = $ris->read(16);
+print "key = ", unpack("H*", $key), "\n";
+
+my $dek = PGP::DEK::encode($key, $pk->size(), $ris);
+
+my $ct = $pk->encrypt($ris, $dek);
+my $pt = $sk->decrypt($ct);
+my $newkey = PGP::DEK::decode($pt);
+
+print "key = ", unpack("H*", $newkey), "\n";
+
+my $sig = $sk->sign($ris, $dek);
+$pk->verify($dek, $sig) && print "Signature good";
+
+
+
+
+my $i;
+my $time = time();
+for ($i = 0; $i < 2; $i++)
+{
+$sk = Crypt::ElGamal::KeyGen::createKey $ris, 512;
+}
+print "Create: ", (time()-$time)/2, "\n";
+
+$time = time();
+for ($i = 0; $i < 100; $i++)
+{
+$ct = $pk->encrypt($ris, $dek);
+}
+print "Encrypt: ", (time()-$time), "\n";
+
+$time = time();
+for ($i = 0; $i < 100; $i++)
+{
+$pt = $sk->decrypt($ct);
+}
+print "Decrypt: ", (time()-$time), "\n";
+
+$time = time();
+for ($i = 0; $i < 100; $i++)
+{
+$sig = $sk->sign($ris, $dek);
+}
+print "Sign: ", (time()-$time), "\n";
+
+$time = time();
+for ($i = 0; $i < 100; $i++)
+{
+$pk->verify($dek, $sig);
+}
+print "Verify: ", (time()-$time), "\n";

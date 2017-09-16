@@ -1,0 +1,61 @@
+.\" @(#)quad_residue.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH QUAD_RESIDUE 3BM
+.SH NAME
+quadResidue, compositeQuadResidue, squareRoot, compositeSquareRoot,
+bigIsQR, bigJacobi
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBBoolean quadResidue (BigInt a, BigInt p);\fR
+.LP
+\fBBoolean compositeQuadResidue (BigInt a, BigInt p, BigInt q);\fR
+.LP
+\fBvoid squareRoot (BigInt a, BigInt p, BigInt root);\fR
+.LP
+\fBvoid compositeSquareRoot (BigInt a, BigInt p, BigInt q, BigInt root1, BIgInt root2);\fR
+.LP
+\fBBoolean bigIsQR(BigInt a, BigInt p, BigInt q)\fR
+.LP
+\fBint bigJacobi(BigInt a, BigInt b)\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+$a$ is a quadratic residue if $x sup size +2 2 mod~n ~=~ a$ has a solution
+$x$.  If $n$ is prime, $a sup size +2 (n-1)/2 mod ~n ~=~ 1$.
+If $n$ is composite, $n ~=~ p*q$ for $p$ and $q$ prime, $a$ is a quadratic
+residue if it is a quadratic residue modulo each prime.
+In each square root function, it is assumed that the primes are of the form,
+$p mod 4 ~=~ 3$.  For the composite modulus, the square roots are formed
+using the Chinese remainder theorem to combine the square roots
+modulo each prime.  For the composite modulus, there are 4 roots.
+$compositeSquareRoot$ returns two of them, $root1$ and $root2$.  The others
+are $n~-~root1$ and $n~-~root2$.
+
+$bigJacobi$ calculates the Jacobi symbol (a/b).
+
+$bigIsQR$ determines whether a is a quadratic residue mode p*q
+where p and q are prime.  It does this by calculating the Jacobi
+symbols (a/p) and (a/q).  If \fIboth\fR are 1, then a is a quadratic
+residue modulo p*q.
+
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+.BR crtCombine (3BM).
+
+

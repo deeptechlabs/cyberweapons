@@ -1,0 +1,9 @@
+#!/bin/sh
+umask 077
+tempfile=/tmp/msg-`whoami`
+ripem -e -h pr -i $1 -o $tempfile
+if test "$?" = 0
+then
+  cp $tempfile $1
+  rm $tempfile
+fi

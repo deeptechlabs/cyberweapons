@@ -1,0 +1,87 @@
+.\" @(#)bigutils.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH BIGUTILS 3BM
+.SH NAME
+bigInit, bigTest, bigBits, bigBytes, freeBigInt, fBigPrint, bufToBig, bigToBuf, atobig, bigsprint, handle_exception
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBBigInt bigInit(unsigned long i)\fR
+.LP
+\fBSign bigTest(BigInt big)\fR
+.LP
+\fBint bigBits(BigInt big)\fR
+.LP
+\fBint bigBytes(BigInt big)\fR
+.LP
+\fBvoid freeBignum(BigInt big)\fR
+.LP
+\fBvoid fBigPrint(BigInt big, FILE *fp)\fR
+.LP
+\fBvoid bufToBig(unsigned char *buf, int len, BigInt big)\fR
+.LP
+\fBvoid bigToBuf(BigInt big, int bufsize, unsigned char *buf)\fR
+.LP
+\fBBigInt atobig(char *a)\fR
+.LP
+\fBint bigsprint(BigInt, unsigned char *buf)\fR
+.LP
+\fBvoid handle_exception(ExceptionType type, char *exception_msg)\fR
+
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+$bigInit$ takes an unsigned long integer and returns an equivalent
+$BigInt$ structure.  $bigInit(0)$ is the best way to initialize a
+$BigInt$.
+For example:
+.in 10
+\fCresult = bigInit(0);
+.in 10
+bigAdd(a, b, result);\fR
+.LP
+
+$bigTest$ returns the sign of a $BigInt$.  It will be either
+$POS$ or $NEG$.
+
+$bigBits$ returns the number of bits in a $BigInt$.
+
+$bigBytes$ returns the number of bytes in a $BigInt$.
+
+$freeBigInt$ frees a $BigInt$ struct.
+
+$fBigPrint$ prints a $BigInt$ in hexadecimal format to a stream.
+The number is printed most significant byte first.
+
+$bufToBig$ converts a buffer of characters to a $BigInt$.
+The least significant char in the buffer is the least significant in the big.
+
+$bigToBuf$ converts a $BigInt$ to a buffer of characters.
+The least significant byte n the big goes into the least significant byte
+in the buffer.
+
+If the buffer size is larger than that needed for the bignum,
+the extra bytes are zeroed.  $bufToBig$ will trim these leading
+zeroes when used to reconvert.  Obviously, $bufsize$ needs to
+be at least the same as the bignum (4*LENGTH(big)).
+
+$atobig$ converts a string to a $BigInt$.  It is assumed that the
+string is a hexadecimal representation of a $BigInt$.  If one
+writes a $BigInt$ to a file using $fBigPrint$ and reads it back into
+a string using $fscanf$, $atobig$ is used to convert the string
+to a $BigInt$.
+
+$bigsprint$ fills a buffer with the hex representation of a big.
+
+$handle_exception$ handles all known error conditions.  There
+are two types: CRITICAL and WARNING.  A CRITICAL error prints a 
+message contained in exception_msg and exits.  A WARNING just
+prints the message.

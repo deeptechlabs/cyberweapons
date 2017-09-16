@@ -1,0 +1,33 @@
+#!/bin/sh
+# Script for sending mail from Elm with ~e
+# By Jon Zeeff <jon@umcc.umich.edu>
+#
+# Edit elmrc to add:
+# easyeditor = ripem-encrypt-elm
+#
+# I'm using Elm2.4 PL21.  When you are typing in a message, ie at the
+#
+#   Enter message.  Type Elm commands on lines by themselves.
+#   Commands include:  ^D or '.' to end, ~p to list, ~? for help.
+#
+# prompt one can enter various ~ commands, including ~e.  ~e will then 
+# invoke whatever you have set to the easyeditor.  One might need to 
+# specify the builtin editor in the elm options menu to get this 
+# behavior.  Here is the latest script.
+#
+umask 077
+tempfile=$HOME/.ripem.tmp
+echo
+echo "Enter recipient (or return for signature only): \c"
+read name
+
+if [ "X$name" = "X" ]
+then
+   ripem -e -Yfsg -m mic-clear -Tn -i $1 -o $tempfile
+   cp $tempfile $1
+   rm $tempfile
+else
+   echo "A copy of your mail is in .ripem.tmp"
+   ripem -e -r $name -Yfsg -Tn -i $1 -o $tempfile
+   echo "[include $tempfile application/ripem]" > $1
+fi

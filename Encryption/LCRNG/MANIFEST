@@ -1,0 +1,8 @@
+MANIFEST                This list of files.
+README			General instructions.
+License			License agreement.
+Makefile		Makefile to create and test random.c.
+Perl			Instructions for putting random.o into Perl.
+random.c		LCG sequence generator.
+patchlevel.h		Patchlevel.
+lotto6			A Perl program that uses random numbers.

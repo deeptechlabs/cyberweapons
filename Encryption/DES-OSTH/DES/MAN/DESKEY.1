@@ -1,0 +1,55 @@
+.TH DESKEY 1 "Version 1.0" "Chalmers University"
+.SH NAME
+deskey \- Simple key generation program for DES functions.
+.SH SYNOPSIS
+.B deskey
+[
+.B \-r
+|
+.B \-k
+.I key
+]
+.SH DESCRIPTION
+.PP
+.I deskey
+generates a 64-bit parity adjusted DES key and prints the result on
+stdout by using the
+.IR des_print_cblock (3)
+function.
+.PP
+The following options are available:
+.TP
+.B \-r
+Generates a random key with the
+.IR des_random_key (3)
+function.
+.TP
+.B \-k
+Takes the next argument as an ascii key and generates a DES key with the
+.IR des_string_to_key (3)
+function.
+.PP
+If no command line argument is given,
+.I deskey
+will ask the user for an ascii key by using the
+.IR des_read_password (3)
+function.
+.SH SE ALSO
+.IR des (3),
+.IR descrypt (1).
+.SH BUGS
+No cleanup of internally used data (yet).
+.SH AUTHOR
+.ie t .ds O: \\kz\\h'+(\w'O'-\w'..')/2'\v'-0.8m'..\v'+0.8m'\\h'|\\nzu'O
+.el .ds O: O
+Stig \*(O:stholm <ostholm@ce.chalmers.se>
+.br
+Department of Computer Engineering
+.br
+Chalmers University of Technology
+.SH RESTRICTIONS
+This software may be freely distributed an modified without any restrictions
+from the author.
+Additional restrictions due to national laws governing the use, import or
+export of cryptographic software is the responsibility of the software user,
+importer or exporter to follow.

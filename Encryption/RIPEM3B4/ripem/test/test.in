@@ -1,0 +1,6 @@
+# Create a mic only message with no body
+echo | ripem -e -m mic-only -p test1.pub -s test1.prv -u test -k test1pw -o temp.pem
+echo created temp.pem
+
+# Receive it
+ripem -d -p test1.pub -s test1.prv -u test -i temp.pem -o temp.out

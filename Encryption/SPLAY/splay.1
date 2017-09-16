@@ -1,0 +1,250 @@
+.\" File: splay.1
+.\" Author: Jeffrey Chilton, PO Box 807, West Branch, IA 52358.
+.\" Author: Douglas Jones, Dept. of Comp. Sci., U. of Iowa, Iowa City, IA 52242.
+.\" Date: Feb. 20, 1989.
+.\" Note: This is not copyrighted.  Documentation should be free!
+.\" Language: nroff -man (also troff, eroff ...)
+.\" Purpose: UNIX man page for Data compression and encryption program.
+.\"
+.TH SPLAY 1 "Feb. 20, 1989"
+.UC 6
+.SH NAME
+splay, unsplay \- compress and uncompress data
+.SH SYNOPSIS
+.PU
+.ll +8
+.B splay
+[
+.B \-c
+] [
+.B \-f
+] [
+.B \-n
+] [
+.B \-v
+] [
+.B \-s
+.I states
+] [
+.I filename
+] [
+.B \-k
+.I keyfile
+] [
+.B \-p
+.I password
+]
+.ll -8
+.br
+.B unsplay
+[
+.B \-c
+] [
+.B \-f
+] [
+.B \-n
+] [
+.I filename
+] [
+.B \-k
+.I keyfile
+] [
+.B \-p
+.I password
+]
+.SH DESCRIPTION
+.I Splay
+reduces the size of
+.I filename
+using prefix codes derived from a binary splay tree.  Whenever possible,
+the file is replaced by one with the extension
+.B "\&.S."
+If no files are specified, the standard input is compressed to the
+standard output.  Compressed files with names ending in
+.B "\&.S"
+can be restored to their original form using
+.I unsplay.
+.I Splay/unsplay
+can also be used as a filter.
+.PP
+The
+.B \-c
+(``cat'') option makes
+.I splay/unsplay
+write to the standard output; no other files are changed or deleted.  If used,
+.B \-c
+must be specified before all other arguments except
+.B \-f, \-n,
+and
+.B \-v.
+.PP
+The
+.B \-f
+option will force the compression or uncompression of the input file,
+even if it does not actually shrink, or the corresponding output file
+already exists.  If
+.B \-f
+is not given the user is prompted as to whether an existing
+file should be overwritten and the splay command will fail if the
+compressed file is larger than the original.  In case of failure,
+the output file is deleted and the input file is left unchanged.
+.B \-f
+must be specified before
+.I filename.
+.PP
+By default,
+.I splay/unsplay
+will delete the input file.  The
+.B \-n
+option suppresses this.
+.PP
+The
+.B \-v
+option causes the printing of the percentage reduction of the input file.
+It also prints the number of bytes used to create the splay tree(s).
+.PP
+.I Splay
+uses the splay prefix algorithm first presented in "Applications
+of Splay Trees to Data Compression", D.W. Jones,
+.I Communication of the ACM,
+August 1988, pages 996-1007.  A balanced splay tree is first constructed by the
+program.  As each character is pulled from the input text, it is assigned a
+binary prefix code derived by following the path from the root to the proper
+leaf.  At each compression, the tree is semi-splayed in such a way
+that the distance from the root to the leaf is shortened.
+In this way, the most frequently used characters acquire the shortest codes.
+.PP
+By default,
+.I splay/unsplay
+uses a Markov compression algorithm which associates a splay tree with each
+of 32 states (unless encryption is requested, in which case the default is 1).
+The number of states can be changed by the
+.B \-s
+option, followed by the desired number of states (1 - 256).
+When compressing a character, the state used is determined
+by the previous character divided by the total number of states.
+For 64K machines, no more than 20 states are recommended; for text,
+more than 32 states usually leads to little improvement, but about 100 states
+is sufficient to compete with the UNIX
+.I compress
+command.  Digitized images can frequently be compressed better than
+.I compress
+command with only 1 state.
+.PP
+.I Splay
+can be used for data encryption.
+By using the
+.B \-p
+option, the user may specify a password to be used as an encryption key.
+The
+.B \-k
+option may be specified to enable the program to use a file to hold the
+encryption key.  Before compressing or uncompressing the input, the initial
+tree used for data compression is semi-splayed about each byte of the key,
+thus making it very difficult to recover the compressed data without
+knowledge of the key.  Any number of
+.B \-p
+or
+.B \-k
+options may be used; if multiple keys are specified, they will be
+concatenated in the order specified.
+The
+.B \-p
+and
+.B \-k
+options must be specified after the filename, if any is given.
+.PP
+Any time an encryption key is specified,
+.I splay
+prefixes several random bytes to the source file in order to complicate
+known-text attacks.  These bytes are automatically discarded by
+.I unsplay.
+If a key is specified,
+.I splay
+will retain the output even if it is larger than the input.
+.PP
+.SH "DIAGNOSTICS"
+Error: bad
+.B \-x
+argument
+Usage:
+.I splay/unsplay
+[\-c] [\-f] [\-n] [\-v] [\-s states] [filename] [\-k keyfile] [\-p password]
+.in +8
+Invalid options were specified on the command line.
+-c must precede all other arguments.
+Keys must be specified after filename.
+-s must be specified before keys.
+.in -8
+Error:
+.IR splay/unsplay
+can't open
+.IR filename
+.in +8
+Unable to open this file.  File does not exist, or is inaccessible.
+.in -8
+Error:
+.IR filename
+is not in splayed format
+.in +8
+.I Unsplay
+cannot unsplay the file, because it has not been splayed.
+All splayed files are given the magic number ^S^P.
+.in -8
+Error: corrupt input in
+.IR filename
+.in +8
+Either the file has been encrypted and the proper decoding key has
+not been entered, or the splayed data has been changed or ruined.
+.in -8
+Error: cannot
+.IR splay/unsplay
+.IR filename: .S
+suffix expected
+.in +8
+Input file is required to have a .S suffix for unsplay to be able to use it.
+.in -8
+Error:
+.IR filename
+could not be compressed
+.in +8
+.I Splay
+was unable to produce a smaller file.
+.in -8
+Error: too many arguments
+.in +8
+More than one filename has been specified or number of states specified is in
+conflict with a previous setting.
+.in -8
+Error: \-s
+.B x
+not in bounds of 1 to 256
+.in +8
+The number of states is not within the range 1 - 256.
+.in -8
+.SH "SEE ALSO"
+.br
+crypt(1), compress(1), uncompress(1), zcat(1)
+.SH BUGS
+As with most encryption algorithms, we cannot ensure the security of the
+encrypted result.  As of this writing (February 20, 1989), we know nothing
+about deciphering encrypted text produced using splay trees.  In the short
+run, this may provide a small degree of security, but in the long run, it
+should only reinforce the insecurity of using this method.
+.PP
+For all of the text we have compressed and uncompressed, the output of the
+.I unsplay
+program has been the same as the original input to the
+.I splay
+program, but we cannot warrant that this will be the case for files
+we have not tried.
+.PP
+Unlike
+.I compress
+and
+.I uncompress,
+this package makes no effort to preserve the ownership modes, access times,
+and modification times of the files processed.
+This package will compress or uncompress only one file at a time.
+.SH AUTHORS
+Douglas W. Jones and Jeffrey E. Chilton

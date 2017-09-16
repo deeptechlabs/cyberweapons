@@ -1,0 +1,5 @@
+To compile the client, edit the Makefile to reflect the locations of the
+include files and libraries for SSLeay and Berkeley db on your system
+(if you don't have them, read the README file in the -lucre directory to
+find out where to get them).  Then just do "make".  You should end up
+with "s-lc", which you can install wherever you like.

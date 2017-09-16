@@ -1,0 +1,101 @@
+$Id: Perl,v 1.1 1992/01/08 05:04:15 wengland Exp wengland $
+
+--------
+Tips for linking 'random.o' into Larry Walls "Perl".
+
+Perl version 4.19.
+
+  Perl is a useful tool and frequently found in Unix environments.  
+  Many of the functions that Perl uses come directly from the 
+  development environment that Perl was built in.
+
+  Since Perl pulls most of it's functions from existing development
+  libraries it will also get your systems brain-dead random number
+  generator. You should, in my opinion, use the generator provided
+  here or a better one if it's available.
+
+  To use this generator in Perl instead of your systems generator:
+
+  0)  Build and test Perl to make certain that it is working
+      properly.
+
+  1)  Test and create the random.o module in a separate 
+      directory.
+
+  2)  Copy random.o to your perl building directory.
+  
+  3)  Modify eval.c.  Find the line that states #if RANDBITS == 31
+       and change it to read:
+
+       #if RANDBITS == 31
+	       value = rand() * value / 2147483647.0;
+       #else
+
+  4)  Modify config.h.  Find the line that says #define RANDBITS
+      and change it to  so that it says:
+
+      #define RANDBITS 31             /**/
+
+   5) Modify perl.c.   Find case 'v':
+      Add in a line that states you have added random.o to your
+      Perl source.  The case statement should then resemble:
+
+	case 'v':
+	fputs("\nThis is perl, version 4.0\n\n",stdout);
+	fputs(rcsid,stdout);
+	fputs("\nCopyright (c) 1989, 1990, 1991, Larry Wall\n",stdout);
+	fputs("\nRandom number patch, Better LCD installed.\n",stdout);
+    #ifdef MSDOS
+
+   6) Edit makefile.  (Warning there are two of them.  Be sure to
+      edit the correct one. )
+
+      Add the following line just before 'mallocsrc =': 
+
+      randomobj = random.o
+
+      Add randomobj everywhere there is a mallocobj.
+
+   7) Recompile Perl and test it.
+
+   8) Test perl -v for the version comment.  ( Be sure to run 
+      the version of perl you just created by using ./perl 
+      or similar construct.)
+
+   9) Test the new random number generator by running the following 
+      perl program. ( Be sure to run the version of perl you just
+      created by using ./perl or similar construct.)
+
+----- Cut here -----
+#!perl
+eval "exec perl -S $0 $*"
+        if $running_under_some_shell;
+
+##
+ #
+#$successfulltest 1043618065;  # Optional test number for original 
+			       # generator in ACM.
+
+$successfulltest = 399268537;
+
+srand(1);
+
+$seq = 0;
+while ( $seq++ < 10000){
+
+    $seed = rand(2147483647);
+
+    if( $seq == 10000){
+        print $seed, "\n";
+        if( $seed == $successfulltest ){
+            print"random.c is successfully integrated into Perl.\n";
+        }else{
+            print"random.c DID NOT install into Perl correctly! \n";
+        }
+    }
+}
+----- Cut here -----
+
+    10)  Install Perl as per Perl's instructions.
+
+End

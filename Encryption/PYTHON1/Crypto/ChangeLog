@@ -1,0 +1,70 @@
+
+Changes since version 0.0.3:
+
+        * For block cipher objects, the IV can now be set to a desired
+value without having to create a whole new object.
+
+        * Warnings fixed; now compiles with only one warning under 
+'gcc -Wall'.  Thanks to Holger Trapp for pointing them out.
+
+	* Typos in sign.py, pgp.py, ElGamal.py fixed.  Thanks to Holger
+Trapp for pointing out the one in sign.py.
+
+        * SSLeay module added, along with secured versions of httplib.py,
+nntplib.py, and a modified urllib.py.
+
+        * Add triple DES (called DES3).
+
+Changes since version 0.0.2:
+
+	* README updated.
+
+	* RSADSI's MD5 implementation replaced by Colin Plumb's, which
+is public domain and about twice as fast.
+
+	* MD2 and MD4 rewritten, and are now about 30-40% faster than
+RSADSI's implementations.  The code is hereby placed in the public
+domain; feel free to reuse it for your own purposes.
+
+	* Public-key interface changed: Now the encrypt() and sign()
+functions always require a string of random data (though RSA doesn't
+use it).
+
+	* Fixed a stupid braino in pgp.py which made reading private
+keys impossible.
+
+	* Added test data for SHA.
+
+	* curiosa/ directory added, containing export-a-cryptosystem
+.sig files.
+
+Changes since version 0.0.1:
+
+	* The PGP module can now read and output public and private
+keys!  Barring major bugs or complaints about the interface, PGP key
+handling (*not* message handling) is now complete.
+
+	* RSA and ElGamal public key algorithms added.
+
+	* New modules: Sapphire stream cipher, Ultra Fast Crypt(),
+Diamond, RC5, MD2, MD4.  (Warning: The 32-bit version of RC5 has been
+validated using the data in Rivest's paper, available at
+ftp://theory.lcs.mit.edu/pub/rivest/rc5; however, the 16-bit version
+has not been validated.  This is probably not of great concern, as
+Rivest implies that 16-bit RC5 is only of academic interest.  I will
+try to validate it in the near future, however.)
+
+	* md5.md5() alias added for compatibility with the MD5 module
+distributed with Python.  This method is deprecated, and will
+eventually vanish.
+
+	* Various bug fixes.  Most importantly: if interrupted,
+buildkit will delete the partially constructed file.  (Thanks to Ken
+Manheimer for pointing this out.)
+
+	* Documentation greatly updated.
+
+	* Lucifer module deleted (it's too slow and insecure for
+anyone to be interested in using it); LOKI91 deleted (it's just plain
+too slow).
+

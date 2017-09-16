@@ -1,0 +1,43 @@
+This package is MD4 message digest algorithm modified for DOS (8086).
+Read accompanied RFC1186 what the MD4 is and what it is not.
+
+I mostly (>90%) stole the MD4 code from the RFC and as such it must be
+distributed under the terms specified in md4.c.
+Thanks to Mr. Rivest for the code and to RSA Data Security, Inc. for
+giving the permission to use it.
+
+Note that md4 -t gives a different digest compared to the C program in
+the RFC. This is because only 640K bytes is processed. The output should
+be: (8 MHz 80286)
+
+>md4 -x
+MD4 test suite results:
+31d6cfe0d16ae931b73c59d7e0c089c0 ""
+bde52cb31de33e46245e05fbdbd6fb24 "a"
+a448017aaf21d8525fc10ae87aa6729d "abc"
+d9130a8164549fe818874806e1c7014b "message digest"
+d79e1c308aa5bbcdeea8ed63df412da9 "abcdefghijklmnopqrstuvwxyz"
+043f8582f241db351ce627e153e7f0e4 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+a448017aaf21d8525fc10ae87aa6729d abcfile
+>md4 -shi
+cfaee2512bd25eb033236f0cd054e308 "hi"
+>md4 -t
+MD4 time trial. Processing 50'000 64-character blocks...
+b1f00cd88bea37478b5ee75259623e05 is digest of 3.2M byte test input.
+Seconds to process test input:   103
+Characters processed per second: 31067.
+
+Files in the archive:
+  MD4DRIVE.C    From RFC1186 (very slightly modified)
+  MD4.C         From RFC1186 (MDBlock removed)
+  MD4BLOCK.C    MDBlock from md4.c, slightly modified (rot as a function)
+  MD4BLOCK.ASM  MDBLOCK, optimized ASM program.
+  MD4.H         Global defines
+  RFC1186       Original article
+  README        This file
+  ABCFILE       A test file, contains "abc"
+  MAKEFILE      Makefile for Unix style make and MSC & MASM
+
+Please send any comments to jhol@stekt.oulu.fi or jhol@tolsun.oulu.fi
+
+  @JHOL   (Jouko Holopainen)

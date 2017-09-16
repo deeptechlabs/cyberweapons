@@ -1,0 +1,49 @@
+#
+# Makefile for the TwoFish algorithm using GCC-based C compilers
+#
+
+CC=	gcc
+CFLAGS= -O6 -mcpu=pentiumpro -pedantic -fomit-frame-pointer -DINTEL_GCC -DGetCodeSize
+
+OBJ=	twofish.o
+TRACE_OBJ=
+
+#
+# Rules
+#
+
+all:	Tst2fish.exe
+
+twofish.o:	twofish.c Aes.h Platform.h Table.h
+	$(CC) $(CFLAGS) -c twofish.c
+
+Tst2fish.o:	Tst2fish.c
+	$(CC) $(CFLAGS) -c Tst2fish.c
+
+Tst2fish.exe:	Tst2fish.o $(OBJ)
+	$(CC) $(CFLAGS) -o Tst2fish.exe Tst2fish.o $(OBJ)
+
+#
+# Clean
+#
+clean:
+	-del *.o
+
+cleanexes:
+	-del *.exe
+
+cleantests:
+	-del ecb_vk.txt
+	-del ecb_vt.txt
+	-del ecb_tbl.txt
+	-del ecb_ival.txt
+	-del ecb_e_m.txt
+	-del ecb_d_m.txt
+	-del cbc_e_m.txt
+	-del cbc_d_m.txt
+
+cleanall: clean cleanexes cleantests
+
+#
+# End Of Makefile
+#

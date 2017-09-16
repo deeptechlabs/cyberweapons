@@ -1,0 +1,9 @@
+LOKI97 Java Source and Classes
+
+src/LOKI97_Algorithm.java		- LOKI97 Algorithm Java source
+src/LOKI97_Properties.java		- LOKI97 Properties support code
+classes/LOKI97/LOKI97.properties	- LOKI97 properties file
+classes/LOKI97/LOKI97_Properties.class	- compiled Java classes
+classes/LOKI97/LOKI97_Algorithm.class	- compiled Java classes
+LOKI97.jar				- jar file of classes and properties 
+

@@ -1,0 +1,44 @@
+This is Info file pct.info, produced by Makeinfo-1.55 from the input
+file crypt.texi.
+
+
+Indirect:
+pct.info-1: 87
+pct.info-2: 49264
+
+Tag Table:
+(Indirect)
+Node: Top87
+Node: Introduction903
+Node: Design Goals1084
+Node: Future Directions6272
+Node: Acknowledgements9042
+Node: Hash Functions10510
+Node: Security Notes for Hash Functions13495
+Node: Credits for Hash Functions15868
+Node: Encryption Algorithms16160
+Node: Algorithm-specific Notes23014
+Node: Security Notes for Encryption Algorithms24279
+Node: Credits for Encryption Algorithms25931
+Node: Public Key Algorithms26890
+Node: The ElGamal and DSA algorithms34303
+Node: Security Notes for Public-key Algorithms36452
+Node: Odds and Ends37734
+Node: crypt built-in module38680
+Node: ufcrypt built-in module39787
+Node: randpool module41141
+Node: rfc1751 built-in module47785
+Node: rotor built-in module49264
+Node: Demo Programs53789
+Node: cipher Demo54520
+Node: voice Demo57599
+Node: Secure import59867
+Node: Extending the Toolkit60987
+Node: Creating a Custom Object62235
+Node: Standard Routines63328
+Node: The config.pct File67249
+Node: Portability macros68080
+Node: Informing the author69342
+Node: Concept Index70520
+
+End Tag Table

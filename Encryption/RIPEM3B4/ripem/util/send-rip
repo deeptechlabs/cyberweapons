@@ -1,0 +1,497 @@
+#!/usr/bin/perl
+
+# send-ripem
+# version 1.0
+# by Marc VanHeyningen <mvanheyn@whale.cs.indiana.edu>, January 1993
+# bug reports welcome, but please first confirm that send-ripem has the
+# problem, not RIPEM or MH or your configuration.
+# Minor bugfix by Greg Onufer  Oct 93
+# You may use and redistribute this code freely as long as you don't try
+# to make money off it (like you could) and give me credit (like I want it)
+
+# The following must assign the location of the MH lib directory, since
+# there is no portable way to find it out.
+
+$mhdir = "/usr/local/mh/lib";
+
+# send-ripem is a program to facilitate sending mail messages encrypted
+# with the RIPEM package.  It attempts to provide a good interface for 
+# using RIPEMs various modes and for automatically handing the headers
+# in methods that seem correct for security.
+
+# I use send-ripem on a Sparc running SunOS and MH 6.8.
+# It should be portable, but your mileage may vary.
+
+# To install:
+#	check the $mhdir assignment above.
+#	install this file in your path as send-ripem
+#	add the line "sendproc: send-ripem" to your .mh_profile
+# You also may wish to install the companion decryption program, pshow.
+# send-ripem assumes you have RIPEM configured appropriately, and the
+# environment variables set for it (notably RIPEM_USER_NAME) must be set.
+
+# send-ripem calls very few other programs:
+#	ripem		to encrypt the message
+#	ap		to parse addresses
+#	ali		to resolve aliases
+#	send		to send the message
+
+# Use:  the following command lines are now added to send at the whatnow prompt
+#	-sign		encrypts in MIC-CLEAR mode
+#	-secure		encrypts in ENCRYPTED mode
+#	-rverbose	runs RIPEM in debug mode
+# any other command line options are passed on to send.
+
+# In addition, if the draft to send has an "Encrypted" header, it will
+# allow specification of the encryption type:
+#	RIPEM, ENCRYPTED (or just RIPEM) does ENCRYPTED mode
+#	RIPEM, MIC-CLEAR does MIC-CLEAR mode
+#	RIPEM, MIC-ONLY does MIC-ONLY mode
+# if you specify both an Encrypted: header and a command line option,
+# the command line overrides the header.  Values are case insensitive.
+
+# If you have a file in your $HOME called .mh_headers, its contents
+# will be prepended to all messages (even unencrypted ones) before 
+# sending.  This is to allow for things like a common From: or an 
+# X-Face: or the like.  (Exception:  Of course, it won't be prepended
+# to messages when dist is used.  Encryption is also not allowed with
+# dist for obvious reasons.  Also, when using Bcc: in non-ENCRYPTED
+# mode, these headers are attached to the encapsulated message rather than
+# the main one.
+
+# send-ripem takes pains to do the right thing with headers in all cases.
+# For example, in the MIC modes, all transport headers (except bcc and
+# fcc, for obvious reasons) are copied into the signed text for
+# authentication.  In the ENCRYPTED mode, sensitive headers like Subject:
+# are not included outside the protected text to prevent their disclosure.
+# In addition, a Date: header is added, providing a timestamp and
+# preventing replay attacks, and a From: header is added.
+
+# send-ripem now will generally do the right thing with MIME headers; it
+# will convert the plaintext into an encapsulated MIME message, and make
+# the outer message a MIME message of type application/x-ripem.  This
+# is just a stopgap until true PEM/MIME interaction standards come.
+
+# BUGS:
+# (more generically, areas where reasonable minds may differ)
+# These are things that might be confusing or which I pondered before
+# deciding to implement a certain way.
+
+# The headers in the plaintext will be as you typed them, without
+# things like aliases resolved.  There exist conceivable circimstances 
+# where this could make for difficulties if others treat the plaintext
+# as a full RFC 822 message, since they probably don't have the same
+# aliases you do.
+
+# Bcc under ENCRYPTED should work, but you will have to type your key
+# phrase twice, since two messages are really being sent.  Bcc
+# recipients will be able to see each other, though To: and cc: folks
+# won't see them.  I don't believe there is any good way around this;
+# having to type a separate passphrase for each Bcc: recipient would 
+# not be acceptable.  Because the plaintext is already "encapsulated"
+# in some sense, I decided to use a simple Subject: labeling the bcc
+# rather than the standard RFC934 encapsulation, since bursting the
+# plaintext would be a PITA and would strongly encourage the unsafe
+# practice of leaving files with the plaintext around.  Most mailers,
+# including pshow, will reply to the bcc message rather than the
+# encapsulated message.
+
+# Bcc under MIC modes works, but since the RFC 934 encapsulation
+# changes the PEM headers, the recipient will need to burst the message
+# to be able to read it with pshow.  If you use the -mime option to
+# send, the encapsulation is easier to undo.
+
+# Blind carbon copies will not contain your .mh_headers except when
+# using type ENCRYPTED, though the encapsulated message will.
+
+# If you use Fcc: under ENCRYPTED, you will be listed as one of the PEM
+# recipients (so that you'll be able to read the Fcc:ed mail.)
+
+# The program will leave ,rmh files in /tmp if you use the default
+# rmmproc, and clobbers the draft file instead of rmmprocing it.
+
+# The Encrypted: header.  It's defined by RFC 822 and is legal, but 
+# the values I use for it aren't registered.  My own feeling is that
+# the line is never used anyway, so it shouldn't much matter.
+# Its use allows some mailers (like MH ;-) to display the encrypted
+# status of a message in scan output.
+# The line has two different classes of values, both of which are sorta
+# strange:
+# 	Encrypted: RIPEM, ENCRYPTED
+# is redundant, while:
+#	Encrypted: RIPEM, MIC-ONLY
+# is contradictory, since MIC-ONLY is not really encryption.  Despite
+# this, it just seems practical.
+# A case could be made that it should be PEM, not RIPEM, as the first word.
+
+# Even though Mark went to pains to allow RIPEM to parse headers itself,
+# send-ripem ignores this feature and parses the headers to extract
+# the recipients using ap.  This is to allow ali to be called to resolve
+# MH aliases in the recipient names.
+
+# Multiple calls to ripem could be made a little easier by having
+# send-ripem itself prompt for the passphrase and then pass it multiple
+# times to ripem.  However, turning off keyboard echoing is not all that
+# portable, and doing this in perl creates some risks.
+
+# The encapsulated headers, From: and Date:.  Adding a From: header is
+# cryptographically useful, since the Originator-Name: header can be
+# changed without altering the MIC validity.  In addition, a From: means
+# that the plaintext is a legal RFC 822 message, which could be handy.
+# Date:, similarly, is needed for 822 compliance.  I ended up writing
+# some quick code to make a proper date within perl without calling dp.
+# The date has cryptographic value as a timestamp to prevent replay attacks.
+
+# Adding such headers means that a cryptanalyist knows the first several
+# bytes of plaintext, and this might aid in breaking the per-message key.
+# I seriously considered adding about 8 random bytes to the beginning of
+# the plaintext, but this would make it kinda ugly and non-822 compliant,
+# not to mention the fact that I don't know any system-independent to get
+# strong random numbers in perl.
+
+# Previous versions of send-ripem generated an external Subject: line
+# reading "Secure mail follows" for ENCRYPTED.  This version simply
+# sends a message with no Subject: (it's not required.)  I think this
+# is preferable, since other mailers (besides pshow) may not be
+# clever enough to find the real subject and end up with responses
+# of subject "Re: Secure mail follows" which is just silly.
+
+# There is no command line option for MIC-ONLY.  Nobody ever uses
+# MIC-ONLY anyway, so I don't consider this a problem.
+
+# The program dies on any RIPEM error, even if it's just a mistyped
+# passphrase.
+
+umask 077;
+$tosend = "/tmp/rmhts." . $$;
+$bcc_tosend = "";
+$ripemargs = "";
+$encmode = 0;
+
+sub do_nothing { }
+
+sub clobber {
+    local($filename) = @_;
+    local($size, $i);
+
+    $size = (stat($filename))[7];
+    return if $size <= 0;
+    $buf = "01234567890abcdef" x 256;
+    open(FD, "> $filename");
+    for($i = 0; $i < $size; $i += 4096) {
+      syswrite(FD, $buf, 4096);
+    }
+
+    close(FD);
+
+    unlink $filename;
+}
+
+sub resolve_addrs {
+    local($addrs) = @_;
+    local($parsed, $aliased, $final);
+
+    if($addrs ne "") {
+	$addrs =~ s/"/\\"/g;
+	($parsed = `$mhdir/ap -format '%(putstr(addr{text}))' "$addrs"`)
+	    =~ s/\n/ /g;
+	($aliased = `ali $parsed`) =~ s/[,\n]+/,/g;
+	$final = `$mhdir/ap -format '%(putstr(addr{text}))' "$aliased"`;
+# bother to chop $final for external neatness
+	chop $final;
+	$final;
+    }
+    else { $addrs; }
+}
+
+
+sub parse_headers {
+    local($filedes, $default, %rules) = @_;
+    local($label, $contents, $label_index, $bogus);
+
+    $_ = <$filedes>;
+    while($_ ne "" && ! /^$|^-/) {
+	($label, $contents) = /^([0-9A-Za-z\-]*):[ \t]*(.*\n)/;
+	($label_index = $label) =~ tr/[A-Z]/[a-z]/;
+	$_ = <$filedes>;
+
+	while($_ ne "" && /^[ \t]/) {
+	    $contents .= $_;
+	    $_ = <$filedes>;
+	}
+
+	if(defined $rules{$label_index}) {
+# the variable name indicates what I think about the fact that
+# perl won't allow associative array values as arguments to "do".
+	    $bogus = $rules{$label_index};
+	    do $bogus ($label, $contents);
+	}
+	else {
+	    do $default($label, $contents);
+	}
+    }
+}
+
+sub external_headers {
+    if(open(HEADER_FD, "$ENV{HOME}/.mh_headers")) {
+	while(<HEADER_FD>) { print; }
+	close HEADER_FD;
+    }
+}
+
+# This is a simple subroutine which, given a time, generates the
+# string containing that time in proper RFC 822 date format.
+# Note that the way it find out its timezone is portable (if a bit ugly)
+# and it assumes that January 1st is never DST.
+
+sub proper_time {
+    local($time) = @_;
+
+    local($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
+	localtime($time);
+
+    local(@DoW) = ('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
+    local(@MoY) = ('Jan','Feb','Mar','Apr','May','Jun',
+		   'Jul','Aug','Sep','Oct','Nov','Dec');
+
+    local($daytime) = sprintf("%s, %d %s %02d %02d:%02d:%02d ",$DoW[$wday],
+			      $mday, $MoY[$mon], $year % 100, $hour, $min, $sec);
+
+    ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
+	localtime(3600 * $isdst);
+    if($year == 70) {
+	$daytime .= sprintf("+%02d%02d", $hour, $min);
+    } else {
+	$daytime .= sprintf("-%02d%02d", (24 - $hour), ($min == 0) ? 0 :
+			    60 - $min);
+    }
+}
+
+$date = &proper_time(time);
+
+if(defined $ENV{"SIGNATURE"}) { $fullname = $ENV{"SIGNATURE"}; }
+elsif(defined $ENV{"FULLNAME"}) { $fullname = $ENV{"FULLNAME"}; }
+else { ($fullname = ((getpwuid($<))[6])) =~ s/,.*//; }
+
+($ripem_user = $ENV{"RIPEM_USER_NAME"}) =~ s/,.*//;
+
+sub generate_enclosed_headers {
+    print "From: $ripem_user ($fullname)\n";
+    print "Date: $date\n";
+}
+
+sub print_header {
+    local($label, $contents) = @_;
+    print $label, ": ", $contents;
+}
+
+
+sub check_encrypted_header {
+    local($filehandle) = @_;
+    local(%rules);
+
+    sub encrypted_check {
+	local($label, $contents) = @_;
+	local($method, $type);
+
+	($method, $type) = split(",", $contents);
+	$method =~ s/[ \t\n]*//g;
+	$type =~ s/[ \t\n]*//g;
+	if($method =~ /^ripem$/i) {
+	    if($type =~ /^encrypted$/i || $type eq "") {
+		if($encmode == 0) { $encmode = 3; }
+	    }
+	    elsif($type =~ /^mic-clear$/i) {
+		if($encmode == 0) { $encmode = 1; }
+	    }
+	    elsif($type =~ /^mic-only/i) {
+		if($encmode == 0) { $encmode = 2; }
+	    }
+	    else { die "RIPEM has no mode $type"; }
+	}
+	else { die "I do not know encryption method $method"; }
+    }
+    $rules{"encrypted"} = "encrypted_check";
+    &parse_headers($filehandle, "do_nothing", %rules);
+}
+
+sub do_normal {
+    while(<MESSAGE_FD>) { print; }
+    close TOSEND_FD;
+}
+
+# subroutine to do all the processing for MIC modes
+sub do_mic {
+    local($mic_mode) = @_;
+    local(%orules, %irules);
+
+    print "Encrypted: RIPEM, \U$mic_mode\E\n";
+    $orules{"encrypted"} = "do_nothing";
+    $orules{"content-type"} = $orules{"content-description"} =
+	$orules{"content-transfer-encoding"} = "do_nothing";
+    sub is_mime_version { $mime = 1; }
+    $mime = 0;
+    $orules{"mime-version"} = "is_mime_version";
+    &parse_headers(MESSAGE_FD, "print_header", %orules);
+    if($mime) {
+	print "MIME-Version: 1.0\n";
+	print "Content-Type: application/x-ripem\n";
+    }
+    print "\n";
+    close TOSEND_FD;
+    seek(MESSAGE_FD, 0, 0);
+
+    open(RIPEM_FD, "|ripem -e -m $mic_mode $ripemargs >> $tosend") 
+	|| die "Cannot open pipe to ripem";
+    select(RIPEM_FD);
+    &generate_enclosed_headers();
+
+    $irules{"fcc"} = $irules{"bcc"} = $irules{"encrypted"} = "do_nothing";
+    &parse_headers(MESSAGE_FD, "print_header", %irules);
+    print "\n";
+    while(<MESSAGE_FD>) { print; }
+    close RIPEM_FD || die "RIPEM terminated with errors";
+}
+
+sub do_encrypted {
+    local(%orules, %erules);
+    local($recipients) = "";
+    local($bcc_recipients) = "";
+
+    print "Encrypted: RIPEM, ENCRYPTED\n";
+
+    $orules{"subject"} = $orules{"comments"} = $orules{"summary"} =
+	$orules{"keywords"} = $orules{"encrypted"} = "do_nothing";
+
+    sub add_recipients {
+	local($label, $contents) = @_;
+	$recipients .= "," . $contents;
+	&print_header($label, $contents);
+    }
+    $orules{"to"} = $orules{"cc"} = "add_recipients";
+
+    sub fcc_header {
+	local($label, $contents) = @_;
+	$recipients .= "," . $ripem_user;
+	&print_header($label, $contents);
+    }
+    $orules{"fcc"} = "fcc_header";
+
+    sub add_bcc_recipients {
+	local($label, $contents) = @_;
+	$bcc_recipients .= $contents;
+    }
+    $orules{"bcc"} = "add_bcc_recipients";
+    $orules{"content-type"} = $orules{"content-description"} =
+	$orules{"content-transfer-encoding"} = "do_nothing";
+    sub is_mime_version { $mime = 1; }
+    $mime = 0;
+    $orules{"mime-version"} = "is_mime_version";
+
+    &parse_headers(MESSAGE_FD, "print_header", %orules);
+    if($mime) {
+	print "MIME-Version: 1.0\n";
+	print "Content-Type: application/x-ripem\n";
+    }
+    print "\n";
+    close TOSEND_FD;
+    seek(MESSAGE_FD, 0, 0);
+    $recipients = &resolve_addrs($recipients);
+    $bcc_recipients = &resolve_addrs($bcc_recipients);
+    $main_ripemargs = $ripemargs;
+    foreach $recip (split("\n",$recipients)) {
+	$main_ripemargs .= " -r $recip ";
+    }
+
+    open(RIPEM_FD, "|ripem -e $main_ripemargs >> $tosend");
+    select(RIPEM_FD);
+    &generate_enclosed_headers();
+    $erules{"fcc"} = $erules{"bcc"} = $erules{"encrypted"} = "do_nothing";
+    &parse_headers(MESSAGE_FD, "print_header", %erules);
+    print "\n";
+    while(<MESSAGE_FD>) { print; }
+    close RIPEM_FD || die "RIPEM terminated with errors";
+
+    if($bcc_recipients ne "") {
+	$bcc_tosend = "/tmp/rmhtsb." . $$;
+	seek(MESSAGE_FD, 0, 0);
+	open(TOSEND_FD, ">$bcc_tosend") ||die "Cant write $bcc_tosend";
+	select(TOSEND_FD);
+	&external_headers();
+	print "Encrypted: ripem, encrypted\n";
+
+	undef %orules;
+	sub bcc_to_to {
+	    local($label, $contents) = @_;
+	    print "To: ", $contents;
+	}
+	$orules{"bcc"} = "bcc_to_to";
+	&parse_headers(MESSAGE_FD, "do_nothing", %orules);
+	print "Subject: Blind Carbon-Copy of secure mail\n";
+	if($mime) {
+	    print "MIME-Version: 1.0\n";
+	    print "Content-Type: application/x-ripem\n";
+	}
+	print "\n";
+	close TOSEND_FD;
+	seek(MESSAGE_FD, 0, 0);
+
+	$bcc_ripemargs = $ripemargs;
+	foreach $recip (split("\n",$bcc_recipients)) {
+	    $bcc_ripemargs .= " -r $recip ";
+	}
+	open(RIPEM_FD, "|ripem -e $bcc_ripemargs >> $bcc_tosend")
+	    || die "Cannot open pipe to bcc ripem!";
+	select(RIPEM_FD);
+	&generate_enclosed_headers();
+	&parse_headers(MESSAGE_FD, "print_header", %erules);
+	print "\n";
+	while(<MESSAGE_FD>) { print; }
+	close RIPEM_FD || die "RIPEM terminated with errors";
+    }
+}
+
+# parse the command line arguments
+while($arg = shift)
+{
+    if($arg eq "-sign") { $encmode = 1; }
+    elsif($arg eq "-secure") { $encmode = 3; }
+    elsif($arg eq "-rverbose") { $ripemargs .= " -D 9 "; }
+    elsif($arg eq "-3des") { $ripemargs .= " -A des-ede-cbc "; }
+    elsif($arg eq "-alias") { $arg = shift; $sendards .= " -alias $arg "; }
+    elsif($arg eq "-draftfolder") { $arg = shift;
+      $sendards .= " -draftfolder $arg "; }
+    elsif($arg eq "-draftmessage") { $arg = shift;
+      $sendards .= " -draftmessage $arg "; }
+    elsif($arg eq "-filter") { $arg = shift; $sendards .= " -filter $arg "; }
+    elsif($arg eq "-width") { $arg = shift; $sendards .= " -width $arg "; }
+    elsif($arg eq "-split") { $arg = shift; $sendards .= " -split $arg "; }
+    elsif($arg =~ /^-/) { $sendargs .= " " . $arg; }
+    else { $message = $arg; }
+}
+
+open(MESSAGE_FD, $message) || die "Cannot read $message";
+open(TOSEND_FD, "> $tosend") || die "Cannot write to $tosend";
+select(TOSEND_FD);
+
+if($ENV{"mhdist"} == 1) {
+    if($encmode != 0) {
+	print "Cannot secure redistrubted message\n";
+	$encmode = 0;
+    }
+}
+else {
+    &check_encrypted_header(MESSAGE_FD);
+    seek(MESSAGE_FD, 0, 0);
+    &external_headers();
+}
+	
+if($encmode == 0) { &do_normal(); }
+elsif($encmode == 1) { &do_mic("mic-clear"); }
+elsif($encmode == 2) { &do_mic("mic-only"); }
+else { &do_encrypted(); }
+
+$exit = system "send $sendargs $tosend $bcc_tosend";
+if($exit == 0) { &clobber($message); }
+else { &clobber($tosend); &clobber($bcc_tosend); }
+exit $exit;

@@ -1,0 +1,28 @@
+Here are the Mimic Functions.
+
+Although the copyright notice says that you are free to circulate the
+code, I would appreciate it if you would hold off until the code and the
+manual are in a better and more bug-free shape. Please send me any comments.
+
+This C version should run on just about any computer.  It has been tested
+on 
+o	a Sun-4 running SunOS 4.0.3c,
+o	a DECstation running ultrix 2.1 (sorry, I know 4.0 is current)
+o	an IBM PC using Microsoft C 5.00 (huge model)
+o	a Macintosh running Think-C 4.0
+
+I have tested the program, but not enought to make any firm statements about
+bugs. Thus, I would appreciate it if you could report back any problems you
+find. Also, if you port the program to another system I would appreciate
+getting a copy. 
+
+Finally, one additional caveat. The US Government has restrictions on
+the export of cryptographic equiptment. Although I have always assumed
+that the MimicFunctions are more parlour game than rival for DES, I
+would like to warn you that it might be more politic not to send
+this listing outside of the country. I realize that this limitation
+may seem sort of silly in the age of the lightening-fast network, but
+the law is fairly complex and untested. 
+
+-Peter Wayner
+

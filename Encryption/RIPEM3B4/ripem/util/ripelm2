@@ -1,0 +1,120 @@
+#!/bin/sh
+#  change /bin/sh to /bin/sh5 for lame-o ultrix and other systems with
+# junky Bourne shells..
+#
+# RIPEM Elm script by:
+# John Simonson                            | gort@cc.rochester.edu
+#
+# The elmrc file should have the entries
+#
+# alteditor = pem_ed
+# easyeditor = pem_ed
+# editor = pem_ed
+# visualeditor = pem_ed
+#
+# for this to work.
+umask 077
+#
+PATH=/usr/local/bin:/usr/ucb:/bin:/usr/bin
+export PATH
+USER=${LOGNAME}
+#
+# editor used in here is 'PEMEDIT'
+# if that's not set, set it to 'VISUAL'
+# if VISUAL isn't set, set it to 'EDITOR'
+# if EDITOR isn't set, inflict /bin/ed upon the user
+#
+EDITOR=${EDITOR:-/bin/ed}
+VISUAL=${VISUAL:-${EDITOR}}
+PEMEDIT=${PEMEDIT:-${VISUAL}}
+if [ ! -d ${HOME}/tmp ]; then
+  mkdir ${HOME}/tmp
+  chmod 0755 ${HOME}/tmp # might want this a bit tighter (0700)?
+fi
+#
+# RIPEM_TMP should probably be configurable for folks with small
+# home dir quotas, but should probably not be /tmp or /var/tmp
+# -- maybe /var/tmp/{user}/.ripem_tmp
+#
+RIPEM_TMP=${HOME}/tmp/.pem_ed.$$
+NECHO='/bin/echo -n'
+ECHO='/bin/echo'
+CMD=''
+PGM=`/bin/echo $0 | sed -e 's%^.*/%%'`
+if [ $# -lt 1 ]; then
+  ${ECHO} "Usage: ${PGM} filename"
+  exit 1
+fi
+rm -f ${RIPEM_TMP}
+MSG=$1
+if [ -f ${MSG} ]; then
+  grep '^-----BEGIN PRIVACY-ENHANCED MESSAGE-----' ${MSG} > /dev/null
+  if [ $? -eq 0 ]; then
+    ${CMD} ripem -d -i ${MSG} -o ${RIPEM_TMP}
+	if [ ! -s ${RIPEM_TMP} ]; then
+	  ${ECHO} "${PGM}: Problem decrypting ${MSG}"
+	  exit 2
+	fi
+	mv ${RIPEM_TMP} ${MSG}
+  fi
+fi
+${PEMEDIT} ${MSG}
+MODE=''
+ROPTS=''
+${NECHO} 'Encrypt, Sign, or Clear [e/S/c]? '
+read ANS
+ANS=`${ECHO} ${ANS} | tr A-Z a-z | sed -e 's/^[ 	]*//' | sed -e 's/^[eE].*$/e/' -e 's/^sS].*$/s/' -e 's/^[cC].*$/c/'`
+if [ "X${ANS}" = "Xe" ]; then
+  MODE=''
+  grep -i '^to:' ${MSG} > /dev/null
+  if [ $? -ne 0 ]; then
+    ${NECHO} "Recipient list [${LOGNAME}] "
+    read RLIST
+    RLIST=`${ECHO} ${RLIST} | sed -e 's/[ 	]/,/g' -e 's/,,/ /g'`
+    if [ "X${RLIST}" = "X," ]; then
+      RECIP="-r ${LOGNAME}"
+    else
+      RECIP="${RLIST} ${LOGNAME}"
+      RECIP=`echo "${RECIP}" | awk '{for(i=1;i<=NF;i++) { print "-r " $(i) " ";}}'`
+    fi
+  else
+    RECIP="-h pr"
+  fi
+elif [ "X${ANS}" = "Xc" ]; then
+  exit 0
+else
+  MODE='-m mic-clear'
+  RECIP=''
+  grep -i '^to:' ${MSG} > /dev/null
+  if [ $? -ne 0 ]; then
+    ${NECHO} "Recipient list [${LOGNAME}] "
+    read RLIST
+    RLIST=`${ECHO} ${RLIST} | sed -e 's/[ 	]/,/g' -e 's/,,/ /g'`
+    if [ "X${RLIST}" = "X," ]; then
+      RECIP="-r ${LOGNAME}"
+    else
+      RECIP=" ${RLIST} ${LOGNAME}"
+      RECIP=`echo "${RECIP}" | awk '{for(i=1;i<=NF;i++) { print "-r " $(i) " ";}}'`
+     # RECIP=`echo "${RECIP}" | sed -e 's/[, 	]+/ -r /g'`
+    fi
+  else
+    RECIP="-h pr"
+  fi
+fi
+${NECHO} 'Additional RIPEM options (y/N)? '
+read ANS
+ANS=`${ECHO} ${ANS} | tr A-Z a-z | sed -e 's/^[ 	]*//' | sed -e 's/^[yY].*$/y/'`
+if [ "X${ANS}" = 'Xy' ] ; then
+  ${NECHO} "Enter additional ripem options: "
+  read ROPTS
+fi
+${ECHO} "ripem -e ${MODE} ${RECIP} ${ROPTS} -i ${MSG} -o ${RIPEM_TMP}" >> ${HOME}/tmp/.pem_ed.log
+${CMD} ripem -e ${MODE} ${RECIP} ${ROPTS} -i ${MSG} -o ${RIPEM_TMP}
+if [ ! -s ${RIPEM_TMP} ]; then
+  ${ECHO} "${PGM}: Problem encrypting/signing ${MSG}"
+	exit 3
+fi
+mv ${RIPEM_TMP} ${MSG}
+#
+# we should probably have a trap set to clean up on bad exits..
+exit 0

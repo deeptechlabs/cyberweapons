@@ -1,0 +1,116 @@
+benchmrk.txt    Mark Riordan    mrr@scss3.cl.msu.edu
+
+This list of machines serves both as a list of computers to which RIPEM
+has been ported, and a measure of the performance of the various
+platforms.
+
+The benchmark in question is from "make benchmark"; RIPEM generates
+a particular 516-bit key.
+
+In this I list the fastest time I've yet recorded for the various
+platforms after a little bit of twiddling with compilers and,
+in some cases, introducing assembly code (as noted).
+I'd be interested in 386/486 timings with a decent compiler.
+I realize that in some cases, mediocre compilers hampered performance.
+
+Note:  Beta-8 introduced Mark Henderson's BIGNUM speedup that 
+improves performance by about 15%.  Unmarked entries are pre-Beta-8
+and should be compensated for accordingly.  Also, some versions
+have critical routines in assembly code, as noted. 
+
+Times are in seconds; user time + system time.
+
+Machine                     Time in secs
+
+IBM 390                      1.9   (AIX/ESA, RIPEM 1.1b2 + GMP)
+SGI Indigo2 Extreme-150      2.48  (Irix 5.2 cc, RIPEM 1.2a0)
+IBM 390/unknown              2.5   (AIX/ESA, RIPEM 1.0.4)
+HP 9000/735                  2.5   (HP-UX 9.01 cc, RIPEM 1.2a0)
+SGI Challenge/XL R4400-150   3.1   (SGI C compiler, -O2 -mips2, RIPEM 1.2)
+HP 9000/735                  3.6   (RIPEM 1.1a)
+Sun SS10/51                  3.9   (acc 2.01 -fast, RIPEM 1.2)
+IBM RS/6000-560              4.0   (xlc+gcc, RIPEM 1.0.7)
+SGI Indy R4400-150           4.2   (cc, RIPEM 1.1)
+HP 9000/730                  4.5   (gcc+GMP, RIPEM 1.1)
+Sun SPARCstation 10          4.5   (gcc+GMP, RIPEM 1.1)
+SGI Indigo R3000             4.6   (gcc+GMP, RIPEM 1.1)
+IBM RS/6000-350              4.7   (xlc+gcc, 1.0.7)
+SGI Crimson R4000            5.1   (RIPEM 1.1a)
+SPARCstation Classic         5.2   (gcc+GMP, RIPEM 1.1)
+SGI Onyx @ 100MHz            6.37  (cc of Irix 4.0.5, -O, RIPEM 1.1)
+486-33/66 PC Windows NT      6.71  (MS CL + MRR's asm code, RIPEM 1.0.7)
+Sun SPARCstation 10-41       6.8   (Sun acc 2.0.1: -cg92 -O3, + asm)
+Pentium-66, 256K cache       7.13  (BSD/386, gcc 2.5.8, 1.2)
+HP 9000/720                  7.5   (HP/UX cc 8.05 + gcc 2.3.1, RIPEM 1.0.7)
+Sun SPARCstation ELC         7.6   (gcc+GMP, RIPEM 1.1)
+486-33/66 PC, 256K cache     7.8   (NeXT gcc 2.2.2 + MRR's asm code, 1.0.7)
+IBM RS/6000-520              8.0   (RIPEM 1.1b2 + GMP)
+486-33/66 PC, 256K cache     8.1   (Linux 0.99pl12; GCC 2.4.5+asm, RIPEM 1.2b1)
+IBM PS/2-95 (486/33)         8.7   (RIPEM 1.1b2 + GMP + GCC 2.4.5)
+486-33 PC Linux              8.8   (gcc+GMP, RIPEM 1.1)
+HP 9000/730                  8.8   (gcc 2.3.1)
+Sun SPARCstation 10-512      8.9   (Solaris 2.x, gcc 2.3.3, 1.2)
+DECstation 5000-240          9.5   (Ultrix 4.2A cc + gcc, 1.0.7)
+HP 9000/720                  9.6   (HP/UX cc 8.05 + gcc 2.2.2)
+IBM RS/6000-320              9.9   (xlc+gcc, RIPEM 1.0.7)
+Sun 4/330                   10.3   (gcc+GMP, RIPEM 1.1)
+HP9000/827                  10.49  (RIPEM 1.2)
+486-33/66 PC, 256K cache    10.6   (djgcc 2.2.2 + MRR's asm code, 1.0.5)
+SGI 4D/35 R3000             10.97  (cc, RIPEM 1.0.7)
+IBM RS/6000-520             11.6   (RIPEM 1.0.4)
+Sun SPARCstation 10-41      11.6   (Sun acc 2.0.1: -O3, + asm)
+NeXTStation Turbo (040@33)  11.8   (gcc 2.2.1 + MRR's asm code, 1.0.7)
+SGI Indigo R3000            12.7   (cc, Beta-9)
+Sun SPARCstation 10-30      12.9   (Mark Henderson's asm code + cc + gcc)
+IBM RS/6000-220             13.5   (xlc)
+486-33 PC Linux 0.99        13.7   (gcc 2.3.3 + asm, 1.0.7)
+Sun SPARCstation 10/52      13.8   (acc, RIPEM 1.2.  Seems too slow, though)
+486-66 BSDI 1.1             16.2   (gcc 1.42, make generic, 1.2)
+486-33 (IBM PS/2 Mod 95)    16.6   (AIX/386, 1.0.4)
+NCR 3347 (486-33)           16.7   (RIPEM 1.2)
+Sun SPARCstation Classic    16.8   (gcc+asm, 1.1a)
+Sun SPARCstation 10-41      17.0   (gcc 2.1)
+NeXTStation (68040@25)      17.7   (gcc 1.93 + MRR's asm code)
+Motorola 8520 (88000)       17.9
+486-33/66 PC, 256K cache    18.4   (Generic DOS version /w 386 detect, 1.1)
+Sun SPARCstation IPX        18.5   (gcc 2.3.3, 1.2b2)
+Sun SPARCstation 10-30      19.0   (gcc 2.3.1)
+Sun SPARCstation 2          20.0   (cc + Henderson's asm, RIPEM 1.0)
+DECstation 5000-200         20.0
+NeXTStation Turbo (040@33)  20.2   (gcc 2.2.1)
+486-33 PC                   20.21  (Linux 0.98 + asm code, beta-7)
+486-33 PC, 64K cache        20.21  (djgcc 2.2.2 + MRR's asm code, 1.0.7)
+Sun SPARCstation ELC        22.0   (Sun acc 2.0.1+Henderson's asm, RIPEM 1.0.7)
+Sun SPARCstation 10-21      22.8   (gcc 2.1)
+Solborne 5/602 OS/MP 4.1A.3 22.8   (acc, RIPEM 1.2)
+486-50 PC (386BSD)          24.37  (gcc 1.39)
+Sun SPARCstation 2          25.1   (Sun acc 2.0.1: -O3, + asm)
+Apollo DN5500               25.8   (gcc 2.3.3)
+Convex C240                 26.2   (cc 5.0.0.2 + gcc 2.2.2)
+NeXTStation (68040@25)      27.2   (gcc 2.2.1)
+Sun SPARCstation 2          27.2   (gcc 2.1)
+486-33 PC                   28.71  (Linux 0.98, beta-8)
+Sun 4/330                   30.0   (Sun acc 2.0.1+Henderson's asm, RIPEM 1.0.7)
+Mac SE/30 (68030 @16)       30.3   (w/ Outerbridge's ASM code, RIPEM 1.3)
+Sun SPARCstation ELC        32.8   (gcc 2.3.1)
+486-33 PC                   34.43  (Linux 0.98, beta-7)
+486-33 PC, 64K cache        35.1   (djgcc 2.2.2, MS-DOS)
+386-33 PC, SCO 3.2v4.1      35.5   (gcc 2.5.8, RIPEM 1.2)
+Mac SE/30 (68030 @16)       35.9   (THINK C 6.0 w/ Outerbridge asm, 1.1)
+Sun SPARCstation IPC        36.9   (gcc, RIPEM 1.0.7)
+Sun SPARCstation 1          37.6   (gcc + asm, 1.1a)
+Sun SPARCstation 1          40.8   (cc + asm, RIPEM 1.0.7)
+Sun 3/260                   48.5   (RIPEM 1.0.1 w/ asm code)
+Gateway 386-25 PC, no cache 51.6   (Linux 0.99pl13, 1.1a)
+Sun 3/480 (68030)           56.9   (cc, RIPEM 1.0)
+386-33, ISC Unix 2.2.1      58.7   (Interactive System's K&R compiler, 1.0.7)
+Mac SE/30 (68030 @16)       62.7   (w/ Outerbridge's asm code)
+386-25 PC, no cache         65.4   (djgcc 2.2.2 + MRR's asm code)
+Sun SPARCstation 1          70.0   (gcc 2.3.1)
+486-33 PC, 64K cache        80.3   (16-bit Microsoft C 7.0)
+HP 9000/350                 84.7   (HP cc from HP/UX 8.0b, 1.0.7)
+386-25 PC, no cache        106.0   (djgcc 2.2.2, MS-DOS)
+386-25 PC, no cache        107.0   (Generic MSDOS version w/ 386 detect, 1.1)
+386-20, no cache           122.1   (cc, sysV/386r3.2.1, 1.0.6)
+Mac SE/30 (68030 @16)      226.7   (32-bit THINK C 5.02)
+8088-4.77, no cache       4188.1   (Generic MSDOS version w/ 386 detect, 1.1)

@@ -1,0 +1,38 @@
+                    Tasklist for RIPEM Development
+
+                        During RIPEM 3.0 Beta
+Allow but ignore v2 CRL extensions.
+Support Unstructured Address, postal address in RIPEMAttributes.
+Return required v3 extensions like basic constraints and key usage from
+  DERToCertificate in CertFieldPointers.
+Enforce required v3 extensions in CompleteCertChain.
+Document v3 extensions in ripemapi.htm.
+Update Borland IDE.
+Check UTC time leap year in 2000.
+Increase strength of private key encryption above DES-CBC.
+Allow SHA-1, RX2 and DES3 in private key decryption.
+Use SHA-1 for saving preferences and allow MD5 and SHA-1 on reading.
+Support PKCS #12.
+Convert ripemfmt.doc to .htm.
+
+                           After RIPEM 3.0
+Easier way in RCERTS to validate an arbitrary CA.  Self-signed cert in file?
+Allow attributes in RIPEMEncipherPKCSFinal (must sort for DER).
+Remove duplicate and expired entries in RIPEMUpdateCRL.
+In RIPEMUpdateCRL, handle case where user's CRL does not decode.  Perhaps
+  issue a warning and make a new one.  (But they may have lost many entries.)
+Check ripemInfo if user is logged in before using info in it.
+Make GetCertsBySmartname use the username as a substring.  Allow "".
+Catch multiple log in attempts: free previous userCertDER, etc.
+Allow lone Originator-ID-Asymmetric in PEM message.
+Look for latest self-signed cert when logging in.
+Let RCERTS renew the self-signed certificate.
+Incorporate AOCE signer file.
+Call ExpandFilename on -p, -s and other filenames from command line
+In CompleteCertChain, should we check the key, not name, for reaching the top?
+Use error checking for allocating in GetUserName, GetUserAddress,
+  ExpandFilename, GetUserHome, GetEnvFilename, GetEnvAlloc.
+Allow crypto-recipient Key-Info field, and use it on output.
+Get Marc VanHeyningen <mvanheyn@cs.indiana.edu> to update RIPEM attacks doc
+  and FAQ.  Make sure Mark puts the latest in the release.
+Update WriteHeader and DoHeaderLine to handle RX2 for PEM?

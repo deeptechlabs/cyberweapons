@@ -1,0 +1,621 @@
+.TH DES 3 "Version 1.0" "Chalmers University"
+.SH NAME
+des_dea, des_key, des_set_key, des_ecb_encrypt, des_ecb2_encrypt,
+des_cbc_encrypt, des_pcbc_encrypt, des_cfb8_encrypt, des_ofb8_encrypt,
+des_is_weak_key, des_is_semiweak_key, des_no_key_schedule, des_test_key_parity,
+des_set_key_parity, des_random_cblock, des_random_key, des_string_to_key,
+des_hex_to_cblock, des_print_cblock, des_read_password, des_cbc_cksum,
+quad_cksum
+.SH SYNOPSIS
+.ta \w'des_key_schedulexxx'u
+.B #include <des.h>
+.br
+.PP
+.B int des_dea(input, output, schedule, encrypt);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B des_key_schedule	schedule;
+.br
+.B int	encrypt;
+.PP
+.B int des_key(key, schedule);
+.br
+.B des_cblock	*key;
+.br
+.B des_key_schedule	schedule;
+.PP
+.B int des_set_key(key, schedule);
+.br
+.B des_cblock	*key;
+.br
+.B des_key_schedule	schedule;
+.PP
+.B int des_ecb_encrypt(input, output, schedule, encrypt);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B des_key_schedule	schedule;
+.br
+.B int	encrypt;
+.PP
+.B int des_ecb2_encrypt(input, output, length, schedule,
+.B ivec, encrypt);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B int	length;
+.br
+.B des_key_schedule	schedule;
+.br
+.B des_cblock	*ivec;
+.br
+.B int	encrypt;
+.PP
+.B int des_cbc_encrypt(input, output, length, schedule,
+.B ivec, encrypt);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B int	length;
+.br
+.B des_key_schedule	schedule;
+.br
+.B des_cblock	*ivec;
+.br
+.B int	encrypt;
+.PP
+.B int des_pcbc_encrypt(input, output, length, schedule,
+.B ivec, encrypt);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B int	length;
+.br
+.B des_key_schedule	schedule;
+.br
+.B des_cblock	*ivec;
+.br
+.B int	encrypt;
+.PP
+.B int des_cfb8_encrypt(input, output, length, schedule,
+.B ivec, encrypt);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B int	length;
+.br
+.B des_key_schedule	schedule;
+.br
+.B des_cblock	*ivec;
+.br
+.B int	encrypt;
+.PP
+.B int des_ofb8_encrypt(input, output, length, schedule,
+.B ivec, encrypt);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B int	length;
+.br
+.B des_key_schedule	schedule;
+.br
+.B des_cblock	*ivec;
+.br
+.B int	encrypt;
+.PP
+.B int des_is_weak_key(key);
+.br
+.B des_cblock	*key;
+.PP
+.B int des_is_semiweak_key(key);
+.br
+.B des_cblock	*key;
+.PP
+.B int des_no_key_schedule(key);
+.br
+.B des_cblock	*key;
+.PP
+.B int des_test_key_parity(key);
+.br
+.B des_cblock	*key;
+.PP
+.B int des_set_key_parity(key);
+.br
+.B des_cblock	*key;
+.PP
+.B int des_random_cblock(cblock);
+.br
+.B des_cblock	*cblock;
+.PP
+.B int des_random_key(key);
+.br
+.B des_cblock	*key;
+.PP
+.B int des_string_to_key(str, key);
+.br
+.B char	*str;
+.br
+.B des_cblock	*key;
+.PP
+.B int des_hex_to_cblock(str, cblock);
+.br
+.B char	*str;
+.br
+.B des_cblock	*key;
+.PP
+.B int des_print_cblock(cblock, items);
+.br
+.B des_cblock	*cblock;
+.br
+.B int	items;
+.PP
+.B int des_read_password(key, prompt, verify);
+.br
+.B des_cblock	*key;
+.br
+.B char	*prompt;
+.br
+.B int	verify;
+.PP
+.B int des_read_hexkey(key, prompt, verify);
+.br
+.B des_cblock	*key;
+.br
+.B char	*prompt;
+.br
+.B int	verify;
+.PP
+.B unsigned long des_cbc_cksum(input, output, length,
+.B schedule, ivec);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B int	length;
+.br
+.B des_key_schedule	schedule;
+.br
+.B des_cblock	*ivec;
+.PP
+.B unsigned long quad_cksum(input, output, length,
+.B out_count, seed);
+.br
+.B des_cblock	*input;
+.br
+.B des_cblock	*output;
+.br
+.B int	length;
+.br
+.B int	out_count;
+.br
+.B des_cblock	*seed;
+.SH DESCRIPTION
+.ta \w'xxx'u +\w'typedef unsigned charxxx'u +\w'xxx'u +\w'des_cblockxx'u
+.PP
+.IR des (3)
+contains various DES (Data Encryption Standard) related operations.
+Further information about the DES algorithm is available in Federal Information
+Processing Standards Publication 46 issued by National Bureau of Standards.
+.PP
+The DES encrypt/decryption is based on 64-bits blocks. These block are
+defined as:
+.PP
+.B
+	typedef unsigned char	des_cblock[8]
+.PP
+The most significant bit of the first unsigned character (indexed as [0]) 
+is the first bit of the 64-bit block. Both the base key and the data is
+represented by this type.
+.PP
+To make the operations faster the operations uses a precomputed key schedule
+that is generated from an ordinary 64-bit DES key. The key schedule is defined
+as:
+.PP
+.B
+	typedef struct	des_ks_struct {
+.br
+.B
+			des_cblock	_;
+.br
+.B
+		} des_key_schedule[16];
+.PP
+Algorithms using an internal state with an initial value given by a
+.I ivec
+argument may be set to return the state of the last iteration by setting
+the global variable
+.PP
+.ta \w'xxx'u +\w'intxxx'u
+.B
+	int	des_return_ivec
+.PP
+The value
+.B DES_RETURN_IVEC
+enables modification of
+.I ivec
+and
+.B DES_NO_RETURN_IVEC
+disables modification.
+Default setting is
+.BR DES_NO_RETURN_IVEC .
+This makes it possible to maintain an unbroken encryption/decryption stream
+when chaining operations.
+.PP
+.I des_dea
+Is the basic
+.B data encryption algorithm
+as described in FIPS 46.
+The function encrypts/decrypts one
+.I des_cblock
+pointed to by
+.I input
+and stores the result in the block pointed to by
+.IR output .
+.I schedule
+is a DES key schedule previously calculated from a DES key and
+.I encrypt
+selects encryption or decryption mode depending if the value is
+.I DES_ENCRYPT
+or
+.IR DES_DECRYPT .
+No useful value is returned.
+.PP
+.I des_key
+takes the DES key specified by
+.I key
+and calculates a DES key schedule as described in FIPS 46.
+The result is stored result in
+.IR schedule .
+The
+.I input
+and
+.I output
+arguments may point to overlapping areas.
+No useful value is returned.
+.PP
+.I des_set_key
+calculates a DES key schedule by using
+.IR des_key .
+The function returns -1 if the key parity, according to FIPS 46, was incorrect
+or -2 if the key was weak.
+No schedule is generated in those cases.
+The function returns 0 if the operation was successful and a schedule was
+generated.
+.PP
+.I des_ecb_encrypt
+is identical to
+.IR des_dea .
+This function is only present to be compatible with the MIT DES implementation.
+.PP
+.I des_ecb2_encrypt
+uses
+.I schedule
+to encrypt/decrypt, as set by
+.IR encrypt ,
+data pointed to by
+.I input
+into
+.IR output
+according to the
+.B electronic code book
+mode.
+.I length
+specifies the number of bytes in
+.I input
+to encrypt/decrypt.
+The data is internally padded with zeros up to a multiple of eight bytes. 
+.I output
+must point to an area big enough to store the result with padding included.
+The
+.I ivec
+argument is not used in this algorithm and is only present to be argument line
+compatible with other functions.
+No useful value is returned.
+.PP
+.I des_cbc_encrypt
+uses
+.I schedule
+to encrypt/decrypt, as set by
+.IR encrypt ,
+data pointed to by
+.I input
+into
+.IR output
+using the
+.B cipher block chaining
+mode.
+.I length
+specifies the number of bytes in
+.I input
+to encrypt/decrypt.
+The data is internally padded with zeros up to a multiple of eight bytes. 
+.I output
+must point to an area big enough to store the result with padding included.
+The
+.I ivec
+argument provides an initial value for encryption/decryption of the first
+64-bit block.
+.I ivec
+contains the internal state from the last iteration if the global variable
+.I des_return_ivec
+is set to 
+.BR DES_RETURN_IVEC .
+No useful value is returned.
+.PP
+.I des_pcbc_encrypt
+encrypts/descrypt data using a 
+.B modified cipher block chaining
+which is different from
+.B cipher block chaining
+in error propagation characteristics.
+The calling sequence is identical to that of
+.IR des_cbc_encrypt .
+.PP
+.I des_cfb8_encrypt
+uses
+.I schedule
+to encrypt/decrypt 8-bit (one byte) blocks, as set by
+.IR encrypt ,
+data pointed to by
+.I input
+into
+.I output
+using the
+.B 8-bit cipher feedback 
+mode.
+The
+.I ivec
+argument provides an initial value for encryption/decryption of the first
+8-bit block.
+.I ivec
+contains the internal state from the last iteration if the global variable
+.I des_return_ivec
+is set to
+.BR DES_RETURN_IVEC .
+No useful value is returned.
+.PP
+.I des_ofb8_encrypt
+encrypts/decrypts data using the
+.B 8-bit output feedback
+mode.
+The calling sequence is identical to that of
+.IR des_cfb8_encrypt .
+.PP
+.I des_is_weak_key
+returns 1 if the
+.I key
+is a weak and only weak key.
+The function returns 0 if the key is not weak.
+The key must be parity adjusted.
+.PP
+.I des_is_semiweak_key
+returns 1 if the
+.I key
+is semi-weak and only semi-weak key.
+The function returns 0 if the key is not semi-weak.
+The key must be parity adjusted.
+.PP
+.I des_no_key_schedule
+returns the number of different internal keys generated in a DES key schedule
+generated from
+.IR key .
+.PP
+.I des_test_key_parity
+returns 1 if the parity of
+.I key
+is correct according to FIPS 46, otherwise 0 is returned.
+.PP
+.I des_set_key_parity
+adjusts the parity of
+.I key
+according to FIPS 46.
+No useful value is returned.
+.PP
+.I des_random_cblock
+generates a 64-bit block based on the current time, current process id and
+an internal counter and stores the result in a buffer pointed to by
+.IR cblock .
+.PP
+.I des_random_key
+returns a parity adjusted 64-bit key generated by
+.IR des_random_cblock .
+The generated key is stored in the area pointed to by
+.IR key .
+.PP
+.I des_string_to_key
+generates a 64-bit parity adjusted key from the null terminated string
+.IR str .
+The result in stored in the block pointed to by
+.IR key .
+No useful value is returned.
+.PP
+.I des_hex_to_cblock
+takes a 64-bit hexadecimal number given by
+.I str
+and stores the value in a 64-bit pointed to by
+.IR cblock .
+The input
+.I str
+is converted to
+.I cblock
+with the
+.IR sscanf (3)
+function (\fBsscanf(\fIstr\fP, \fIdes_scan_format\fP, &(*\fIcblock\fP)[0],
+&(*\fIcblock\fB)[1], ... &(*\fIcblock\fP)[7]);\fR).
+The optional prepended strings
+.B 0x
+or
+.B 0X
+are discarded before calling
+.IR sscanf (3).
+.IR str .
+The default format string,
+.BR "%2x%2x%2x%2x%2x%2x%2x%2x" ,
+can be changed by modifying the global variable
+.IR des_scan_format .
+.I des_scan_format
+must be declared as
+.B external char *des_scan_format;
+before usage.
+The function is discarded and
+.I des_hex_to_cblock
+returns -1 if
+.IR sscanf (3)
+does not return the value 8 or if
+.I str
+is a null pointer.
+The contents of
+.I cblock
+Is not modified if the functions returns -1.
+.PP
+.I des_print_cblock
+prints the contents of
+.I items
+number of
+.I des_cblock
+pointed to by
+.IR cblock .
+Each
+.I des_cblock
+is printed as a single line with a 16 digit hexadecimal value.
+The first two digits is the value of the first unsigned character of the
+first
+.IR des_cblock .
+Each 16 digit hexadecimal value has a
+.B 0x
+prepended.
+The default output file,
+.BR stdout ,
+can be changed by by modifying the global variable
+.I des_print_file
+to a new value.
+.I des_print_file
+must be defined as
+.B external FILE *des_print_file;
+before usage.
+The default output format,
+.BR \"0x%02x%02x%02x%02x%02x%02x%02x%02x\\n\" ,
+may be changed by modifying the global variable
+.IR des_print_format .
+.I des_print_format
+must be declared as
+.B external char *des_print_format;
+before usage.
+.PP
+.I des_read_password
+Prompts the string
+.I prompt
+on the current terminal reads a string from the tty and make a DES key
+from the string by using
+.IR des_string_to_key .
+A second prompt requesting a verification of the first input string is made if
+.I verify
+is non zero.
+If the first and verify string do not match the operation is done again
+until the two strings match.
+The tty echo is turned off during the operation.
+The function returns 0 if the operation was successful, -1 if the tty echo
+could not be turned off or -2 if no string could be read from the tty.
+No key is generated if 
+.I des_read_password
+returns -2.
+.PP
+.I des_read_hexkey
+is identical to
+.I des_read_password
+except that
+.I des_hex_to_cblock
+is used to generate the DES key. The key is parity adjusted. If the string can
+not be converted by
+.I des_hex_to_cblock
+the operation is done again until the string is accepted.
+.PP
+des_cbc_cksum
+make an 64 bit cryptographic checksum by making a cipher block chaining
+encryption with
+.I schedule
+on
+.I length
+number of bytes pointed to by
+.I input
+and storing the last encrypted 64-bit block in the buffer pointed to by
+.IR output .
+The
+.I ivec
+argument provides a initial value for encryption of the first 64-bit block.
+If
+.I length
+does no specify a multiple of eight bytes, the input is internally padded with
+zeros up to the nearest multiple of eight byte.
+.I ivec
+is changed to reflect the last encryption if the global variable
+.I des_return_ivec
+is set to 
+.BR DES_RETURN_IVEC .
+.PP
+.I quad_cksum
+produces a checksum by using a algorithm based on quadratic operations with
+64-bit arithmetic.
+The
+.I input
+argument points to the source data and
+.I length
+specifies, in bytes, the length of the source data.
+.I out_count
+specifies the number of times to iterate the algorithm over the same data.
+This is made at most 4 times. If the
+.I output
+argument is NULL the maximum number of iterations is reduced to one.
+The
+.I seed
+argument provides an 64-bit initial value for the first iteration,
+the result of an iteration is then used as initial value in the next iteration.
+If the
+.I output
+argument is non-NULL 32-bits per iteration is sequentially stored per
+iteration. These bits are the 32 most significant bits and stored with
+the least significant bit first. The function returns the 32 most significant
+bits from the result of the last iteration as function value.
+This function is only present to be command line compatible with the MIT DES
+implementation and may be omited in a later version.
+.SH FILES
+/usr/include/des.h
+.br
+/usr/lib/libdes.a
+.SH BUGS
+.PP
+The
+.I des_string_to_key
+does not return identical keys on ASCII and non-ASCII systems.
+.PP
+No cleanup of internally used data (yet).
+.SH AUTHOR
+.ie t .ds O: \\kz\\h'+(\w'O'-\w'..')/2'\v'-0.8m'..\v'+0.8m'\\h'|\\nzu'O
+.el .ds O: O
+Stig \*(O:stholm <ostholm@ce.chalmers.se>
+.br
+Department of Computer Engineering
+.br
+Chalmers University of Technology
+.SH RESTRICTIONS
+This software may be freely distributed and modified without any restrictions
+from the author.
+Additional restrictions due to national laws governing the use, import or
+export of cryptographic software is the responsibility of the software user,
+importer or exporter to follow.

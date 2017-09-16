@@ -1,0 +1,38 @@
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+# Additional restrictions due to national laws governing the use, import or
+# export of cryptographic software is the responsibility of the software user,
+# importer or exporter to follow.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+   FILES = des.h
+
+ INSTALL = install -c
+
+  INCDIR =
+
+
+all	:
+
+install	: 
+	@if [ "${INCDIR}" ]; then \
+		${INSTALL} ${FILES} ${INCDIR}; \
+	else \
+		echo 'Define destination directory (INCDIR = destination)'; \
+		exit 1; \
+	fi
+
+clean	:
+	rm -f *.o core a.out
+
+depend	:
+	echo 'Nothing to depend'
+
+
+# DEPEND

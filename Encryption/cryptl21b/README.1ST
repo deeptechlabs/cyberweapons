@@ -1,0 +1,52 @@
+This file contains the latest changes, updates, and comments on this release of
+cryptlib.
+
+VC++ 6.0
+--------
+
+The Win32 cryptlib is built using VC++ 5.0, when the project file is converted
+by VC++ 6.0 it automatically sets the "Program Database for Edit and Continue"
+option in "Debug Info".  This doesn't work and causes the program to fail in
+various non-reproducible ways, you should turn this option off.
+
+Latest Updates
+--------------
+
+There is a new keyset type, CRYPT_KEYSET_HTTP which allows certificates and
+CRL's to be fetched from URL's.  Many CA's make their root certs and CRL's
+available in this manner.  An HTTP keyset is just a TCP/IP connection, so it
+doesn't have a name:
+
+  cryptKeysetOpen( &cryptKeyset, CRYPT_KEYSET_HTTP, NULL,
+                   CRYPT_KEYOPT_READONLY );
+
+For each certificate you want to fetch you give the location (URL) as the key
+name:
+
+  cryptGetPublicKey( cryptKeyset, &cryptCert, CRYPT_KEYID_NAME, url );
+
+This keyset type has two configuration options, CRYPT_OPTION_KEYS_HTTP_PROXY
+(an optional HTTP proxy to use, defaulting to none) and
+CRYPT_OPTION_KEYS_HTTP_TIMEOUT, the timeout when reading a certificate via HTTP
+(default 60 seconds).
+
+There is an error in the manual in the sample code in "Basic Certificate
+Management":
+
+  CRYPT_CERTIFICATE cryptCertRequest;
+  void *certRequest;
+  int certRequestLength;
+
+  /*...*/
+
+  /* Destroy the certification request */
+  cryptDestroyCert( certRequest );
+
+The last line should be cryptDestroyCert( cryptCertRequest ).
+
+New for 2.2
+-----------
+
+There is PKCS #11 code present in 2.1 but this won't formally be supported
+until version 2.2.  The current code has had almost no testing due to general
+lack of availability of PKCS #11 drivers outside the US.

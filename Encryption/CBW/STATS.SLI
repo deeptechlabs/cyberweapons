@@ -1,0 +1,6 @@
+set cbwdir=`pwd`
+setenv LETTERSTATS ${cbwdir}/mss.stats
+setenv BIGRAMSTATS ${cbwdir}/mss-bigram.stats
+setenv TRIGRAMSTATS ${cbwdir}/trigrams.stats
+setenv DICTIONARY /usr/dict/words
+

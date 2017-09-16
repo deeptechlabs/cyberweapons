@@ -1,0 +1,39 @@
+/* Resource file for the Windows 32-bit encryption library (VC++ 5.0
+   complains about a ';' comment here, C comments seem OK) */
+
+#include <ver.h>
+
+VS_VERSION_INFO		VERSIONINFO
+FILEVERSION			3,0,0,0
+PRODUCTVERSION		3,0,0,0
+FILEFLAGSMASK		VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+  FILEFLAGS			VS_FF_DEBUG | VS_FF_PRIVATEBUILD | VS_FF_PRERELEASE
+#else
+  FILEFLAGS			0
+#endif
+FILEOS				VOS_NT
+FILETYPE			VFT_DLL
+FILESUBTYPE			VFT2_UNKNOWN
+BEGIN
+  BLOCK "VarFileInfo"
+  BEGIN
+	VALUE "Translation", 0x0409, 1252	; US English, Windoze charset
+  END
+
+  BLOCK "StringFileInfo"
+  BEGIN
+	BLOCK "040904E4"					; US English, Windoze charset data
+	BEGIN
+	  VALUE "CompanyName", "Peter Gutmann et al.\0"
+	  VALUE "FileDescription", "cryptlib encryption library.\0"
+	  VALUE "FileVersion", "2.1\0"
+	  VALUE "InternalName", "CL32.DLL\0"
+	  VALUE "LegalCopyright", "Copyright \251 Peter Gutmann, Eric Young 1994 - 2000.\0"
+	  VALUE "OriginalFilename", "CL32.DLL\0"
+	  VALUE "ProductName", "cryptlib encryption library.\0"
+	  VALUE "ProductVersion", "3.0\0"
+	END
+  END
+END
+

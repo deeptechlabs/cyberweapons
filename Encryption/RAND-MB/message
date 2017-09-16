@@ -1,0 +1,33 @@
+
+About a week ago I posted my (Don Mitchell's really) truerand() routine
+for Unix.  truerand() needs some post-processing before use; it cannot
+be used directly.  Here's a more complete version; the main interface is
+randbyte(), which returns (in about a third of a second) one really
+random byte (based on 64 truerand() bits) that can be used directly.
+As an added bonus, the library also throws in a shs-2 function and the
+basic truerand() code.
+
+The basic idea is that you exploit randomness in the drift between
+the processor clock and the rate at which interval timer interrupts
+occur.  Such drift occurs even on idle processors.  randbyte() assumes
+that there's at least about .4 bits of "entropy" per interrupt, which is 
+(probably) a safe assumption on modern processors.  Randomness introduced
+by the OS (scheduler, etc.) can add to the overall entropy, but shouldn't
+be relied upon by itself.
+
+An advantage to this approach (using clock skew) is that the randomness
+doesn't depend on external events like user input, network traffic or
+processor load.  That makes it especially attractive for generating keys
+on unattended servers, e.g., for generating Diffie-Hellman exponents.
+Note, however, that very (very) slow and heavily-loaded processors may
+not provide enough cycles to the truerand process between interrupts for
+these assumptions to hold.  Also, all bets are off on processors that use
+a single clock source for both interval timing and CPU clocking.
+
+This code is very BSD/SunOS-centric and is completely untested elsewhere.
+
+Read the comments for scary warnings about testing on your own platform
+before using it for anything serious like generating keys.
+
+-matt
+

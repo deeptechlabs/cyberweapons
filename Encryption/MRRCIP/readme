@@ -1,0 +1,68 @@
+Classical Ciphers Implemented by Mark Riordan
+  (riordanmr@clvax1.cl.msu.edu;  1100 Parker St.  Lansing MI  48912  USA)
+
+DETRAN
+   Deciphers a columnar transposition cipher.
+   See ENTRAN and MKTRNKEY.
+
+ENTRAN
+   Enciphers via columnar transposition.
+   See DETRAN and MKTRNKEY.
+
+MKTRNKEY
+   Does the key preprocessing for DETRAN and ENTRAN.
+   (Converts alphanumeric key into column number ordinals.)
+
+MRRMKMON
+   Does key preprocessing for simple substitution.
+   Creates a cipher alphabet by writing the key phrase
+   across the top of a matrix & reading the rows of the
+   matrix off.	See SMPLSUB.
+
+PLAYFAIR
+   Implements the Playfair digraphic cipher, with the
+   traditional simple-minded processing of the key.
+   (Not what Wheatstone intended!)
+   Encipher & Decipher.
+
+SMPLSUB
+   Basic simple substitution, encipher & decipher.
+   See MRRMKMON.
+
+STRADDLE
+   Implements the Russian "Nihilist" simple substitution
+   cipher in which a single plaintext letter is represented
+   by one or two ciphertext digits.  Used in Soviet ciphers
+   as recently as the 1950's.  See Kahn.  Encipher & Decipher.
+
+
+CAESAR
+   Very simple program to exhaustively solve a Caesar cipher
+   by trying all possible keys (25 of them).
+
+P.H
+   Header file needed by some of my programs.
+
+PERIODIC
+   Implements Vigerene & similar ciphers, encipher & decipher.
+   See VIGKEY.
+
+PHRASE
+   Extracts a random phrase from a file you provide.
+
+SOLVEVIG
+   Attempts to solve a Vigenere cipher by trying all keys
+   in a dictionary & telling you which ones resulted in
+   possible plaintext that most closely matches the characteristics
+   of English.	Works surprisingly well given how simple it is.
+
+SUBST
+   PC-specific program to help you solve simple substitution
+   ciphers manually.
+
+USAGE
+   Routine needed by some of my programs.
+
+VIGKEY
+VIGKEY
+

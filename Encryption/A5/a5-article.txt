@@ -1,0 +1,350 @@
+Article: 31025 of sci.crypt
+Newsgroups: sci.crypt
+From: frode@dxcern.cern.ch (Frode Weierud)
+Subject: Re: Cellular GSM Ecryption Algorithms
+Message-ID: <1995Jan16.093417.20710@dxcern.cern.ch>
+Reply-To: frode@dxcern.cern.ch
+Organization: CERN European Lab for Particle Physics
+Date: Mon, 16 Jan 1995 09:34:17 GMT
+Lines: 338
+
+In <bauspies.789991601@asterix> bauspies@cci.de (Fritz Bauspiess) writes:
+
+>Frank Welter <76543.1211@CompuServe.COM> writes:
+
+>>I've just read about the encryption algorithms used on the
+>>european full-digital cellular sistem (GSM). They're called
+>>A3, A5 and A8, and are used for phone authentication and speech
+>>encryption... Does anyone know if they are standard or 
+>>propietary, public or private ????
+>>Also it would be great if I could find more info about them.
+>>Thanx
+
+>>-- 
+>>FWelter
+
+>As far as I know, these algorithms are at least kept secret and 
+>are not (or at least should not  :-) ) be published.
+>I don't know who "owns" these algorithms.
+>On the other hand these algorithms must be standardized (in the
+>GSM standard?) to guarantee interoperability of devices of 
+>different vendors.
+>The only thing I know about the algorithms is that a stream cipher
+>is used for encryption of the data.
+
+>Fritz
+
+These algorithms are not that secret. Here is an earlier posting
+to sci.crypt:
+
+From sci.crypt Fri Jun 17 17:11:49 1994
+From: rja14@cl.cam.ac.uk (Ross Anderson)
+Date: 17 Jun 1994 13:43:28 GMT
+Newsgroups: sci.crypt,alt.security,uk.telecom
+Subject: A5 (Was: HACKING DIGITAL PHONES)
+
+
+The GSM encryption algorithm, A5, is not much good. Its effective key length
+is at most five bytes; and anyone with the time and energy to look for faster
+attacks can find source code for it at the bottom of this post.
+
+The politics of all this is bizarre. Readers may recall that there was a fuss 
+last year about whether GSM phones could be exported to the Middle East; the 
+official line then was that A5 was too good for the likes of Saddam Hussein.
+
+However, a couple of weeks ago, they switched from saying that A5 was too
+strong to disclose, to saying that it was too weak to disclose! The
+government line now pleads that discussing it might harm export sales. 
+
+Maybe all the fuss was just a ploy to get Saddam to buy A5 chips on the black 
+market; but Occam's razor suggests that we are really seeing the results of 
+the usual blundering, infighting and incompetence of bloated government 
+departments. 
+
+Indeed, my spies inform me that there was a terrific row between the NATO
+signals agencies in the mid 1980's over whether GSM encryption should be
+strong or not. The Germans said it should be, as they shared a long border
+with the Evil Empire; but the other countries didn't feel this way, and
+the algorithm as now fielded is a French design.
+
+A5 is a stream cipher, and the keystream is the xor of three clock
+controlled registers. The clock control of each register is that register's
+own middle bit, xor'ed with a threshold function of the middle bits of all
+three registers (ie if two or more of the middle bits are 1, then invert
+each of these bits; otherwise just use them as they are). The register
+lengths are 19, 22 and 23, and all the feedback polynomials are sparse.
+
+Readers will note that there is a trivial 2^40 attack (guess the contents of
+registers 1 and 2, work out register 3 from the keystream, and then step on
+to check whether the guess was right). 2^40 trial encryptions could take
+weeks on a workstation, but the low gate count of the algorithm means that
+a Xilinx chip can easily be programmed to do keysearch, and an A5 cracker
+might have a few dozen of these running at maybe 2 keys per microsecond
+each. Of course, if all you want to do is break the Royal Family's keys
+for sale to News International, then software would do fine.
+
+It is thus clear that A5 should be free of all export controls, just like
+CDMF and the 40-bit versions of RC2 and RC4.
+
+Indeed, there seems to be an even faster attack. As the clock control is
+stop-go rather than 1-2, one would expect some kind of correlation attack
+to be possible, and on June 3rd, Dr Simon Shepherd of Bradford University
+was due to present an attack on A5 to an IEE colloquium in London. However,
+his talk was spiked at the last minute by GCHQ, and all we know about his
+attack is:
+
+(a) that sparse matrix techniques are used to reconstruct the initial state
+    (this was published as a `trailer' in the April 93 `Mobile Europe');
+
+(b) that he used some of the tricks from my paper `Solving a class of stream 
+    ciphers' (Cryptologia XIV no 3 [July 90] pp 285 - 288) and from the
+    follow-up paper `Divide and conquer attacks on certain classes of stream
+    ciphers' by Ed Dawson and Andy Clark (Cryptologia XVIII no 1 [Jan 94]
+    pp 25 - 40) (he mentioned this to me on the phone).
+
+I believe that we have to stand up for academic freedom, and I hope that
+placing A5 in the public domain will lead to the embargo on Simon's paper
+being lifted.
+
+
+Ross Anderson
+
+
+APPENDIX - AN IMPLEMENTATION OF A5
+
+The documentation we have, which arrived anonymously in two brown envelopes,
+is incomplete; we do not know the feedback taps of registers 2 and 3, but we
+do know from the chip's gate count that they have at most 6 feedback taps
+between them.
+
+The following implementation of A5 is due to Mike Roe <mrr@cl.cam.ac.uk>, and
+all comments and queries should be sent to him.
+
+
+
+/*
+ * In writing this program, I've had to guess a few pices of information:
+ *
+ * 1. Which bits of the key are loaded into which bits of the shift register
+ * 2. Which order the frame sequence number is shifted into the SR (MSB
+ *    first or LSB first)
+ * 3. The position of the feedback taps on R2 and R3 (R1 is known).
+ * 4. The position of the clock control taps. These are on the `middle' one, 
+ *    I've assumed to be 9 on R1, 11 on R2, 11 on R3.
+ */
+
+/*
+ * Look at the `middle' stage of each of the 3 shift registers.
+ * Either 0, 1, 2 or 3 of these 3 taps will be set high.
+ * If 0 or 1 or one of them are high, return true. This will cause each of
+ * the middle taps to be inverted before being used as a clock control. In
+ * all cases either 2 or 3 of the clock enable lines will be active. Thus,
+ * at least two shift registers change on every clock-tick and the system
+ * never becomes stuck.
+ */
+
+static int threshold(r1, r2, r3)
+unsigned int r1;
+unsigned int r2;
+unsigned int r3;
+{
+int total;
+
+  total = (((r1 >>  9) & 0x1) == 1) +
+          (((r2 >> 11) & 0x1) == 1) +
+          (((r3 >> 11) & 0x1) == 1);
+
+  if (total > 1)
+    return (0);
+  else
+    return (1);
+}
+
+unsigned long clock_r1(ctl, r1)
+int ctl;
+unsigned long r1;
+{
+unsigned long feedback;
+
+ /*
+  * Primitive polynomial x**19 + x**5 + x**2 + x + 1
+  */
+
+  ctl ^= ((r1 >> 9) & 0x1);
+  if (ctl)
+  {
+    feedback = (r1 >> 18) ^ (r1 >> 17) ^ (r1 >> 16) ^ (r1 >> 13);
+    r1 = (r1 << 1) & 0x7ffff;
+    if (feedback & 0x01)
+      r1 ^= 0x01;
+  }
+  return (r1);
+}
+
+unsigned long clock_r2(ctl, r2)
+int ctl;
+unsigned long r2;
+{
+unsigned long feedback;
+
+  
+ /*
+  * Primitive polynomial x**22 + x**9 + x**5 + x + 1
+  */   
+
+  ctl ^= ((r2 >> 11) & 0x1);
+  if (ctl)
+  {
+    feedback = (r2 >> 21) ^ (r2 >> 20) ^ (r2 >> 16) ^ (r2 >> 12);
+    r2 = (r2 << 1) & 0x3fffff;
+    if (feedback & 0x01)
+      r2 ^= 0x01;
+  }
+  return (r2);
+}
+
+unsigned long clock_r3(ctl, r3)
+int ctl;
+unsigned long r3;
+{
+unsigned long feedback;
+
+ /*
+  * Primitive polynomial x**23 + x**5 + x**4 + x + 1
+  */
+
+  ctl ^= ((r3 >> 11) & 0x1);
+  if (ctl)
+  {
+    feedback = (r3 >> 22) ^ (r3 >> 21) ^ (r3 >> 18) ^ (r3 >> 17);
+    r3 = (r3 << 1) & 0x7fffff;
+    if (feedback & 0x01)
+      r3 ^= 0x01;
+  }
+  return (r3);
+}
+
+int keystream(key, frame, alice, bob)
+unsigned char *key;   /* 64 bit session key              */
+unsigned long frame;  /* 22 bit frame sequence number    */
+unsigned char *alice; /* 114 bit Alice to Bob key stream */
+unsigned char *bob;   /* 114 bit Bob to Alice key stream */
+{
+unsigned long r1;   /* 19 bit shift register */
+unsigned long r2;   /* 22 bit shift register */
+unsigned long r3;   /* 23 bit shift register */
+int i;              /* counter for loops     */
+int clock_ctl;      /* xored with clock enable on each shift register */
+unsigned char *ptr; /* current position in keystream */
+unsigned char byte; /* byte of keystream being assembled */
+unsigned int bits;  /* number of bits of keystream in byte */
+unsigned int bit;   /* bit output from keystream generator */
+
+  /* Initialise shift registers from session key */
+
+  r1 = (key[0] | (key[1] << 8) | (key[2] << 16) ) & 0x7ffff;
+  r2 = ((key[2] >> 3) | (key[3] << 5) | (key[4] << 13) | (key[5] << 21)) & 0x3fffff;
+  r3 = ((key[5] >> 1) | (key[6] << 7) | (key[7] << 15) ) & 0x7fffff;
+
+
+  /* Merge frame sequence number into shift register state, by xor'ing it
+   * into the feedback path
+   */
+
+  for (i=0;i<22;i++)
+  {
+    clock_ctl = threshold(r1, r2, r2);
+    r1 = clock_r1(clock_ctl, r1);
+    r2 = clock_r2(clock_ctl, r2);
+    r3 = clock_r3(clock_ctl, r3);
+    if (frame & 1)
+    {
+      r1 ^= 1;
+      r2 ^= 1;
+      r3 ^= 1;
+    }
+    frame = frame >> 1;
+  }
+
+  /* Run shift registers for 100 clock ticks to allow frame number to
+   * be diffused into all the bits of the shift registers
+   */
+
+  for (i=0;i<100;i++)
+  {
+    clock_ctl = threshold(r1, r2, r2);
+    r1 = clock_r1(clock_ctl, r1);
+    r2 = clock_r2(clock_ctl, r2);
+    r3 = clock_r3(clock_ctl, r3);
+  }
+
+  /* Produce 114 bits of Alice->Bob key stream */
+
+  ptr = alice;
+  bits = 0;
+  byte = 0;
+  for (i=0;i<114;i++)
+  {
+    clock_ctl = threshold(r1, r2, r2);
+    r1 = clock_r1(clock_ctl, r1);
+    r2 = clock_r2(clock_ctl, r2);
+    r3 = clock_r3(clock_ctl, r3);
+
+    bit = ((r1 >> 18) ^ (r2 >> 21) ^ (r3 >> 22)) & 0x01;
+    byte = (byte << 1) | bit;
+    bits++;
+    if (bits == 8)
+    {
+      *ptr = byte;
+      ptr++;
+      bits = 0;
+      byte = 0;
+    }
+  }
+  if (bits)
+    *ptr = byte;
+
+  /* Run shift registers for another 100 bits to hide relationship between
+   * Alice->Bob key stream and Bob->Alice key stream.
+   */
+
+  for (i=0;i<100;i++)
+  {
+    clock_ctl = threshold(r1, r2, r2);
+    r1 = clock_r1(clock_ctl, r1);
+    r2 = clock_r2(clock_ctl, r2);
+    r3 = clock_r3(clock_ctl, r3);
+  }
+
+  /* Produce 114 bits of Bob->Alice key stream */
+
+  ptr = bob;
+  bits = 0;
+  byte = 0;
+  for (i=0;i<114;i++)
+  {
+    clock_ctl = threshold(r1, r2, r2);
+    r1 = clock_r1(clock_ctl, r1);
+    r2 = clock_r2(clock_ctl, r2);
+    r3 = clock_r3(clock_ctl, r3);
+
+    bit = ((r1 >> 18) ^ (r2 >> 21) ^ (r3 >> 22)) & 0x01;
+    byte = (byte << 1) | bit;
+    bits++;
+    if (bits == 8)
+    {
+      *ptr = byte;
+      ptr++;
+      bits = 0;
+      byte = 0;
+    }
+  }
+  if (bits)
+    *ptr = byte;
+ 
+  return (0);
+
+}
+
+
+

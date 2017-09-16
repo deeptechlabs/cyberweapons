@@ -1,0 +1,36 @@
+.EQ
+delim $$
+.EN
+.\" @(#)mdigest.3bm 91/12/13;
+.TH mdigest 3BM
+.SH NAME
+fBigMessageDigest, bigMessageDigest
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBvoid fBigMessageDigest(char *filename, BigInt digest, DigestType digestType)\fR
+.LP
+\fBvoid bigMessageDigest(unsigned char *buf, int buflen, BigInt digest, DigestType digestType)\fR
+.LP
+
+This is a simple interface to SHS, MD2, MD4 and MD5.
+$digest$ must be initialized (digest = bigInit(0)).
+The digest types are defined as follows:
+
+#define SHS 1
+#define MD5 5
+#define MD4 4
+#define MD2 3
+typedef int DigestType;
+
+.fi
+.SH SEE ALS
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+

@@ -1,0 +1,15 @@
+Notes made during the creation of v2.1
+
+1) elliptic.doc talkes about the flaten() routine although it has been
+   eliminated from ecliptic.c as of v2.
+
+2) v2 complains about too-short pass phrases, but tries to use them
+   anyway.  Since this is a functional issue, I left is for the next
+   major version.
+
+Regards,
+Steve Albrecht
+steve@eh.pd.mcs.net
+73657.1342@compuserve.com
+73657.1342@compuserve.com
+

@@ -1,0 +1,1189 @@
+
+
+
+
+
+		   CRYPTOGRAPHY: POLICY AND TECHNOLOGY TRENDS
+
+
+
+
+				Lance J. Hoffman
+				  Faraz A. Ali
+				Steven L. Heckler
+				 Ann Huybrechts
+
+
+
+
+
+				December 1, 1993
+Revised January 30, 1994
+
+
+
+
+			under contract DE-AC05-84OR21400
+
+Work supported in part by the U. S. Department of Energy under contract DE-
+AC05-84OR21400.  The views and opinions of authors expressed herein do not
+necessarily state or reflect those of the United States Government or any
+agency thereof.
+
+
+
+
+
+
+				    CONTENTS
+
+
+
+	  EXECUTIVE SUMMARY
+
+	  1.  INTRODUCTION
+
+	  2.  TECHNOLOGY
+
+	  3.  MARKET ANALYSIS
+
+	  4.  EXPORT CONTROLS
+
+	  5.  PUBLIC POLICY ISSUES
+	       5.1  EXECUTIVE BRANCH
+	       5.2  CONGRESS
+	       5.3  TRENDS
+
+	  6.  POTENTIAL SCENARIOS
+
+	  REFERENCES
+
+
+
+
+
+
+				EXECUTIVE SUMMARY
+
+
+During the past five years, encryption technology has become easily available
+to both individuals and businesses, affording them a level of security
+formerly available practically to only military, national security, and law
+enforcement agencies. As a result, a debate within the United States about
+the proper balance between national security and personal freedom has been
+initiated. Law enforcement and national security agencies would like to
+maintain tight control over civilian encryption technologies, while industry
+and individual and privacy rights advocates fight to expand their ability to
+distribute and use cryptographic products as they please.
+
+This report analyzes trends in encryption technology, markets, export
+controls, and legislation.  It identifies five trends which will have a
+strong influence on cryptography policy in the United States:
+
+     * The continued expansion of the Internet and the progressive
+     miniaturization of cryptographic hardware combined with the  increasing
+     availability and use of strong cryptographic software means that the
+     strongest encryption technologies will  continue to become more easily
+     obtainable everywhere in the years ahead.
+
+     * Additional growth in networked and wireless communication will fuel a
+     strong demand for encryption hardware and software both domestically and
+     abroad, causing the U. S. high-technology industry to be increasingly
+     interested in selling encryption products overseas and in modifying
+     current export restrictions.
+
+     * Due to the responsibilities and bureaucratic dispositions of key
+     Executive Branch agencies, products using strong encryption algorithms
+     such as DES will continue to face at least some export  restrictions,
+     despite the widespread availability of strong encryption products
+     overseas.
+
+     * The American public is likely to become increasingly concerned about
+     its privacy and about cryptographic policy as a result of the increased
+     amount of personal information available online and the growing number
+     of wireless and networked communications.  The development and
+     increasingly widespread use of the National Information Infrastructure
+     will heighten these concerns.
+
+     * Encryption policy is becoming an important public policy issue that
+     will engage the attention of all branches of government.  Congress will
+     become increasingly visible in this debate due to its power of agency
+     oversight and its role in passing laws accommodating the United States'
+     rapid rate of technological change.  Agencies will remain very important
+     since they have the implementing and, often, the planning
+     responsibilities.  Since individuals and industry have more direct
+     influence over Congress than over most other branches of government,
+     Congress may place somewhat more emphasis on personal freedom than many
+     other government actors.
+
+Four potential scenarios are likely: mandatory escrowed encryption, voluntary
+escrowed encryption, complete decontrol of encryption, or domestic decontrol
+with strict export regulations.
+
+
+
+
+
+
+				1.  INTRODUCTION
+
+
+During the past five years, encryption technology has become easily available
+to both individuals and businesses, affording them a level of security
+formerly available practically to only military, national security, and law
+enforcement agencies.  This availability and the desirability of encrypting
+some communications is just starting to be generally recognized by American
+business, and the encryption market is just now beginning to emerge as a
+significant part of the computer security market.  As a result, a debate
+within the United States about the proper balance of national security, law
+enforcement, and personal freedom has been initiated.  Law enforcement and
+national security agencies would like to maintain tight control over civilian
+encryption technologies, while industry and individual and privacy rights
+advocates fight to expand their ability to distribute and use cryptographic
+products as they please.1
+
+This report analyzes trends in encryption technology and policy against this
+backdrop.  It is one in a trilogy of research papers being prepared under the
+direction of Professor James Chandler of the George Washington University
+National Law Center and Professor Lance Hoffman of the George Washington
+University School of Engineering and Applied Science, Department of
+Electrical Engineering and Computer Science.  The papers cover the following
+topics:
+
+     Issues Regarding the Use of Cryptographic Technologies in the Commercial
+     Sector.  Review and analysis of U.S. laws, regulations, and case law
+     pertaining to the use of commercial encryption products for voice and
+     data communications between private parties located within continental
+     U.S. boundaries and with parties in foreign jurisdictions, including
+     examination of all applicable Federal statutes, regulations, executive
+     orders, and other publicly available sources of legally binding
+     directives.  Laws or regulations which have been interpreted as
+     mandating the use of cryptographic systems are also included. 2
+
+     Foreign Encryption Technology Controls.  Identification and analysis of
+     foreign laws and regulations pertaining to the use and control of
+     commercial encryption products for voice and data communications. 3
+
+     Cryptography: Trends in Technology and Policy (this paper).
+     Encapsulation of current legislation and analysis of trends based on the
+     above papers with future implications for encryption technology and the
+     use of commercial encryption products.
+
+This report is divided into four primary sections:
+
+     * Technology:  future trends in high technology and, more specifically,
+     encryption technology.
+
+     * Market Analysis:  trends in the global market for encryption products,
+     especially DES- and RSA-based products.
+
+
+     * Export Controls: trends that may influence the wording and
+     implementation of laws restricting export of encryption products
+     manufactured in the United States.
+
+     * Public Policy Issues: factors and trends that may determine the future
+     direction of policy decisions and legislation related to cryptography in
+     the United States.
+
+After discussions of these topics, four potential scenarios are briefly
+presented as possibilities.
+
+The authors appreciate the constructive criticism of early drafts and helpful
+suggestions made by Diana Arrington, Donna Berkelhammer, James Chandler,
+Larry E. Christensen, Dorothy Denning, Bill Franklin, Lou Giles, Lamaris
+Gill, Lynn McNulty, Randolph Williams, Doug Miller, Robert Rarog, Allan
+Suchinsky, and others.  Conclusions or opinions in this paper are, however,
+those solely of the authors and are not necessarily shared by any of the
+other persons.
+
+
+
+
+
+
+				 2.  TECHNOLOGY
+
+
+Commercial encryption technology has evolved since the popular 'Data
+Encryption Standard' (DES)4 was released to the public in 1977 and will
+continue to do so during the foreseeable future.  From a situation then when
+only private key systems were generally in use, public key systems have
+become increasingly popular, especially for authentication.  Detailed reviews
+of the evolution of cryptography over the last sixteen years or so can be
+found in [5] and [6].   In particular, hardware encryption devices will
+become smaller, users will use signatures and digests (typically public key
+systems7, 8 as well as private key systems), and encryption algorithms will
+become increasingly powerful.9
+
+A cryptographic system generally provides for two functions:  encryption and
+decryption.  The encryption function converts data from 'plaintext,' or
+normal text, into 'ciphertext,' which is incomprehensible to the casual
+observer.  The decryption function reverses this process, restoring the data
+to its original form.  In order to perform either of these functions (i.e. to
+send or receive an encrypted message), the system's user must have a unique
+'key,' a sequence of bits.  This key is input to the algorithm to
+successfully perform the desired conversion.  The strength of an encryption
+scheme is dependent both upon the strength of its algorithm and, often, on
+the length of the keys used for encryption and decryption.  Longer key
+lengths mean more possible keys for an intruder to try and thus imply greater
+security.  Encryption and decryption are generally performed by a computer
+with the assistance of hardware and/or software cryptographic products.
+
+A trend in encryption products, concurrent with the same trend in computer
+technology in general, is towards increasing miniaturization.  For example,
+in 1988 the primary encryption device manufactured by AT&T weighed seventeen
+pounds.  Now, with the advent of PCMCIA (Personal Computer Memory Card
+Industry Association) technology, it is widely anticipated that one or more
+manufacturers will soon release encryption-capable modems the size of a
+credit card.
+
+Some observers feel a trend is developing from hardware or software/hardware
+products to software-only products9, 10  because software is cheaper, easier to
+install and use, and takes up less space on a computer than hardware.  Others
+disagree, thinking that the future of encryption technology may be in
+hardware-based products, because they are faster, harder to compromise, and
+also take up very little space now because of developments in VLSI (Very
+Large Scale Integrated) chip design .11
+
+There is also a growing use of 'public-key' cryptography systems.9, 13  Under
+a more traditional single key system, the same key is used both for
+encrypting and decrypting the message.  Although this is reasonably secure,
+there is a risk that this key will be intercepted when the parties involved
+exchange keys.  A public key system, however, does not necessitate the
+exchange of a secret key in the transmission of messages.  The sender
+encrypts the message with the recipient's freely-disclosed, unique public
+key.  The recipient, in turn, uses her unique private key to decrypt the
+message.7  It is also possible to encrypt messages with the sender's private
+key, allowing anyone who knows the sender's public key to decrypt the
+message.  This process is crucial to creating digital signatures, as
+discussed later.
+
+Coincident with the increase in electronic communications is the need to
+write one's own signature on both business and personal transactions.  At the
+moment, writing one's own signature requires written messages.  Now, however,
+electronic communications have become so heavily used that many business and
+personal transactions will flourish between parties who never actually see
+each other and physically sign no paper; increasingly, digital signatures
+will be used to provide message authentication.
+
+Public-key cryptography also enables the user to produce a digital signature
+by encrypting with her private key, which, when decrypted with her public
+key, provides verification that the message originated from that user.
+Possible applications for this technology include online financial
+transactions and business negotiations.
+
+The DES (Data Encryption Standard) and RSA (named after its inventors Rivest,
+Shamir, and Adelman) algorithms are generally considered two of the strongest
+algorithms on the market.  DES is a strong, private-key algorithm developed
+by IBM and made a standard by the United States government in the late
+1970's.  RSA, in turn, is the most popular public-key algorithm.14  It is
+based on prime number generation, using the fact that it is very difficult to
+factor the product of two large prime numbers. Encryption hardware and
+software products incorporating DES and RSA are widely available both
+domestically and abroad.  Over two million instantiations of RSA have been
+distributed in the United States, in almost every case seamlessly embedded by
+the vendor.  By the end of 1994, this number will rise to five million and by
+the end of 1995, it will double.15
+
+PGP (Pretty Good Privacy), 16 which originally incorporated RSA, employs
+public-key cryptography and puts together strong algorithms for both
+authentication and message transmission.  It now uses a combination of the
+IDEA (International Data Encryption Algorithm)17 and
+MD5 algorithms 
+and can be obtained over the Internet via anonymous FTP ("file transfer
+protocol").
+
+DES continues to be an important standard for encrypting data, particularly
+within the U. S. and foreign financial communities.  The National Institutes
+for Standard and Technology (NIST) is in the process of recertifying DES as
+a national standard for the next five years.  However, the security of DES in
+the future is worrisome to some scientists, who contend that advances in
+technology will soon make it possible to break DES by 'brute force,' using a
+powerful computer to try every possible combination of keys until the correct
+key is discovered.  Indeed, in ten years, DES may no longer be secure.18
+
+In contrast, SKIPJACK, the classified encryption/decryption algorithm used in
+the White House's key escrow ('Clipper') initiative, utilizes an 80-bit key,
+24 bits longer than the 56-bit key used in DES.  The interim report of the
+SKIPJACK evaluators chosen by NSA and NIST came to three conclusions:19
+
+     1.   Under an assumption that the cost of processing power is halved
+	  every eighteen months, it will be 36 years before the cost of
+	  breaking SKIPJACK by exhaustive search will be equal to the cost of
+	  breaking DES today.  Thus, there is no significant risk that
+	  SKIPJACK will be broken by exhaustive search in the next 30-40
+	  years.
+
+     2.   There is no significant risk that SKIPJACK can be broken through a
+	  shortcut method of attack.
+
+     3.   While the internal structure of SKIPJACK must be classified in
+	  order to protect law enforcement and national security objectives,
+	  the strength of SKIPJACK against a cryptanalytic attack does not
+	  depend on the secrecy of the algorithm.
+
+Other sources report that many industry representatives believe that
+processing power doubles about every six months to a year.  This would reduce
+the "safe time" of the first point above to approximately 12-18 years, rather
+than 30-40 years.
+
+Other escrow schemes are also available.  Micali20 has proposed a multikey
+escrow capability in which multiple trusted parties authenticate a message
+and/or allow eavesdropping.  In a recent unpublished paper, Desmedt, Frankel,
+and Yung state that threshold cryptosystems (as presented at recent Crypto,
+Asiacrypt, and Eurocrypt conferences) can have the same functionality as key
+escrow schemes without relying on "(expensive) tamperproof devices."21
+
+The increasing use and availability of encryption technology logically
+accompanies the exponential increase in electronic communications over the
+past few years.  Commercial use of the Internet has increased dramatically
+during the past two years, and noncommercial use is on the rise as well.22
+Indeed, as the New York Times whimsically notes, "Forget Elaine's.  Internet
+is currently the world's most fashionable rendezvous."  It touches down in
+137 countries and links 15 million to 30 million people and is growing by a
+million users each month.23
+
+This growth in the popularity of the Internet has created a demand for
+security.  Electronic mail users who desire confidentiality and sender
+authentication increasingly are demanding encryption.  Some are already using
+PGP.  Others are starting to use Privacy Enhanced Mail (PEM), an Internet
+encryption mechanism which was funded by the Advanced Research Projects
+Agency of the Defense Department and has recently been introduced as a
+commercial product by Trusted Information Systems, Inc.  It uses the DES
+algorithm for encryption and the RSA algorithm for sender authentication and
+key management. Privacy Enhanced Mail also provides support for
+nonrepudiation; this allows the third-party recipient of a forwarded message
+to verify the identity of the message originator (not just the message
+forwarder) and to verify if any of the original text has been altered.24, 25
+Although PEM is not yet widespread, a number of vendors are offering it in
+conjunction with or integrated into their commercial electronic mail
+applications and the European Community has adopted PEM for its PASSWORD
+project26  which is part of an attempt to establish a pilot security
+infrastructure for network applications for the European research community.
+Ironically, a Federally funded chip, Clipper, now is being pushed as a
+substitute for this mechanism which has already been paid for largely by
+government funds and is already in place.
+
+The increasing number of electronic funds transfers (EFTs) between banks has
+necessitated the increasing use of message authentication systems, to
+determine if a message has originated from its proper source and to determine
+if there have been any modifications.27  One institution alone, the Clearing
+House Interbank Payment System, currently moves an average of one trillion
+dollars each day via wire and satellite.28   Strong encryption is necessary to
+provide security and authentication for these electronic money transfers (and
+is also why export restrictions on the DES algorithm have been relaxed for
+financial institutions).
+
+Despite these leaps in technology, telefacsimile (fax) transmissions are not
+yet widely encrypted, even though fax is a widely used form of data
+communications.  According to a Datapro 1993 report27,  there are only 11
+encryption devices which accommodate FAX transmissions.  It is inconvenient
+to equip both the sending and receiving machine with compatible encryption
+before facsimile transmission; the fax protocol has no convenient place for
+inserting non-fax functions such as encryption; and, until recently, there
+has been little awareness of security threats among fax users.  However,
+increasing use of fax transmissions by businesses who wish to keep their
+corporate information and finances confidential and an increasing awareness
+of the security problems will require the availability of more products which
+encrypt fax communications.
+
+Credit cards and ATMs are the forerunners of what may soon become 'digital
+cash.'  On the average, people use less pocket cash every year. Indeed,
+credit-card purchases are now used for one-tenth of all consumer payments.29
+David Chaum, head of the Cryptography Group at the Center for Mathematics and
+Computer Science (CWI) in Amsterdam, has proposed a distributed smart card
+system which, using public key cryptography, allows anonymous cash embodied
+by the cards to be used like real money.28 This is another consequence of the
+increasing digitization of financial transactions: 'Ubiquitous digital cash
+dovetails well with massive electronics networks.  It's a pretty sound bet
+the Internet-today's version of the Net-will be the first place that e-money
+will infiltrate deeply.' 29
+
+One of the consequences of an increasingly electronics-oriented economy will
+be the need to provide some amount of anonymity and privacy for users of such
+a digital cash system in order to ensure that electronic money remains
+anonymous and untraceable, except by the payer and payee.  Government
+approval will be requisite for digital cash to gain full approval by the
+business community and public, and the government may require access to these
+transaction records to prevent what might otherwise become "perfect crimes."
+30
+
+In conclusion, the current trends in encryption technology include increasing
+miniaturization, increasing use of public and private-key cryptography, and
+the continued development of increasingly secure algorithms.  These trends
+are all coincident with the skyrocketing use of the Internet and other types
+of electronic communications, particularly electronic money communications.
+
+
+
+
+
+
+			       3.  MARKET ANALYSIS
+
+
+The market for encryption products is rapidly growing.27 This market trend is
+concomitant with the increasing use of personal computers, fax machines, and
+e-mail for electronic communications.  A large encryption market has also
+arisen because of wireless communications, such as cellular telephones. There
+are already 12 million subscribers to cellular telephone services in the
+United States, and the trend is toward more wireless communications in the
+future.  Since they are easier to intercept than wire-based ones, the demand
+for encryption technology will increase as concern for data integrity
+increases.9
+
+This growth in the market for encryption is occurring both in the United
+States and abroad.  According to International Resource Development, the U.
+S. data encryption market reached an estimated $384 million in 1991, and will
+jump to $946 million by 1996.  The total worldwide market, estimated at $695
+million in 1991, is predicted to grow at a similar rate, reaching $1.8
+billion by 1996.31
+
+The encryption market is no longer left to United States companies to
+dominate.  A Software Publishers Association (SPA) survey shows 264 foreign
+encryption products and 288 domestic products.  These findings contrast
+sharply with the large global market shares (approximately 75%) enjoyed by
+United States software publishers and hardware manufacturers in other areas.32
+Of the 264 foreign products, 123 products use DES.36
+
+Citing the relatively stringent export controls enforced by the United States
+government as being one of the main reasons for the increasing market share
+of foreign cryptographic products in the global market, many manufacturers
+are currently lobbying the government to relax these export controls in an
+effort to keep United States technology competitive abroad.  The SPA claims
+that most software and hardware vendors, aware of these export controls,
+decide not to manufacture encryption technology because they realize that
+their very best technology cannot be exported.  Thus, they claim, there are
+far fewer domestic vendors than would otherwise exist.10
+
+Many commentators have speculated on the influence of the escrow encryption
+standard (Clipper) on the global market.  Georgetown University Professor
+Dorothy Denning, one of the evaluators of the SKIPJACK algorithm used in the
+proposed key-escrow arrangement and an advocate of its deployment, states
+that if the technology provided by Clipper catches on, it could become the de
+facto standard in the United States, either the only device or the
+predominant device available on the market.33
+
+Marc Rotenberg, director of the Washington office of Computer Professionals
+for Social Responsibility (CPSR), believes that the government would be able
+to wield considerable clout in making the key-escrow arrangement a de facto
+standard on the market.13   He explains that the government can exert enormous
+authority on creating, developing, and enforcing technical standards through
+the procurement process.  Through this procurement process, the government
+can require any manufacturer selling phones to the government or government
+contractors to install the key-escrow arrangement in their phones.  AT&T
+supplies an enormous amount of telecommunications services and equipment to
+the government, thus making the government one of AT&T's largest customers.
+In response to the Presidentially approved Clipper initiative, AT&T has
+started incorporating the key-escrow arrangement in some of its phones, a
+powerful illustration of the enormous spending power of the government.
+
+However, the Federal government does not represent a large percentage of the
+market or the revenue for all American companies providing communications or
+computer technology.  For example, Bill Ferguson of Semaphore Communications
+Corp. states that government purchases are less than one percent of
+Semaphore's global sales potential.  With trade restrictions applied, the
+government still supplies less than five percent of Semaphore's expected
+sales.34   Companies such as Semaphore and many represented by the SPA see
+foreign markets as potentially larger sources of income than the U. S.
+government and therefore want trade restrictions relaxed so that more market
+opportunities can open up.  As it stands now, many in the encryption industry
+fear that products using the Clipper chip will be effectively unexportable
+due to United States government retention of the keys.35,36
+
+The Clinton administration has stated that use of a key escrow system will
+not be mandatory ("The Administration has progressed far enough in its review
+to conclude it will not propose new legislation to limit use of encryption
+technology.")37.  However, if this decision were reversed (perhaps by a later
+administration), there is some danger that the proposed key-escrow
+arrangement could function as a 'Digital Volstead Act,' the 1920's
+prohibition on alcohol.  Like Prohibition and the organized crime that
+resulted from it, the key-escrow arrangement could encourage contempt for law
+enforcement and a complete disregard of the law.35  Doug Miller of the SPA
+feels that a black market would almost certainly arise if the United States
+government makes some standard mandatory.10
+
+Given the increased use of computers and networks, a steady increase in the
+market for encryption products is likely, as is a continued expansion into
+this market by foreign manufacturers.  United States hardware and software
+producers, stymied by relatively stringent export restrictions imposed by the
+United States government and possibly further hindered by the necessity of
+accommodating what may be an unexportable Clipper standard, may find it even
+more difficult to remain competitive players in international markets.
+
+
+
+
+
+
+			       4.  EXPORT CONTROLS
+
+
+Existing controls on the export of encryption software and hardware has been
+a topic of concern for United States manufacturers and vendors. Despite a
+February 1991 COCOM decision to decontrol all mass market software, including
+encryption software, as other commercial, dual-use items, United States
+export control policy continues to categorize many encryption items as
+'munitions-related', thereby subjecting them to applicable export laws.38
+Anyone wishing to export the strongest encryption products is therefore
+required, under the Arms Export Control Act, to obtain individual licenses
+from the Office of Defense Trade Controls at the State Department (though
+some products of lesser strength are under the control of the Commerce
+Department).39  This has led to a prohibition on export of encryption products
+using the popular and relatively powerful DES algorithm for file and data
+encryption (except for financial applications and use by subsidiaries of U.
+S. companies abroad).
+
+Obtaining a license for these restricted encryption products includes a
+review of the product by the National Security Agency (NSA) to determine its
+exportability.  According to Allan Suchinsky, Chief of Electronic and Combat
+Systems Licensing at the Office of Defense Trade Controls at the Department
+of State, this process normally takes between one and six weeks.40  According
+to some officials and business people, however, a newly developed encryption
+product can actually take up to ten months to go through the review process,
+although products employing certain algorithms are either on a list of
+automatically approved items or eligible for 'fast track' consideration. In
+the high-tech arena where product cycles are often measured in months, large
+market shares can be lost due to such delays.  Some industry representatives
+have complained that the average time it takes to obtain a similar license
+for encryption products outside the United States is much less.34
+
+The market analysis above describes the steadily growing global market for
+strong encryption products, one that is potentially worth millions (if not
+billions) of dollars. But United States manufacturers believe that their
+hands are tied by stringent export laws which, for 'national security'
+reasons, prohibit the export of encryption products of DES strength or
+stronger to anyone other than financial institutions.  They also believe that
+foreign manufacturers in Europe and elsewhere are not similarly restricted,
+and are free to manufacture and export DES- and RSA-based products. This
+asymmetry in export laws has undesirable consequences for United States
+manufacturers of encryption products.
+
+DES-based products are already being used in encryption products manufactured
+in foreign countries including Japan, Russia, Germany, France, Austria, UK,
+Switzerland, Netherlands, Austria, Australia and Sweden.32  The DES algorithm,
+in fact, is also freely obtainable via the Internet, as is DES-based
+encryption software. The encryption 'genie'  would appear to be out of the
+bottle, and at this point it is not clear to United States companies  why the
+State Department is inhibiting the wide proliferation of DES technology,41 now
+that it is not in a position to prevent it. Along with this, one must
+consider the trends towards implementation of encryption products in
+software, and the miniaturization of encryption hardware. Taken together,
+these trends indicate that it will become increasingly difficult to enforce
+the existing export laws, and tougher to prevent the spread of DES-caliber
+algorithms.  Despite this, many government officials have continued to speak
+strongly in favor of continued restrictions on DES, stating that attempting
+to control export of products using the algorithm still prevents a
+significant number of international terrorists, criminals, and unfriendly
+foreign powers from acquiring advanced encryption technology.  As a result,
+they believe that export restrictions on DES remain in the United States'
+best interest, even if they may not always be fully effective.40
+
+The current export restrictions have a detrimental effect on many U.S.
+companies.  According to Addison Fischer of Fischer International, "export
+controls are estimated to have cost Fischer International millions of dollars
+in lost revenue for cryptographic products"42  due to rejection by foreign
+customers of the weaker encryption products United States companies are
+forced to supply, lost sales opportunities, and delays with paperwork
+necessary for obtaining the appropriate licenses.  And since DES is already
+easily available overseas, Fischer feels that existing export restrictions
+are simply placing an embargo on United States DES-based products. Similar
+complaints have been voiced by other United States companies.  The Computer
+Systems Security and Privacy Advisory Board agrees that "current controls are
+negatively impacting U. S. competitiveness in the world market and are not
+inhibiting the foreign production and use of cryptography [DES and RSA]." 43
+
+Thus, if the United States government continues to control DES-strength
+encryption manufactured in the U.S., the following results may come to pass:
+
+     * Foreign competitors of United States encryption companies will likely
+     gain control of the global market for encryption products.
+
+     * United States companies will lose significant market share in the
+     global market for encryption products. They are likely to lose sales
+     opportunities as they compete in the electronic security market against
+     products based on DES and RSA with their own weaker versions based on
+     RC2 and RC4.
+
+     * DES strength encryption will continue to proliferate to foreign
+     destinations, either through foreign companies or through the
+     ever-growing Internet. The effort of current United States export policy
+     to inhibit this by restricting exports on DES-based technology is
+     unlikely to succeed.
+
+     * If, indeed, United States companies get displaced in the international
+     encryption marketplace, United States 'national security' will also be
+     threatened by a weakened domestic encryption (and computer) industry.
+
+
+In July 1992, the Software Publishers Association reached an agreement with
+the Bush Administration that would permit an expedited 7-day review process
+for products based on RC2 and RC4 algorithms.  These algorithms are still
+much weaker than DES; but they are also stronger than any other algorithms
+which were exportable prior to this agreement.  This was an important
+development in the effort to decontrol the export of encryption products from
+the United States.  Projecting forward from this milestone, it is likely that
+as the private sector continues to push for further relaxation of these
+controls, more and stronger encryption products will be put on similar
+'autolists' for automatic export approval.
+
+The Federal government seeks to encourage the use of key escrow systems for
+encrypting telecommunications.44  The standard proposed for these systems, the
+"Clipper" escrowed encryption standard,45  is particularly noteworthy in light
+of the fact that law enforcement officials, with a court order, can obtain
+both parts of a special key that enables them to decrypt transmissions
+encrypted with a particular chip.  At the time of this writing, how Clipper
+will be treated for export purposes is not clear.  If it is treated the same
+way as DES, it will certainly provide another example of the Byzantine nature
+of U. S. export policy.  In any case, it is likely that foreign customers
+will reject these products, due to fears of both United States tampering and
+the possible existence of a secret 'trap door,' which would enable
+unauthorized parties to decrypt Clipper-encrypted transmissions, even without
+the escrowed parts of the special key.  Chris Sundt of the multinational
+International Computers Ltd. (ICL) claims this very fear will be the basis of
+rejecting Clipper as an encryption alternative in international markets.46
+Other United States based companies share his concern that the key escrow
+chip is effectively unexportable.47
+
+In spite of the concerns described above, it appears unlikely that United
+States export laws will become as relaxed as those in many European
+countries.  DES-based products for file and data encryption will probably not
+be removed from the munitions list in the near future.  Almost everyone
+interviewed for this report felt that NSA will continue to play an
+increasingly dominant role in the debate over cryptography in the U.S., and
+will continue to have influence much stronger than NIST's on encryption
+policy issues.  NSA will continue to strongly voice its opinions to the
+President and pressure him to keep DES-based encryption on the munitions list
+and under the jurisdiction of the Department of State.
+
+
+
+
+
+
+			    5.  PUBLIC POLICY ISSUES
+
+
+5.1  EXECUTIVE BRANCH
+
+Due to the increasing public availability of strong hardware- and
+software-based encryption products, a debate over their regulation and use is
+emerging.48   The debate over Clipper and regulation of other encryption
+technologies is, in many ways, the continuation of an ongoing discussion in
+the United States about the proper balance between national security and
+individual freedom of action.  On one side of the debate are those agencies
+charged with defending America from crime, terrorism, and external threat,
+such as the Federal Bureau of Investigation (FBI), the National Security
+Agency (NSA), the Central Intelligence Agency, the Department of State, and
+the Department of Justice.  These powerful agencies, in turn, are challenged
+by advocacy groups and high-technology industries, which place a greater
+emphasis on individual rights, in particular personal privacy, or corporate
+profits.  The United States Congress may play a major role in determining the
+balance between the two.
+
+There are several powerful agencies which are leading the Administration's
+effort to control encryption technology.  First and foremost among these is
+the National Security Agency, which for years was the sole controller of
+strong encryption in the United States.  NSA has two primary goals on its
+agenda.  The most overt one is the protection of United States national
+security, which the NSA does largely with the help of signal intelligence.49
+If terrorists of foreign agents were to obtain and use strong encryption
+hardware or software, NSA's efforts to learn about and thwart their
+activities would be considerably more difficult.  Indeed, as Marc Rotenberg
+of Computer Professionals for Social Responsibility comments, the continued
+development of encryption technologies poses one of the most significant
+challenges the agency has faced during the post-Cold War era.13
+
+Less obvious but also important is NSA's effort to protect its preeminent
+role in civilian cryptography.  For years, NSA had almost complete control
+over developments in the encryption field.  In recent years, however, this
+control has begun to erode as private firms and individuals have begun
+aggressively developing and using encryption technologies.  The end of the
+Cold War and the assignment of responsibility by the Computer Security Act of
+1987 50 for development of federal unclassified computer security standards
+(including cryptography standards) to NIST has threatened many aspects of
+NSA's traditional role.  Doug Miller of the Software Publishers Association
+observed that 'NSA throughout its existence . . . has had every incentive to
+delay the inevitable' (individuals obtaining full control of their own
+cryptography).10
+
+The FBI is primarily concerned with investigating serious crimes and
+thwarting domestic terrorism.  In a small number of important cases, such as
+those involving drug trafficking, organized crime, or terrorism, the FBI
+gathers information via wiretaps.  Indeed, wiretaps have been used in to
+gather evidence in 90% of terrorism cases brought to trial.51  However, the
+FBI has not been able to point to a single case to date where encryption has
+hampered their investigation of a case.
+
+Several developments, however, are making these wiretaps progressively more
+difficult to conduct.  Two of these are the increasing complexity of the
+United States telecommunications infrastructure and the gradual replacement
+of copper wires by fiber optics, which can carry thousands of conversations
+in a single strand of fiber.  Both of these changes make it more difficult
+for agents, even with phone companies' help, to isolate individual
+conversations.49   In addition, the development of publicly available
+encryption threatens to delay or prevent the FBI's ability to utilize the
+contents of these wiretaps.  This poses serious risks to the lives and safety
+of the American people whom the FBI is charged to protect, especially in
+cases where the Bureau is relying on real-time interception of phone calls to
+protect citizens from harm or to apprehend a suspect.52
+
+Most of the other executive agencies and departments involved in the
+regulation of encryption technology have similar agendas:  protecting
+American citizens from harm and defending their areas of responsibility and
+influence within the government.49
+
+There are Constitutional issues related to encryption controls, and the
+Clinton administration recognized this when it announced the Clipper
+initiative.44  Its later review has so far found no impinging on Americans'
+Constitutional rights.37   Our colleagues at the GW National Law Center
+basically agree.2,3  Other lawyers have differing points of view.53, 54
+
+Professor James Chandler of the George Washington University National Law
+Center observes that some United States industries and proponents of
+individual rights tend to place a stronger emphasis on freedom of action than
+national security and thus oppose stringent limitations on encryption
+technology.55   The software publishing community and vendors of
+hardware-based encryption devices have generally focused their opposition on
+current United States export restrictions, which cost them millions of
+dollars annually.11  Making a somewhat different argument, individual rights
+advocacy groups such as Computer Professionals for Social Responsibility
+(CPSR) and the American Civil Liberties Union (ACLU) assert that government
+is too often intrusive in people's lives and needs to be restrained in this
+domain.  As a result, they tend to oppose any policy initiative which would
+increase the ability of the government to monitor activities of persons.55
+
+
+5.2  CONGRESS
+
+Congress, with its power to make laws and oversee the activities of federal
+agencies, can be a significant factor in this ongoing debate.  While the
+players named so far have their own, narrowly defined agendas, Congress'
+actions are more likely to pay closer attention to the will of the American
+people, on whose vote and support their jobs depend.  Indeed, this dynamic
+has already been demonstrated.
+
+In 1991, the FBI sponsored the Digital Telephony Proposal, which required
+telecommunications equipment manufacturers and service providers to make sure
+that their products had a built-in means whereby law enforcement officials
+could successfully tap into any conversation provided they obtained a
+warrant.1  This initiative was undertaken by the FBI in response to increasing
+fear that with the advent of digital phone lines, fiber optics, and advanced
+telephony in general, law enforcement might no longer be able to conduct
+wiretaps in the near future.  Unfortunately for the FBI, the Digital
+Telephony Proposal angered a large number of voters and telecommunications
+equipment manufacturers, who in turn put pressure on their congressmen.10  As
+a result, the proposal was never allowed to reach the House floor.
+
+Congress has very recently mandated a comprehensive study of cryptography
+technology and national cryptography policy by the National Academy of
+Sciences.56   Opponents pointed out that this proposal, while in some ways
+meritorious, might also have the effect of preserving the status quo for
+several years, even though the status quo was characterized by some as early
+as 1981 as needing to be "realigned to promote both national security,
+broadly defined, and encourage private-sector competence in designing and
+applying secure systems."57  The study will start up in  late 1993 or early
+1994.
+
+Marc Rotenberg of CPSR observed that the FBI and NSA have learned from the
+fate of the Digital Telephony Proposal and have attempted to avoid
+Congressional intervention with the Clipper initiative by going through the
+White House instead of Congress.   Barring such intervention at this point,
+he feels the administration will likely face only limited opposition within
+the Administration to the Clipper initiative.13  Thus, any slowdown of this
+initiative is more likely to materialize, if it does at all, in Congress.  As
+more people perform an increasing number and range of transactions over
+electronic networks, they are becoming increasingly concerned about the
+integrity of their personal information and about maintaining their privacy.
+Of those interviewed in a Macworld poll released July 1993,58 78% expressed
+concerns about their personal privacy (up from 64% in 1978) and 68% felt
+their privacy was threatened by computers (up from 38% in 1974).  Other
+independent surveys confirm this trend.59  While many of the survey results
+relate specifically to databases, often in specific sectors such as credit
+reporting, computer systems as a whole, including those with insecure
+communication lines, are coming under increasing scrutiny.  Congress will be
+placed under escalating pressure to pass new laws governing information
+technology, especially with the increased attention being devoted to the
+design and development of the National Information Infrastructure.60
+
+Congress' decisions in this area and indeed the outcomes of the debate over
+encryption policy in general will be the result of the ongoing struggle in
+American society among government, individuals, and industries.  Although
+this struggle will likely result in oscillations in policy, national security
+may be gradually redefined in terms of economic security.  This is the
+expectation of Professor James Chandler,55  who anticipates that controls on
+the export of encryption hardware and software will eventually be lifted.
+
+There are already some signs that Congress may be willing to ease
+restrictions on the export of encryption products and perhaps in other
+encryption-related areas as well.  In early 1991, the Software Publishers
+Association suggested an amendment to the renewal of the Export
+Administration Act that would have transferred authority over software
+exports to the Commerce Department.  This amendment, the Levine Amendment,
+was accepted by the House Foreign Affairs Committee, prompting aggressive
+lobbying by the National Security Agency of key congressmen in order to
+prevent inclusion of this amendment in the reauthorization bill.  Despite
+this lobbying, the full House kept the amendment in the Export Administration
+Act reauthorization.61  NSA later succeeded in persuading President George
+Bush to promise a veto of any reauthorization bill which included the Levine
+Amendment or similar provisions, but this incident does demonstrate Congress'
+more liberal stance on encryption export regulation.  And, of course, there
+is a different administration now in power.  H. R. 3627, introduced in the
+closing days of Congress' 1993 session,62 effectively does the same thing, and
+it is conceivable that it will pass in 1994.
+
+
+5.3  TRENDS
+
+To summarize public policy trends,
+
+     * Due to their strong emphasis on national security and fighting crime,
+     the FBI and the NSA will continue to advocate restraints on encryption
+     technology and encourage the development of encryption devices and
+     telecommunications systems which allow the government to continue
+     conducting wiretaps.
+
+     * The National Security Agency is likely to continue protecting its
+     'turf' by advocating continued restrictions on encryption technology.
+     It may attempt to expand its domain within the government, most likely
+     at the expense of NIST.
+
+     * As part of its efforts to reassert its control over encryption
+     technology, the NSA will likely continue to favor closed forums where it
+     can present sensitive, classified material which may not have been
+     obtained had U. S. enemies been able to obtain effective encryption.
+     These forums such as the National Security Council, will be favored by
+     them over open ones.  The agency will continue its effort to keep
+     relevant decisions out of the hands of Congress.
+
+     * Many high-technology industries, particularly software publishing,
+     will place increasing pressure on the government to liberalize
+     restrictions on the use and export of encryption software and hardware.
+
+     * Since the encryption policy issue has now been politicized63,  any
+     action taken to reverse the Clinton administration's progress on the
+     Clipper initiative or the current system of export controls will involve
+     Congress as well as the executive branch.  The judicial branch (notably
+     the Supreme Court) has not had occasion to rule on the issues
+     surrounding the debate.
+
+
+
+
+
+
+			     6.  POTENTIAL SCENARIOS
+
+
+If and when a new cryptography policy emerges, there will be winners and
+losers among the pool of 'players,' a pool that roughly consists of law
+enforcement agencies, United States manufacturers and vendors of encryption
+products, and the United States public. Based on the results of the preceding
+analysis, four scenarios can be envisioned.
+
+     1. Complete decontrol of cryptography.  The use of strong encryption by
+     the United States public, as well as its export by United States
+     manufacturers, could be completely decontrolled by the government at the
+     direct expense of law enforcement and national security.  This would
+     please some members of the public, for they would have maintained
+     control over their privacy. United States manufacturers of encryption
+     products would also likely benefit from this move.
+
+     2. Domestic decontrol of cryptography with export regulations.  Strong
+     encryption could remain decontrolled for use by the general public, but
+     strict regulations would remain on its export. While the American public
+     would still be relatively content, United States industries would lose
+     sales and potential market share due to exclusion from the lucrative
+     international market for encryption products.  The large domestic
+     market, however, would remain open, guaranteeing some revenues for
+     encryption product manufacturers.  Law enforcement agencies, on the
+     other hand, would lose in the short term in either of these scenarios,
+     because their electronic surveillance abilities would be diminished.
+
+     3. Voluntary escrowed encryption.  Escrow a de facto standard.  (This is
+     the Clinton administration's proposed scenario.)  The escrowed
+     encryption standard could become a de facto national standard for voice,
+     fax, and data communications over the public switched telephone network.
+     While other encryption products would be built, they would gain little
+     market acceptance because of demand for interoperability.  Thus, law
+     enforcement would be able to listen in on most transmissions.  The
+     encryption technology might be exportable to countries that implemented
+     the same or a similar scheme and agreed to cooperate in international
+     investigations.  United States manufacturers might gain or lose in this
+     scenario; they would gain only if Clipper received widespread
+     acceptance.  Law enforcement agencies would gain.
+
+     4. Mandatory escrowed encryption.  The government could choose to keep
+     complete control over encryption and enforce a technology similar to the
+     escrowed encryption standard.  Law enforcement agencies would come out
+     as winners for having maintained their surveillance capabilities.  But
+     a black market for foreign encryption products smuggled into the United
+     States would probably be created by members of the public, including
+     criminals, who desire more secrecy.  How United States companies would
+     react in this scenario depends on whether this government enforced
+     standard is designed to be exportable or not.  If it is unexportable,
+     United States companies currently involved in the manufacture and sale
+     of encryption products would be almost completely blocked from the
+     international market and would be restricted to marketing the government
+     enforced standard domestically. This would result in considerable
+     financial loss for the industry.  Some observe [65] that mandatory
+     escrowed encryption can never be exportable, since if it were then
+     products would be used in one country whose keys were escrowed elsewhere
+     (or not at all), and this would not come to the attention of the
+     exporting country's authorities until they attempted to snoop on
+     someone; they would be reduced to prosecuting that person, if at all,
+     for using a non-escrowed encryption device.  If, on the other hand, the
+     standard is an exportable item, and designed with an eye to the
+     requirements of the international market, then United States companies
+     would be better off and could maintain a level of international economic
+     competitiveness.
+
+It is very difficult to determine which scenario is most likely and what its
+consequences really might be.  The policy debate has to date been carried out
+with each side making their own assumptions, not all of which are publicly
+stated.  The economic implications for the Clipper proposal have not been
+examined adequately.43   Use of an explicit model of the situation would make
+these assumptions explicit, thus contributing to an informed discussion.
+
+Recently, a user-friendly computer model64  based on an Excel spreadsheet has
+been developed to investigate the costs, risks, and benefits of issues
+related to the National Information Infrastructure.  Issues addressed include
+digital telephony, export controls of cryptography, key escrow systems,
+security features in communications hardware, etc.  It is designed to allow
+users with varying political perspectives to make tradeoffs based on varied
+parameter values, which the users have complete control over.  While
+conceding that no mathematical model can adequately represent intangible
+values or political tradeoffs completely, it offers a useful first step
+towards a common ground for analyzing at least some of the problems described
+above.  It has recently been offered to both to government and its opponents
+in the key escrow debate.  Though it is beyond the scope of this particular
+project, some of the investigators of this study plan to use it to further
+explore the scenarios above.
+
+
+
+
+
+
+				   REFERENCES
+
+
+1.   Dorothy Denning, 'To tap or not to tap?' Communications of the ACM
+     vol. 36, no. 3 (March 1993): 25-44.
+
+2.   J. Chandler, D.  Arrington, and L. Gill, "Issues Regarding the Use of
+     Cryptographic  Technologies in the Commercial Sector," George
+     Washington University, National Law Center, 1993.
+
+3.   J. Chandler, D.  Arrington, and L. Gill, "Foreign Encryption
+     Technology Controls," George Washington University, National Law
+     Center, 1993.
+
+4.   National Bureau of Standards, "Data Encryption Standard,"  FIPS PUB
+     46, (Washington, D. C.:  January 1977).
+
+5.   G. Simmons, Contemporary Cryptology (Piscataway, NJ:  IEEE Press,
+     1992).
+
+6.   Dorothy Denning, Cryptography and Data Security (Reading,
+     Massachusetts: Addison-Wesley, 1982).
+
+7.   R. Rivest, A. Shamir, and L. Adelman,  'A method for obtaining digital
+     signatures and public-key cryptosystems,'  Communications of the ACM
+     (February 1978): 120-126.
+
+8.   W. Diffie and M. E. Hellman, "New Directions in Cryptography," IEEE
+     Transactions on Information Theory, vol. IT-22 (November 1976): 644-
+     654.
+
+9.   Peter Wayner, Statement in "Cryptographic Issue Statements Submitted
+     to the Computer System Security and Privacy Advisory Board," by NIST,
+     27 May 1993, pp. 13-17.
+
+10.  Douglas Miller,  Interview by Steven Heckler and Ann Huybrechts, 26
+     July 1993,  Software Publishers Association,  Washington, D. C.
+
+11.  Martin Hellman (Stanford University electrical engineering professor),
+     Interview by Faraz Ali, 11 August 1993, phone.
+
+12.  Ilene Rosenthal,  Testimony before the Computer System Security and
+     Privacy Advisory Board, 3 June 1993.
+
+13.  Marc Rotenberg (Computer Professionals for Social Responsibility),
+     Interview by Steven Heckler and Ann Huybrechts, 27 July 1993,
+     Washington, D. C.
+
+14.  Ivars Peterson, 'Encrypting Controversy,' Science News, 19 June 1993,
+     394-396.
+
+15.  Jim Bidzos,  Private communication with Lance J. Hoffman, 3 November
+     1993.
+
+16.  Philip Zimmerman,   Pretty Good Privacy 2.2 Manual, 6  March 1993.
+
+17.  Peter Schweitzer, Statement in "Cryptographic Issue Statements
+     Submitted to the Computer System Security and Privacy Advisory Board,"
+     by NIST, 27 May 1993,  200-203.
+
+18.  Dorothy Denning, Testimony before the Computer System Security and
+     Privacy  Advisory Board,  29 July  1993.
+
+19.  E. Brickell et al., "SKIPJACK Review Interim Report: The SKIPJACK
+     Algorithm", 28 July  1993,  Posted on sci.crypt and many other places
+     on the Internet.  Available from NIST.
+
+20.  S. Micali, Fair Cryptosystems, Report MIT/LCS/TR-579.b, MIT Laboratory
+     for Computer Science, Cambridge, Mass, November 1993.
+
+21.  Y. Desmedt, Y. Frankel, and M. Yung, "A Scientific Statement on the
+     Clipper Chip Technology and Alternatives," paper distributed at the
+     Clipper session of the 16th National Computer Security Conference, 21
+     September 1993.
+
+22.  Gary H. Anthes, 'Use outpaces addresses on Internet,' Computerworld
+     vol. 27, no. 17 (26 April  1993):  51-52.
+
+23.  John Markoff, "Thing," The New York Times, 5 September 1993, Section
+     9, p. 11.
+
+24.  Stephen Kent, 'Internet Privacy Enhanced Mail," Communications of the
+     ACM vol.  36, no. 8 (August 1993): 48.
+
+25.  Stephen Crocker, 'Internet Privacy Enhanced Mail,'  The Third CPSR
+     Cryptography and Privacy Conference Source Book, 7  June 1993.
+
+26.  Peter Williams, OSISEC Introduction and Overview, University College,
+     London, 15 April 1993.
+
+27.  Datapro, Inc., Datapro Report on Encryption Devices, Delran, NJ, March
+     1993.
+
+28.  David Chaum, 'Achieving Electronic Privacy,'  Scientific American vol.
+     267, no. 2 (August 1992):  96-101.
+
+29.  Kevin Kelly, 'E-Money,' Whole Earth Review, Summer 1993.
+
+30.  S. Von Solms and D. Naccache, "On Blind Signatures and Perfect
+     Crimes," Computers and Security vol. 11, no. 6 (October 1992): 581-
+     583.
+
+31.  International Resource Development, Data, Fax, and Voice Encryption
+     Equipment Worldwide, Report #782 (December 1991), New Canaan, CT, pp.
+     267-271.
+
+32.  Douglas Miller, Statement before the Computer System Security and
+     Privacy Advisory Board, 1 September 1993.
+
+33.  Dorothy Denning, Interview by Steven Heckler and Ann Huybrechts, 26
+     July 1993, Georgetown University, Washington, D. C.
+
+34.  William Ferguson, Testimony Before the Computer System Security and
+     Privacy Advisory Board, 29 July 1993.
+
+35.  Lance J. Hoffman, 'Clipping Clipper,' Communications of the ACM vol.
+     36, no. 9 (September 1993):  15-17.
+
+36.  Stephen T. Walker, Testimony before the Subcommittee on Economic
+     Policy, Trade and Environment of the Committee on Foreign Affairs of
+     the U. S. House of Representatives, 12 October 1993.
+
+37.  J. Podesta, White House memo to Jerry Berman, Digital Privacy and
+     Security Working Group, on Key Escrow Encryption Technology, July 29,
+     1993.
+
+38.  L. E. Christensen, "Technology and Software Controls" in Law and
+     Policy of Export Controls:  Recent Essays on Key Export Issues,
+     Section of International Law and Practice of American Bar Association,
+     August 1993, pp. 3-33.
+
+39.  International Traffic in Arms Regulation (ITAR),  22 CFR 120-130.
+
+40.  Allan Suchinsky, Presentation at George Washington University,
+     Washington, D.C., 30 June 1993.
+
+41.  Edward Regan, 'United States Business Views On Encryption and The Key
+     Escrow Chip,'  Testimony before the Computer System Security and
+     Privacy Advisory Board, 30 July 1993.
+
+42.  Addison Fischer, Statement in "Cryptographic Issue Statements
+     Submitted to the Computer System Security and Privacy Advisory Board,"
+     by NIST, 27 May 1993,
+     pp.  204-215.
+
+43.  Computer System Security and Privacy Advisory Board Resolution 93-5,
+     1-2 September  1993.
+
+44.  The White House, Press release concerning the key escrow initiative,
+     16  April  1993.
+
+45.  National Institute of Standards and Technology, "A Proposed Federal
+     Information Processing Standard for an Escrowed Encryption Standard
+     (EES)," Federal Register vol. 58, no. 145 (30 July  1993):  40791-
+     40794.
+
+46.  Chris Sundt, Testimony before the Computer System Security and Privacy
+     Advisory Board, 29 July 1993.
+
+47.  Testimony of representatives from  Fisher International,
+     Hewlett-Packard, and Racal-Guardata before the Computer System
+     Security and Privacy Advisory Board,  29 July 29 1993.
+
+48.  Clark Weissman, 'A national debate on encryption exportability,'
+     Communications of the ACM vol. 34, no. 10 (October, 1991):  162.
+
+49.  Lou Giles, Presentation delivered at George Washington University,
+     Washington, D. C.,  4 August 1993.
+
+50.  Computer Security Act of 1987, Public Law 100-235 (H.R. 145), 101
+     Stat. 1724-1730.
+
+51.  James Kallstrom, Testimony before the Computer System Security and
+     Privacy Advisory Board, 29 July  1993.
+
+52.  Alan MacDonald, Interview by Steven Heckler, 22 July 1993.
+
+53.  Statement of the American Civil Liberties Union in "Cryptographic
+     Issue Statements Submitted to the Computer System Security and Privacy
+     Advisory Board,"  by NIST, 27 May 1993, pp. 195-199.
+
+54.  Digital Privacy and Security Working Group, white paper on key escrow
+     encryption technology, 30 September 1993.
+
+55.  James Chandler, Interview by Faraz Ali and Steven Heckler, 6 August
+     1993, George Washington Univeristy, Washington, D. C.
+
+56.  National Defense Authorization Act for Fiscal Year 1994 (H.R. 2401,
+     Sec. 267).
+
+57.  V. C. Walling, Jr., D. B. Parker, and C. C. Wood, "Impacts of Federal
+     Policy Options for Nonmilitary Cryptography,"  SRI International
+     Research Report 32, April 1981, Menlo Park, CA.
+
+58.  Charles Piller, 'Privacy in Peril: Macworld Special Report on
+     Electronic Privacy," Macworld, vol. 10, no. 7,  July 1993, pp. 8-14.
+
+59.  L. Harris and Associates, Harris-Equifax Consumer Privacy Survey 1992,
+     New York: Louis Harris and Associates, 1992.
+
+60.  Information Infrastructure Task Force, The National Information
+     Infrastructure: Agenda for Action, Department of Commerce, 15
+     September 1993.
+
+61.  Jonathan Groner, 'When it Comes to Software, U.S. Sees Military
+     Hardware; Concern over Spread of Encryption Codes Hurts Exports,'  The
+     Connecticut Law Tribune, 21 December 1992, p. 12.
+
+62.  H. R. 3627, "A Bill to Amend the Export Administration Act of 1979
+     with respect to the control of computer and related equipment," 1993.
+
+63.  J. Mintz and J. Schwartz, "Encryption Program Draws Fresh Attacks,"
+     The Washington Post, 18 September 1993, p. C1.
+
+64.  Dave Kohls and Lance J. Hoffman, "TurboTrade: A National Information
+     Infrastructure Cost/Risk/Benefit Model,"  Report GWU-IIST-93-17,
+     Department of Electrical Engineering and Computer Science, The George
+     Washington University, Washington, D. C., September 1993.
+
+65.  R. Needham, private communication, 21 December 1993.
+

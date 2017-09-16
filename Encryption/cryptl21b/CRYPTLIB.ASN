@@ -1,0 +1,357 @@
+-/ This specification makes one slight deviation from the standard ASN.1
+   syntax to overcome an annoyance in ASN.1, which requires a separate -- at
+   the start of each and every line of comment.  Instead, this specification
+   uses -//- comment delimiters (which work like C's /**/) in place of
+   standard ASN.1 delimiters /-
+
+cryptlib DEFINITIONS ::=
+BEGIN
+
+------------------------------------------------------------------------------
+--																			--
+--									Data Format								--
+--																			--
+------------------------------------------------------------------------------
+
+-/ There are many, many variants of the PKCS #7/S/MIME/CMS format which
+   gradually get better and more flexible over time.  The most limited was
+   PKCS #7 1.5 and earlier, which was later kludged into S/MIME 2).  1.6 was
+   a quick update which used ASN.1:1994 instead of ASN.1:1988 and changed a
+   number of SETs to SEQUENCEs (which don't require sorting of the encoded
+   components), this doesn't appear to have been used by anything.  S/MIME 3/
+   CMS was an extended form of S/MIME 2 which fiddled with some of the inner
+   fields but was mostly the same as PKCS #7 1.5.
+
+   Because CMS is tied heavily into the X.509 world it doesn't handle the
+   rather more flexible cryptlib key exchange mechanisms, so we define a
+   variant of EncryptedData which uses the cryptlib instead of CMS key
+   exchange record /-
+
+ContentInfo ::= SEQUENCE {
+	contentType		OBJECT IDENTIFIER,
+	content		[0]	EXPLICIT ANY DEFINED BY contentType OPTIONAL
+	}
+
+-/ Raw data /-
+
+Data ::= OCTET STRING						-- PKCS #7 1
+
+-/ Authenticated data: Digested, signed, MAC'd data /-
+
+DigestedData ::= SEQUENCE {					-- PKCS #7 5
+	version				INTEGER (0),		-- PKCS #7 v1.5
+	digestAlgorithm		AlgorithmIdentifier,-- v=2 for non id-Data
+	encapContentInfo	SEQUENCE {
+		contentType		OBJECT IDENTIFIER id-Data/Sig/Encr/Env,
+		content   [ 0 ]	EXPLICIT OCTET STRING
+		},
+	digest				OCTET STRING
+	}
+
+SignedData ::= SEQUENCE {					-- PKCS #7 2
+	version				INTEGER (1),		-- PKCS #7 v1.5
+	digestAlgorithms	SET OF AlgorithmIdentifier,
+	encapContentInfo	SEQUENCE {
+		contentType		OBJECT IDENTIFIER id-Data/Sig/Encr/Env,
+		content   [ 0 ]	EXPLICIT OCTET STRING
+		}
+	certificates  [ 0 ]	IMPLICIT SET OF Certificate,
+	signerInfos			SET OF SignerInfo
+	}
+
+AuthenticatedData ::= SEQUENCE {			-- PKCS #9 16 1 2
+	version				INTEGER (0),		-- S/MIME v3
+	recipientInfos		SET OF RecipientInfo,
+	macAlgorithm		AlgorithmIdentifier,
+	encapContentInfo	SEQUENCE {
+		contentType		OBJECT IDENTIFIER id-Data/Sig/Encr/Env,
+		content   [ 0 ]	EXPLICIT OCTET STRING
+		}
+	mac					OCTET STRING
+	}
+
+-/ Encrypted data: Raw encrypted, enveloped, cryptlib enveloped data /-
+
+EncryptedData ::= SEQUENCE {				-- PKCS #7 6
+	version				INTEGER (0),		-- PKCS #7 v1.5
+	encrContentInfo		SEQUENCE {
+		contentType		OBJECT IDENTIFIER id-Data/Sig/Encr/Env,
+		contentEncrAlgo	AlgorithmIdentifier,
+		content	  [ 0 ]	IMPLICIT OCTET STRING
+		}
+	}
+
+EnvelopedData ::= SEQUENCE {				-- PKCS #7 3
+	version				INTEGER (0),		-- PKCS #7 v1.5
+	recipientInfos		SET OF RecipientInfo,
+	encrContentInfo		SEQUENCE {
+		contentType		OBJECT IDENTIFIER id-Data/Sig/Encr/Env,
+		contentEncrAlgo	AlgorithmIdentifier,
+		content	  [ 0 ]	IMPLICIT OCTET STRING
+		}
+	}
+
+id-CryptlibEnvelopedData  ::= { cryptlib(32) envelope(1) }
+
+CryptlibEnvelopedData ::= SEQUENCE {		-- cryptlib 1
+	version				INTEGER (0),
+	encrKeyInfo			SET OF EncryptionKeyInfo,
+	encrContentInfo		SEQUENCE {
+		contentType		OBJECT IDENTIFIER id-Data/Sig/Encr/Env,
+		contentEncrAlgo	AlgorithmIdentifier,
+		content   [ 0 ]	IMPLICIT OCTET STRING
+		}
+	}
+
+------------------------------------------------------------------------------
+--																			--
+--								Key Management								--
+--																			--
+------------------------------------------------------------------------------
+
+-/ Conventional algorithm information.  This is equivalent to the standard
+   AlgorithmIdentifier, but doesn't require the existence of OIDs for every
+   algorithm type and mode /-
+
+AlgorithmInformation ::= SEQUENCE {
+	algorithm		CryptAlgorithm,			-- Encryption algorithm
+	mode			CryptMode,				-- Encryption mode
+	algorithmInfo	ANY DEFINED BY algorithm OPTIONAL,
+											-- Algorithm parameters
+	}
+
+-/ Algorithm parameters for the AlgorithmInformation /-
+
+Rc5Info ::= SEQUENCE {						-- Default { 12 }
+	rounds			INTEGER					-- Number of encryption rounds
+	}
+
+SaferInfo ::= SEQUENCE {					-- Def.{ TRUE, 6, or 10 for K128 }
+	useSaferSK		BOOLEAN,				-- Whether to use SK version
+	rounds			INTEGER,				-- Number of encryption rounds
+	}
+
+-/ The key information object which is then encrypted using a conventional
+   or public-key algorithm.  When a KeyInformation object is encrypted with a
+   conventional algorithm, the padding field should be used to obscure the
+   total size of the object, otherwise it will be possible to infer
+   information on the algorithm type from the size of the KeyInformation
+   object.  As a general guide, adding padding to take the KeyInformation
+   object to the nearest multiple of 64 bytes is a good way to obstruct
+   object-size-based traffic analysis.
+
+   The key is given a minimum size of 5 octets (40 bits) to allow a quick
+   check for an invalid key size at this point.  When the key is loaded the
+   length can still be checked to make sure it's appropriate, setting a
+   minimum length here rather than relying on the key loading code to detect
+   a too-short key means we can return a corrupted-data message from the
+   ASN.1 parsing code rather than a somewhat less accurate key-load-error
+   message from the crypto code.
+
+   The key check value, a 32-bit truncated SHA-1 hash of the KeyInformation
+   without the padding, is used to uniquely identify all the important
+   aspects of the key.  If this weren't included then an attacker could take
+   a KeyInformation record which is being used to agree on a session key and
+   which is encrypted with a stream cipher and alter a field such as the
+   algorithm type or the key length to weaken the session encryption.  For
+   example if the attacker knows that a cipher with a 128-bit key size is
+   being used (length = 0x10) then by XOR-ing the key length field with 0x11
+   they can change the key size to 1 byte (in this case they'd need to use
+   0x15 since the minimum key length which is accepted is 5 bytes).
+   Similarly if they know triple DES is being used then they can force a
+   fallback to single DES by XOR-ing the algorithm field with (3DES XOR DES).
+   By including the key check value, a hash of the key information, as part
+   of the encrypted data, this attack is avoided since the attacker would
+   need to know the session key in order to recompute a valid check value /-
+
+KeyInformation ::= SEQUENCE {
+	algorithmInfo	AlgorithmInfo,			-- Encryption algorithm and mode
+	key				OCTET STRING (SIZE(5..CRYPT_MAX_KEYSIZE)),
+											-- The key itself
+	keyCheckValue	OCTET STRING (SIZE(4)),	-- Key check value
+	padding			OCTET STRING OPTIONAL	-- Padding to hide tot.data size
+	}
+
+-/ The parameters used to derive the conventional encryption key from the
+   user key.  Usually we use the key directly, but sometimes it may have
+   been derived from a longer user key by multiple applications of a hash
+   function, which is encoded in this record /-
+
+KeyDerivationInfo ::= SEQUENCE {
+	digestAlgorithm	AlgorithmIdentifier,	-- Algorithm used to derive key
+	iterations		INTEGER					-- Number of iterations of digest
+	}
+
+-/ The cryptlib KEKRecipientInfo parameters.  These contains a KeyInformation
+   object encrypted with the conventional key, which may or may not have been
+   derived from a longer user key.  If it was derived, the derivation
+   parameters are included after the algorithmInfo /-
+
+id-CryptlibWrap ::= { cryptlib(32) keyWrap(2) }
+
+CryptlibWrapParameters ::= SEQUENCE {
+	algorithmInfo	AlgorithmInfo,			-- Encryption algorithm and mode
+	keyDerivationInfo
+			  [ 0 ]	KeyDerivationInfo OPTIONAL,
+	iv		  [ 1 ]	OCTET STRING (SIZE(1...CRYPT_MAX_IVSIZE)) OPTIONAL
+	}
+
+-/ The CMS public-key exchange object /-
+
+KeyTransRecipientInfo ::= SEQUENCE {		-- CMS - S/MIME
+	version			INTEGER (0),			-- CMS
+	issuerAndSerial	IssuerAndSerialNumber,	-- Encrypting certificate
+	algorithm		AlgorithmIdentifier,	-- Encryption algorithm
+	encryptedKey	OCTET STRING			-- Encryped key
+	}
+KeyTransRecipientInfo ::= SEQUENCE {		-- CMS - cryptlib
+	version			INTEGER (2),			-- CMS
+	keyID	  [ 0 ]	SubjectKeyIdentifier,	-- Key ID of encrypting key
+	algorithm		AlgorithmIdentifier,	-- Encryption algorithm
+	encryptedKey	OCTET STRING			-- Encrypted key
+	}
+
+-/ The CMS conventional key exchange object /-
+
+KEKRecipientInfo ::= SEQUENCE {
+	version			INTEGER (4),			-- CMS
+	kekid			SEQUENCE {
+		keyIdent	OCTET STRING			-- Magic ID for KEK
+		},
+	keyEncAlgo		AlgorithmIdentifier,	-- Encryption algorithm
+	encryptedKey	OCTET STRING			-- Encrypted key
+	}
+
+-/ The key agreement object.  This contains the "public key" (meaning the
+   key agreement parameters and whatever ephemeral data is required for the
+   key exchange process) as well as any information needed to recreate the
+   session key (including the algorithm, mode, and parameters) from the
+   agreed-upon value /-
+
+KeyAgreementKey ::= SEQUENCE {				-- cryptlib
+-/ KeyAgreePublicKey :: = CHOICE { SubjectPublicKey, Certificate } /-
+	publicKey		SubjectPublicKey,		-- Key agreement information
+	keyInfo			AlgorithmInfo			-- Info needed to turn key agree
+											-- output into an encryption key
+	}
+
+KeyAgreeRecipientInfo ::= SEQUENCE {		-- CMS - too ghastly for words
+	version			INTEGER (3),			-- CMS
+	originator[ 0 ]	EXPLICIT [ 1 ] SubjectPublicKey,-- Originator DH pub.key
+	algorithm		AlgorithmIdentifier,	-- Usually ESDHwithXXX
+	recipientKeys	SEQUENCE OF {
+		rKeyId[ 0 ]	SEQUENCE {
+			CHOICE {
+				subjectKeyIdentifier	SubjectKeyIdentifier,
+				issuerAndSerial	  [ 0 ]	IssuerAndSerialNumber,
+				publicKey		  [ 1 ] SEQ { algoID, BIT STRING }
+				}
+			encryptedKey			OCTET STRING	-- Encr.key info
+			},
+		}
+	}
+
+-/ The CMS key management object /-
+
+RecipientInfo ::= CHOICE {
+	ktri			KeyTransRecipientInfo,	-- Public-key encrypted key
+	keyAgreementKey							-- Key-agreement information
+			  [ 1 ] KeyAgreementKey,
+	kekri	  [ 2 ] KEKRecipientInfo		-- Conventionally encrypted key
+	}
+
+------------------------------------------------------------------------------
+--																			--
+--									Signatures								--
+--																			--
+------------------------------------------------------------------------------
+
+-/ The CMS signature object /-
+
+SignerInfo ::= SEQUENCE {					-- CMS - S/MIME
+	version			INTEGER (1),			-- CMS
+	issuerAndSerial	IssuerAndSerialNumber,	-- Signing certificate
+	hashAlgorithm	AlgorithmIdentifier,	-- Hash algorithm type
+	signedAttributes						-- Authenticated attributes
+			  [ 0 ]	IMPLICIT SET OF Attribute OPTIONAL,
+	signatureAlgorithm						-- Signature algorithm type
+					AlgorithmIdentifier,
+	signature		OCTET STRING			-- The signature itself
+	}
+SignerInfo ::= SEQUENCE {					-- CMS - cryptlib
+	version			INTEGER (3),			-- CMS
+	keyID	  [ 0 ]	SubjectKeyIdentifier,	-- Key ID of signing key
+	hashAlgorithm	AlgorithmIdentifier,	-- Hash algorithm type
+	signatureAlgorithm						-- Signature algorithm type
+					AlgorithmIdentifier,
+	signature		OCTET STRING			-- The signature itself
+	}
+
+------------------------------------------------------------------------------
+--																			--
+--								Public/Private Keys							--
+--																			--
+------------------------------------------------------------------------------
+
+-/ The private key object.  The exact storage format required is somewhat
+   vague because there aren't any standards available - X.509 public keys are
+   assumed to be stored in an X.500 directory, and private keys are assumed
+   to be stored somewhere in hyperspace.  As a result there are half a dozen
+   non-standard formats for private keys, many of them undocumented, and the
+   single emerging format (PFX/PKCS #12) has no less than 5 incompatible
+   versions all of which contain assorted braindamage like the use of RC2/40
+   and all of which are far too complex and bloated to fit into containers
+   like smart cards.  In addition PFX/PKCS #12 contains the most godawful PDU
+   formats and ASN.1 I've ever seen, which, if it came from anyone other than
+   Microsoft, would probably be seen as some sort of attempt to deliberately
+   sabotage crypto key storage.
+
+   The following format just encapsulates the private key components in a
+   Content record.  Since the only purpose for this format is to securely
+   store a private key, we don't bother with the complex and usually
+   unnecessary MAC, certificate, and CRL baggage which PKCS #12 carries with
+   it /-
+
+id-privateKey ::= { cryptlib(32) privateKey(2) }
+
+PrivateKey ::= SEQUENCE {
+	version			INTEGER (0),
+	publicKey		PublicKeyInfo,			-- Public key information
+	privateKey		ContentInfo				-- Private key information
+	}
+
+-/ The public key portion of the private key can be stored in a variety of
+   ways, either as a raw public key, as a cert request, as a completed
+   certificate, or as a full cert chain.  The tagging is made explicit since
+   each of the tagged PDU's are discrete entities and this avoids having to
+   recode them when adding/extracting them /-
+
+PublicKeyInfo ::= CHOICE {
+	publicKey		SubjectPublicKeyInfo,	-- Raw public key
+	certRequest
+			  [ 0 ]	EXPLICIT CertRequest,	-- PKCS #10 cert request
+	certificate
+			  [ 1 ]	EXPLICIT Certificate,	-- X.509 certificate
+	certChain [ 2 ]	EXPLICIT CertChain		-- PKCS #7 cert chain
+	}
+
+-/ The private key fields, stored in a Content record either as raw Data or
+   as EncryptedData, prefixed by the necessary EncryptedData record(s) /-
+
+DLPPrivateKey ::= SEQUENCE {
+	x				INTEGER					-- Random private integer
+	}
+
+ElgamalPrivateKey ::= DSAPrivateKey
+
+RSAPrivateKey ::= SEQUENCE {
+	privateExponent	INTEGER,				-- Private exponent d
+	prime1			INTEGER,				-- Prime factor p of n
+	prime2			INTEGER,				-- Prime factor q of n
+	exponent1		INTEGER,				-- d mod (p-1)
+	exponent2		INTEGER,				-- d mod (q-1)
+	coefficient		INTEGER					-- CRT coefficient (q^-1) mod p
+	}
+
+END
+

@@ -1,0 +1,69 @@
+#
+# This software may be freely distributed an modified without any restrictions
+# from the author.
+# Additional restrictions due to national laws governing the use, import or
+# export of cryptographic software is the responsibility of the software user,
+# importer or exporter to follow.
+#
+#					     _
+#					Stig Ostholm
+#					Department of Computer Engineering
+#					Chalmers University of Technology
+#
+
+  LIBDIR = ../lib
+  DESLIB = ${LIBDIR}/libdes.a
+
+    SRCS = desbench.c descrypt.c deskey.c destest.c
+
+#      CC = gcc
+ DEFINES =
+INCLUDES = -I../include -I../util
+  CFLAGS = -O ${DEFINES} ${INCLUDES}
+ LDFLAGS = ${DESLIB}
+
+ INSTALL = install -c
+
+  BINDIR =
+
+
+PROGS = descrypt desbench destest deskey
+
+
+all	: ${PROGS}
+
+
+descrypt: descrypt.o ${DESLIB}
+	${CC} ${CFLAGS} -o $@ descrypt.o ${LDFLAGS}
+
+desbench: desbench.o ${DESLIB}
+	${CC} ${CFLAGS} -o $@ desbench.o ${LDFLAGS}
+
+destest	: destest.o ${DESLIB}
+	${CC} ${CFLAGS} -o $@ destest.o ${LDFLAGS}
+
+deskey	: deskey.o ${DESLIB}
+	${CC} ${CFLAGS} -o $@ deskey.o ${LDFLAGS}
+
+
+install	: ${PROGS}
+	@if [ "${BINDIR}" ]; then \
+		${INSTALL} ${PROGS} ${BINDIR}; \
+	else \
+		echo 'Define destination directory (BINDIR = destination)'; \
+		exit 1; \
+	fi
+
+
+clean	:
+	rm -f ${PROGS} *.o core a.out
+
+
+depend	:
+	../util/mkdepend -CC '${CC}' -CFLAGS '${CFLAGS}' ${SRCS}
+
+
+# DEPEND
+#
+# Don not change the lines below, run make depend
+#

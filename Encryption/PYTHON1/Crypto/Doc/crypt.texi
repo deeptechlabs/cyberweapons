@@ -1,0 +1,1606 @@
+\input texinfo.tex  @c -*-texinfo-*-
+@c %** start of header
+@setfilename pct.info
+@settitle Python Cryptography Toolkit
+@syncodeindex fn cp
+@syncodeindex vr cp
+@c %** end of header
+
+@titlepage
+@title The Python Cryptography Toolkit
+@subtitle Release 1.0.0
+@subtitle Manual Edition 1.0.0
+@author A.M. Kuchling
+@author 762 Williams Road
+@author Hemmingford, Quebec, Canada
+@author E-mail: @samp{andrewk@@cst.ca}
+@end titlepage
+
+@node Top, Introduction, (dir), (dir)
+@ifinfo
+This document describes the extensions and modules available as part
+of the Python Cryptography Toolkit.  It assumes you have some basic
+knowledge about the Python language and about cryptography in general.
+Some sections are
+copied from the ``Cryptographic Extensions'' chapter of the @emph{Python
+Library Reference}.
+@menu
+* Introduction::                A dissertation on cryptography.
+* Hash Functions::              Securely hashing data.
+* Encryption Algorithms::       En/decrypting data.
+* Public Key Algorithms::       Simple public-key cryptography.
+* Odds and Ends::               Miscellaneous modules.
+* Demo Programs::               Various demonstration programs.
+* Extending the Toolkit::       How to add new algorithms.
+@end menu
+
+@end ifinfo
+
+@node Introduction, Hash Functions, Top, Top
+@chapter Introduction
+@iftex
+This document describes the extensions and modules available as part
+of the Python Cryptography Toolkit.  It assumes you have some basic
+knowledge about the Python language and about cryptography in general.
+Some sections are
+copied from the ``Cryptographic Extensions'' chapter of the @emph{Python
+Library Reference}.
+@end iftex
+
+@menu
+* Design Goals::                
+* Future Directions::                
+* Acknowledgements::                
+@end menu
+
+@node Design Goals, Future Directions, Introduction, Introduction
+@section Design Goals
+The Python Cryptography Toolkit is intended to provide a reliable and
+stable base for writing Python programs that require
+cryptographic functions.  
+
+A central goal of the Python Cryptography Toolkit is to provide a
+simple, consistent interface for similar classes of algorithms.  For
+example, all block cipher objects have the same methods and return
+values, and support the same feedback modes; hash functions have a
+different interface, but it too is consistent over all the
+hash functions available.  Individual modules also define variables to
+help you write Python code that doesn't depend on the algorithms used;
+for example, each block cipher module defines a variable that gives
+the algorithm's block size.  This is intended to make it easy to
+replace old algorithms with newer, more secure ones.  If you're given
+a bit of portably-written Python code that uses the DES encryption
+algorithm, you should be able to use IDEA instead by simply changing
+@code{import des} to @code{import idea}, and changing all references to
+@code{des.new()} to @code{idea.new()}.  It's also fairly simple to write
+your own modules that mimic this interface, thus letting you use
+combinations or permutations of algorithms, such as triple-DES.
+
+@cindex C language
+@cindex language, C
+@cindex Intel
+Some modules are implemented in C for performance; others are written in
+Python for ease of modification.  Generally, low-level functions like
+ciphers and hash functions are written in C, while less speed-critical
+functions have been written in Python.  This division may change in
+future releases.  When speeds are quoted in this document, they were
+measured on a 386DX/40 running Linux.  The exact speeds will obviously
+vary with different machines and different compilers, but they provide a
+basis for comparing algorithms.  Currently the cryptographic
+implementations are acceptably fast, but not spectacularly good.  I
+welcome any suggestions or patches for faster code.  If you're going to
+be using the code for non-interactive purposes (for example, running a
+PGP keyserver or an anonymous remailer) then encryption/decryption speed
+probably won't be the bottleneck.  Also, cryptographic code forcibly
+reminds us that Intel processors have too few registers; the code uses
+lots of temporary variables and independent computations, so the
+compiler has little room to optimize away memory accesses.  On RISC
+architectures, the code usually flies.
+
+You may be surprised that I'm distributing the Python
+Cryptography Toolkit worldwide.  Aren't North Americans prohibited
+from exporting cryptographic software?  Well, yes and no.  American
+citizens have to get permission from the US government before
+exporting @emph{any} such software, even if it's publicly available or
+originated outside the US; there are no exceptions whatsoever.
+
+The laws in Canada are slightly less restrictive, though, and I'm a
+Canadian citizen.  In particular, free software is specifically exempted
+from export restrictions, so I'm acting within the law.  However, if
+you're a US citizen, you @emph{still} can't export the PCT without government
+permission.
+
+@cindex ITAR, regulations
+@cindex regulations, ITAR
+If you live outside of Canada and the US, please do not attempt to
+download it from a North American FTP site; you may get the site's
+maintainer in trouble.  Documentation is not covered by the ITAR
+regulations, and can be freely sent anywhere in the world.
+
+@cindex licensing terms
+I have placed the code under no restrictions; you can redistribute the
+PCT freely or commercially, in its original form or with any
+modifications you make, subject to whatever local laws may apply in your
+jurisdiction.  Note that you still have to come to some agreement with
+the holders of any patented algorithms you're using.  If you're
+intensively using the PCT, please tell me about it.  I want to be aware
+of who the users are for two reasons: firstly, I want to be able to tell
+potential employers, ``KiboCorp is using my work for serious
+applications,'' and secondly, I'd like to be able to immediately inform
+you of any serious bugs that show up, so you wouldn't have to wait for
+the next release.
+
+I also make no guarantees as to the usefulness, correctness, or legality
+of these modules, nor does their inclusion constitute an endorsement of
+their effectiveness.  Many cryptographic algorithms are patented;
+inclusion in this package does not necessarily mean you are allowed to
+incorporate them in a product and sell it.  Some of these algorithms may
+have been cryptanalyzed, and may no longer be secure.  While I will
+include commentary on the relative security of the algorithms in the
+sections entitled "Security Notes", there may be more recent analyses
+I'm not aware of.  If you're implementing an important system, don't
+just grab things out of a toolbox and put them together; do some
+research first.  On the other hand, if you're just interested in keeping
+your co-workers or your relatives out of your files, any of the
+components here could be used.
+
+This document is very much a work in progress.  If you have any
+questions, comments, complaints, or suggestions, please send them to me
+at @samp{andrewk@@cst.ca}.
+
+@node Future Directions, Acknowledgements, Design Goals, Introduction
+@section Future Directions
+In future, adding algorithms will be of less importance in development.
+There are two classes of cryptographic algorithms: the innumerable ones
+that are proposed, and the few ones that are actually used.  New
+algorithms are constantly being invented, but relatively few of them
+become part of the security engineer's toolchest, and there's no point
+in trying to implement every single one of them.  There are a few that
+should still be implemented: the only one remaining on my list at this
+point is the Haval hashing algorithm.
+
+Carefully written cryptographic software goes out of its way to
+overwrite sensitive data once it's no longer needed.  This is done
+because, on an MS-DOS system, once the program ends the data may still
+remain in memory, and on a Unix system it might be possible to gain
+access to another program's data while it's running.  Such overwriting
+isn't yet possible in Python, but hopefully doesn't represent a
+significant hazard.  Eventually I intend to experiment with patches to
+the interpreter to make it overwrite objects on deletion, and will
+modify the encryption objects to destroy their data on deletion.
+
+Afterwards, I will change my focus to optimizing and clarifying the
+existing C and Python code, and implementing some interesting protocols.
+There are many protocols that could be chosen.  As the use of the
+Internet for commercial purposes spreads, network security becomes more
+important as more and more financial data and proprietary information is
+transmitted across the network.  There is no single standard for secure
+Internet communications yet.  Instead, there are various standards being
+proposed, and it is probably best that Python be able to use them all.
+I am not currently planning to work on any of the following, though I'd
+certainly be willing to provide assistance.  
+
+@itemize @bullet
+@item Kerberos: Kerberos is an identification and
+authentication protocol developed at MIT and described in RFC 1510,
+designed to operate in an environment of insecure individual
+workstations and a few trusted servers.  The Kerberos protocol is fairly
+complex, so it may not be worth the effort of actually implementing the
+RFC's specification in Python.  Rather, it would be much simpler to
+write a wrapper module around the appropriate library routines for
+Kerberos version 4 or 5.
+
+@item Secure HTTP: SHTTP is yet another proposed standard, that allows
+more freedom in the algorithms used.  Version 1.1 of the specification
+is available at @code{http://www.eit.com/projects/s-http/shttp.txt}, and has
+been submitted as an Internet draft.  
+@end itemize
+
+@node Acknowledgements, , Future Directions, Introduction
+@section Acknowledgements
+@cindex Tobin, Alison Veronica
+@cindex Jacobs, Jeffrey
+@cindex van Rossum, Guido
+@cindex comp.lang.python 
+I would like to thank many people: Jeffrey Jacobs, who helped in too
+many ways to list; everyone on the @code{comp.lang.python} newsgroup for
+answering my newbie questions in the early stages; Guido van Rossum, for
+creating Python in the first place; and, most importantly, Alison Tobin,
+my true love, who good-naturedly tolerated extended rants about my daily
+progress (or lack thereof).  She helped me survive some stressful times
+just by being around and being herself; I'll have to try to return the
+favour someday.
+
+@cindex Schneier, Bruce
+Much of the code that actually implements the various cryptographic
+algorithms was not written by me.  I'd like to thank all the people
+who implemented them, and released their work under terms which
+allowed me to use their code.  The individuals are credited in the
+relevant chapters of this documentation.  Bruce Schneier's book
+@cite{Applied Cryptography} was also very useful in
+writing this toolkit; I highly recommend it if you're interested in
+learning more about cryptography.  
+
+@cindex Nyman, Michael
+@cindex Bush, Kate
+@cindex McKennitt, Loreena
+@cindex Oldfield, Mike
+@cindex Glass, Philip
+Long-distance thanks also go to (in alphabetical order) Kate Bush,
+Philip Glass, Loreena McKennitt, Michael Nyman, and Mike Oldfield, who
+collectively provided the soundtrack for my programming and writing
+efforts.
+
+Good luck with your cryptography hacking!
+
+A.M.K.
+
+@samp{andrewk@@cst.ca}
+
+Montreal, Quebec, Canada
+
+August 1995
+
+@node Hash Functions, Encryption Algorithms, Introduction, Top
+@chapter Hash Functions
+
+@cindex MD2 (hash function)
+@cindex MD5 (hash function)
+@cindex SHA (hash function)
+@cindex Snefru (hash function)
+Hash functions take arbitrary strings as input, and produce an output
+of fixed size that is dependent on the input; it should never be
+possible to derive the input data given only the hash function's
+output.  One simple hash function consists of simply adding together
+all the bytes of the input, and taking the result modulo 256.  For a
+hash function to be cryptographically secure, it must be very
+difficult to find two messages with the same hash value, or to find a
+message with a given hash value.  The simple additive hash function
+fails this criterion miserably; the hash functions described below do
+not.  Examples of cryptographically secure hash functions include MD2,
+MD5, SHA, and Snefru.
+
+Hash functions can be used simply as a checksum, or, in association with a
+public-key algorithm, can be used to implement digital signatures.
+ 
+The hashing algorithms currently implemented are listed in the following table:
+
+@table @asis
+@item Hash function
+Digest length
+@item MD2
+128 bits
+@item MD4
+128 bits
+@item MD5
+128 bits
+@item SHA
+160 bits
+@end table
+
+All hashing modules share the same interface.  After importing a given
+hashing module, call the @code{new()} function to create a new hashing
+object. (In older versions of the Python interpreter, the @code{md5()}
+was used to perform this task.  If you're modifying an old script, you
+should change any calls to @code{md5()} to use @code{new()} instead.)  You
+can now feed arbitrary strings into the object, and can ask for the
+hash value at any time.  The @code{new()} function can also be passed an
+optional string parameter, which will be hashed immediately.
+
+Hash function modules define one variable:
+
+@defcv {Variable} @r{hashing modules} digestsize
+An integer value; the size of the digest
+produced by the hashing objects.  You could also obtain this value by
+creating a sample object, and taking the length of the digest string
+it returns, but using @code{digestsize} is faster.
+@end defcv
+
+The methods for hashing objects are always the following:
+
+@defmethod @r{hashing objects} copy ()
+Return a separate copy of this hashing object.  An @code{update} to this
+  copy won't affect the original object.
+@end defmethod
+
+@defmethod @r{hashing objects} digest ()
+Return the hash value of this hashing object.  The object is not
+altered in any way by this function; you can continue updating the
+object after calling this function.
+@end defmethod
+
+@defmethod @r{hashing objects} update (arg)
+Update this hashing object with the string @var{arg}.
+@end defmethod
+
+@cindex RSA Data Security, Inc.
+@cindex MD5 (hash function)
+Here's an example, using RSA Data Security's MD5 algorithm:
+
+@example
+>>> import md5
+>>> m = md5.new()
+>>> m.update('abc')
+>>> m.digest()
+'\220\001P\230<\322O\260\326\226?@}(\341\177r'
+@end example
+
+Or, more compactly:
+@example
+>>> md5.new('abc').digest()
+'\220\001P\230<\322O\260\326\226?@}(\341\177r'
+@end example
+
+@menu
+* Security Notes for Hash Functions::  
+* Credits for Hash Functions::  
+@end menu
+
+@node Security Notes for Hash Functions, Credits for Hash Functions, Hash Functions, Hash Functions
+@section Security Notes
+Hashing algorithms are considered to be broken if it's easy to compute a
+string that produces a given hash value, or if it's easy to find two
+messages that produce the same hash value. Consider an example where
+Alison and Bob are using digital signatures to sign a contract.  Alison
+computes the hash value of the text of the contract and signs it.  Bob
+could then compute a different contract that has the same hash value,
+and it would appear that Alison has signed that bogus contract; she'd
+have no way to prove otherwise.  Finding such a message by brute force
+takes @code{pow(2, b-1)} operations, where the hash function produces
+@emph{b}-bit hashes.
+
+If Bob can only find two messages with the same hash value but can't
+choose the resulting hash value, he can look for two messages with
+different meanings, such as "I will mow Bob's lawn for $10" and "I owe
+Bob $1,000,000", and ask Alison to sign the first, innocuous contract.
+This attack is easier for Bob, since finding two such messages by brute
+force will take @code{pow(2, b/2)} operations on average.  However,
+Alison can protect herself by changing the protocol; she can simply
+append a random string to the contract before hashing and signing it;
+the random string can then be kept with the signature.
+
+None of these algorithms have been completely broken.  There are no
+attacks on MD2, but it's rather slow at 18 K/sec.  MD4 is faster at 677
+K/sec but there have been some partial attacks.  MD4 operates in three
+iterations of a basic mixing operation; two of the three rounds have
+been cryptanalyzed, but the attack can't be extended to the full
+algorithm.  MD5 is a strengthened version of MD4 with four rounds; an
+attack against one round has been found.  Because MD5 is more commonly
+used, the implementation is better optimized and thus faster on Intel
+processors (893 K/sec).  MD4 may be faster than MD5 when other
+processors and compilers are used.
+
+All the MD algorithms produce 128-bit hashes; SHA produces a larger 160-bit
+hash, and there are no known attacks against it.  The first version of
+SHA had a weakness which was later corrected; the code used here
+implements the second, corrected, version.  It operates at 336 K/sec.
+
+@node Credits for Hash Functions,  , Security Notes for Hash Functions, Hash Functions
+@section Credits
+@cindex Plumb, Colin
+@cindex Kuchling, Andrew
+@cindex Gutmann, Peter
+The MD2 and MD4 code was written by A.M. Kuchling, and the MD5 code was
+implemented by Colin Plumb.
+The SHA code was originally written by Peter Gutmann.
+
+@node Encryption Algorithms, Public Key Algorithms, Hash Functions, Top
+@chapter Encryption Algorithms
+Encryption algorithms transform their input data (called
+@dfn{plaintext}) in some way that is
+dependent on a variable @dfn{key}, producing @dfn{ciphertext};
+this transformation can easily be reversed, if (and, hopefully, only
+if) one knows the key.  The key can be varied by the user or
+application, chosen from some very large space of possible keys. 
+
+For a secure encryption algorithm, it should be very difficult to
+determine the original plaintext without knowing the key; usually, no
+clever attacks on the algorithm are known, so the only way of breaking
+the algorithm is to try all possible keys. Since the number of
+possible keys is usually of the order of 2 to the power of 56 or 128, this
+is not a serious threat, although 2 to the power of 56 is beginning to become
+insecure in the face of custom-built parallel computers.
+
+@cindex feedback mode, ECB
+@dfn{Block ciphers} take multibyte inputs of a fixed size
+(frequently 8 or 16 bytes long) and encrypt them.  Block ciphers can
+be operated in various modes.  The simplest is Electronic Code Book
+(or ECB) mode.  In this mode, each block of plaintext is simply
+encrypted to produce the ciphertext.  This mode can be dangerous,
+because many files will contain patterns greater than the block size;
+for example, the comments in a C program may contain long strings of
+asterisks intended to form a box.  All these identical blocks will
+encrypt to identical ciphertext; an adversary may be able to use this
+structure to obtain some information.
+
+@cindex feedback mode, CBC
+@cindex feedback mode, CFB
+To eliminate this weakness, there are various feedback modes, where
+the plaintext is combined with the previous ciphertext before
+encrypting; this eliminates any such structure.  One mode is Cipher
+Block Chaining (CBC mode); another is Cipher FeedBack (CFB
+mode).@footnote{There is also a special PGP mode, which is a variant
+of CFB used by the PGP program.  While you can use it in non-PGP
+programs, it's not recommended, since it's not part of the official
+interface, and might be removed or changed without
+warning.} CBC mode still encrypts in blocks, and thus is only
+slightly slower than ECB mode.  CFB mode encrypts on a byte-by-byte
+basis, and is much slower than either of the other two modes.  The
+chaining feedback modes require an initialization value to start off
+the encryption; this is a string of the same length as the ciphering
+algorithm's block size, and is passed to the @code{new()} function.
+
+The currently available block ciphers are listed in the following table:
+
+@cindex DES (block cipher)
+@cindex DES3 (block cipher)
+@cindex Triple DES (block cipher)
+@cindex Diamond (block cipher)
+@cindex RC5 (block cipher)
+@cindex IDEA (block cipher)
+@cindex Blowfish (block cipher)
+@cindex REDOC III (block cipher)
+@table @asis
+@item Cipher
+Key Size/Block Size
+@item Blowfish
+Variable/8 bytes
+@item DES
+8 bytes/8 bytes
+@item DES3 (Triple DES)
+16 bytes/8 bytes
+@item Diamond
+Variable/16 bytes
+@item IDEA
+16 bytes/8 bytes
+@item RC5
+Variable/8 bytes
+@item REDOC III
+Variable/8 bytes
+@end table
+
+@cindex stream cipher
+In a strict formal sense, @dfn{stream ciphers} encrypt data bit-by-bit;
+practically, stream ciphers work on a character-by-character basis.
+In the Python Cryptography Toolkit, stream ciphers use exactly the
+same interface as block ciphers, with a block length that will always
+be 1; this is how block and stream ciphers can be distinguished. 
+The only feedback mode available for stream ciphers is ECB mode. 
+
+The currently available stream ciphers are listed in the following table:
+
+@cindex Sapphire (stream cipher)
+@cindex ARC4 (stream cipher)
+@table @asis
+@item Cipher
+@itemx Key Size
+@item ARC4
+@itemx Variable
+@item Sapphire
+@itemx Variable
+@end table
+
+@cindex RSA Data Security, Inc.
+@cindex sci.crypt
+@cindex RC4 (stream cipher)
+@cindex ARC4 (stream cipher)
+ARC4 is short for `Alleged RC4'.  The real RC4 algorithm is proprietary
+to RSA Data Security Inc.  In September of 1994, someone posted C code
+to both the Cypherpunks mailing list and to the Usenet newsgroup
+@code{sci.crypt}, claiming that it implemented the RC4 algorithm.  This
+posted code is what I'm calling Alleged RC4, or ARC4 for short.  I don't
+know if ARC4 is in fact RC4, but ARC4 has been subjected to scrutiny on
+the Cypherpunks mailing list and elsewhere, and does not seem to be
+easily breakable.  The legal issues surrounding the use of ARC4 are
+unclear, but be aware that it hasn't been subject to much scrutiny, and
+may have some critical flaw that hasn't yet been discovered.
+
+An example usage of the DES module:
+@example
+>>> import des
+>>> obj=des.new('abcdefgh', des.ECB)
+>>> plain="Guido van Rossum is a space alien."
+>>> len(plain)
+34
+>>> obj.encrypt(plain)
+Traceback (innermost last):
+  File "<stdin>", line 1, in ?
+ValueError: Strings for DES must be a multiple of 8 in length
+>>> ciph=obj.encrypt(plain+'XXXXXX')
+>>> ciph
+'\021,\343Nq\214DY\337T\342pA\372\255\311s\210\363,\300j\330\250\312\347\342I\3215w\03561\303dgb/\006'
+>>> obj.decrypt(ciph)
+'Guido van Rossum is a space alien.XXXXXX'
+@end example
+
+All cipher algorithms share a common interface.  After importing a
+given module, there is exactly one function and two variables
+available.
+
+@defcv {Function} @r{encryption modules} new (@var{key}, @var{mode} [,@var{IV}])
+Returns a ciphering object, using @var{key} and feedback mode
+@var{mode}.  If @var{mode} is CBC or CFB, @var{IV} must be provided,
+and must be a string of the same length as the block size.
+@end defcv
+
+@defcv {Variable} @r{encryption modules} blocksize
+An integer value; the size of the blocks encrypted by this module.
+Strings passed to the @code{encrypt} and @code{decrypt} functions
+must be a multiple of this length.  For stream ciphers,
+@code{blocksize} will be 1.
+@end defcv
+
+@defcv {Variable} @r{encryption modules} keysize
+An integer value; the size of the keys required by this module.  If
+@code{keysize} is zero, then the algorithm accepts arbitrary-length
+keys.  You cannot pass a key of length 0 (that is, the null string
+@code{''} as such a variable-length key.  
+@end defcv
+
+All cipher objects have one attribute:
+
+@defcv {Attribute} @r{encryption objects} IV
+Contains the initial value which will be used to start a cipher
+feedback mode.  After encrypting or decrypting a string, this value
+will reflect the modified feedback text; it will always be one block
+in length.  It is read-only, and cannot be assigned a new value.
+@end defcv
+
+All ciphering objects have the following methods:
+
+@defmethod @r{encryption objects} decrypt (@var{string})
+Decrypts @var{string}, using the key-dependent data in the object, and
+with the appropriate feedback mode.  The string's length must be an exact
+multiple of the algorithm's block size.  Returns a string containing
+the plaintext.
+@end defmethod
+
+@defmethod @r{encryption objects} encrypt (@var{string})
+Encrypts a non-null @var{string}, using the key-dependent data in the
+object, and with the appropriate feedback mode.  The string's length
+must be an exact multiple of the algorithm's block size; for stream
+ciphers, the string can be of any length.  Returns a string containing
+the ciphertext.
+@end defmethod
+
+@menu
+* Algorithm-specific Notes ::   
+* Security Notes for Encryption Algorithms::  
+* Credits for Encryption Algorithms::  
+@end menu
+
+@node Algorithm-specific Notes , Security Notes for Encryption Algorithms, Encryption Algorithms, Encryption Algorithms
+@section Algorithm-specific Notes 
+The Diamond block cipher allows you to select the number of rounds
+to apply, ranging from 5 to 15 (inclusive.)  This is passed as the
+first character of the key string.  As an example, if you wish to use
+'@code{amarok}' as the key for 7-round Diamond, pass a key of
+@code{chr(7)+'amarok'}.
+
+RC5 has even more parameters; see Rivest's paper for the implementation
+details.  The first character of the key is the version of the RC5
+algorithm to use; currently the only legal value is @code{0x10} for RC5
+1.0.  The second character is the word size to use: 16 or 32 are the
+only legal values.  (A larger word size is better, so usually 32 will be
+used.  16-bit RC5 is probably only of academic interest.)  The third
+character is the number of rounds to apply: this can be any value from 0
+to 255, so you will have to choose a value balanced between speed and
+security.  The fourth character is the length of the actual key data.
+Thus, to use the 6-letter word '@code{amarok}' as the key for 32-bit,
+10-round RC5, pass a key of
+@code{chr(0x10)+chr(32)+chr(10)+chr(6)+'amarok'}.
+
+@node Security Notes for Encryption Algorithms, Credits for Encryption Algorithms, Algorithm-specific Notes , Encryption Algorithms
+@section Security Notes
+Encryption algorithms can be broken in several ways.  If you have some
+ciphertext and know (or can guess) the corresponding plaintext, you can
+simply try every possible key in a @dfn{known-plaintext} attack.  Or, it
+might be possible to encrypt text of your choice using an unknown key;
+for example, you might mail someone a message intending it to be
+encrypted and forwarded to someone else.  This is a
+@dfn{chosen-plaintext} attack, which is particularly effective if it's
+possible to choose plaintexts that reveal something about the key when
+encrypted.
+
+DES (72 K/sec) has a 56-bit key; this is starting to become too small for
+safety.  It has been estimated that it would only cost $1,000,000 to
+build a custom DES-cracking machine that could find a key in 3 hours.  A
+chosen-ciphertext attack using the technique of @dfn{linear
+cryptanalysis} can break DES in @code{pow(2, 43)} steps.  However,
+unless you're encrypting data that you want to be safe from major
+governments, DES will be fine.
+
+There are no publicly known attacks against IDEA (47 K/sec) or REDOC III
+(43 K/sec), and both have been around long enough to have been examined
+carefully.  There are no known attacks against ARC4 (185 K/sec),
+Blowfish (172 K/sec), Diamond (36 K/sec), RC5 (91 K/sec), or Sapphire
+(111 K/sec), but they're all relatively new algorithms and there hasn't
+been time for much analysis to be performed; use them for serious
+applications only after careful research.
+
+@node Credits for Encryption Algorithms,  , Security Notes for Encryption Algorithms, Encryption Algorithms
+@section Credits
+@cindex Olson, Bryan
+@cindex Schneier, Bruce
+@cindex Young, Eric
+@cindex Cyphers, Graven
+@cindex Outerbridge, Richard
+@cindex Brown, Lawrence
+@cindex Kwan, Matthew
+@cindex DES (block cipher)
+@cindex IDEA (block cipher)
+@cindex Blowfish (block cipher)
+@cindex REDOC III (block cipher)
+The code for Blowfish was written by Bryan Olson, partially based on a
+previous implementation by Bruce Schneier, who also invented the
+algorithm; the Blowfish algorithm has been placed in the public domain
+and can be used freely.  The DES implementation was written by Eric
+Young.  The IDEA implementation was written by Colin Plumb. The RC5
+implementation was written by A.M. Kuchling.  REDOC III was rewritten by
+A.M. Kuchling, based on an implementation included in @cite{Applied
+Cryptography}. 
+
+@cindex sci.crypt
+@cindex Johnson, Michael Paul
+@cindex ARC4 (stream cipher)
+@cindex Sapphire (stream cipher)
+The Alleged RC4 code was posted to the @code{sci.crypt} newsgroup by an
+unknown party, and re-implemented by A.M. Kuchling.  The Sapphire stream
+cipher was developed by Michael P. Johnson, and is in the public domain;
+the implementation used here was written by A.M. Kuchling and is based
+on Johnson's code.
+
+@node Public Key Algorithms, , Encryption Algorithms, Top
+@chapter Public Key Algorithms
+So far, the encryption algorithms described have all been @dfn{private
+key} ciphers.  That is, the same key is used for both encryption and
+decryption, so all correspondents must know it.  This poses a problem:
+you may want encryption to communicate sensitive data over an insecure
+channel, but how can you tell your correspondent what the key is?  You
+can't just e-mail it to her because the channel is insecure.  One
+solution is to arrange the key via some other way: over the phone or
+by meeting in person.
+
+Another solution is to use 
+@dfn{public key} cryptography.  In a public
+key system, there are two different keys: one for encryption and one
+for decryption.  The encryption key can be made public by listing it
+in a directory or mailing it to your correspondent, while you keep the
+decryption key secret.  Your correspondent then sends you data
+encrypted with your public key, and you use the private key to decrypt
+it.  While the two keys are related, it's very difficult
+to derive the private key given only the public key; however, deriving
+the private key is always possible given enough time and
+computing power.  This makes it very important to pick keys of the
+right size: large enough to be secure, but small enough to be applied
+fairly quickly.
+
+Many public key algorithms can also be used to sign messages; simply
+run the message to be signed through a decryption with your private
+key key.  Anyone receiving the message can encrypt it with your
+publicly available key and read the message.  Some algorithms do only
+one thing, others can both encrypt and authenticate.
+
+The currently available public key algorithms are listed in the
+following table:
+
+@table @asis
+@item Algorithm
+Capabilities
+@item RSA
+Encryption, authentication
+@item ElGamal
+Encryption, authentication
+@item DSA 
+Authentication
+@end table
+
+Many of these algorithms are patented.  Before using any of them in a
+commercial product, consult a patent attorney; you may have to arrange
+a license with the patent holder.
+
+An example of using the RSA module to sign a message:
+@example
+>>> import md5, RSA
+>>> RSAkey=RSA.generate(384, randfunc)   # This will take a while...
+>>> hash=md5.new(plaintext).digest()
+>>> signature=RSAkey.sign(hash, "")
+>>> signature   # Print what an RSA sig looks like--you don't really care.
+('\021\317\313\336\264\315' ...,)
+>>> RSAkey.validate(hash, signature)     # This sig will check out
+1
+>>> RSAkey.validate(hash[:-1], signature)# This sig will fail
+0
+@end example
+       
+Public key modules make the following functions available:
+
+@defcv Function @r{public-key modules} construct (@var{tuple})
+Constructs a key object from a tuple of data.  This is
+algorithm-specific; look at the source code for the details.  (To be
+documented later.)
+@end defcv
+
+@defcv Function @r{public-key modules} generate (@var{size}, @var{randfunc}, @var{verbose}=None)
+Generate a fresh public/private key pair.  @var{size} is a
+algorithm-dependent size parameter; the larger it is, the more
+difficult it will be to break the key.  Safe key sizes vary from
+algorithm to algorithm; you'll have to research the question and
+decide on a suitable key size for your application.  @code{randfunc}
+is a random number generation function; it should accept a single
+integer @var{N} and return a string of random data @var{N} bytes long.
+You should always use a cryptographically secure random number
+generator, such as the one defined in the @code{randpool} module;
+don't just use the current time and the @code{whrandom} module.
+
+@var{verbose} is an optional function that will be called with a short
+string containing the key parameter currently being generated; it's
+useful for interactive applications where a user is waiting for a key to
+be generated.
+@end defcv
+
+If you want to interface with some other program, you will have to know
+the details of the algorithm being used; this isn't a big loss, since I
+don't know of any other programs that are as general as this interface
+is.  If you don't care about working with other non-Python software,
+simply use the @code{marshal} module when you need to write a key or a
+signature to a file.  It's portable across all the architectures that
+Python supports, and it's simple to use.
+
+Public key objects always support the following methods.  Some of them
+may raise exceptions if their functionality is not supported by the
+algorithm.
+
+@defmethod @r{public-key objects} canencrypt ()
+Returns true if the algorithm is capable of encrypting and decrypting
+data; returns false otherwise.
+@end defmethod
+
+@defmethod @r{public-key objects} cansign ()
+Returns true if the algorithm is capable of signing
+data; returns false otherwise.
+@end defmethod
+
+@defmethod @r{public-key objects} decrypt (@var{tuple})
+Decrypts @var{tuple} with the
+private key, returning another string.  This requires the private key
+to be present, and will raise an exception if it isn't present.  It
+will also raise an exception if @var{string} is too long.
+@end defmethod
+
+@defmethod @r{public-key objects} encrypt (@var{string}, @var{K})
+Encrypts @var{string} with the private key, returning a tuple of
+strings; the length of the tuple varies from algorithm to algorithm.  
+@var{K} should be a string of random data that is as long as
+possible.  Encryption does not require the private key to be present
+inside the key object.  It will raise an exception if @var{string} is
+too long.  For ElGamal objects, the value of @var{K} expressed as a
+big-endian integer must be relatively prime to @code{self.p-1}; an
+exception is raised if it is not.
+@end defmethod
+
+@defmethod @r{public-key objects} hasprivate ()
+Returns true if the key object contains the private key data, which
+will allow decrypting data and generating signatures.
+Otherwise this returns false.
+@end defmethod
+
+@defmethod @r{public-key objects} publickey ()
+Returns a new public key object that doesn't contain the private key
+data. 
+@end defmethod
+
+@defmethod @r{public-key objects} sign (@var{string}, @var{K})
+Sign @var{string}, returning a signature, which is just a tuple; in
+theory the signature may be made up of any Python objects at all; in
+practice they'll be either strings or numbers.  @var{K} should be a
+string of random data that is as long as possible.  Different algorithms
+will return tuples of different sizes.  @code{sign()} raises an
+exception if @var{string} is too long.  For ElGamal objects, the value
+of @var{K} expressed as a big-endian integer must be relatively prime to
+@code{self.p-1}; an exception is raised if it is not.
+@end defmethod
+
+@defmethod @r{public-key objects} size ()
+Returns the maximum size of a string that can be encrypted or signed,
+measured in bits.  String data is treated in big-endian format; the most
+significant byte comes first.  (This seems to be a @i{de facto} standard
+for cryptographical software.)  If the size is not a multiple of 8, then
+some of the high order bits of the first byte must be zero.  Usually
+it's simplest to just divide the size by 8 and round down.
+@end defmethod
+
+@defmethod @r{public-key objects} validate (@var{string}, @var{signature})
+Returns true if the signature is valid, and false otherwise.
+@var{string} is not processed in any way; @code{validate} does
+not run a hash function over the data, but you can easily do that yourself.
+@end defmethod
+
+@menu
+* The ElGamal and DSA algorithms::  
+* Security Notes for Public-key Algorithms::  
+@end menu
+
+@node The ElGamal and DSA algorithms, Security Notes for Public-key Algorithms, Public Key Algorithms, Public Key Algorithms
+@section The ElGamal and DSA algorithms
+For RSA, the @var{K} parameters are unused; if you like, you can just
+pass empty strings.  The ElGamal and DSA algorithms require a real
+@var{K} value for technical reasons; see Schneier's book for a detailed
+explanation of the algorithm.  This presents a possible hazard that can
+inadvertently reveal the private key.  Without going into the
+mathematical details, the danger is as follows. @var{K} is never derived
+or needed by others; theoretically, it could be thrown away once the
+encryption or signing operation is performed.  However, revealing
+@var{K} for a given message would enable others to derive the secret key
+data; worse, reusing the same value of @var{K} for two different
+messages would also enable someone to derive the secret key data.  An
+adversary could intercept and store every message, and then try deriving
+the secret key from each pair of messages.
+
+This places implementors on the horns of a dilemma.  On the one hand,
+you want to store the @var{K} values to avoid reusing one; on the other
+hand, storing them means they could fall into the hands of an adversary.
+One can randomly generate @var{K} values of a suitable length such as
+128 or 144 bits, and then trust that the random number generator
+probably won't produce a duplicate anytime soon.  This is an
+implementation decision that depends on the desired level of security
+and the expected usage lifetime of a private key.  I cannot choose and
+enforce one policy for this, so I've added the @var{K} parameter to the
+@code{encrypt} and @code{sign} functions.  You must choose @var{K} by
+generating a string of random data; for ElGamal, when interpreted as a
+big-endian number (with the most significant byte being the first byte
+of the string), @var{K} must be relatively prime to @code{self.p-1}; any
+size will do, but brute force searches would probably start with small
+primes, so it's probably good to choose fairly large numbers.  It might be
+simplest to generate a prime number of a suitable length.
+
+@node Security Notes for Public-key Algorithms,  Odds and Ends, The ElGamal and DSA algorithms, Public Key Algorithms
+@section Security Notes
+Any of these algorithms can be trivially broken; for example, RSA can be
+broken by factoring the modulus @emph{n} into its two prime factors.
+This is easily done by the following code:
+
+@example
+for i in range(2, n): 
+        if (n%i)==0: print i, 'is a factor' ; break
+@end example
+
+However, @emph{n} is usually a few hundred bits long, so this simple
+program wouldn't find a solution before the universe comes to an end.
+Smarter algorithms can factor numbers more quickly, but it's still
+possible to choose keys so large that they can't be broken in a
+reasonable amount of time.  For ElGamal and DSA, discrete logarithms are
+used instead of factoring, but the principle is the same.
+
+Safe key sizes depend on the current state of computer science and
+technology.  At the moment, one can roughly define three levels of
+security: low-security commercial, high-security commercial, and
+military-grade.  For RSA, these three levels correspond roughly to 512,
+768, and 1024 bit-keys.  For ElGamal and DSA, the key sizes should be
+somewhat larger for the same level of security, around 768, 1024, and
+1536 bits.
+
+@node Odds and Ends, Demo Programs, Public Key Algorithms, Top
+@chapter Odds and Ends
+This chapter contains all the modules that don't fit into any of the
+other chapters.  Currently, there are only four modules that fall into
+the miscellaneous category. Two are different implementations of a
+Unix-specific hash function; another is a rotor-based stream cipher.
+There is also a module for generating random numbers in a secure
+fashion.  Modules are placed in this chapter because their functions and
+methods do not follow the standards explained in the other chapters.
+
+@menu
+* crypt built-in module::       Interface to @code{crypt}(@emph{2}).
+* ufcrypt built-in module::     Interface to Ultra-Fast @code{crypt}().  
+* randpool module::             Random number generation.
+* rfc1751 module::              Converting binary keys to/from English words
+* rotor built-in module::       Rotor encryption module.  
+@end menu
+@node crypt built-in module, ufcrypt built-in module, Odds and Ends, Odds and Ends
+@section Built-in module @code{crypt}
+
+@findex crypt(3)
+This module implements an interface to the crypt(@emph{3}) routine,
+which is a one-way hash function based upon a modified DES algorithm;
+see the Unix man page for further details.  There is only one function
+implemented in the module.  Possible uses include allowing Python
+scripts to accept typed passwords from the user, or attempting to
+crack Unix passwords with a dictionary.  For password cracking, the 
+@code{fcrypt} module will be faster; functionally, the two modules
+are identical.
+
+@defun crypt (@var{word}, @var{salt})
+@var{word} will usually be a user's password.  @var{salt} is a
+2-character string which will be used to select one of 4096 variations
+of DES.  The characters in @var{salt} must be either @samp{.}, @samp{/}, or an
+alphanumeric character.  Returns the hashed password as a string, which will be
+composed of characters from the same alphabet as the salt.
+@end defun
+
+@cindex Majewski, Steve
+The module and documentation were written by Steve Majewski.
+
+@node ufcrypt built-in module, rotor built-in module, crypt built-in module, Odds and Ends
+@section Built-in module @code{ufcrypt}
+
+From the point of view of a Python programmer, the @code{ufcrypt} module
+is identical to the @code{crypt} module.  The only difference is in the
+implementation and the performance of the two modules.  @code{ufcrypt}
+stands for Ultra-Fast Crypt. It trades space for performance and
+requires more memory, but can execute more quickly than standard
+implementations of @code{crypt(3)}.  For documentation of the module's
+interface, see the preceding section on the @code{crypt} module.
+
+@findex crypt(3)
+@cindex Intel
+Ultra-Fast Crypt is optimized in various ways.  The most important is
+that changing the salt requires more time, while the actual
+encryptions are faster.  Thus, Ultra-Fast Crypt is best for password
+cracking applications, where you're iterating over a dictionary while
+keeping a constant salt in order to find a weak password.  For general
+purposes standard @code{crypt()} will be faster, although not by a
+great margin.  On Intel processors, Ultra-Fast Crypt may even be
+slower than @code{crypt()} due to the paucity of registers.
+
+@cindex Glad, Michael
+The Ultra-Fast Crypt library was written by Michael Glad, and was
+released under the GNU Public License; you may not distribute binaries
+without also distributing the source code.
+
+@node randpool module,  , rotor built-in module, Odds and Ends
+@cindex random numbers
+@section The @code{randpool} module
+For cryptographic purposes, ordinary random number generators are
+frequently insufficient, because if some of their output is known, it is
+frequently possible to derive the generator's future (or past) output.
+This is obviously a Bad Thing; given the generator's state at some point
+in time, someone could try to derive any keys generated using it.  The
+solution is to use strong encryption or hashing algorithms to generate
+successive data; this makes breaking the generator as difficult as
+breaking the algorithms used.
+
+@cindex entropy
+Understanding the concept of @dfn{entropy} is important for using the
+random number generator properly.  In the sense we'll be using it,
+entropy measures the amount of randomness; the usual unit is in bits.
+So, a single random bit has an entropy of 1 bit; a random byte has an
+entropy of 8 bits.  Now consider a one-byte field in a database containing a
+person's sex, represented as a single character @samp{M} or @samp{F}.
+What's the entropy of this field?  Since there are only two possible
+values, it's not 8 bits, but two; if you were trying to guess the value,
+you wouldn't have to bother trying @samp{Q} or @samp{@@}.  
+
+Now imagine running that single byte field through a hash function that
+produces 128 bits of output.  Is the entropy of the resulting hash value
+128 bits?  No, it's still just 1 bit.  The entropy is a measure of how many
+possible states of the data exist.  For English
+text, the entropy of a five-character string is not 40 bits; it's
+somewhat less, because not all combinations would be seen.  @samp{Guido}
+is a possible string, as is @samp{In th}; @samp{zJwvb} is not.
+
+The relevance to random number generation?  We want enough bits of
+entropy to avoid making an attack on our generator possible.  An
+example: One computer system had a mechanism which generated nonsense
+passwords for its users.  This is a good idea, since it would prevent
+people from choosing their own name or some other easily guessed string.
+Unfortunately, the random number generator used only had 65536 states,
+which meant only 65536 different passwords would ever be generated, and
+it was easily to compute all the possible passwords and try them.  The
+entropy of the random passwords was far too low.  By the same token, if
+you generate an RSA key with only 32 bits of entropy available, there
+are only about 4.2 billion keys you could have generated, and an
+adversary could compute them all to find your private key.  See RFC 1750:
+"Randomness Recommendations for Security" for an interesting discussion
+of the issues related to random number generation.
+
+The @code{randpool} module implements a strong random number generator
+in the @code{randpool} class.  The internal state consists of a string
+of random data, which is returned as callers request it.  The class
+keeps track of the number of bits of entropy left, and provides a function to
+add new random data; this data can be obtained in various ways, such as
+by using the variance in a user's keystroke timings.  The class is
+defined in the @code{randpool} module:
+
+@defcv Class @code{randpool} randpool ([@var{numbytes}, @var{cipher}, @var{hash}])
+An object of the @code{randpool} class can be created without parameters
+if desired.  @var{numbytes} sets the number of bytes in the pool of
+random data; this should be a multiple of the block size of the
+encryption algorithm used. @var{cipher} and @var{hash} are strings
+containing the module name of the encryption algorithm and the hash
+function to use in stirring the random data.  The default values of
+these parameters are 128 bytes (or 1024 bits), @code{'idea'}, and
+@code{'md5'}.
+@end defcv
+
+@code{randpool} objects define the following variables and methods:
+
+@defmethod {@code{randpool} objects} addEvent (@var{time}, [@var{string}])  
+Adds an event to the random pool.  @var{time} should be set to the
+current system time, measured at the highest resolution available.
+@var{string} can be a string of data that will be XORed into the pool,
+and can be used to increase the entropy of the pool.  For example, if
+you're encrypting a document, you might use the hash value of the
+document; an adversary presumably won't have the plaintext of the
+document, and thus won't be able to use this information to break the
+generator.
+@end defmethod
+
+The return value is the value of @code{self.entropy} after the data
+has been added.  The function works in the following manner: the time
+between successive calls to the @code{addEvent} method is
+determined, and the entropy of the data is guessed; the larger the
+time between calls, the better.  The system time is then read and
+added to the pool, along with the @var{string} parameter, if
+present.  The hope is that the low-order bits of the time are
+effectively random.
+
+See @file{Demo/crypto/RSAgen.py} for an implementation of a
+persistent random pool.  In an application, it is recommended that
+@code{addEvent()} be called as frequently as possible, when waiting
+for a keypress, for example, or with whatever random data can be
+found.
+
+@defcv Variable {@code{randpool} objects} bits
+A constant integer value containing the number of bits of data in
+the pool, equal to the @code{bytes} variable multiplied by 8.
+@end defcv
+
+@defcv Variable {@code{randpool} objects} bytes
+A constant integer value containing the number of bytes of data in
+the pool.
+@end defcv
+
+@defcv Variable {@code{randpool} objects} entropy
+An integer value containing the number of bits of entropy currently in
+the pool.  The value is incremented by the @code{addEvent()} method,
+and decreased by the @code{getBytes} method.
+@end defcv
+
+@defmethod {@code{randpool} objects} getBytes (@var{num})
+Returns a string containing @var{num} bytes of random data, and
+decrements the amount of entropy available.  It is not an error to
+reduce the entropy to zero, or to call this function when the entropy
+is zero.  This simply means that, in theory, enough random information has been
+extracted to derive the state of the generator.  It is the caller's
+responsibility to monitor the amount of entropy remaining and decide
+whether it is sufficent for secure operation.
+@end defmethod
+
+@defmethod {@code{randpool} objects} stir ()
+Scrambles the random pool using the previously chosen encryption and
+hash function.  An adversary may attempt to learn or alter the state
+of the pool in order to affect its future output; this function
+destroys the existing state of the pool in a non-reversible way.  It
+is recommended that @code{stir()} be called before and after using
+the @code{randpool} object.  Even better, several calls to
+@code{stir()} can be interlaced with calls to @code{addEvent()}.
+@end defmethod
+
+@node rfc1751 built-in module, rotor built-in module, randpool module, Odds and Ends
+The keys for private-key algorithms should be arbitrary binary data.
+Many systems err by asking the user to enter a password, and then using
+the password as the key.  This limits the space of possible keys, as
+each key byte is constrained within the range of possible ASCII
+characters, 32-127, instead of the whole 0-255 range possible.
+Unfortunately, it's difficult for humans to remember 16 or 32 hex
+digits.  
+
+One solution is to request a lengthy passphrase from the user, and then
+run it through a hash function.  Another solution is discussed in RFC
+1751, "A Convention for Human-Readable 128-bit Keys", by Daniel
+L. McDonald.  Binary keys are transformed into a list of short English
+words that should be easier to remember.   For example, the hex key is
+transformed to "".
+
+@defun Key2English (@var{key})
+Accepts a string of arbitrary data @var{key}, and returns a string
+containing uppercase English words separated by spaces.  @var{key}'s
+length must be a multiple of 8.
+@end defun
+
+@defun English2Key (@var{string})
+Accepts @var{string} containing English words, and returns a string of
+binary data representing the key.  Words must be separated by
+whitespace, and can be any mixture of uppercase and lowercase
+characters.  6 words are required for 8 bytes of key data, so
+the number of words in @var{string} must be a multiple of 6.
+@end defun
+
+@c The documentation for the rotor module is copied from librotor.tex,
+@c  which is part of the standard Python documentation.
+@node rotor built-in module, Demo Programs, ufcrypt built-in module, Odds and Ends
+@section Built-in module @code{rotor}
+@cindex Enigma
+This module implements a rotor-based stream encryption algorithm,
+contributed by Lance Ellinghouse.  The design is derived from the
+Enigma device, a machine used during World War II to encipher
+messages.  A rotor is simply a permutation.  For example, if
+@var{a} is the origin of the rotor, then a given rotor might map
+@var{a} to @var{a+71}, @var{a+1} to @var{a-13}, and so on;
+all additions and subtractions will be performed modulo the number of
+characters in the alphabet.  To encrypt, we use several different
+rotors.  We set the origins of the rotors to known positions; their
+initial position is the ciphering key.  To encipher a character, we
+permute the original character by the first rotor, and then apply the
+second rotor's permutation to the result.  We continue until we've
+applied all the rotors; the resulting character is our ciphertext.  We
+then change the origin of the final rotor by one position; if the
+final rotor has made a complete revolution, then we rotate the
+next-to-last rotor by one position, and apply the same procedure
+recursively.  In other words, after enciphering one character, we
+advance the rotors in the same fashion as a car's odometer. Decoding
+works in the same way, except we reverse the permutations and apply
+them in the opposite order.  
+
+The available functions in this module are:
+
+@defun newrotor (@var{key}, [@var{numrotors}])
+Returns a rotor object. @var{key} is a string containing the encryption key
+for the object; it can contain arbitrary binary data. The key will be used
+to randomly generate the rotor permutations and their initial positions.
+@var{numrotors} is the number of rotor permutations in the returned object;
+if it is omitted, the default value of 6 will be used.
+@end defun
+
+Rotor objects have the following methods:
+
+@defun setkey ()
+Resets the rotor to its initial state.
+@end defun
+
+@defun encrypt (@var{plaintext})
+Resets the rotor object to its initial state and encrypts @var{plaintext},
+returning a string containing the ciphertext.  The ciphertext is always the
+same length as the original plaintext.
+@end defun
+
+@defun encryptmore (@var{plaintext})
+Encrypts @var{plaintext} without resetting the rotor object, and returns a
+string containing the ciphertext.
+@end defun
+
+@defun decrypt (@var{ciphertext})
+Resets the rotor object to its initial state and decrypts @var{ciphertext},
+returning a string containing the ciphertext.  The plaintext string will
+always be the same length as the ciphertext.
+@end defun
+
+@defun decryptmore (@var{ciphertext})
+Decrypts @var{ciphertext} without resetting the rotor object, and returns a
+string containing the ciphertext.
+@end defun
+
+An example usage:
+@example
+>>> import rotor
+>>> rt = rotor.newrotor('key', 12)
+>>> rt.encrypt('bar')
+'\2534\363'
+>>> rt.encryptmore('bar')
+'\357\375$'
+>>> rt.encrypt('bar')
+'\2534\363'
+>>> rt.decrypt('\2534\363')
+'bar'
+>>> rt.decryptmore('\357\375$')
+'bar'
+>>> rt.decrypt('\357\375$')
+'l(\315'
+>>> del rt
+@end example
+
+
+@cindex Enigma
+The module's code is not an exact simulation of the original Enigma device;
+it implements the rotor encryption scheme differently from the original. The
+most important difference is that in the original Enigma, there were only 5
+or 6 different rotors in existence, and they were applied twice to each
+character; the cipher key was the order in which
+they were placed in the machine.  The Python rotor module uses the supplied
+key to initialize a random number generator; the rotor permutations and
+their initial positions are then randomly generated.  The original device
+only enciphered the letters of the alphabet, while this module can handle
+any 8-bit binary data; it also produces binary output.  This module can also
+operate with an arbitrary number of rotors.
+
+@cindex Enigma
+@cindex National Security Agency
+The original Enigma cipher was broken in 1944.  The version implemented
+here is probably much more difficult to crack (especially if you use
+many rotors), but as far as I know it hasn't been subjected to many
+analyses over an extended period of time; it may not be impossible for a
+truly skilful and determined attacker to break the cipher.  (On the
+other hand, perhaps it might.)  So if you want to keep the US National
+Security Agency out of your files, this rotor cipher may well be unsafe,
+but it will be fine for discouraging casual snooping, and safer than
+using the Unix @code{crypt} command.
+
+@node Demo Programs, Extending the Toolkit, Odds and Ends, Top
+@chapter The Demonstration Programs 
+The Python Cryptography Toolkit comes with various demonstration
+programs, located in the @file{Demo/crypto/} directory.  None of them is
+particularly well-finished, or suitable for serious use.  Rather,
+they're intended to illustrate how the toolkit is used, and to provide
+some interesting possible uses.  Feel free to incorporate the code (or
+modifications of it) into your own programs.
+
+@menu
+* cipher Demo::                 File encryption program.
+* voice Demo::                  Crude voice encryption.
+* Secure import::               A secure @code{import} statement.
+@end menu
+@node cipher Demo, voice Demo, Demo Programs, Demo Programs
+@section Demo 1: @file{cipher}
+
+@cindex crypt
+@cindex cipher (demo program)
+@cindex Enigma
+@cindex Crypt Breaker's Workbench
+@file{cipher} encrypts and decrypts files.  On most Unix systems, the
+@file{crypt} program uses a variant of the Enigma cipher.  This is not
+secure, and there exists a freely available program called ``Crypt
+Breaker's Workbench'' which helps in breaking the cipher if you have
+some knowledge of the encrypted data.
+
+@file{cipher} is a more secure file encryption program.  Simply list
+the names of the files to be encrypted on the command line.
+@file{cipher} will go through the list and encrypt or decrypt them;
+@file{cipher} can recognize files it has previously encrypted.  The
+ciphertext of a file is placed in a file of the same name with
+'@samp{.cip}' appended; the original file is not deleted, since I'm
+not sure that all errors during operation are caught, and I don't want
+people to accidentally erase important files.
+
+There are two command-line options: @code{-c} and @code{-k}.  Both of
+them require an argument.  @code{-c @var{ciphername}} uses the
+given encryption algorithm @var{ciphername}; for example,
+@code{-c des} will use the DES algorithm.  The name should be the same
+as an available module name; thus it should be in lowercase letters.
+The default cipher is IDEA.
+
+@cindex Linux
+@cindex cipher
+@code{-k @var{key}} can be used to set the encryption key to be
+used.  Note that on a multiuser Unix system, the @code{ps} command can
+be used to view the arguments of commands executed by other users, so
+this is insecure; if you're the only user (say, on your home computer
+running Linux) you don't have to worry about this.  If no key is set
+on the command line, @file{cipher} will prompt the user to input a key
+on standard input.
+
+@subsection Technical Details
+
+The encrypted file is not pure ciphertext.  First comes a magic
+string; this is currently the sequence @samp{ctx} and a byte
+containing 1 (the version number of @file{cipher}).
+This is followed by the null-terminated name of the encryption
+algorithm, and the rest of the file contains the ciphertext.  
+
+@cindex feedback mode, CBC
+The plaintext is encrypted in CBC mode.  The initial value for the
+feedback is always set to a block filled with the letter 'A', and then
+a block of random data is encrypted.  This garbage block will be
+discarded on decryption.  Note that the random data is not generated
+in a cryptographically secure way, and this may provide a tiny foothold for
+an attacker.
+
+After the random block is generated, the magic string, length of the
+original file, and original filename are all encrypted before the file
+data is finally processed.  Some extra characters of padding may be
+added to obtain an integer number of blocks.  This padding will also
+be discarded on decryption.  Note that the plaintext file will be
+completely read into memory before encryption is performed; no
+buffering is done.  Therefore, don't encrypt 20-megabyte files unless
+you're willing to face the consequences of a 20-megabyte process.
+
+Areas for improvements to @file{cipher} are: cryptographically secure
+generation of random data
+for padding, key entry, and buffering of file
+input.
+
+@node voice Demo, Secure import, cipher Demo, Demo Programs
+@section Demo 2: @file{voice}
+@cindex voice
+@cindex voice (demo program)
+@file{voice} is a crude demonstration of a very interesting idea:
+encryption of voice data.  This means that two people can engage in
+voice communication with no fear of eavesdropping.
+
+First, do not imagine that @file{voice} is a user-friendly secure phone,
+or that it's very useful in its current state.  Secondly, @file{voice}
+is not completely reliable; occasionally it can be made to crash if
+events occur in an unlucky sequence.  Thirdly, @file{voice} requires
+that the operating system supports the @file{/dev/audio} special
+device file for audio input and output.
+
+Two people must run @file{voice} on different computers, using the
+@code{-H} command-line flag to set the machine where the other user
+will be running @code{voice}.  For the
+first person to run it, @file{voice} will wait, listening to a given
+port for a connection.  The second user's process will connect to that
+port.  
+
+Once both processes are communicated, either user can hit the
+Enter key to start recording input from @file{/dev/audio}.  The
+audio data is kept in memory until the user hits Enter again.
+The data is then optionally encrypted, and sent over the network
+connection to the other process.  The other process will then play the
+data.
+
+By default, encryption is disabled.  To enable it, use the @code{-k}
+option to set an encryption key.  The algorithm used can be set by the
+@code{-c} flag; the default is to use IDEA.  @file{voice} has several
+other options; the @code{-h} flag displays a help message.
+
+@cindex PGP
+@cindex VoicePGP
+@cindex voice (demo program)
+@cindex Pretty Good Privacy (PGP)
+If you want good-quality, stable voice encryption, you could rewrite
+@file{voice} completely, but I recommend you wait for VoicePGP, from
+the same development team as PGP.
+
+@subsection Technical Details
+@file{voice} is fairly simple in concept: the program waits for input
+from a socket or from the keyboard; in recording mode, the sound card is
+polled as often as possible.  The implementation gets nasty, however, by
+trying to ensure that everything is checked properly, and occasionally
+the program works itself into a frozen state.  I don't recommend that
+you try to enhance @file{voice} until it's usable; instead I'd suggest
+that you start from scratch and do a good job from the ground up.
+
+@node Secure import,  , voice Demo, Demo Programs
+@section Demo 3: @code{secimp} and @code{sign} 
+
+@file{secimp} demonstrates an application of the Toolkit that may become
+important in the event Python is used as an extension language for
+mail and Web clients: secure importing of Python modules.  To use it,
+run @file{sign.py} in a directory with several compiled Python files
+present.  It will use the key in @file{testkey.py} to generate digital
+signatures for the compiled Python code, and save both the signature
+and the code in a file ending in @samp{.pys}.  Then run @code{python -i
+secimp.py}, and import a file by using @code{secimport}. 
+
+For example, if @file{foo.pys} was constructed, do
+@code{secimport('foo')}.  The importation should succeed.  Now fire up
+Emacs or some other editor, and change a string in the code in
+@file{foo.pys}; you might try changing a letter in the name of a
+variable.  When you run @code{secimport('foo')}, it should raise an
+exception reporting the failed signature.  If you execute the
+statement @code{__import__ = secimport}, the secure import will be used
+by default for all importations.  
+
+@node Extending the Toolkit,  , Demo Programs, Top
+@chapter Extending the Cryptography Toolkit
+Preserving a common interface for cryptographic routines is quite a
+powerful idea.  You may want to implement your own routines, but don't
+want to lose compatibility with other algorithms.  This chapter
+explains how to interface your own routines to the Toolkit.
+
+The basic process is as follows:
+@enumerate
+@item  Modify the default definition of a certain Python object to include
+whatever instance data your algorithm requires.
+@item  Write 3 or 4 standard routines.  Their names and parameters are
+specified in the following subsections.
+@item  Add a line to @file{config.pct} describing your new algorithm.
+@item  Run @file{buildkit} to rebuild everything.
+@item  Send a copy of the code to me, if you like; code for new
+algorithms will be gratefully accepted.
+@end enumerate
+
+@menu
+* Creating a Custom Object::    Defining a C structure.
+* Standard Routines::           What functions need to be written.
+* The config.pct File::         Modifying the configuration file.
+* Portability macros::          Macros to help writing portable modules. 
+* Informing the author::        Getting your code into the PCT.
+@end menu
+
+@node Creating a Custom Object, Standard Routines, Extending the Toolkit, Extending the Toolkit
+@section Creating a Custom Object
+In the C code for the interpreter, Python objects are defined as a
+structure.  The default structure is the following:
+@example
+typedef struct 
+@{
+ PCTObject_HEAD
+@} ALGobject;
+@end example
+
+@code{PCTObject_HEAD} is a preprocessor macro which will contain various
+internal variables used by the interpreter; it must always be the
+first item in the structure definition, and must not be followed by a
+semicolon.  Following it, you can put whatever instance variables you
+require.  Data that does not depend on the instance or key, such as a
+static lookup table, need not be encapsulated inside objects; instead,
+it can be defined as a variable interior to the module.
+
+As an example, for IDEA encryption, a schedule of encryption and
+decryption data has to be maintained, resulting in the following
+definition:
+@example
+typedef struct 
+@{
+ PCTObject_HEAD
+ int EK[6][9], DK[6][9];
+@} IDEAobject;
+@end example
+
+@node Standard Routines, The config.pct File, Creating a Custom Object, Extending the Toolkit
+@section Standard Routines
+
+@cindex buildkit
+@cindex hash.in
+The interface to Python is implemented in the files ending in
+@samp{.in}, so @file{hash.in} contains the basic code for modules
+containing hash functions, for example.  The @file{config.pct} file
+contains the information that changes in different algorithms.
+@file{buildkit}, a Python script, reads the configuration file and
+generates source code by interweaving the interface files and the
+implementation file.
+
+@cindex buildkit
+If your algorithm is called ALG, the implementation should be in the
+file @file{alg.c}. Note the lowercase---@file{buildkit} gets the
+module name by folding the algorithm name to lowercase.  The names of
+the functions you must construct use the algorithm name in the same
+form as in the configuration file.  
+
+@subsection Hash functions
+@table @asis
+@item @code{void @var{ALG}init(@var{ALG}object *self);}
+@item @code{void @var{ALG}update(@var{ALG}object *self, char *buffer, int length);}
+@item @code{PyObject *@var{ALG}digest(@var{ALG}object *self);}
+@item @code{void @var{ALG}copy(@var{ALG}object *source, @var{ALG}object *dest);}
+@end table
+
+@deftypefn {Hashing function} void ALGinit (ALGobject *@var{self})
+@cindex ALGinit
+This function should initialize the hashing object, setting 
+state variables to their expected initial state.
+@end deftypefn
+
+@deftypefn {Hashing function} void ALGupdate (ALGobject *@var{self}, 
+char *@var{buffer}, int @var{length})
+@cindex ALGupdate
+This function should perform a hash on the region pointed to by
+@var{buffer}, which will contain @var{length} bytes.  The contents of
+the object pointed to by @var{self} should be updated appropriately. 
+@end deftypefn
+
+@deftypefn {Hashing function} void ALGdigest (ALGobject *@var{self})
+This function returns a string containing the value of the hash
+function.  The object should not be changed in any way by this
+function.  Some hash functions require some computation to be
+performed before returning a value; for example, the number of bytes
+may be hashed into the final value.  If this is the case for your hash
+function, you must make a copy of the object's data, perform the final
+computation on that copy, and return the result.
+@end deftypefn
+
+Results are returned by calling a Python function,
+@code{PyString_FromStringAndSize(char *@var{string}, int @var{length})}.  This
+function returns a string object which should be returned to the
+caller.  So, the last line of the @code{ALGdigest}
+function might be:
+@example
+  return PyString_FromStringAndSize(digest, 16);
+@end example
+@cindex ALGdigest
+
+@deftypefn {Hashing function} void ALGcopy ALGobject *@var{source}, ALGobject *@var{dest})
+Given the source and destination objects, the state variables of the
+@var{source} object should be copied to the @var{dest} object; the
+source object should not be altered in any way by the operation.
+@cindex ALGcopy
+@end deftypefn
+
+@subsection Block ciphers
+@table @asis
+@item @code{void ALGinit(ALGobject *@var{self}, unsigned char *@var{key}, int @var{length});}
+@item @code{PyObject *ALGencrypt(ALGobject *@var{self}, unsigned char *@var{block});}
+@item @code{PyObject *ALGdecrypt(ALGobject *@var{self}, unsigned char *@var{block});}
+@end table
+
+@deftypefn {Block encryption function} void ALGinit (ALGobject *@var{self}, unsigned char *@var{key}, int @var{length})
+This function initializes a block cipher object to encrypt and decrypt
+with @var{key}.  If the cipher requires a fixed-length key, then the
+buffer pointed to by @var{key} will always of that length, and the
+value of @var{length} will be a random value that should be ignored.
+If the algorithm accepts a variable-length key, then @var{length} will
+be nonzero, and will contain the size of the key.
+@cindex ALGinit
+@end deftypefn
+
+@deftypefn {Block encryption function} void ALGencrypt (ALGobject *@var{self}, unsigned char *@var{block})
+This function should encrypt the data pointed to by @var{block}, using
+the key-dependent data contained in @var{self}.  Only ECB mode needs
+to be implemented; @code{blockcipher.in} takes care of the other
+ciphering modes.
+@cindex ALGencrypt
+@end deftypefn
+
+@deftypefn {Block encryption function} void ALGdecrypt (ALGobject *@var{self}, unsigned char *@var{block})
+This function should decrypt the data pointed to by @var{block}, using
+the key-dependent data contained in @var{self}.
+@cindex ALGdecrypt
+@end deftypefn
+
+@node The config.pct File, Portability macros, Standard Routines, Extending the Toolkit
+@section The @file{config.pct} File
+The Toolkit's configuration file follows a simple format.  Comments
+are preceded by a '@code{#}'; you shouldn't need to include one in the
+actual configuration information.
+@cindex config.pct
+@itemize @bullet
+@item  Hash functions: @code{hash @var{algname}}
+@item  Block ciphers: @code{blockcipher @var{algname blocksize keysize}}
+The key and block sizes are measured in bytes.
+@item  Simple modules: @code{simple @var{modulename}}
+@end itemize
+
+Simple modules are compiled directly into object files; the other
+modules are combined with the appropriate @samp{*.in} framework file
+before being compiled.  A sample @file{config.pct} file follows:
+@example
+# Sample config.pct file
+hash MD5 	
+blockcipher super 256 256 # Buggy!
+simple rotor
+@end example
+
+@node Portability macros, Informing the author, The config.pct File, Extending the Toolkit
+@section Portability macros
+
+Implementation code must be carefully written to produce the same
+results with any machine or compiler, without having to set any
+compile-time definitions.  Code that is simply portable by nature is
+preferable, but it is possible to detect features of the host machine
+when new objects are created, and then execute special code to convert
+data to a preferred form.
+
+While portability macros are written for speed, there's no need to
+execute them on every encryption or updating operation.  Instead, add
+variables to your object to hold the values of the portability macros,
+and execute the macros only once per object, in your
+@code{ALGinit} function.  Then the code can simply check the
+results of the macros and act appropriately.
+
+Currently there is only one portability macro defined:
+
+@deftypefn {Macro} void TestEndianness (@var{variable})
+Determines the endianness of the current machine, and sets
+@var{variable} to a constant representing the value for this machine.
+Possible constants are @code{BIG_ENDIAN} and @code{LITTLE_ENDIAN};
+they are defined along with the @code{TestEndianness} macro.
+@end deftypefn
+
+@node Informing the author,  , Portability macros, Extending the Toolkit
+@section Informing the author
+Code for additional cryptographic algorithms can be mailed to me at
+@code{andrewk@@cst.ca}.  You can make things much easier for me by doing the
+following:
+@itemize @bullet
+@item  If you wrote the code, please release it under the GPL or some
+similarly liberal license.  If you didn't write it, please tell me where
+to find the original author or source code, so that I can check the
+licensing conditions.
+@item  If the algorithm is patented, tell me the terms of its use.  Is
+it free for non-commercial use, like IDEA? Do commercial users have to
+get a license?
+@item  Include some test data.  It is not sufficient to check that
+encryption and decryption cancel out properly.  An implementation
+might work fine on a single platform, but two machines with
+different endianness might produce different results.  This would be
+fatal for portability and interoperating programs.  So, please include
+test data; you can either send me patches to @file{test.py}, or simply
+send me documents describing the data.
+@end itemize
+
+@node Concept Index, ,Extending the Toolkit, Top
+@unnumbered Concept Index
+@printindex cp
+@contents
+@bye

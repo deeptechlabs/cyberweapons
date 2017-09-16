@@ -1,0 +1,112 @@
+.TH HILL 1
+.SH NAME
+hill \- encryption program using Hill cipher
+.SH SYNOPSIS
+.B hill
+[ -e | -d ]
+[ -c | -C | -p ]
+[ -u ]
+[ key ]
+.SH DESCRIPTION
+.I Hill
+provides file encryption using the Hill cipher.
+In encryption mode,
+plaintext is read from the standard input
+and ciphertext is written to the standard output
+in accordance with a user-specified
+.B key.
+Additional options allow compressing the plaintext
+and/or expressing the ciphertext in ASCII.
+In decryption mode, the operations of encryption mode
+are reversed (provided the right
+.B key
+is supplied).
+.SH OPTIONS
+.TP
+.B \-e
+Encryption mode.
+.TP
+.B \-d
+Decryption mode.
+.TP
+.B \-c
+Use
+.I compact
+or
+.I uncompact
+for compression or decompression
+(these programs must be on the search path
+to use this option).
+.TP
+.B \-C
+Use
+.I compress
+or
+.I uncompress
+for compression or decompression
+(these programs must be on the search path
+to use this option).
+.TP
+.B \-p
+Use
+.I pack
+or
+.I unpack
+for compression or decompression
+(these programs must be on the search path
+to use this option).
+.TP
+.B \-u
+Use
+.I uuencode
+after encryption
+or
+.I uudecode
+before decryption
+(these programs must be on the search path
+to use this option).
+.SH "SECURITY CONSIDERATIONS"
+.I Hill
+provides strong security against straight cryptanalysis
+and acceptable security against probable-plaintext analysis.
+Use of the -c and -C options
+actually improves security;
+one of these options should be used
+except where time is critical.
+Use of the -p option
+decreases security;
+it should be used only where space is critical
+and neither -C nor -c is available.
+.PP
+Keys must be at least 9 bytes long
+(the maximum length is 256 bytes)
+and should be both long and hard to guess.
+All security resides in the keys.
+.SH "TIME CONSIDERATIONS"
+.I Hill
+encrypts at the rate of about 2 kilobytes per second
+(using a 16-byte key)
+on an 8MHz IBM PC/AT running SCO Xenix.
+Time increases linearly in the length of the file
+and in the square root of the key length.
+.SH "SPACE CONSIDERATIONS"
+Encrypted files increase in length by about 1%.
+.SH FILES
+/usr/bin/hill			script for pre/postprocessing
+.br
+/usr/bin/hill0			actual encryption program
+.br
+These two files can be installed anywhere on the search path.
+.SH "MS-DOS VERSION"
+The MS-DOS version of
+.I hill
+has the same capabilities,
+except that only the
+.B \-e
+and 
+.B \-d
+options are supported.
+.SH "SEE ALSO"
+.IR pack (1),
+.IR compact (1),
+.IR compress (1) 

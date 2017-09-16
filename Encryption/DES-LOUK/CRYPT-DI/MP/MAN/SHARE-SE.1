@@ -1,0 +1,47 @@
+'	# -*- nroff -*-
+.TH SHARE-SECRET 1 "August 14, 1989"
+.GN 2
+.SH NAME
+share-secret \- share a secret key using Diffie-Hellman scheme
+.SH SYNOPSIS
+.B share-secret
+[
+.B -g
+] [
+.B -c
+]
+.SH DESCRIPTION
+.I Share-secret
+can be used to share a secret encryption key between two parties
+when they trust computer they have at each end but
+when the communication link between them is possibly monitored
+by someone else.
+First each party generates a personal secret-key \- public-key pair by
+command:
+.PP
+ps laxwww | share-secret -g -P public_key_file -S secret_key_file
+.PP
+The output of ps command is used as a seed for
+.I share-secret
+so that it can produce a nonpredictable secret key.
+.PP
+After generating keys parties exchange public key by communication channel
+which cannot easily be changed (eg. telephone).
+.PP
+Now each party can generate their common secret key by:
+.PP
+share-secret -c -P others_public_key_file -S my_secret_key_file
+.PP
+.I share-secret
+prints a 16-digit hex number which can be given to
+.I des
+program with
+.B -h
+flag.
+.SH AUTHOR
+Antti Louko (alo@kampi.hut.fi), Helsinki University of Technology
+Computing Centre
+.SH BUGS
+This program could be easier to use. It must be remembered however,
+that a good security always requires manual checking. Completely
+automatic systems are always easier to crack.

@@ -1,0 +1,191 @@
+<html>
+<head><title> Pegwit (v8) </TITLE></head>
+         <h1> Pegwit (v8) </h1>
+<body>
+
+Pegwit is a program for performing public key encryption
+and authentication. It uses an elliptic curve over GF(2^255), and
+the symmetric block cipher 
+<a href="http://www.esat.kuleuven.ac.be/~rijmen/square/index.html">
+square</a>. It is free, you may do
+what you like with it, but if you make changes (which make the
+software incompatible with pegwit), please use a different name 
+to avoid confusion. It is possible that using pegwit may 
+infringe U.S. patents, I don't know. (But see this
+<a href="http://www.base.com/gordoni/thoughts/pkp.html">
+essay on PKP's claim to have a monopoly on public key
+cryptography </a> and <a href="http://bbs.cruzio.com/~schlafly/"> 
+Roger Schlafly's page </a> ) In any case the offending patent,
+Hellman-Merkle 4,218,582 expires Oct. 6, 1997.
+
+<p> Here is some <a href="blurb.txt"> blurb</a> and also
+some <a href="design.txt"> design information.</a>
+
+
+<p> Here is the <a href="manual.txt"> user manual</a> and
+here is a <a href="chall.htm"> challenge</a>
+
+<p> If you can read zip files you can download all the sources
+for pegwit by pressing <a href="pegwit.zip"> here.</a>
+
+<p> The source containing main is 
+  <a href="pegwit.c"> pegwit.c</a>. 
+The other sources are
+  <a href="ec_crypt.c">ec_crypt.c</a>,
+  <a href="ec_curve.c">ec_curve.c</a>,
+  <a href="ec_field.c">ec_field.c</a>,
+  <a href="ec_param.c">ec_param.c</a>,
+  <a href="ec_vlong.c">ec_vlong.c</a>,
+  <a href="square.c"> square.c</a>,
+  <a href="sqcts.c"> sqcts.c</a>,
+  <a href="sha1.c"> sha1.c</a> and
+  <a href="binasc.c"> binasc.c</a>.
+
+
+Included source files are
+  <a href="ec_crypt.h">ec_crypt.h</a>,
+  <a href="ec_curve.h">ec_curve.h</a>,
+  <a href="ec_field.h">ec_field.h</a>,
+  <a href="ec_param.h">ec_param.h</a>,
+  <a href="ec_vlong.h">ec_vlong.h</a>,
+  <a href="sha1.h">sha1.h</a>,
+  <a href="square.h"> square.h</a>,
+  <a href="sqcts.h"> sqcts.h</a>,
+  <a href="square.tab"> square.tab</a> and
+  <a href="binasc.h"> binasc.h</a>.
+
+<p> The source is intended to be completely portable, please let me
+know of any problems so I can fix them. The only special action needed
+is that either LITTLE_ENDIAN or BIG_ENDIAN may need to be defined externally. 
+A compile-time error is reported if neither is defined and the endianness 
+cannot be determined at compile time. A run-time error is reported if the 
+wrong one is defined.
+
+<p> <a href="win95/pegwit.exe"> pegwit.exe</a> is a Windows 95 executable.
+    <a href="win95/pwkey.exe"> pwkey.exe</a> and 
+    <a href="win95/pwjunk.exe"> pwjunk.exe</a> are optional Win95 utilities
+    for entering passwords and generating random junk.    
+    <a href="pwkey.c">pwkey.c</a> and 
+    <a href="pwjunk.c"> pwjunk.c</a> are (non-portable) sources
+    for these utilities.
+
+<p> <a href="dos/pegwit.exe"> pegwit.exe</a> is an MSDOS executable.
+
+<p> Test data
+
+<p> <a href="test.bat"> test.bat</a> is a batch file for testing.
+
+<p> <a href="test.pub"> test.pub</a> is the public key for 
+<a href="test.pri"> test.pri</a>
+
+<p> <a href="test.tx0"> test.tx0</a> is <a href="test.txt"> test.txt</a>
+encrypted with test.pub ( but note that -e is not deterministic )
+
+<p> <a href="test.sig"> test.sig</a> is test.txt signed with test.pri (using -s)
+
+<p> <a href="test.tx1"> test.tx1</a> is test.txt encrypted symmetrically
+(-E) with test.sig
+
+<p> <a href="test.tx2"> test.tx2</a> is test.txt signed with test.pri (using -S)
+
+<p> <a href="test.tx3"> test.tx3</a> is test.txt encrypted with test.pri (using -fe)
+
+<p> <a href="test.tx4"> test.tx4</a> is test.txt encrypted with test.sig (using -fE)
+
+<p> Changes. Note that a change of first digit of the version number 
+indicates that the new version is incompatible with earlier versions.
+However note that v8.7 is not encryption compatible with v8.1..v8.5.
+
+<p> 8.0 has many changes - for one thing it is in C rather than
+C++ ( thanks to Paulo Barreto ). Secret values are now read from 
+standard input, and a secret value is required for -e ( see user 
+manual for details ). The generation of multipliers has been 
+improved (v7 was not secure for > 2^64 signatures) and the MAC used 
+is now 'double-barreled' SHA1 ( 240 bits = 160 bits + 80 bits ). 
+Public keys are now partially validated : they must begin with 
+"pegwit v8 public key ="
+
+<p> v8.1 : I messed up in v8.0 - prng_next was not hashing the 
+correct data, and while not insecure, it was a mess. So v8.0 
+should not be used, only use v8.1 (which is not compatible). 
+Hopefully no-one got a copy of 8.0.
+
+<p> v8.1 : Re-worked prng to cure endian problems. ( No version 
+number change )
+
+<p> pwjunk v2.0 : printf format string in pwjunk was wrong.
+pwjunk revised to use kbhit and a timing loop which gives 
+better resolution than using clock(). Also now generates a 
+(rough) estimate of how much entropy has been gathered, and 
+does not allow termination until estimate reachs 128 bits.
+
+<p> v8.1 : changed C++ style comments to C comments
+
+<p> v8.2 : changed -e to use single barrel hash of plain text.
+( signature still uses double barrel for MAC )
+
+<p> v8.2 : deleted unused function cpMakePrivateKey from ec_crypt.c
+
+<p> v8.2 : put conditional compilation round functions which are
+not required for pegwit
+
+<p> The code is now known to run OK on a big-endian processor
+( HP700 series Unix box). Thanks to Steve Gilham for this.
+
+<p> v8.3 : -S and -V commands added for signing text files.
+These make pegwit more convenient when signing email or news.
+Thanks to Mr. Tines for this.
+
+<p> v8.4 : -fX 'filter mode' commands added, also ascii
+'armoring' of encrypted input/output. Again, thanks to Mr. Tines.
+
+<p> v8.4 : quite a few mainly cosmetic changes to ec_*.*
+modules ( by Paulo Barreto ). There is a new source file
+ec_param.c. Note that pegwit does not support different
+curves (yet) - these are provided for direct uses 
+of ec_*.* in a non-pegwit context. 
+
+<p> v8.5 : signature verification was totally bust in v8.4
+There were actually two seperate bugs :
+(1) -v was not printing any error message when signature failed.
+(2) -V was not doing anything at all (a boolean test was the wrong way round).
+THUS PEGWIT v8.4 SHOULD NEVER BE USED TO CHECK SIGNATURES!
+Many apologies for this major cock-up.
+
+<p> v8.6 : changed to using new version of square. Unfortunately 
+I previously had not been doing the proper endian conversion, 
+so v8.6 is not encryption compatible with earlier versions. 
+Signatures and public/private keys functionality has not changed 
+though. v8.6 uses cipher-text stealing to minimise expansion when 
+encrypting. For -E encrypted files, provided the size is > 15 bytes
+and even, there is no change in size. Encryption and decryption is
+also faster in this version.
+
+<p> v8.7 : updated to neater cipher-text stealing : not 
+encryption compatible with v8.6. Probably no-one got v8.6.
+
+<p> v8.71 : Public keys enclosed in braces {} can be split up, and
+need not be at the beginning of the file. New ec_*.* code, which
+can be compiled to use Colin Plumb's BNLIB rather than ec_vlong.c
+if desired (although there is no reason to do this for pegwit).
+
+<p> If you port pegwit to other systems, or have any suggestions
+or comments please let me know. Also let me know if you would like
+to be notified by email of any major developments, e.g. major bugs, 
+major new versions, etc.
+
+<p> Send mail to George at
+  <a href="mailto:george.barwood@dial.pipex.com">
+  <i>george.barwood@dial.pipex.com</i></a>
+
+<p> <a href=../index.htm> George's home page </a>
+<p> <a href=../crypto.htm> More crypto stuff (including more info on pegwit components) </a>
+<p> <a href=../ec_faq.txt> My FAQ on elliptic curve cryptography </a>
+<a href="../ec_faq.htm">HTML version</a>
+
+
+<p>
+
+<IMG SRC="/cgi-bin/nph-count?width=5&link=/town/square/abe26/v8/pegwit.htm">
+
+</html>

@@ -1,0 +1,36 @@
+kampi.hut.fi!alo:
+# Generate keys in kampi
+kampi.hut.fi!alo: ps laxww | share-secret -g -P P-kampi -S S-kampi
+# Let's see what they are like
+kampi.hut.fi!alo: cat P-kampi
+532a0366ef3db36c8c632d071c2c7e7a0d06abb3acdee8e53c1f624907d0bbcb
+kampi.hut.fi!alo: cat S-kampi
+67a9c7a4c5f92a5d86c95c79dc9314613b9a409ccdd0de46340e074ba10d647
+kampi.hut.fi!alo: rlogin lelu
+Last login: Mon Aug 14 09:22:24 on console
+SunOS Release 4.0_Export (GENERIC) #1: Tue Apr 26 15:53:24 PDT 1988
+# Generate keys in lelu
+lelu!alo: ps laxww | share-secret -g -P P-lelu -S S-lelu
+# Test data to be encrypted
+lelu!alo: date > DATE
+# If the data is real, is is not very wise to cat it over rlogin connection
+lelu!alo: cat DATE
+Tue Aug 15 00:13:10 EET DST 1989
+Stopped
+# Public keys are exchanged.
+# In a real situation these should be checked in another way.
+kampi.hut.fi!alo: rcp P-kampi lelu:
+kampi.hut.fi!alo: rcp lelu:P-lelu .
+# Encrypt data with a shared secret key
+kampi.hut.fi!alo: rsh lelu -n 'des -ehk `share-secret -c -P P-kampi -S S-lelu` DATE' > DATE.xx
+kampi.hut.fi!alo: des -dhk `share-secret -c -P P-lelu -S S-kampi` DATE.xx
+Tue Aug 15 00:13:10 EET DST 1989
+kampi.hut.fi!alo: od -c DATE.xx
+0000000    <   G   ~   Q 356   } 273 211 006 367 217   O   s 265 027 276
+0000020  315   Q   w   9 021   , 332 223 244 277   @ 003 345 266 363 217
+0000040  330 016 246 030 007 331   - 207
+0000050
+# Let's see what the key was
+kampi.hut.fi!alo: share-secret -c -P P-lelu -S S-kampi
+2a7cf791e4386b91
+kampi.hut.fi!alo: 

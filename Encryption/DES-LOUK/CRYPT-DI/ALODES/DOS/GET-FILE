@@ -1,0 +1,2 @@
+#! /bin/sh
+(cd ..; ls lib/*.[hc] libdir/*.[hc] prog/*.[hc] hutlib/*.[hc])

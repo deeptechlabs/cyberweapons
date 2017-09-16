@@ -1,0 +1,28 @@
+--------------------Configuration: testapp - Win32 Debug--------------------
+Begining build with project "C:\Work\PRNG\yarrow\testapp\testapp.dsp", at root.
+Active configuration is Win32 (x86) Application (based on Win32 (x86) Application)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /MLd /W3 /Gm /GX /Zi /Od /I "..\entropyhooks" /I "..\prngcore" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/testapp.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x1009 /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/testapp.bsc" "
+			"COFF Linker for 80x86" with flags "prngcore.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/testapp.pdb" /debug /machine:I386 /out:"Debug/testapp.exe" /pdbtype:sept /libpath:"..\prngcore\debug" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\WINDOWS\TEMP\RSP134.TMP" with contents </nologo /MLd /W3 /Gm /GX /Zi /Od /I "..\entropyhooks" /I "..\prngcore" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/testapp.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"C:\Work\PRNG\yarrow\testapp\testapp.c"
+>
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP134.TMP" 
+Creating temp file "C:\WINDOWS\TEMP\RSP0135.TMP" with contents <prngcore.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/testapp.pdb" /debug /machine:I386 /out:"Debug/testapp.exe" /pdbtype:sept /libpath:"..\prngcore\debug" 
+.\Debug\testapp.obj
+\Work\PRNG\yarrow\prngcore\Debug\prngcore.lib>
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP0135.TMP" 
+Compiling...
+testapp.c
+Linking...
+
+
+
+testapp.exe - 0 error(s), 0 warning(s)

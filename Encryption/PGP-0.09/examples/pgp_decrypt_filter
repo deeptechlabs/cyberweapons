@@ -1,0 +1,54 @@
+#!/usr/local/bin/perl -w
+
+use FileHandle;
+use Stream::IO;
+use PGP::PacketFactory;
+
+#
+#	Read secret key
+#
+my $fis = new Stream::FileInput "secring.pgp";
+ref($fis) || die "Could not create Stream::FileInput ($fis)";
+my $dis = new Stream::DataInput $fis;
+ref($dis) || die "Could not create Stream::DataInput ($dis)";
+
+#
+#	Decrypt secret key
+#
+my $skc = PGP::PacketFactory::restore($dis);
+die $skc unless ref($skc);
+my $sk = $skc->decrypt("joe");
+die "Cannot decrypt secret key ($sk)" unless ref $sk;
+
+
+#
+#	Read from stdin
+#
+$fis = new Stream::FileInput new FileHandle "< -";
+ref($fis) || die "Could not create Stream::FileInput ($fis)";
+$dis = new Stream::DataInput $fis;
+ref($dis) || die "Could not create Stream::DataInput ($dis)";
+
+#
+#	Read public key encrypted data
+#
+$pkt = PGP::PacketFactory::restore($dis);
+ref($pkt) || die "Problem reading pk encrypted packet ($pkt)";
+ref($pkt) eq "PGP::PKEncryptedData" || die "Wrong type of packet (".ref($pkt).")";
+
+
+my ($key, $err);
+($key, $err) = PGP::DEK::decode($pkt->decrypt($sk));
+defined $err && die "Problems decrypting ($err)";
+
+#
+#	Read conventionally encrypted data
+#
+$pkt = PGP::PacketFactory::restore($dis);
+ref($pkt) || die "Problem reading convetional packet ($pkt)";
+ref($pkt) eq "PGP::ConvEncryptedData" || die "Wrong type of packet (".ref($pkt).")";
+
+my $data;
+($data, $err) = $pkt->decrypt($key);
+defined $err && die "Problems decrypting conventional packet ($err)";
+print $data;

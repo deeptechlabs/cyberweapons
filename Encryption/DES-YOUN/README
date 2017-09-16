@@ -1,0 +1,30 @@
+This is a DES encryption library.
+It suports ecb, cbc and MIT's pcbc encryption modes and also has
+a fast implementation of crypt(3).
+It also contains support routines to read keys from a terminal,
+generate a random key, generate a key from an arbitary length string,
+read/write encrypted data from/to a file descriptor, and an implementation of
+sunOS des(1) command for file encryption.
+
+The implementation was written so as to conform with the manual entry
+for the des_crypt(3) library routines from MIT's project Athena.
+
+destest should be run after compilation to test the des routines.
+rpw should be run after compilation to test the read password routines.
+The des program is a replacement for the sun des command.  I believe it
+conforms to the sun binary.
+
+The Imakefile is setup for use in the kerberos distribution.
+
+These routines are best compiled with gcc v 2.1 or any other good
+optimising compiler.
+Just turn you optimiser up to the highest settings and run destest
+after the build to make sure everything works.
+
+I believe these routines are about the fastest DES routines that use
+small lookup tables (4.5k) that are publicly available.
+The fcrypt routine is faster than ufc's fcrypt (when compiling with
+gcc2 -O2) on the sparc 2 (1410 vs 1270) but is not so good on other machines
+(on a sun3/260 168 vs 336).
+
+Eric Young (eay@psych.psy.uq.oz.au)

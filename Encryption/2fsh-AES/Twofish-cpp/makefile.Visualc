@@ -1,0 +1,49 @@
+#
+# Makefile for the TwoFish algorithm using Visual C compiler
+#
+
+CC=	cl
+CFLAGS=	/G6 /Ox -DGetCodeSize
+
+OBJ=	twofish.obj
+TRACE_OBJ=
+
+#
+# Rules
+#
+
+all:	Tst2fish.exe
+
+twofish.obj:	twofish.c Aes.h Platform.h Table.h
+	$(CC) $(CFLAGS) /c twofish.c
+
+Tst2fish.obj:	Tst2fish.c
+	$(CC) $(CFLAGS) /c Tst2fish.c
+
+Tst2fish.exe:	Tst2fish.obj $(OBJ)
+	$(CC) $(CFLAGS) /FeTst2fish.exe Tst2fish.obj $(OBJ)
+
+#
+# Clean
+#
+clean:
+	-del *.obj
+
+cleanexes:
+	-del *.exe
+
+cleantests:
+	-del ecb_vk.txt
+	-del ecb_vt.txt
+	-del ecb_tbl.txt
+	-del ecb_ival.txt
+	-del ecb_e_m.txt
+	-del ecb_d_m.txt
+	-del cbc_e_m.txt
+	-del cbc_d_m.txt
+
+cleanall: clean cleanexes cleantests
+
+#
+# End Of Makefile
+#

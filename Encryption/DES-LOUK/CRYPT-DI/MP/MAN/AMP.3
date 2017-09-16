@@ -1,0 +1,215 @@
+'	# -*- nroff -*-
+.TH AMP 3 "May 21, 1989"
+.GN 2
+.SH NAME
+mp_add, mp_sub, mp_mul, mp_div,
+mp_atom, mp_mtoa, mp_htom, mp_mtoh,
+mp_cmp,
+mp_pow,
+mp_random,
+mp_divisible, mp_is_prime,
+mp_itom, mp_free \- multiple precision integer arithmetic
+.SH SYNOPSIS
+.nf
+.nj
+.B #include <amp.h>
+.PP
+.B amp	*mp_add(a,b)
+.B amp	*a,*b;
+.PP
+.B amp	*mp_add_to(result,a,b)
+.B amp	*result,*a,*b;
+.PP
+.B amp	*mp_add_x_to(result,x)
+.B amp	*result;
+.B long	x;
+.PP
+.B amp	*mp_sub(a,b)
+.B amp	*a,*b;
+.PP
+.B amp	*mp_sub_to(result,a,b)
+.B amp	*result,*a,*b;
+.PP
+.B amp	*mp_sub_x_to(result,x)
+.B amp	*result;
+.B long	x;
+.PP
+.B amp	*mp_mul(a,b)
+.B amp	*a,*b;
+.PP
+.B amp	*mp_mul_to(result,a,b)
+.B amp	*result,*a,*b;
+.PP
+.B amp	*mp_div(a,b,remainder)
+.B amp	*a,*bm,*remainder;
+.PP
+.B amp	*mp_div_to(result,a,b,remainder)
+.B amp	*result,*a,*b,*remainder;
+.PP
+.B amp	*mp_pow(a,b,mod)
+.B amp	*a,*b,*mod;
+.PP
+.B amp	*mp_pow_to(result,a,b,mod)
+.B amp	*result,*a,*b,*mod;
+.PP
+.B amp	*mp_inv(a,mod)
+.B amp	*a,*mod;
+.PP
+.B int	mp_cmp(a,b)
+.B amp	*a,*b;
+.PP
+.B amp	*mp_atom(str)
+.B char	*str;
+.PP
+.B char	*mp_mtoa(a)
+.B amp	*a;
+.PP
+.B amp	*mp_htom(str)
+.B char	*str;
+.PP
+.B char	*mp_mtoh(a)
+.B amp	*a;
+.PP
+.B amp	*mp_itom(ivalue)
+.B long	ivalue;
+.PP
+.B amp	*mp_itom_to(result,ivalue)
+.B amp	*result;
+.B long	ivalue;
+.PP
+.B amp	*mp_random(result,range)
+.B amp	*result,*range;
+.PP
+.B void	mp_set_seed(seed)
+.B unsigned char	seed[8];
+.PP
+.B amp	*mp_divisible(a,ivalue)
+.B amp	*a;
+.B int	ivalue;
+.PP
+.B amp	*mp_is_prime(value,prob)
+.B amp	*value;
+.B int	prob;
+.PP
+.B amp	*mp_free(value)
+.B amp	*value;
+.PP
+.fi
+.SH DESCRIPTION
+These library functions implement arbitrary precision integer
+arithmetic functions. Library functions allocate memory with
+.I malloc
+library calls. 
+.PP
+.I mp_add,
+.I mp_sub
+and
+.I mp_mul
+return sum, difference and product of
+.I a
+and
+.I b.
+.I mp_add_x_to
+and
+.I mp_sub_x_to
+can be used to add or subtract a
+.I long
+value to
+.I result
+variable.
+.I mp_div
+returns quotient of
+.I a
+and
+.I b.
+If
+.I remainder
+is a non-null pointer, the remainder is returned there.
+.I mp_pow
+returns the value of
+.I a
+raised to the power
+.I b
+reduced modulo
+.I mod.
+All these functions allocate a new
+.I amp
+for the result. If user wants to manage allocation
+.I _to
+versions of functions can be used. These put the result in the
+.I result
+variable.
+.I mp_inv
+returns the inverse of
+.I a
+modulo
+.I mod.
+.I mp_cmp
+compares two values. If
+.I a
+is greater than
+.I b,
+1 is returned. If
+.I b
+is greater than
+.I a,
+-1 is returned. Otherwise 0 is returned.
+.PP
+.I mp_atom
+converts decimal ASCII string into an
+.I amp
+value.
+.I mp_mtoa
+returns decimal ASCII representation of
+.I a.
+.I mp_htom
+and
+.I mp_mtoh
+are similar function for hexadecimal strings.
+.I mp_itom
+converts a long value
+.I ivalue
+into a
+.I amp.
+.PP
+.I mp_random
+returns a random value which is greater or equal than 0 and less than
+.I range.
+If
+.I result
+is non-null, the return value is put there. Otherwise a new
+.I amp
+is allocated.
+.I mp_random
+uses DES algorithm as a random bit generator. This provides
+cryptographically secure random numbers which can be used as keys for
+public key cryptography provided that the random number generator is
+first initialized with
+.I mp_set_seed.
+.I seed
+is a pointer to an array of 8 unsigned chars.
+.I mp_divisible
+returns an integer value telling how many times
+.I a
+is divisible by
+.I ivalue.
+If
+.I a
+is not divisible by
+.I ivalue,
+0 is returned.
+.I mp_is_prime
+returns 1 if
+.I value
+is a prime at probability of 1-(1/4^\c
+.I prob\c
+).
+.PP
+.I mp_free
+frees
+.I value
+by putting it into a free list.
+
+.SH AUTHOR
+Antti Louko (alo@kampi.hut.fi), Helsinki University of Technology
+Computing Centre

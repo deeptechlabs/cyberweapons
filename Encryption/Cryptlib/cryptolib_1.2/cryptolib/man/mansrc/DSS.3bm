@@ -1,0 +1,122 @@
+.EQ
+delim $$
+.EN
+.\" @(#)DSA.3bm 91/12/13;
+.TH DSA 3BM
+.SH NAME
+DSASign, DSAVerify, randBytesNeededForDSAParams, randBytesNeededForDSAKeySet,
+randBytesNeededForDSASign
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+.LP
+\fBint randBytesNeededForDSAParams(int primebits, int facbits)\fR
+.LP
+\fBint randBytesNeededForDSAKeySet(int facbits)\fR
+.LP
+\fBint randBytesNeededForDSASign(int facbits)\fR
+.LP
+\fBDSAParams *genDSAParams(int primebits, int facbits, BigInt randomStart)\fR
+.LP
+\fBDSAKeySet *genDSAKeySet(DSAParams *params, int pbits, int qbits, BigInt randomStart)\fR
+.LP
+\fBDSASignature *DSASign(BigInt m, DSAPrivateKey *key, BigInt randomStart)\fR
+.LP
+\fBDSASignature *quantized_DSASign(BigInt m, DSAPrivateKey *key, BigInt randomStart)\fR
+.LP
+\fBBoolean DSAVerify(BigInt m, DSASignature *sig, DSAPublicKey *key)\fR
+.fi
+.SH DESCRIPTION
+.LP
+For all of these functions $BigInt$ arguments are assumed to be initialized
+$BigInts$.  $bigInit(0)$ should be used for initialization of
+empty $BigInts$.  If more space is needed than is provided the
+functions themselves take care of the space allocation.
+
+In all of the function which have an argument, $randomStart$, if this argument
+is chosen NULL, the default, DES-based pseudo-RNG seeded with truerand() will
+be used to generate necessary random material.  If $randomStart$ is not
+NULL, the accompanying functions, \fIrandBytesNeededForEG...\fR are
+used to find out how many random bytes are expected.
+
+In all above functions, $primebits$ is the number of bits in the modulus,
+and $facbits$ is the number of bits in $p - 1$.  Typically these
+are 1024 and 160 respectively.
+
+$genDSAParams$ generates a prime p, a prime factor of p-1, and a primitive
+root mod p.  It is sometimes the case that large groups will use
+the same set of parameters.  This is the reason for decoupling this
+from the genKeySet routine which actually generates the secret exponent
+and public and private keys.
+
+These functions create digital signatures along the
+guidelines proposed by the National Institute of Standards and
+Technology (NIST).  The cryptosystem is a variant of El Gamal
+systems.  The keys are the same as those used by our implementation
+of the El Gamal system (actually the El Gamal implementation uses
+the key scheme suggested by NIST and Schnorr).
+
+$DSASign$ generates a digital signature for message $m$ using
+a private key.  The quantized version
+use STD_QUANTUM milliseconds as the quantum for execution to defend against
+Kocher-style timing attacks.
+STD_QUANTUM is defined in libcrypt.h and should be tuned to your environment.
+
+$DSAVerify$ verifies that a signature received with a message $m$
+is valid using the public key which corresponds to the private key
+used to generate the signature.
+.sp
+Usage example:
+.sp
+randbytes = randBytesNeededForDSAParams(1024, 160);
+.sp
+BigInt randomStart = bigInit(0);
+.sp
+bigRand(randbytes, randomStart, PSEUDO);
+.sp
+params = genDSAParams(1024, 160, randomStart);
+.sp
+randbytes = randBytesNeededForDSAKeySet(160);
+.sp
+bigRand(randbytes, randomStart, PSEUDO);
+.sp
+DSAKeys = genDSAKeySet(params, 1024, 160, randomStart);
+.sp
+To sign the SHS digest of file "foo":
+.sp
+randbytes = randBytesNeededForDSASign(160);
+.sp
+bigRand(randbytes, randomStart, PSEUDO);
+.sp
+BigInt mdigest = bigInit(0);
+.sp
+BigMessageDigest("foo", mdigest, SHS);
+.sp
+DSAsig = DSASign(mdigest, DSAKeys->DSAPrivateKey, randomStart);
+.sp
+
+To verify:
+.sp
+BigInt mdigest = bigInit(0);
+.sp
+BigMessageDigest("foo", mdigest, SHS);
+.sp
+Boolean verify = DSAVerify(mdigest, DSAsig, DSAKeys->DSAPublicKey);
+
+
+.fi
+.SH SEE ALSO
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+.BR bigPow (3BM),
+.BR EGSign (3BM),
+.BR EGVerify (3BM),
+.BR genStrongPrimeSet (3BM)
+.BR start_quantize (3BM)
+.BR end_quantize (3BM)
+

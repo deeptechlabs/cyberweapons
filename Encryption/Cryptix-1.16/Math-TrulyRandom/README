@@ -1,0 +1,15 @@
+Documentation
+=============
+
+Could do with some improvement.
+
+
+Testing
+=======
+
+It would be nice to do some statistical "randomness" tests on the
+random values.  This should probably be quite easy to do in perl,
+although the difficulty is in the slowness of the RNG making it quite
+hard to generate many values.
+
+mail bug reports to cryptix-perl-bugs@systemics.com

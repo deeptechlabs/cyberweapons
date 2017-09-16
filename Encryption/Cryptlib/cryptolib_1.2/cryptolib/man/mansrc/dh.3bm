@@ -1,0 +1,80 @@
+.\" @(#)dh.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH "Diffie-Hellman Key exchange tools" 3BM
+.SH NAME
+genDiffieHellmanSet, DiffieHellmanInit, DiffieHellmanGneKey, freeDiffieHellmanSet, randBytesNeededForDHSet, randBytesNeededForDHInit
+.SH SYNOPSIS
+.nf
+\fB#include <libcrypt.h>\fR
+
+typedef struct {
+	int qbits;
+	BigInt alpha, p, q;
+	Table *alphatab;
+} DiffieHellmanSet;
+
+.LP
+\fBint randByteNeededForDHSet (int pbits, int qbits);\fR
+.LP
+\fBDiffieHellmanSet *GenDiffieHellmanSet (int pbits, int qbits, BigInt randomStart);\fR
+.LP
+\fBint randBytesNeededForDHInit (int qbits);\fR
+.LP
+\fBvoid DiffieHellmanInit (DiffieHellmanSet *myDHset, BigInt my_exponent, BigInt my_msg1, BigInt randomStart);\fR
+.LP
+\fBvoid quantized_DiffieHellmanInit (DiffieHellmanSet *myDHset, BigInt my_exponent, BigInt my_msg1);\fR
+.LP
+\fBvoid DiffieHellmanGenKey (DiffieHellmanSet *myDHset, BigInt recd_msg1,
+				BigInt my_exponent, BigInt DH_key));\fR
+.LP
+\fBvoid quantized_DiffieHellmanGenKey (DiffieHellmanSet *myDHset, BigInt recd_msg1,
+				BigInt my_exponent, BigInt DH_key));\fR
+.LP
+\fBvoid freeDiffieHellmanSet (DiffieHellmanSet *DHset);\fR
+
+.fi
+.SH DESCRIPTION
+.LP
+An implementation of Diffie-Hellman key exchange.
+If $randomStart$ is not to be NULL in $genDiffieHellmanSet$ use $randBytesNeededForDHSet$
+with the length of p and q in bits to determine the amount of random data needed
+for parameter generation.
+Generate a DiffieHellmanSet which contains a base, a prime p, a prime factor of p-1,
+and a table for using Brickell's speedup for exponentiation.
+.LP
+This Set must be agreed upon by the participants in the exchange.
+my_exponent should usually be initialized to 0 unless you want to use a prespecified value.
+.LP
+$DiffieHellmanInit$ is then called in which the caller's exponent is used
+to calculate his half of the exchange.  If $randomStart$ is not NULL,
+use $randBytesNeededForDHInit$ with the legnth of the sub-prime, q, in bits as
+its argument, to find the number of random bytes needed
+to initialize the search for a proper exponent.
+After this function call, my_exponent should be protected (say using BignumDESEncrypt())
+and my_msg1 sent to the other party in the exchange.
+.LP
+After receiving the other party's message, recd_msg1, uncover your exponent and proceed.
+DH_key will contain the full pbits worth of Diffie Hellman key material for you to process
+as necessary.
+.LP
+The quantized version
+use STD_QUANTUM milliseconds as the quantum for execution to defend against
+Kocher-style timing attacks.
+STD_QUANTUM is defined in libcrypt.h and should be tuned to your environment.
+.LP
+.fi
+.SH "SEE ALSO"
+.BR bigInit (3BM),
+.BR bigTest (3BM),
+.BR bigBits (3BM),
+.BR bigBytes (3BM),
+.BR bigToBuf (3BM),
+.BR bufToBig (3BM),
+.BR fBigPrint (3BM),
+.BR atobig (3BM),
+.BR bigPow (3BM),
+.BR bignumDES[En/De]crypt (3BM)
+.BR start_quantize (3BM)
+.BR end_quantize (3BM)

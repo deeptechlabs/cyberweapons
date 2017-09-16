@@ -1,0 +1,20 @@
+-*- text -*-
+
+I am not quite satisfied with this package yet. In my opinion (and
+Keith Bostics) it should contain also floating point capability. If
+you have suggestions and/or enhancements, please send them to me.
+
+Ndc program under prog directory is a dc type program which now
+calculates only integer and rational numbers. It should be extended to
+handle real numbers, too.
+
+I decided to release this now because there seems to be a need for
+exponentiation ciphers. For examnple, this package can be used to
+implement RSA or Diffie-Hellman scheme. DH is used in SUNs secure
+RPC package as a secret shaering mechanism.
+
+share-secret gives an opportunity to send encrypted messages over
+network if there is a mean to transfer shorter messages unaltered
+between sites (by telephone, for example).
+
+	Antti Louko

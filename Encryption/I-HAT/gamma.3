@@ -1,0 +1,128 @@
+'\" e
+.TH GAMMA 3V VMB
+'\"	last edit:	91/04/01	D A Gwyn
+'\"	SCCS ID:	@(#)gamma.3	1.3 (export version)
+.EQ
+delim @@
+.EN
+.SH NAME
+gamma \- gamma and related functions
+.SH SYNOPSIS
+.ds cB (CB\" change to B (without the paren) if	you don't have a CB font
+\f\*(cB#include	"gamma.h"
+.br
+/* \fPAll the following	functions are declared in this header file.\f\*(cB */
+.sp
+double Gamma(double z);
+.br
+double LGamma(double z);
+.br
+double Factorial(int n);
+.br
+double LFactorial(int n);
+.br
+double BCoeff(int n, int k);
+.br
+double Beta(double z, double w);
+.br
+double PGamma(double a,	double x);
+.br
+double QGamma(double a,	double x);
+.br
+double Erf(double x);
+.br
+double Erfc(double x);
+.br
+double CPoisson(double x, int k);
+.br
+double PChiSq(double chisq, int	nu);
+.br
+double QChiSq(double chisq, int	nu);\fP
+.SH DESCRIPTION
+\f\*(cBGamma\fP
+returns	the real gamma function	value
+@GAMMA (z)~==~ int "" from 0 to	inf t sup z-1 e	sup -t dt@
+for @z>0@.
+.P
+\f\*(cBLGamma\fP
+returns	the value
+@ln ~ GAMMA (z)@
+for @z>0@.
+.P
+\f\*(cBFactorial\fP
+returns	the factorial function value
+@n! ~=~	GAMMA (n+1)@
+for @n>=0@.
+.P
+\f\*(cBLFactorial\fP
+returns	the value
+@ln ~n!@\&
+for @n>=0@.
+.P
+\f\*(cBBCoeff\fP
+returns	the binomial coefficient value
+@size +8 ( pile	{ n above k } size +8 )	~==~n! over k!(n-k)!@\&
+for @0<=k<=n@.
+.P
+\f\*(cBBeta\fP
+returns	the real beta function value
+@B(z,w)~==~ int	"" from	0 to 1 t sup z-1 (1-t) sup w-1 dt@
+for @z>0@ and @w>0@.
+.P
+\f\*(cBPGamma\fP
+returns	the incomplete gamma function value
+@P(a,x)~==~ 1 over { GAMMA (a) } int ""	from 0 to x e sup -t t sup a-1 dt@
+for @a>0@ and @0<=x<= inf@.
+.P
+\f\*(cBQGamma\fP
+returns	the value
+@1-P(a,x)@.
+.P
+\f\*(cBErf\fP
+returns	the error function value
+@roman erf (x)~==~2 over sqrt pi int ""	from 0 to x e sup {-t sup 2 } dt@.
+.P
+\f\*(cBErfc\fP
+returns	the complementary error	function value
+@1- roman erf (x)@.
+.P
+\f\*(cBCPoisson\fP
+returns	the cumulative Poisson probability value
+@P sub x (<k)@,
+which is the probability that the number of Poisson random events occurring
+will be	between	0 and @k-1@ inclusive,
+where the expected mean	is @x@.
+.P
+\f\*(cBPChiSq\fP
+returns	the value
+@P( chi	sup 2 |	nu )@,
+which is the probability that the observed chi-square for a correct model
+will be	less than @chi sup 2@,
+where @nu@ is the number of degrees of freedom.
+.P
+\f\*(cBQChiSq\fP
+returns	the value
+@1-P( chi sup 2	| nu )@,
+which is the probability that the observed chi-square
+will exceed @chi sup 2@	by chance even for a correct model,
+where @nu@ is the number of degrees of freedom.
+.P
+All these functions return
+.I approximations
+to the exact results,
+generally accurate to about seven significant digits.
+.SH CAVEATS
+Overflow can occur.
+.P
+Invalid	parameters cause a diagnostic and termination of the process.
+.SH FILES
+\f\*(cBgamma.h\fP		header file containing definitions
+.SH AUTHORS
+William	H.\& Press,
+Brian P.\& Flannery,
+Saul A.\& Teukolsky,
+and
+William	T.\& Vetterling
+(\fINumerical Recipes in C\fP, Chapter 6)
+.br
+Douglas	A.\& Gwyn, U.S.\& Army BRL/VLD-VMB

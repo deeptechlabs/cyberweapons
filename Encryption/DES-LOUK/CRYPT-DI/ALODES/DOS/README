@@ -1,0 +1,12 @@
+The purpose of scripts in this directory is to copy DES sources for
+DOS environment. script get-file-names prints all relevant source file
+names and copy-files.perl copies files into corresponding directories
+here. File names are converted into a suitable form for DOS.
+
+Put files in this collection under directory alodes/dos cd there and
+give command:
+
+./get-file-names | ./copy-files.perl
+
+To run this, you need perl, of course. After this, copy directories
+lib libdir and prog to a DOS machine and compile.

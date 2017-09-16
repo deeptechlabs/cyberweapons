@@ -1,0 +1,6 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ MANIFEST                   1	This shipping list
+ Makefile                   1	
+ rnd.c                      1	
+ tran.c                     1	

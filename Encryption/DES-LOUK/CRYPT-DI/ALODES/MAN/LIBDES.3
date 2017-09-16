@@ -1,0 +1,145 @@
+'	# -*- nroff -*-
+.TH LIBDES 3 "March 9, 1989"
+.GN 2
+.SH NAME
+des_set_key, des_ecb_encrypt, des_cbc_encrypt, des_pcbc_encrypt,
+string_to_key \- DES encryption
+.SH SYNOPSIS
+.nf
+.nj
+.B #include <des.h>
+.PP
+.B des_set_key(key,schedule)
+.B C_Block	*key;
+.B Key_schedule	*schedule;
+.PP
+.B des_ecb_encrypt(input,output,schedule,mode)
+.B C_Block	*input;
+.B C_Block	*output;
+.B Key_schedule	*schedule;
+.B int		mode;
+.PP
+.B des_cbc_encrypt(input,output,length,schedule,ivec,mode)
+.B C_Block	*input;
+.B C_Block	*output;
+.B int		length;
+.B Key_schedule	*schedule;
+.B C_Block	*ivec;
+.B int		mode;
+.PP
+.B des_pcbc_encrypt(input,output,length,schedule,ivec,mode)
+.B C_Block	*input;
+.B C_Block	*output;
+.B int		length;
+.B Key_schedule	*schedule;
+.B C_Block	*ivec;
+.B int		mode;
+.PP
+.B string_to_key(asckey,key)
+.B char	*asckey;
+.B C_Block	*key;
+.PP
+.B des_crypt(result,key,salt)
+.B char	*result;
+.B char	*passwd;
+.B char	*salt;
+.PP
+.B extern const C_Block	des_zero_block;
+.PP
+.fi
+.SH DESCRIPTION
+These library functions implement DES-algorithm with different
+variations. Type
+.I C_Block
+is a data type containing eight bytes of
+information. The least significant bit of the first byte of
+.I C_Block
+is bit number 1 as specified in DES standard.
+.I C_Block
+is defined as follows:
+.PP
+.nf
+.nj
+.B	typedef unsigned char	des_u_char;
+.B	typedef struct {
+.B 	  des_u_char	data[8];
+.B	} C_Block;
+.fi
+.PP
+A key schedule must be computed before encryption routines can be used.
+This is done with function
+.I des_set_key,
+which computes
+.I schedule
+from
+.I key.
+.I Des_ecb_encrypt
+encrypts one block of data at
+.I *input
+to
+.I *output
+using
+.I schedule.
+If mode is
+.I DES_ENCRYPT,
+the data is encrypted; if mode is
+.I DES_DECRYPT,
+the data is decrypted. If initial permutation or/and
+final permutation is not wanted, mode can be ored (|) with
+.I DES_NOIPERM
+or/and
+.I DES_NOFPERM.
+.PP
+.I Des_cbc_encrypt
+encrypts length bytes of data at
+.I *input
+to
+.I *output
+in cipher block chaining mode. Initial vector is at
+.I *ivec.
+.I *ivec
+is also updated to contain the final vector.
+.PP
+.I Des_pcbc_encrypt
+uses a modified cipher block chaining. This mode can
+be used to detect if encrypted data have been tampered. In pcbc mode
+changing ciphertext data affects all the following decrypted cleartext
+data.
+.PP
+.I String_to_key
+function converts ascii string
+.I asckey
+into a DES key
+.I *key
+using one way function which is based on DES algorithm.
+.PP
+.I des_crypt
+is a replacement for standard C-library crypt function.
+It does a one way encryption for user-supplied passwd
+.I passwd
+modified with
+.I salt
+string.
+.I salt
+is a two character string which consist of character set '.', '/',
+0-9, A-Z and a-z.
+.I des_crypt
+returns a 13-character string in this same character set.  Salt is in
+the first two characters. If
+.I result
+pointer is supplied my caller,
+.I des_crypt
+places the return value into that string. Otherwise a
+pointer to a static string is returned.
+.PP
+I propose
+.I des_crypt
+as a new freely distributable passwd hashing function for implementations
+which need to use the standard passwd file structure with its limitations.
+.I des_crypt
+doen not produce same results than standard crypt function. The
+necessary info to make totally crypt-compatible function is a trade
+secret of AT&T.
+.SH AUTHOR
+Antti Louko (alo@kampi.hut.fi), Helsinki University of Technology
+Computing Centre

@@ -1,0 +1,97 @@
+This is an optimised implementation of IDEA in C.  Compiling it
+-DTEST generates a standalone test driver for timing purposes.
+Otherwise, it is intended for use as a subroutine library.
+
+This code is in the public domain.
+
+There are a few #defines that can be added to change the performance
+of the code.  The code operates identically with any combination of
+these parameters; it just does so at different speeds.  The defaults
+are good for microcomputer CISCs.  They are:
+
+	-DSMALL_CACHE
+	This takes the multiplications modul 65537 out of line,
+	hopefully so the core will fit into a small cache such as
+	the 68020.  This is not very relevant for caches >1K,
+	which is the norm these days.  It is slower unless
+	the inline code blows the cache.
+
+	-DAVOID_JUMPS
+	If this is defined, a different inline multiply is used
+	that does not have any conditional branches.  This may be faster
+	on a highly pipelined machine with a high branch penalty.
+	This is a few percent slower on a low-end SPARC. -DSMALL_CACHE
+	overrrides this.
+
+	-DIDEA32
+	If this is defined, the code uses 32-bit, asopposed to 16-bit
+	operations as much as possible.  This is much faster on many
+	RISC machines (30% on a low-end SPARC).
+
+The operations that are designed to be accessed are Cipher Feedback
+en- and decryption, and cryptographically strong random number
+generation.
+
+For en- and decryption, you need to provide one of these structures,
+declarted in idea.h:
+
+struct IdeaCfbContext {
+	byte iv[8];
+	word16 key[IDEAKEYLEN];
+	int bufleft;
+};
+
+The functions that operate on it are:
+
+void ideaCfbInit(struct IdeaCfbContext *context, byte const (key[16]));
+
+This gets a context structure ready for use with a given key.
+All previous information is discarded.  An all-zero initial
+vector is supplied.  The key is copied; it may be overwritten
+when this call returns.
+
+void ideaCfbReinit(struct IdeaCfbContext *context, byte const *iv);
+
+This restarts a context structure with a given initial vector.
+If a NULL pointer is passed, an all-zero initial vector is assumed.
+The IV is copied; it may be overwritten when this call returns.
+
+void ideaCfbEncrypt(struct IdeaCfbContext *context,
+		    byte const *src, byte *dest, int count);
+
+This encrypts a buffer of count bytes of data.  The destination may be the
+same as the source.  You may call this function on each byte of the
+input separately, or on 1024 bytes all at once.  The encrypted bytes
+will be the same.  (If the key and IV are the same.)
+
+void ideaCfbDecrypt(struct IdeaCfbContext *context,
+		    byte const *src, byte *dest, int count);
+
+void ideaCfbDestroy(struct IdeaCfbContext *context);
+
+This erases all potentially sensitive data from the IdeaCfbContext
+structure.  For use after the last en- or decryption operation.
+
+This operates similarly, but decrypts.
+
+For random number generation, you need one of these structures:
+
+struct IdeaRandContext {
+	byte outbuf[8];
+	word16 key[IDEAKEYLEN];
+	int bufleft;
+	byte internalbuf[8];
+	byte timestamp[8];
+};
+
+You initialize the structure with the function
+
+void ideaRandInit(struct IdeaRandContext *context, byte const (key[16]),
+		  byte const (seed[8]), word32 timestamp);
+
+The "timestamp" can be anything, but the highest-resolution timer
+you have available is good.
+
+byte ideaRandByte(struct IdeaRandContext *c);
+
+This produces another byte in the random sequence.

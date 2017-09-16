@@ -1,0 +1,68 @@
+--------------------Configuration: prngcore - Win32 Debug--------------------
+Begining build with project "C:\Work\PRNG\yarrow\prngcore\prngcore.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\smf" /I "..\entropyhooks" /I "..\Zlib" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/prngcore.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x1009 /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/prngcore.bsc" "
+			"COFF Linker for 80x86" with flags "zlibd.lib smf.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/prngcore.pdb" /debug /machine:I386 /out:"Debug/prngcore.dll" /implib:"Debug/prngcore.lib" /pdbtype:sept /libpath:"..\smf\debug" /libpath:"..\Zlib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\WINDOWS\TEMP\RSPB395.TMP" with contents </nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\smf" /I "..\entropyhooks" /I "..\Zlib" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/prngcore.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"C:\Work\PRNG\yarrow\prngcore\prng.c"
+>
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSPB395.TMP" 
+Creating temp file "C:\WINDOWS\TEMP\RSPB396.TMP" with contents <zlibd.lib smf.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/prngcore.pdb" /debug /machine:I386 /out:"Debug/prngcore.dll" /implib:"Debug/prngcore.lib" /pdbtype:sept /libpath:"..\smf\debug" /libpath:"..\Zlib" 
+.\Debug\95only.obj
+.\Debug\comp.obj
+.\Debug\ntonly.obj
+.\Debug\prng.obj
+.\Debug\sha1mod.obj
+\Work\PRNG\yarrow\smf\Debug\smf.lib>
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSPB396.TMP" 
+Compiling...
+prng.c
+Linking...
+   Creating library Debug/prngcore.lib and object Debug/prngcore.exp
+Creating temp file "C:\WINDOWS\TEMP\RSP14.BAT" with contents <@echo off
+copy debug\prngcore.dll C:\windows\system
+>
+Creating command line "C:\WINDOWS\TEMP\RSP14.BAT" 
+
+        1 file(s) copied
+--------------------Configuration: frontend - Win32 Debug--------------------
+Begining build with project "C:\Work\PRNG\yarrow\frontend\frontend.dsp", at root.
+Active configuration is Win32 (x86) Application (based on Win32 (x86) Application)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /MLd /W3 /Gm /GX /Zi /Od /I "..\entropyhooks" /I "..\prngcore" /I "..\Zlib" /I "..\smf" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/frontend.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x1009 /fo"Debug/frontend.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/frontend.bsc" "
+			"COFF Linker for 80x86" with flags "prngcore.lib entropyhooks.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/frontend.pdb" /debug /machine:I386 /out:"Debug/frontend.exe" /pdbtype:sept /libpath:"..\prngcore\debug" /libpath:"..\entropyhooks\debug" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x1009 /fo"Debug/frontend.res" /d "_DEBUG" "C:\Work\PRNG\yarrow\frontend\frontend.rc"" 
+Creating temp file "C:\WINDOWS\TEMP\RSP30.TMP" with contents </nologo /MLd /W3 /Gm /GX /Zi /Od /I "..\entropyhooks" /I "..\prngcore" /I "..\Zlib" /I "..\smf" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/frontend.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"C:\Work\PRNG\yarrow\frontend\FrontEnd.c"
+>
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP30.TMP" 
+Creating temp file "C:\WINDOWS\TEMP\RSP0031.TMP" with contents <prngcore.lib entropyhooks.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/frontend.pdb" /debug /machine:I386 /out:"Debug/frontend.exe" /pdbtype:sept /libpath:"..\prngcore\debug" /libpath:"..\entropyhooks\debug" 
+.\Debug\FrontEnd.obj
+.\Debug\frontend.res
+\Work\PRNG\yarrow\entropyhooks\Debug\entropyhooks.lib
+\Work\PRNG\yarrow\prngcore\Debug\prngcore.lib>
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP0031.TMP" 
+Compiling resources...
+Compiling...
+FrontEnd.c
+C:\Work\PRNG\yarrow\frontend\FrontEnd.c(45) : warning C4028: formal parameter 3 different from declaration
+Linking...
+
+
+
+frontend.exe - 0 error(s), 1 warning(s)

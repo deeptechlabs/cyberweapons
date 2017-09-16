@@ -1,0 +1,2517 @@
+             RIPEM API Library Reference for RIPEM version 3.0
+
+                               Jeff Thompson
+            last modified 9/17/97; Converted to HTML August 1997
+
+NOTICE: No representations are made concerning either the merchantability
+of this software or the suitability of this software for any particular
+purpose. It is provided "as is" without express or implied warranty of any
+kind.
+
+License to copy and use this software is granted provided that these
+notices are retained in any copies of any part of this documentation and/or
+software.
+
+CONTENTS
+
+   * INTRODUCTION
+        o Example Application: RSIGN
+        o Compiling the RIPEM library
+        o Compiling and running RSIGN
+   * RIPEM API FUNCTION OVERVIEW
+        o Lists: The TypList Structure
+        o RIPEM Database
+        o RIPEM Database Cursor
+        o Distinguished Names
+        o Attributes: The RIPEMAttributes Structure
+        o Decoding Certificates
+        o Logging In and Managing User Keys
+        o Managing Certification Information
+        o Message Processing
+        o Utility Functions
+        o Compatibility with Early Versions of RIPEM
+   * RIPEM API FUNCTION DETAILS
+   * APPENDIX A: SELECTED RSAREF FUNCTIONS
+        o Random Structures
+        o R_DigestBlock
+
+Introduction
+
+The RIPEM library provides an application programming interface (API) which
+an application can call to perform privacy-enhanced messaging. The RIPEM
+API is carefully designed so that the RIPEM library performs the
+cryptography and message formatting and parsing while leaving all of the
+input/output operations up to the application. Since it is the application,
+and not the RIPEM library, which performs the message I/O and user
+interfacing, the RIPEM library can be used in many environments. One
+example is the command-line application (provided with the standard RIPEM
+release) which processes messages in files and takes most input from
+command-line arguments. But the RIPEM library can also be used, for
+example, in an application where message I/O is done with memory buffers or
+communications ports, and user input is done with a graphical user
+interface.
+
+Throughout this document, "you" refers to you, the programmer, who are
+writing an application which makes calls to the RIPEM API. It is assumed
+you have read the RIPEM User's Guide and are therefore familiar with the
+following topics:
+
+   * the basics of public key encryption: what public and private keys are
+   * cryptographic "signatures" made with the private key
+   * certificates which are used to validate a user's public key
+   * certificate chains and certificate statuses (VALID, PENDING, EXPIRED,
+     etc.)
+   * setting a user's "chain length allowed" to allow extended certificate
+     chains
+   * certificate revocation lists (CRLs) which are used as a "hot list" for
+     revoked private keys
+   * the difference between MIC-ONLY, MIC-CLEAR and ENCRYPTED messages
+   * the difference between ripem1 and pem format messages
+   * the RIPEM home directory
+   * the RIPEM preferences file which holds important information like
+     chain length allowed
+
+It is also assumed you know how to use the random number functions and
+R_DigestBlock from RSAREF. Full details are in rsaref.txt in the RSAREF doc
+directory. The relevant details are reproduced for your convenience in
+Appendix A.
+
+Questions should be sent to the Usenet newsgroup alt.security.ripem.
+
+The rest of this chapter introduces RIPEM with an example application. The
+chapter "RIPEM API Function Overview" gives a quick overview of the RIPEM
+API functions in their natural groupings. And, the chapter "RIPEM API
+Function Details" lists the API functions alphabetically and gives details
+on calling requirements. Also, some relevant excerpts from the RSAREF
+reference manual are reproduced in Appendix A.
+
+Of course, another great source of "documentation by example" is the
+command-line applications RIPEM and RCERTS provided with the standard RIPEM
+release. To see any of the RIPEM API functions used in context, you can
+scan the files in the ripem/cmdline directory. Also, the full source of the
+RIPEM library is in the ripem/main directory, and looking at how an API
+functions is coded may answer many of your questions.
+
+Example Application: RSIGN
+
+As an introduction to the RIPEM API, here is a short application, called
+RSIGN, which takes an input line of text and creates a MIC-CLEAR message
+from it. RSIGN is meant to show the minimum set of calls needed to use the
+RIPEM API. To keep the code simple, the output message is sent to stdout
+and the RIPEM home directory, username and password are hard-coded. This
+code is provided in the file rsign.c in the RIPEM documentation directory.
+
+#include<stdio.h>
+#include<string.h>
+#include "global.h"
+#include "rsaref.h"
+#include "ripem.h"
+
+All RIPEM applications must include stdio.h, global.h, rsaref.h, and
+ripem.h. stdio.h is needed because ripem.h uses the FILE type for database
+I/O, etc. global.h is used by rsaref.h and ripem.h. rsaref.h is the header
+file for the RSAREF cryptographic library which defines types like
+R_PUBLIC_KEY. And ripem.h is the header file for the RIPEM API.
+
+void main ()
+{
+  RIPEMInfo ripemInfo;
+
+The ripemInfo structure holds the information used by RIPEM such as the
+user's name, public and private keys, and certification preferences. The
+ripemInfo structure also holds internal state information used between
+calls such as RIPEMEncipherUpdate and RIPEMEncipherFinal. This is because
+the RIPEM API library is fully reentrant, meaning that all dynamic memory
+is maintained by the caller of the library, as opposed to a global variable
+within the library's data space.
+
+  RIPEMDatabase ripemDatabase;
+
+The RIPEMDatabase structure holds information and FILE handles for the
+RIPEM data files such as pubkeys, privkey, crls and preferen.
+
+  char *errorMessage;
+  unsigned char *partOut, line[256];
+  unsigned int partOutLen, lineLen;
+
+  RIPEMInfoConstructor (&ripemInfo);
+
+This initializes ripemInfo, setting memory pointers to NULL, etc.
+RIPEMInfoConstructor must be called for any RIPEMInfo structure before it
+is used. Also, RIPEMInfoDestructor must be called when it is done being
+used to free up any memory, etc. It is fair to say that the RIPEM API is a
+C++ "wannabe". If the RIPEM API were actually C++, RIPEMInfo would be a
+class and the constructor and destructor would automatically be called.
+
+  RIPEMDatabaseConstructor (&ripemDatabase);
+
+Similar to RIPEMInfoConstructor, RIPEMDatabaseConstructor must be called
+for any RIPEMDatabase structure before it is used. Also,
+RIPEMDatabaseDestructor must be called when it is done being used to close
+files, etc.
+
+  /* For error, break to end of do while (0) block. */
+
+Processing must be aborted if any RIPEM API function returns an error
+(except for some explicitly stated cases such as RIPEMLoginUser returning
+ERR_PREFERENCES_CORRUPT). The do {} while (0) construct simply sets up a
+block where any break statement (usually due to error) will cause a jump to
+the end of the block. This is a more structured approach than using a goto
+statement.
+
+  do {
+    /* Initialize the database to the home directory, which must already
+         exist and end in the directory seperator.
+     */
+    if ((errorMessage = InitRIPEMDatabase
+         (&ripemDatabase, ".\\", &ripemInfo)) != (char *)NULL)
+      break;
+
+InitRIPEMDatabase opens all the data files in the RIPEM home directory, or
+creates them if they don't exist. For simplicity here, the directory name
+is hard-coded. A full implementation would get this from an environment
+variable, a command line argument, etc.
+
+To get a full path name, RIPEM simply concatentates the file name to the
+supplied RIPEM home directory. Therefore, the correct seperator for the
+operating system must be at the end of the directory string as supplied to
+InitRIPEMDatabase. (Here it is the DOS backslash, but it could be the UNIX
+forward slash, etc.) Also, even though RIPEM can create the data files, it
+cannot create the RIPEM home directory itself. Therefore, the calling
+application is responsible for checking that the directory exists and for
+creating it if it doesn't. The documentation for InitRIPEMDatabase suggests
+a way to check if the directory exists.
+
+As with most RIPEM API functions, this returns (char *)NULL for success or
+a pointer to an error string. The if statement here simply calls the
+function, assigns errorMessage to the return value and breaks if it is not
+null.
+
+    if ((errorMessage = RIPEMLoginUser
+         (&ripemInfo, "test", &ripemDatabase,
+          (unsigned char *)"password", strlen ("password")))
+        != (char *)NULL)
+      break;
+
+This operation unlocks the user's private key using the supplied password
+and places the user's private key, public key, self-signed certificate and
+other information into ripemInfo.
+
+For simplicity here, the username and password are hard-coded. A full
+implementation would typically get the username from an environment
+variable and get the password by prompting the user.
+
+    /* Prepare for a MIC-CLEAR message. Use null values for
+         encryptionAlgorithm, recipientKeys and recipientKeyCount.
+     */
+    if ((errorMessage = RIPEMEncipherInit
+         (&ripemInfo, MODE_MIC_CLEAR, MESSAGE_FORMAT_RIPEM1, 0,
+          (RecipientKeyInfo *)NULL, 0)) != (char *)NULL)
+      break;
+
+The RIPEM API uses an Init/Update/Final structure to process data, similar
+to RSAREF. Here, the operation to create a MIC-CLEAR message is
+initialized. Note that a pointer to the ripemInfo is passed in so that
+RIPEM can use it to keep state information between init, update and final.
+
+    /* Read in the test string from the stdin. Using fgets instead of
+         gets means we get the ending '\n' as required by RIPEMEncipher.
+     */
+    puts ("Enter text to sign (one line):");
+    fgets ((char *)line, sizeof (line), stdin);
+    lineLen = strlen ((char *)line);
+
+The documentation for RIPEMEncipherUpdate describes what format is required
+for the text to be processed. Specifically, using fgets instead of gets
+keeps the '\n' end of line character required by RIPEM.
+
+    /* Digest the message.  (In a file-based application, this would
+         be called multiple times as each part of the file is read in.)
+     */
+    if ((errorMessage = RIPEMEncipherDigestUpdate
+         (&ripemInfo, line, lineLen)) != (char *)NULL)
+      break;
+
+There is a "bug" in the standard for PEM messages in that the signature
+information is placed before the text, instead of after. This means that an
+application must output the digital signature before it writes the text to
+the output. Therefore a first pass on the text is necessary to simply
+digest it for computing the signature, hence the need for
+RIPEMEncipherDigestUpdate. After this, the signature is written to the
+output stream and RIPEMEncipherUpdate is used to actually write out the
+text, encoding and encrypting it as necessary. (For deciphering a message,
+only one pass is necessary, so there is no "RIPEMDecipherDigestUpdate".)
+
+RIPEM can process text of unlimited length by calling update multiple
+times. Here, we have a short buffer so only one call is necessary. But a
+full implementation would read in part of the text, call
+RIPEMEncipherDigestUpdate, read in the next part, etc.
+
+    /* Produce the message output and write to stdout.
+       (In a file-based application, the file would first be
+       rewound and this function would be called multiple times
+       as each part of the file is read in.)
+     */
+    if ((errorMessage = RIPEMEncipherUpdate
+         (&ripemInfo, &partOut, &partOutLen, line, lineLen,
+          &ripemDatabase)) != (char *)NULL)
+      break;
+
+RIPEMEncipherUpdate performs the second pass on the text, producing the
+output text encoded and encrypted as necessary. Here, we have a short
+buffer so only one call is necessary. But a full implementation would read
+in part of the text, call RIPEMEncipherUpdate, write out the result, read
+in the next part, etc. (The first call to RIPEMEncipherUpdate also outputs
+all the header information including the signature.) When using a file,
+don't forget to rewind it after reading it in for
+RIPEMEncipherDigestUpdate.
+
+Note that partOut itself is an unsigned char *, and we pass a pointer to it
+so that RIPEMEncipherUpdate can set partOut to a working buffer which
+contains the output. This buffer is allocated by RIPEM and maintained
+within ripemInfo. This way, the caller does not need any guesswork to
+allocate output buffers of the right size. But, the buffer pointed to by
+partOut is only valid until the next call to RIPEM, so it must be written
+out or copied immediately. Also, the caller does not need to free the
+memory buffer returned in partOut. This is done by RIPEMInfoDestructor.
+
+    fwrite (partOut, 1, partOutLen, stdout);
+
+Write the output buffer returned by RIPEMEncipherUpdate.
+
+    /* Finalize and flush the final output.
+     */
+    if ((errorMessage = RIPEMEncipherFinal
+         (&ripemInfo, &partOut, &partOutLen, &ripemDatabase))
+        != (char *)NULL)
+      break;
+    fwrite (partOut, 1, partOutLen, stdout);
+
+This finalizes the enciphering process, flushing any internal buffers and
+writing out the end message boundary. The output buffer is returned by
+RIPEMEncipherFinal in the same manner as with RIPEMEncipherUpdate.
+RIPEMEncipherFinal should only be called once.
+
+  } while (0);
+
+  RIPEMInfoDestructor (&ripemInfo);
+  RIPEMDatabaseDestructor (&ripemDatabase);
+
+These are the matching destructors to RIPEMInfoConstructor and
+RIPEMDatabaseConstructor, zeroizing any sensitive data and freeing
+allocated memory. These should be called regardless of any errors during
+processing.
+
+  if (errorMessage != (char *)0)
+    printf ("ERROR: %s\n", errorMessage);
+
+If we broke out of the do while (0) block because of an error, errorMessage
+is set to the string returned by the function, so print it here.
+
+}
+
+Compiling the RIPEM library
+
+All of the source to the RIPEM library is in the ripem/main directory of
+the standard RIPEM release. All .c files should be compiled, except for
+msc7.c which should only be used with Microsoft C version 7.0 and above,
+and except for timeshif.c which should only be used with the Macintosh
+Turbo C compiler.
+
+For examples of the flags to use when compiling, see the makefile that is
+used to make the RIPEM command-line application for your platform. Note
+that the Unix makefile, for example, compiles all of the RIPEM library
+source in ripem/main as well as the command-line source in ripem/cmdline
+and links all these object files explicitly into the executable. However,
+it is also possible (and preferable) to load the object files from
+ripem/main into an object library first, such as ripemlib.a, and then to
+link the library to the object files for the application (such as those in
+ripem/cmdline).
+
+
+Compiling and running RSIGN
+
+Since the RIPEM home directory, username and password are hard-coded, you
+may either change the code to use your own, or you can simply create the
+test user. To create the test user, change directory to where you will run
+RSIGN and enter the following at the command prompt:
+
+        ripem -g -R eks -H . -u test -k password
+
+Compile rsign.c and link it to the RIPEM library and the RSAREF library.
+When you run RSIGN, it gives the prompt:
+
+        Enter text to sign (one line):
+
+Enter a single line of text, such as "This is a signed message." RSIGN then
+prints the MIC-CLEAR message which looks like:
+
+-----BEGIN PRIVACY-ENHANCED MESSAGE-----
+Proc-Type: 2001,MIC-CLEAR
+Content-Domain: RFC822
+Originator-Name: test
+Originator-Certificate:
+ MIIBrzCCAVkCEQCg1MQZAAQ8vfaemcgFv1WjMA0GCSqGSIb3DQEBAgUAMFwxCzAJ
+ BgNVBAYTAlVTMSAwHgYDVQQKExdSU0EgRGF0YSBTZWN1cml0eSwgSW5jLjEcMBoG
+ A1UECxMTUGVyc29uYSBDZXJ0aWZpY2F0ZTENMAsGA1UEAxMEdGVzdDAeFw05NTAz
+ MDcwNTAwMzhaFw05NjAzMDYwNTAwMzhaMFwxCzAJBgNVBAYTAlVTMSAwHgYDVQQK
+ ExdSU0EgRGF0YSBTZWN1cml0eSwgSW5jLjEcMBoGA1UECxMTUGVyc29uYSBDZXJ0
+ aWZpY2F0ZTENMAsGA1UEAxMEdGVzdDBZMAoGBFUIAQECAgIAA0sAMEgCQQDOdsGA
+ xEgbvsKuOZcQSRHvHXP9IrVOzfqP/FKuuamitXvq2iU0+zYXhqYZLivY5elgZZz0
+ gaTWzv9CfRV33wD5AgMBAAEwDQYJKoZIhvcNAQECBQADQQA77MfGHXhNHFPEIIAr
+ +p9kQ9L3zqvaog02WgtidUNZmYWNSZSHgkE0ARprtHiLyeBcx+qwtH+AKpKG6piR
+ 0ytq
+MIC-Info: RSA-MD5,RSA,
+ zB6IRi4tdvg0ORL31shK7GEzT0Hedc35gLUWKKGcJHDUsa9tJ8YlS58UBQkLQp8r
+ W4EROcRzfXdUYzSUUOQmXw==
+
+This is a signed message.
+-----END PRIVACY-ENHANCED MESSAGE-----
+
+RIPEM API Function OVERVIEW
+
+This chapter is a quick overview the RIPEM API functions. This is meant to
+give a general sense of how the API functions would fit into your
+application, and describes the approach to using certificates, lists and
+other special constructs. Specific details are given in the following
+chapter, RIPEM API Function Details. Also, you should be familiar with the
+RIPEM concepts explained in the RSIGN example in the introduction.
+
+
+Lists: The TypList Structure
+
+The need for a general list handling structure in RIPEM is answered by the
+TypList structure. The most important use of TypList is the list of
+certificates in a certificate chain returned by SelectCertChain. TypList is
+defined as:
+
+typedef struct struct_list {
+  struct struct_list_entry *firstptr;  /* NULL if empty list */
+  struct struct_list_entry *lastptr;
+} TypList;
+
+typedef struct struct_list_entry {
+  struct struct_list_entry *nextptr;      /* NULL if no next */
+  struct struct_list_entry *prevptr;  /* NULL if no previous */
+  void *dataptr;
+  unsigned int datalen;
+} TypListEntry;
+
+When you declare a TypList structure, you must call InitList before using
+it and FreeList when finished. You can add a generic entry to a TypList
+using AddToList or PrependToList, and you can add an entry which is a
+null-terminated C string using AppendLineToList. But typically, RIPEM adds
+the entries to the list and you only need to access them.
+
+To see if a list has any entries at all, check firstptr: if it is
+(TypListEntry *)NULL then the list is empty. To access each entry in order,
+you can use the following code:
+
+TypList list;
+TypListEntry *entry;
+
+/* ... a call to a function which fills the list */
+
+for (entry = list.firstptr; entry; entry = entry->nextptr) {
+  /* entry->dataptr and entry->datalen are the current entry
+       and its length.  For example, if the list was filled
+       by SelectCertChain, the certificate encoding is
+       (unsigned char *)entry->dataptr */
+}
+
+RIPEM Database
+
+Many RIPEM functions require access to the files in the RIPEM database
+which hold public keys, private keys, etc. When you declare a RIPEMDatabase
+structure, you must call RIPEMDatabaseConstructor before using it and
+RIPEMDatabaseDestructor when finished. To initialize the database with the
+files in the RIPEM home directory, use InitRIPEMDatabase.
+
+
+RIPEM Database Cursor
+
+You can use the RIPEM database cursor to search for arbitrary certificates
+in the database. When you declare a RIPEMDatabaseCursor structure, you must
+call RIPEMDatabaseCursorConstructor before using it and
+RIPEMDatabaseCursorDestructor when finished. To begin a search, use
+RIPEMCertCursorInit. And to select each successive certificate, use
+RIPEMCertCursorUpdate. The database cursor can be used, for example, to
+select certificates from the database to include in a certs-and-CRLs-only
+message.
+
+
+Distinguished Names
+
+A distinguished name, for example "common name = fred@snark.edu, org unit =
+Persona Certificate, organization = RSA Data Security, Inc., country = US",
+is used to identify a user as the subject or issuer of a certificate. To
+use distinguished names, you need to know the details of how they are
+constructed.
+
+A distinguished name has a hierarchy of levels called "relative
+distinguished names" (RDN). In the example above, the RDN at the most
+significant level is "country = US" and the least significant RDN is
+"common name = fred@snark.edu". Within a level, there can be one or more
+"attribute value assertions" (AVA). Typically, each RDN only has one AVA,
+but in the example above it is possible that the least significant RDN
+might have two AVAs such as "common name = fred@snark.edu" as well as
+"locality = Cambridge".
+
+An attribute value assertion has an attribute type, such as "country", and
+a value, such as "US". Furthermore, the value has a tag which tells the
+character set of the value. RIPEM recognizes the value tags for "printable
+string" and "T.61 string". You can think of printable string as a simple
+subset of ASCII and T.61 as a superset of ASCII which you can use as a
+catchall for values which don't fit printable string. Use the function
+IsPrintableString to distinguish these.
+
+RIPEM uses the DistinguishedNameStruct to represent distinguished names,
+which is defined as follows:
+
+typedef struct DistinguishedNameStruct {
+  /* Most significant AVAs and RDN are listed first. */
+  short AVATypes[MAX_AVA];                    /* -1 means none. */
+  int AVATag[MAX_AVA];        /* ATTRTAG_PRINTABLE_STRING, etc. */
+  char AVAValues[MAX_AVA][MAX_NAME_LENGTH + 1];    /* C strings */
+  short RDNIndexStart[MAX_RDN]; /* index into AVAs for ea. RDN. */
+  short RDNIndexEnd[MAX_RDN];                 /* -1 means none. */
+} DistinguishedNameStruct;
+
+Typically, you need to access a distinguished name returned by RIPEM, such
+as in a CertificateStruct returned by DERToCertificate or the userDN in
+RIPEMInfo set during RIPEMLoginUser. The simplest information to get about
+a distinguished name is the "smart name", which is defined by
+GetDNSmartNameIndex in the next chapter. (Usually, the smart name is the
+common name.) To get the index of the AVA which is the smart name, use
+GetDNSmartNameIndex which lets you get the attribute type, attribute value
+and its tag. But usually, you only care about the value, so you can use the
+"convenience" function GetDNSmartNameValue.
+
+To scan all the information in a name, you can use the following code:
+
+DistinguishedNameStruct name;
+int rdn, ava;
+
+/* ... a call to a function which fills the name */
+
+/* Scan starting from the least significant RDN. */
+for (rdn = MAX_RDN - 1; rdn >= 0; --rdn) {
+  if (name.RDNIndexStart[rdn] == -1)
+    /* -1 means there is no RDN here, so try the next one */
+    continue;
+
+  /* scan the array of AVAs.  (If RDNIndexEnd != RDNIndexStart, then
+       there are multiple AVAs in this RDN.) */
+  for (ava = name.RDNIndexStart[rdn]; ava <= name.RDNIndexEnd[rdn];
+       ++ava) {
+    /* Now, name.AVATypes[ava] is the attribute type,
+       name.AVAValues[ava] is the attribute value and
+       name.AVATag[ava] is the value's tag. */
+  }
+}
+
+The attribute values in AVAValues are null-terminated C strings. The
+attribute types in AVATypes are one of the ATTRTYPE_ values listed in
+ripem.h such as ATTRTYPE_COMMONNAME. The AVATag values are usually
+ATTRTAG_PRINTABLE_STRING or ATTRTAG_T61_STRING. However, it is possible for
+a value tag to contain an integer other than these, which you can display
+as "unrecognized."
+
+Sometimes you need to construct a new name, for example to create a new
+user by calling RIPEMGenerateKeys. Before adding values to the
+DistinguishedNameStruct, you should initialize the structure with
+InitDistinguisheNameStruct. Then you can add AVA information to the
+AVATypes, AVAValues and AVATag arrays. For each RDN level, set the entries
+in the RDNIndexStart and RDNIndexEnd arrays to the appropriate indexes in
+the AVA arrays. Remember that arrays are indexed starting from zero and
+that the first entry in the RDN array is the most significant level. When
+setting the AVATypes for a new name, you can use IsPrintableString to
+choose between ATTRTAG_PRINTABLE_STRING and ATTRTAG_T61_STRING.
+
+
+Attributes: The RIPEMAttributes Structure
+
+An attributes structure, as used in PKCS-compliant messages, is a
+collection of attributes. Each attribute has a type and one or more values.
+Many attribute types, such as the ones currently used by RIPEM, restrict
+the number of values to one.
+
+RIPEM uses the RIPEMAttributes structure to represent attributes, which is
+defined as follows:
+
+typedef struct {
+  BOOL haveSigningTime;
+  unsigned long signingTime;
+  BOOL haveSigningDescription;
+  char *signingDescription;                                      /* C string */
+  BOOL haveChallengePassword;
+  char *challengePassword;                                       /* C string */
+  BOOL haveUnstructuredName;
+  char *unstructuredName;                                        /* C string */
+} RIPEMAttributes;
+
+RIPEM supports attributes which can be returned from RIPEMDecipherPKCSFinal
+and attributes which can be supplied to RIPEMCertifyRequestPKCS. See the
+details on these functions in the next chapter for a description of these
+attributes. For each type, such as signingTime, there is a BOOL flag, such
+as haveSigningTime. If the flag is FALSE, then the associated value, such
+as signingTime, is undefined. If the flag is TRUE then the associated value
+is present.
+
+Sometimes you need to construct new attributes structure, for example to
+supply attributes to RIPEMCertifyRequestPKCS. Before adding attributes to
+the structure, you should initialize it with InitRIPEMAttributes. Then you
+can add the attributes you want.
+
+
+Decoding Certificates
+
+RIPEM uses certificates to validate a user's public key by creating a
+signed certificate which binds the user's public key to the user's
+distinguished name. Certificates are typically returned by RIPEM in the
+certChain list from SelectCertChain or as the logged-in user's self-signed
+certificate in the RIPEMInfo.
+
+When RIPEM returns a certificate, it is as a block of data in encoded form.
+To decode it, use DERToCertificate which uses a CertificateStruct structure
+to return the certificate contents. CertificateStruct is defined as
+follows:
+
+typedef struct CertificateStruct {
+  unsigned int version;
+  unsigned char serialNumber[16];        /* up to 128 bits. */
+  int digestAlgorithm;
+  DistinguishedNameStruct issuer;
+  unsigned long notBefore;            /* seconds since 1970 */
+  unsigned long notAfter;             /* seconds since 1970 */
+  DistinguishedNameStruct subject;
+  R_RSA_PUBLIC_KEY publicKey;
+  unsigned char signature[MAX_SIGNATURE_LEN];
+  int signatureLen;
+} CertificateStruct;
+
+For this release of RIPEM, the certificate version is one. (Don't be
+confused by the fact that a version of one is represented by the integer
+zero in the encoding.) The serialNumber array holds the certificate's
+serial number, most significant byte first, right justified and zero padded
+to the left out to 16 bytes. digestAlgorithm is one of the tokens defined
+by RSAREF such as DA_MD2 or DA_MD5. For example, if digestAlgorithm is
+DA_MD5, it means the certificate information was digested with MD5 and then
+encrypted with the issuer's private key to make the signature. You should
+also use the digestAlgorithm specified by the certificate when using
+R_DigestBlock to get a self-signed certificate digest.
+
+The issuer and subject names are represented with a DistinguishedNameStruct
+as defined in the previous section. notBefore is the beginning of the
+certificate's validity period and notAfter is the end. These are
+represented as number of seconds since January first, 1970 at midnight
+Greenwich Mean Time. publicKey is the certificate subject's public key
+represented as an R_RSA_PUBLIC_KEY as defined by RSAREF. Finally, the
+signature array contains the certificate's signature, where signatureLen is
+its length in bytes.
+
+
+Logging In and Managing User Keys
+
+RIPEM uses the RIPEMInfo structure to hold the information of a logged-in
+user. When you declare a RIPEMInfo structure, you must call
+RIPEMInfoConstructor before using it and RIPEMInfoDestructor when finished.
+For most RIPEM operations, you need to use RIPEMLoginUser to log in the
+user, which decrypts the user's private key, loads the user's self-signed
+certificate, etc. Use RIPEMChangePassword to change the password which
+encrypts the user's private key.
+
+To create a new user, you can use RIPEMGenerateKeys which generates a
+public/private keypair and other important information.
+
+
+Managing Certification Information
+
+RIPEM has several functions which let a user manage certification
+information such as validating other users by issuing certificates for
+them, hooking into certification hierarchies by setting chain length
+allowed for other issuers, revoking certificates, etc. When
+RIPEMDecipherFinal or RIPEMDecipherPKCSFinal returns the self-signed
+certificate of an unrecognized message sender, you can use
+ValidateAndWriteCert to create a new certificate for that user.
+
+You can use SelectCertChain to get the certificate chain for any user, for
+example to get that user's public key to use when encrypting a message, or
+to get the user's certificate serial number in order to revoke the user.
+SelectCertChain requires the distinguished name of the user in question,
+not just a the common name or "username". To get the distinguished name,
+you can use GetCertsBySmartname and then use DERToCertificate to decode the
+certificate which contains the distinguished name. (See GetDNSmartNameIndex
+in the next chapter for a definition of "smart name".) Note that
+GetCertsBySmartname may return multiple matches for a given smart name such
+as "common name = bob, organization = Gadgets" and "common name = Bob,
+organization = Widgets", so you need to make sure the application user
+picks the correct one.
+
+You can use SetChainLenAllowed to set the chain length allowed of another
+user, and GetChainLenAllowed to get the current chain length allowed. These
+operations identify the user in question by the digest of that user's
+public key, which you should compute using GetPublicKeyDigest.
+
+Each RIPEM user maintains a certificate revocation list (CRL). If the CRL
+expires (causing a CRL EXPIRED certificate status) you can use
+RIPEMUpdateCRL to update the CRL issued by the logged-in user.
+RIPEMUpdateCRL will also create a new CRL if one doesn't exist. By passing
+the serial number of another user, you can also use RIPEMUpdateCRL to
+revoke that user by adding the serial number to the CRL.
+
+If the logged-in user's CRL is of interest to others, you can create a CRL
+message which can be sent to others. To create such a CRL message in PEM
+format, use RIPEMPublishCRLInit, RIPEMPublishCRLUpdate and
+RIPEMPublishCRLFinal. To create such a CRL message in PKCS format, use
+RIPEMCertsAndCRL_PKCSInit, RIPEMCertsAndCRL_PKCSUpdate and
+RIPEMCertsAndCRL_PKCSFinal. If the logged-in user's certificates are of
+interest to others, these functions can also be used add any or all of the
+certificates in the database to the message which can be sent to others.
+
+If the user's certification preferences become corrupt (as indicated by
+RIPEMLoginUser), you can use RIPEMSavePreferences to save a fresh copy of
+the preferences in the database.
+
+Use RIPEMCertifyRequestPKCS to create a PKCS-compliant certification
+request which can be sent to a certification authority to obtain a
+certificate. (Note that this certification request message is not a
+self-signed certificate. To send a self-signed certificate to another user
+in a PKCS-compliant message, simply use RIPEMEncipherPKCSInit,
+RIPEMEncipherPKCSUpdate and RIPEMEncipherPKCSFinal as described in the next
+section.)
+
+
+Message Processing
+
+The general init/update/final structure of message processing in RIPEM is
+explained in the RSIGN example in the introduction. Use RIPEMEncipherInit,
+RIPEMEncipherDigestUpdate, RIPEMEncipherUpdate and RIPEMEncipherFinal to
+create a PEM-compliant MIC-CLEAR, MIC-ONLY or ENCRYPTED message. Use
+RIPEMDecipherInit, RIPEMDecipherUpdate and RIPEMDecipherFinal to decipher a
+PEM-compliant message which may be a CRL message as well as MIC-CLEAR,
+MIC-ONLY or ENCRYPTED.
+
+Use RIPEMEncipherPKCSInit, RIPEMEncipherPKCSUpdate and
+RIPEMEncipherPKCSFinal to create a PKCS-compliant signed, enveloped or
+signed and enveloped message. Use RIPEMDecipherPKCSInit,
+RIPEMDecipherPKCSUpdate and RIPEMDecipherPKCSFinal to decipher a
+PKCS-compliant message which may be a certs-and-CRLs-only message as well
+as signed, enveloped or signed and enveloped. Note that you can use
+RIPEMCertsAndCRL_PKCSInit, RIPEMCertsAndCRL_PKCSUpdate and
+RIPEMCertsAndCRL_PKCSFinal (as mentioned in the previous section) to create
+a PKCS-compliant certs-and-CRLs-only message.
+
+To create a PEM-compliant CRL retrieval request message, use
+RIPEMRequestCRLsInit, RIPEMRequestCRLsUpdate and RIPEMRequestCRLsFinal.
+
+RIPEM also supports "detached" PKCS signatures where the message data is
+external to the PKCS signature information. Use RIPEMSignDetachedPKCSInit,
+RIPEMSignDetachedPKCSDigestUpdate and RIPEMSignDetachedPKCSFinal to create
+a PKCS-compliant detached signature. Use RIPEMVerifyDetachedPKCSInit,
+RIPEMVerifyDetachedPKCSDigestUpdate, RIPEMVerifyDetachedPKCSUpdate and
+RIPEMVerifyDetachedPKCSFinal to verify a PKCS-compliant detached signature.
+
+
+
+Utility Functions
+
+RIPEM represents time in seconds since January first, 1970 at midnight
+Greenwich Mean Time. You can use R_time to get the current time.
+
+R_realloc provides a more robust version of the standard realloc (such as
+freeing the buffer if it can't be reallocated.)
+
+RIPEM functions return an error using a message string, however RSAREF
+functions do not. You can use FormatRSAError to convert an RSAREF error
+token into a message string.
+
+CrackLine is a utility function to parse a string of comma-delimited items
+into a list of separate items. This is useful for parsing environment
+variables containing multiple items.
+
+CrackRecipients is a utility function to parse a string of comma-delimited
+email addresses into a list of separate items. This also extracts the
+user@domain portions from addresses like " jefft@netcom.com (Jeff
+Thompson)". This is useful for getting names of recipients in the To: field
+of an outgoing message in order to encrypt the message for them.
+
+
+Compatibility with Early Versions of RIPEM
+
+Early versions of RIPEM kept user public keys sitting alone and unvalidated
+instead of being in signed certificates. SelectCertChain will only return
+public keys which are in certificates. Therefore, if you need to be
+compatible with early versions of RIPEM, you can use
+GetUnvalidatedPublicKey to select these type of unvalidated public keys.
+
+Instead of using a RIPEM home directory, early versions of RIPEM required
+the user to explicitly specify input and output files for public and
+private keys. InitRIPEMDatabase will automatically open the public and
+private key files in the RIPEM home directory, but if you need to specify
+extra files which were created with early versions of RIPEM, you can use
+AddKeySourceFilename.
+
+RIPEMGenerateKeys will automatically create a self-signed certificate for
+the new user. However, if a user is upgrading from an early version of
+RIPEM which did not have self-signed certificates, you can use
+WriteSelfSignedCert to create one.
+
+
+RIPEM API Function Details
+
+This chapter lists the RIPEM API functions alphabetically. All of these
+functions are prototyped in ripem.h. A typical RIPEM application also uses
+some functions from RSAREF which are detailed in Appendix A.
+
+char *AddKeySourceFilename (TypKeySource *keySource, char *filename);
+
+This adds the filename to the beginning of keySource's filelist. This
+copies the filename, so you do not need to preserve the string pointed to
+by filename after this is called. If filename is already in keySource's
+filelist, this does nothing. keySource points to a TypKeySource which
+should be either pubKeySource, privKeySource or crlSource within a
+RIPEMDatabase structure. (You must construct the RIPEMDatabase using
+RIPEMDatabaseConstructor before calling this.) This does not actually open
+the file given by filename. After you have used this to add one or more
+filenames to pubKeySource, privKeySource and crlSource in the
+RIPEMDatabase, you should call InitRIPEMDatabase to actually open the
+files.
+
+Typically, you do not need to call AddKeySourceFilename. This is only
+provided for compatibility with RIPEM versions 1.1 and earlier where the
+user manipulated public and private key files outside the RIPEM home
+directory.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *AddToList (TypListEntry *prevEntry, void *entry, unsigned int
+entryLen, TypList *list);
+
+This is a generic TypList handling function to add an entry to the list.
+Usually, you would call a more specific function like AppendLineToList.
+(See "Lists: The TypList Structure" in the previous chapter for a full
+discussion on handling lists.) You must initialize list using InitList
+before calling this. entry is a pointer to an allocated data block of
+length entryLen. This does not make a copy of the data pointed to by entry.
+However, it is assumed that entry points to data which you have allocated
+with malloc: be aware that FreeList will first zeroize the data block and
+then call free on it.
+
+If prevEntry is (TypListEntry *)NULL, then the entry is added to the end if
+the list. Otherwise, prevEntry must be one of the existing TypListEntry
+nodes in the list, and the entry is inserted into the list after prevEntry.
+(To insert an entry at the beginning of the list, use PrependToList.)
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *AppendLineToList (char *line, TypList *list);
+
+This adds the line to the end of the list. (See "Lists: The TypList
+Structure" in the previous chapter for a full discussion on handling
+lists.) line is a null-terminated string. You must initialize list using
+InitList before calling this. This copies the line, so you do not need to
+preserve the string pointed to by line after this is called.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *CrackLine (char *line, TypList *valList);
+
+This is a utility function to parse a line of delimited items and to return
+each as a separate item in a list. line is a null-terminated string
+containing items which are delimited by a comma or a '\n', such as "A, B \n
+C". You must initialize valList using InitList before calling this. Before
+processing the line, this calls FreeList on valList to make sure it is
+empty. Each item is added to valList as a null-terminated string entry.
+line itself is not modified by this function.
+
+Whitespace before and after each item is removed, where whitespace is
+defined as ' ', '\t', or '\n'. (Even though '\n' is considered whitespace,
+it is also considered a delimiter between items.) If the length of any item
+is more than 1023 characters, it is broken into separate 1023 character
+items (due to an internal buffer length limit).
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *CrackRecipients (char *line, TypList *recipientNames);
+
+This is a utility function to parse a line of delimited email addresses and
+to return each as a separate item in a list. line is a null-terminated
+string containing email addresses which are delimited by a comma or a '\n'.
+You must initialize recipientNames using InitList before calling this. This
+does not call FreeList on recipientNames. Therefore, CrackRecipients may be
+called repeatedly to add more names to recipientNames. Each email address
+is added to recipientNames as a null-terminated string entry. line itself
+is not modified by this function. This is meant to be used to get usernames
+from To: and cc: fields from an email message you are encrypting in order
+to look up the recipients' certificates and public keys.
+
+Whitespace before and after each email address is removed, where whitespace
+is defined as ' ', '\t', or '\n'. This extracts the user@domain portion
+from addresses like president@whitehouse.gov (The Prez) or "Mark Riordan"
+<riordanmr@clvax1.cl.msu.edu> and places only that portion in
+recipientNames.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+int DERToCertificate (unsigned char *der, CertificateStruct *cert,
+CertFieldPointers *fieldPointers);
+
+This parses the certificate, returning the component parts in a
+CertificateStruct. (See "Decoding Certificates" in the previous chapter for
+details of the CertificateStruct type.) der points to the buffer containing
+the encoded certificate. You should declare a CertificateStruct and pass a
+pointer to it in cert, which is filled with the certificate components. On
+return, fieldPointers->innerDER points inside the der buffer to the
+beginning of the "inner" portion of the certificate and
+fieldPointers->innerDERLen is the length of the "inner" portion. (The inner
+DER is the data to be verified when checking the certificate signature.
+This is also the data which you should digest with MD5, using
+R_DigestBlock, to present a "self-signed certificate digest.") If
+fieldPointers is (CertFieldPointers *)NULL, it is ignored.
+
+Returns: a negative value for any parsing error. Otherwise returns the
+total length of the der encoding.
+
+char *FormatRSAError (int errorCode);
+
+This is a utility function to covert an integer error return code from
+RSAREF to a error string in the style returned by RIPEM. For example, when
+called with an errorCode of RE_DIGEST_ALGORITHM, this returns
+"Message-digest algorithm is invalid". If called with an errorCode of 0 or
+an unrecognized value, this returns "Unknown error returned from RSAREF
+routines".
+
+void FreeList (TypList *list);
+
+This is the complement to InitList. You must call this when you are done
+with the TypList structure pointed to by list. This zeroizes all entry
+buffers in the list and calls free on each. This also returns list to the
+state it was in after the first call to InitList, so the list can be used
+again if necessary. Do not call FreeList for a list unless you have
+previously called InitList on it.
+
+char *GetCertsBySmartname (RIPEMDatabase *ripemDatabase, TypList *certs,
+char *smartName, RIPEMInfo *ripemInfo);
+
+This searches every file listed in ripemDatabase->pubKeySource for
+certificate records where the User: field matches the given value of
+smartName. This is called "smartName" because when RIPEM originally writes
+a certificate to the database, it uses the smart name of the certificate's
+subject distinguished name in the User: field. Each matching certificate is
+added to the TypList pointed to by certs. You must initialize the certs
+list using InitList before calling this. ripemInfo is used only for
+accessing the debugStream.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+unsigned int GetChainLenAllowed (RIPEMInfo *ripemInfo, unsigned char
+*publicKeyDigest);
+
+This returns the chain length allowed for the user with the key given by
+publicKeyDigest. The public key in question usually comes from a user's
+certificate in a certificate chain. To get the public key digest, you
+should decode the certificate using DERToCertificate and pass the public
+key from the CertificateStruct to GetPublicKeyDigest.
+
+This uses publicKeyDigest as an index into the certificate preferences in
+ripemInfo which were loaded during RIPEMLoginUser. If the public key digest
+is not found, this returns zero as the default, otherwise it returns the
+specified chain length allowed.
+
+unsigned int GetDNSmartNameIndex (DistinguishedNameStruct *name);
+
+This locates the "smart name" in the array of AVAs in name and returns its
+index. (See "Distinguished Names" in the previous chapter for a full
+discussion "distinguished name" and "AVA".) The returned value can be used
+as an index into name's AVATypes, AVATag and AVAValues arrays.
+
+A distinguished name is usually big, such as " common name =
+fred@snark.edu, org unit = Persona Certificate, organization = RSA Data
+Security, Inc., country = US". Therefore, RIPEM defines the concept of a
+smart name which is the most distinctive of the distinguished name's
+attributes. (Typically, this is the common name.) The smart name is used to
+look up certificates, and (through looking up certificates) to identify the
+user during log in (-u in the RIPEM command line application) and to
+identify recipients of encrypted messages (-r in the RIPEM command line
+application).
+
+RIPEM chooses a distinguished name's smart name in the following manner: If
+there is a common name AVA in the distinguished name, the smart name is the
+least significant common name. ("Least significant" is defined in "Handling
+Distinguished Names and Certificates" in the previous chapter.) If there is
+no common name, the smart name is the least significant title AVA. If there
+are no common name or title attributes, the smart name is the least
+significant AVA in the distinguished name, whatever that is.
+
+char *GetDNSmartNameValue (DistinguishedNameStruct *name);
+
+This returns the value of the distinguished name's smart name by calling
+GetDNSmartNameIndex and returning a pointer to the resulting AVAValue in
+the name. In other words, this is a function provided for convenience which
+returns name->AVAValues[GetDNSmartNameIndex (name)]. The return value is a
+null-terminated C string. See the description of GetDNSmartNameIndex for a
+definition of "smart name".
+
+char *GetPublicKeyDigest (unsigned char *digest, R_RSA_PUBLIC_KEY
+*publicKey);
+
+This returns the MD5 digest of the DER encoding of publicKey. The digest
+buffer which receives the digest must be at least 16 bytes long. This
+function is necessary for a subtle reason: There are multiple object
+identifiers for an RSA key that people use for the DER encoding of the
+public key, and so it is possible for the digest of the same public key to
+come out differently if the object identifier is different. Since many
+RIPEM functions, such as GetChainLenAllowed, rely on the public key digest
+to be a unique identifier of the public key, you should always use
+GetPublicKeyDigest to obtain it (as opposed, for example, to directly
+digesting the encoded public key yourself). GetPublicKeyDigest always
+encodes the publicKey with the same object identifier before computing the
+digest ("rsa" as opposed to "rsaEncoding", to be specific).
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *GetUnvalidatedPublicKey (char *user, TypKeySource *source,
+R_RSA_PUBLIC_KEY *key, BOOL *found, RIPEMInfo *ripemInfo);
+
+This is provided only as a fallback for compatibility with RIPEM 1.1 and
+earlier in the case that a public key for a user cannot be found through
+the normal method of calling SelectCertChain. If your application requires
+a public key to be validated within a certificate instead of just sitting
+out "in the raw", then you should not use this function.
+
+user is the username whose public key you are looking for. source should
+point to the pubKeySource in the RIPEMDatabase which is already initialized
+with InitRIPEMDatabase. If the key is found, this sets found to TRUE and
+copies the public key to the R_RSA_PUBLIC_KEY pointed to by key. Otherwise,
+this sets found to FALSE and the R_RSA_PUBLIC_KEY is undefined. ripemInfo
+is used only for accessing the debugStream.
+
+Returns: (char *)NULL for success, otherwise an error string. Note that for
+the simple case that the key for user is not found, this only sets found to
+FALSE and returns (char *)NULL.
+
+void InitDistinguishedNameStruct (DistinguishedNameStruct *name);
+
+This initializes the DistinguishedNameStruct pointed to by name by
+pre-zerozing and then setting all the AVATypes and RDN indexes to -1. This
+also presets all AVATag to ATTRTAG_PRINTABLE_STRING. You should always call
+InitDistinguishedNameStruct before constructing a new name so that the
+AVATypes and RDN indexes are -1 by default, and all you have to do is add
+the needed values. Also, when each DistinguishedNameStruct is pre-zeroized
+to the same initial value in this manner, two name structures with the same
+information can easily be compared with the bit-wise = = operator.
+
+void InitList (TypList *list);
+
+This initializes the TypList pointed to by list by setting up its pointers
+for an empty list. You should call this on any TypList structure you create
+before using it. (If the RIPEM API were C++, this would be the constructor
+for this type.) You must also call FreeList when you are done using the
+TypList.
+
+void InitRIPEMAttributes (RIPEMAttributes *attributes);
+
+This initializes the RIPEMAttributes structure pointed to by attributes by
+zerozing which sets all "have" flags to FALSE. You should always call
+InitRIPEMAttributes before preparing attributes to pass in to a function
+such as RIPEMCertifyRequestPKCS. In this way, all attributes are absent by
+default and only the ones you add by setting haveChallengePassword, for
+example, will be present.
+
+char *InitRIPEMDatabase (RIPEMDatabase *ripemDatabase, char *homeDir,
+RIPEMInfo *ripemInfo);
+
+This initializes ripemDatabase by opening the database files in the RIPEM
+home directory given by homeDir. You must construct ripemDatabase using
+RIPEMDatabaseConstructor before calling this. ripemInfo is used only for
+accessing the debugStream. The directory name given by homeDir must end in
+the appropriate directory separator for your operating system, such as '/'
+in Unix or a backslash in DOS. This is so that RIPEM can construct a full
+pathname for a file in the RIPEM home directory simply by appending the
+filename to homeDir.
+
+You are also responsible for making sure the RIPEM home directory exists
+before calling InitRIPEMDatabase, since RIPEM is capable of creating new
+files but not new directories. Here is a simple way to test for the
+existence of the directory before calling InitRIPEMDatabase: Append "crls"
+to the homeDir and to use fopen to try to open it in append mode "a". If
+the directory exists, the crls file will be opened if the file exists, or
+created if the file does not exist (which is all right). If the directory
+does not exist, fopen will return (FILE *)NULL in which case you should use
+your platform's operating system call to create the directory. (Note that
+on most platforms, you need to make sure there is no directory separator at
+the end of the directory name when you create the directory.)
+
+When you call InitRIPEMDatabase, pubKeySource, privKeySource and crlSource
+in ripemDatabase may already have filenames which you added with
+AddKeySourceFilename (only for compatibility with RIPEM versions 1.1 and
+earlier). InitRIPEMDatabase adds the filenames pubkeys, privkey and crls in
+the RIPEM home directory if they are not already in ripemDatabase. This
+also makes sure each of these files can be opened for output and that each
+is the first entry listed in their respective TypKeySource list. (The first
+file listed is the one RIPEM uses for output.) This then uses fopen to open
+all the files for read. This also sets ripemDatabase->preferencesFilename
+to preferen in the RIPEM home directory and makes sure it can be opened for
+output.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+int IsPrintableString (unsigned char *valuePointer, unsigned int valueLen);
+
+This scans the buffer pointed to by valuePointer, of length valueLen, and
+returns 1 if all the characters are in the PrintableString character set,
+otherwise it returns 0. You should use this when constructing a new
+distinguished name: if IsPrintableString returns 1, you should set the
+AVATag to ATTRTAG_PRINTABLE_STRING, otherwise you should set it to
+ATTRTAG_T61_STRING.
+
+char *PrependToList (void *entry, unsigned int entryLen, TypList *list);
+
+This is a generic TypList handling function to add an entry to the
+beginning of the list. This function is a necessary companion to AddToList
+since, when the prevEntry parameter to AddToList is NULL, it will add the
+entry to the end of the list. (See "Lists: The TypList Structure" in the
+previous chapter for a full discussion on handling lists.) You must
+initialize list using InitList before calling this. entry is a pointer to
+an allocated data block of length entryLen. This does not make a copy of
+the data pointed to by entry. However, it is assumed that entry points to
+data which you have allocated with malloc: be aware that FreeList will
+first zeroize the data block and then call free on it.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMCertCursorInit (RIPEMDatabaseCursor *cursor, char *smartName,
+RIPEMDatabase *ripemDatabase);
+
+This prepares the RIPEMDatabaseCursor structure pointed to by cursor to
+search for certificates in every file listed in
+ripemDatabase->pubKeySource. You must construct cursor using
+RIPEMDatabaseCursorConstructor and initialize ripemDatabase using
+InitRIPEMDatabase before calling this.
+
+If smartName is (char *)NULL, this will cause RIPEMCertCursorUpdate to find
+all certificates in the database. Otherwise, this will cause
+RIPEMCertCursorUpdate to find certificate records in the database where the
+User: field matches the given value of smartName. This is called
+"smartName" because when RIPEM originally writes a certificate to the
+database, it uses the smart name of the certificate's subject distinguished
+name in the User: field.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMCertCursorUpdate (RIPEMDatabaseCursor *cursor, BOOL *found,
+TypList *certs, RIPEMDatabase *ripemDatabase, RIPEMInfo *ripemInfo);
+
+This selects the next certificate from ripemDatabase according to the
+search criteria set up by RIPEMCertCursorUpdate. ripemInfo is used only for
+accessing the debugStream.
+
+You must declare a BOOL and pass a pointer to it in found. If there are no
+more matching certificates, this sets found FALSE. Otherwise, this sets
+found TRUE and the matching certificate is added to the TypList structure
+pointed to by certs. You must initialize the certs list using InitList
+before calling this. You may keep calling RIPEMCertCursorUpdate until it
+sets found to FALSE.
+
+You should not call any other functions which use ripemDatabase in between
+calls to RIPEMCertCursorUpdate.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMCertifyRequestPKCS (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, RIPEMAttributes *attributes);
+
+Use this to create a PKCS-compliant certification request message (PKCS
+#10) for the user logged in to ripemInfo. Before calling this, you must
+call RIPEMLoginUser to properly initialize ripemInfo.
+
+attributes may point to a RIPEMAttributes structure which contains
+attributes to add to the certification request. (Before setting the values
+in the RIPEMAttributes structure you should call InitRIPEMAttributes.) If
+haveChallengePassword is TRUE, then challengePassword points to a
+null-terminated C string containing the challenge password. If
+haveUnstructuredName is TRUE, then unstructuredName points to a
+null-terminated C string containing the unstructured name. You are
+responsible for allocating the memory that challengePassword or
+unstructuredName points to. Other attributes in the RIPEMAttributes
+structure are ignored.
+
+attributes may be (RIPEMAttributes *)NULL in which case no attributes are
+used.
+
+To obtain the output, you should declare an unsigned char * and pass a
+pointer to this in partOut, and also declare an unsigned int and pass a
+pointer to this in partOutLen, so that RIPEM can return the pointer and
+length of a working buffer which contains the output. This buffer is
+allocated by RIPEM and maintained within ripemInfo. The buffer pointer
+returned in partOut is only valid until the next call to RIPEM, so it must
+be written out or copied immediately. Also, you do not need to free the
+memory buffer returned in partOut. This is done by RIPEMInfoDestructor. On
+error return, the pointer to the output is undefined.
+
+The output is "as is." No translation of '\n' to <CR><LF>should be done
+because the PKCS message format is binary.
+
+(Note that this certification request message is not a self-signed
+certificate. To send a self-signed certificate to another user in a
+PKCS-compliant message, simply use RIPEMEncipherPKCSInit,
+RIPEMEncipherPKCSUpdate and RIPEMEncipherPKCSFinal.)
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMCertsAndCRL_PKCSFinal (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, BOOL includeSenderCerts, BOOL
+includeCRL, RIPEMDatabase *ripemDatabase);
+
+Use this to add issuer certificates or a CRL to a PKCS-compliant
+certs-and-CRLs-only message and to produce the final output. You should
+already have called RIPEMCertsAndCRL_PKCSInit and called
+RIPEMCertsAndCRL_PKCSUpdate zero or more times. ripemInfo points to the
+same structure which was initialized in RIPEMCertsAndCRL_PKCSInit.
+
+If includeSenderCerts is TRUE, this adds the self-signed certificate for
+the user logged in to ripemInfo and any issuer certificates for the
+logged-in user. If includeCRL is true, this adds the CRL for the user by
+getting it from the database. (If neither includeSenderCerts or includeCRL
+is TRUE, the only use of this message is if certificates were added with
+RIPEMCertsAndCRL_PKCSUpdate.)
+
+If includeCRL is TRUE, this returns an error if the CRL cannot be found or
+the signature is corrupt. Otherwise, the CRL is used even if it is expired.
+
+The output is returned in partOut and partOutLen as in
+RIPEMCertsAndCRL_PKCSInit. RIPEMCertsAndCRL_PKCSFinal should only be called
+once per message.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMCertsAndCRL_PKCSInit (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *);
+
+This initializes a PKCS-compliant certs-and-CRLs-only message can contain
+the CRL for the user logged in to ripemInfo, the certificates for the
+logged in user and any other certificates from the database. Before calling
+this, you must call RIPEMLoginUser to properly initialize ripemInfo.
+
+To obtain the output, you should declare an unsigned char * and pass a
+pointer to this in partOut, and also declare an unsigned int and pass a
+pointer to this in partOutLen, so that RIPEM can return the pointer and
+length of a working buffer which contains the output. This buffer is
+allocated by RIPEM and maintained within ripemInfo. The buffer pointer
+returned in partOut is only valid until the next call to RIPEM, so it must
+be written out or copied immediately. Also, you do not need to free the
+memory buffer returned in partOut. This is done by RIPEMInfoDestructor. On
+error return, the pointer to the output is undefined.
+
+The output is "as is." No translation of '\n' to <CR><LF>should be done
+because the PKCS message format is binary.
+
+After calling this, you should call RIPEMCertsAndCRL_PKCSUpdate zero or
+more times to add extra certificates, and RIPEMCertsAndCRL_PKCSFinal output
+the CRL or issuer certificates and to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMCertsAndCRL_PKCSUpdate (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, TypList *certs);
+
+Call this zero or more times to add extra certificates to a PKCS-compliant
+certs-and-CRLs-only message. You should already have called
+RIPEMCertsAndCRL_PKCSInit. ripemInfo points to the same structure which was
+initialized in RIPEMCertsAndCRL_PKCSInit. The output is returned in partOut
+and partOutLen as in RIPEMCertsAndCRL_PKCSInit.
+
+Each entry in the certs list is added to the certs-and-CRLs-only message.
+Note that this can be called an arbitrarily large number of times without
+overrunning memory. You can use RIPEMCertCursorUpdate to repeatedly select
+a certificate from the database and then add it to the message. If you do
+this, then you can use FreeList to clear the certs list after it has been
+written to the message, allowing you to select more certificates from the
+database.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMChangePassword (RIPEMInfo *ripemInfo, unsigned char
+*newPassword, unsigned int newPasswordLen, RIPEMDatabase *ripemDatabase);
+
+This re-encrypts the user's private key with a new password and writes it
+to the first private key file listed privKeySource in ripemDatabase. Before
+calling this, you must call RIPEMLoginUser to properly initialize ripemInfo
+and to load the private key. The new password is supplied in the
+newPassword buffer of length newPasswordLen.
+
+When the private key is re-written to the private key file, the smart name
+of ripemInfo->userDN is used in a User: field to identify it. If
+ripemInfo->z.usernameAliases is not NULL, then it points to a TypList where
+each entry is a null-terminated string containing an alias for the username
+and each is also written in a User: field. The username aliases are only
+useful for RIPEM version 1.1 and earlier when the recipient of a message
+was identified by an email address instead of the public key. If you do not
+require compatibility with version 1.1 and earlier, then you may leave
+ripemInfo->z.usernameAliases NULL as it is initialized by
+RIPEMInfoConstructor.
+
+This also calls RIPEMSavePreferences so that the preferences are
+re-authenticated under the new password. Therefore, this will return an
+error if ripemDatabase->preferencesFilename cannot be opened.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+void RIPEMDatabaseConstructor (RIPEMDatabase *ripemDatabase);
+
+This initializes the RIPEMDatabase structure pointed to by ripemDatabase.
+You should call this on any RIPEMDatabase structure you create before using
+it. (If the RIPEM API were C++, this would be the constructor for this
+type.) You must also call RIPEMDatabaseDestructor when you are done using
+the RIPEMDatabase.
+
+void RIPEMDatabaseCursorConstructor (RIPEMDatabaseCursor *cursor);
+
+This initializes the RIPEMDatabaseCursor structure pointed to by cursor.
+You should call this on any RIPEMDatabaseCursor structure you create before
+using it. (If the RIPEM API were C++, this would be the constructor for
+this type.) You must also call RIPEMDatabaseCursorDestructor when you are
+done using the RIPEMDatabaseCursor.
+
+void RIPEMDatabaseCursorDestructor (RIPEMDatabaseCursor *cursor);
+
+This finalizes the RIPEMDatabaseCursor structure pointed to by cursor. This
+is the complement to RIPEMDatabaseCursorConstructor. You must call this
+when you are done with the RIPEMDatabaseCursor structure. (If the RIPEM API
+were C++, this would be the destructor for this type.)
+
+void RIPEMDatabaseDestructor (RIPEMDatabase *ripemDatabase);
+
+This finalizes the RIPEMDatabase structure pointed to by ripemDatabase by
+closing all the files in pubKeySource, privKeySource and crlSource. This is
+the complement to RIPEMDatabaseConstructor. You must call this when you are
+done with the RIPEMDatabase structure. (If the RIPEM API were C++, this
+would be the destructor for this type.)
+
+char *RIPEMDecipherFinal (RIPEMInfo *ripemInfo, TypList *certChain,
+ChainStatusInfo *chainStatus, enum enhance_mode *enhanceMode);
+
+Use this to finalize the processing of a PEM-compliant message which you
+are deciphering. You should already have called RIPEMDecipherUpdate one or
+more times to process the message. ripemInfo points to the same structure
+which was initialized in RIPEMDecipherInit. You must initialize a TypList
+using InitList and pass a pointer to it in certChain. You must also declare
+a ChainStatusInfo structure and pass a pointer to it in chainStatus. This
+returns the sender's certificate chain in certChain and the certification
+status of the certificates in chainStatus.
+
+You must declare an enum enhance_mode and pass a pointer to it in
+enhanceMode. RIPEM uses this to return the enhancement mode of the message
+which is MODE_ENCRYPTED for an encrypted message, MODE_MIC_ONLY for a
+mic-only message, MODE_MIC_CLEAR for a mic-clear message or MODE_CRL for a
+CRL message. For a MODE_CRL, certChain is unmodified since there are no
+senders, and chainStatus->overall is set to zero. In all these cases, any
+certificates or CRLs in the message are added to the database. RIPEM checks
+that the signature from the issuer of CRLs is valid, but does not check the
+signature on certificates. (This is done more efficiently by
+SelectCertChain when retrieving the certificates.)
+
+If enhanceMode is not MODE_CRL and chainStatus->overall is zero, RIPEM
+could not find a trusted certificate for the sender. In this case, if the
+message contained a self-signed certificate from the sender and certChain
+contains one entry which is the self-signed certificate. (You may check for
+an entry in certChain by checking if certChain->firstptr is non-null.) This
+would typically happen when receiving a message from an unknown sender
+which the application user may want to validate. You may decode the
+certificate using DERToCertificate and present the self-signed certificate
+digest to the user who may choose whether to validate the certificate. (Use
+R_DigestBlock with the digest algorithm specified in the certificate to
+digest the certificate's inner DER.) To validate, see ValidateAndWriteCert.
+On the other hand, if there is no entry in certChain (certChain->firstptr
+is null) then there was no self-signed certificate in the message, which
+means that the sender is completely unrecognized. You may suggest to the
+user that the sender provide a message with a self-signed certificate.
+
+If chainStatus->overall is CERT_UNVALIDATED, RIPEM could not find a trusted
+certificate for the sender, but it could find an unvalidated public key. In
+this case, certChain contains one entry which is the sender's username.
+This is provided only for compatibility with RIPEM version 1.1 and earlier
+which did not use certificates. If you do not wish to support unvalidated
+public keys, then treat this like the completely unrecognized sender as
+above.
+
+For other values of chainStatus->overall, certChain and chainStatus contain
+values as described in SelectCertChain. Note that the sender name is the
+subject name of the first certificate listed in certChain.
+
+Returns: (char *)NULL for success, otherwise an error string. There is a
+special error strings which RIPEMDecipherFinal may return:
+ERR_NO_PEM_HEADER_BEGIN. (You should use strcmp to compare the error return
+string to the value.) You may wish to "catch" this special error cases and
+give it special treatment as follows:
+
+If this returns ERR_NO_PEM_HEADER_BEGIN, then the string "-----BEGIN
+PRIVACY-ENHANCED MESSAGE-----" could not be found. This string marks the
+beginning of the cryptographic information in a PEM message. The message
+may be in PKCS format and you may wish to try to process the message using
+RIPEMDecipherPKCSInit, etc.
+
+char *RIPEMDecipherInit (RIPEMInfo *ripemInfo, BOOL prependHeaders);
+
+This initializes ripemInfo for deciphering a PEM-compliant message. Before
+calling this, you must call RIPEMLoginUser to properly initialize
+ripemInfo. If prependHeaders is TRUE, RIPEM will copy email headers
+(encountered before the begin enhanced message boundary) from the input
+message through to the output. Otherwise, prependHeaders should be FALSE.
+
+After calling RIPEMDecipherInit, you should call RIPEMDecipherUpdate to
+decipher the message by parts, and RIPEMDecipherFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMDecipherPKCSFinal (RIPEMInfo *ripemInfo, TypList *certChain,
+ChainStatusInfo *chainStatus, int *pkcsMode, RIPEMAttributes
+*authenticatedAttributes);
+
+Use this to finalize the processing of a PKCS-compliant message which you
+are deciphering. You should already have called RIPEMDecipherPKCSUpdate one
+or more times to process the message. ripemInfo points to the same
+structure which was initialized in RIPEMDecipherPKCSInit. You must
+initialize a TypList using InitList and pass a pointer to it in certChain.
+You must also declare a ChainStatusInfo structure and pass a pointer to it
+in chainStatus. This returns the sender's certificate chain in certChain
+and the certification status of the certificates in chainStatus.
+
+You must declare an int and pass a pointer to it in pkcsMode. RIPEM uses
+this to return the PKCS mode of the message which is PKCS_SIGNED for a
+signed message, PKCS_ENVELOPED for an enveloped-only message, PKCS_SIGNED |
+PKCS_ENVELOPED for a signed and enveloped message or
+PKCS_CERTS_AND_CRLS_ONLY for a certs-and-CRLs-only message. For
+PKCS_ENVELOPED and PKCS_CERTS_AND_CRLS_ONLY, certChain is unmodified since
+there are no senders, and chainStatus->overall is set to zero. In all these
+cases, any certificates or CRLs in the message are added to the database.
+RIPEM checks that the signature from the issuer of CRLs is valid, but does
+not check the signature on certificates. (This is done more efficiently by
+SelectCertChain when retrieving the certificates.)
+
+If pkcsMode is PKCS_SIGNED or PKCS_SIGNED | PKCS_ENVELOPED and
+chainStatus->overall is zero, RIPEM could not find a trusted certificate
+for the sender. In this case, the message contained a self-signed
+certificate from the sender and certChain contains one entry which is the
+self-signed certificate. This would typically happen when receiving a
+message from an unknown sender which the application user may want to
+validate. You may decode the certificate using DERToCertificate and present
+the self-signed certificate digest to the user who may choose whether to
+validate the certificate. (Use R_DigestBlock with the digest algorithm
+specified in the certificate to digest the certificate's inner DER.) To
+validate, see ValidateAndWriteCert.
+
+RIPEMDecipherPKCSFinal does not support a chain status of CERT_UNVALIDATED
+as RIPEMDecipherFinal does, since PKCS-compliant messages always use a
+certificate to identify senders and recipients.
+
+For other values of chainStatus->overall, certChain and chainStatus contain
+values as described in SelectCertChain. Note that the sender name is the
+subject name of the first certificate listed in certChain.
+
+If authenticatedAttributes is not NULL, then it points to a RIPEMAttributes
+structure which receives the authenticated attributes in the message, if
+any. Upon return, if haveSigningTime is TRUE, then signingTime contains the
+signing time represented as the number of seconds since January first, 1970
+at midnight Greenwich Mean Time. If haveSigningDescription is TRUE, then
+signingDescription points to a null-terminated C string containing the
+signing description. The memory for the signingDescription is allocated
+inside ripemInfo and should be treated as "read only". Other attributes in
+the RIPEMAttributes structure are undefined. Upon return, the value of an
+attribute must be copied before a future call to RIPEM since RIPEM may
+modify it.
+
+authenticatedAttributes may be (RIPEMAttributes *)NULL, in which case it is
+ignored.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMDecipherPKCSInit (RIPEMInfo *ripemInfo);
+
+This initializes ripemInfo for deciphering a PKCS-compliant message. Before
+calling this, you must call RIPEMLoginUser to properly initialize
+ripemInfo.
+
+After calling RIPEMDecipherPKCSInit, you should call
+RIPEMDecipherPKCSUpdate to decipher the message by parts, and
+RIPEMDecipherPKCSFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMDecipherPKCSUpdate (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, unsigned char *partIn, unsigned int
+partInLen, RIPEMDatabase *ripemDatabase);
+
+Use this to process a PKCS-compliant message which you are deciphering and
+to produce the output which is decoded and decrypted as necessary. You
+should already have called RIPEMDecipherPKCSInit. ripemInfo points to the
+same structure which was initialized in RIPEMDecipherPKCSInit.
+ripemDatabase must already be initialized using InitRIPEMDatabase and is
+used to process the certificate information in the message.
+
+partIn points to the buffer of the input message to process, of length
+partInLen. partIn may contain any number of bytes.
+
+To obtain the output from each call to RIPEMDecipherPKCSUpdate, you should
+declare an unsigned char * and pass a pointer to this in partOut, and also
+declare an unsigned int and pass a pointer to this in partOutLen, so that
+RIPEMDecipherPKCSUpdate can return the pointer and length of a working
+buffer which contains the output. This buffer is allocated by RIPEM and
+maintained within ripemInfo. The buffer pointer returned in partOut is only
+valid until the next call to RIPEM, so it must be written out or copied
+immediately. Also, you do not need to free the memory buffer returned in
+partOut. This is done by RIPEMInfoDestructor. On error return, the pointer
+to the output is undefined.
+
+The input and output are "as is." No translation of '\n' to <CR><LF>is done
+because the PKCS message format can support binary data. The calling
+routine must do end-of-line character translation on the output text if
+necessary.
+
+You can process a message of unlimited length by calling this multiple
+times by reading in a part of the message and calling
+RIPEMDecipherPKCSUpdate, reading in the next part, calling again, etc. When
+you are done processing the message in this manner, proceed to use
+RIPEMDecipherPKCSFinal.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMDecipherUpdate (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen, unsigned char *partIn, unsigned int partInLen,
+RIPEMDatabase *ripemDatabase);
+
+Use this to process a PEM-compliant message which you are deciphering and
+to produce the output which is decoded and decrypted as necessary. You
+should already have called RIPEMDecipherInit. ripemInfo points to the same
+structure which was initialized in RIPEMDecipherInit. ripemDatabase must
+already be initialized using InitRIPEMDatabase and is used to process the
+certificate information in the message header.
+
+partIn points to the buffer of the input message to process, of length
+partInLen. Textual lines must be delimited by the '\n' character (not
+<CR><LF>). This can be done, for example, by using fgets or fread to read
+from a file which has been opened in text mode "r". partIn may contain
+parts of lines or multiple lines.
+
+To obtain the output from each call to RIPEMDecipherUpdate, you should
+declare an unsigned char * and pass a pointer to this in partOut, and also
+declare an unsigned int and pass a pointer to this in partOutLen, so that
+RIPEMDecipherUpdate can return the pointer and length of a working buffer
+which contains the output. This buffer is allocated by RIPEM and maintained
+within ripemInfo. The buffer pointer returned in partOut is only valid
+until the next call to RIPEM, so it must be written out or copied
+immediately. Also, you do not need to free the memory buffer returned in
+partOut. This is done by RIPEMInfoDestructor. On error return, the pointer
+to the output is undefined.
+
+Textual lines in the output are delimited by the character '\n'. You must
+convert these to your platform's local line delimiter, which is done
+automatically if you use fwrite to write the output to a file which has
+been opened in text mode "w".
+
+You can process a message of unlimited length by calling this multiple
+times by reading in a part of the message and calling RIPEMDecipherUpdate,
+reading in the next part, calling again, etc. When you are done processing
+the message in this manner, proceed to use RIPEMDecipherFinal.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMEncipherDigestUpdate (RIPEMInfo *ripemInfo, unsigned char
+*partIn, unsigned int partInLen);
+
+Use this to digest the text of a PEM-compliant message which you are
+enciphering. You should already have called RIPEMEncipherInit. ripemInfo
+points to the same structure which was initialized in RIPEMEncipherInit.
+partIn points to the buffer of text to digest, of length partInLen. Textual
+lines must be delimited by the '\n' character (not <CR><LF>). This can be
+done, for example, by using fgets or fread to read from a file which has
+been opened in text mode "r". Make sure there is a '\n' at the end of the
+final line, which is ensured on most platforms if the file is read using
+fgets.
+
+You can process text of unlimited length by calling this multiple times by
+reading in a part of the text and calling RIPEMEncipherDigestUpdate,
+reading in the next part, calling again, etc. When you are done digesting
+the text in this manner, proceed to use RIPEMEncipherUpdate.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMEncipherFinal (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen, RIPEMDatabase *ripemDatabase);
+
+Use this to finalize the processing of a PEM-compliant message which you
+are enciphering and to produce the final part of the output. You should
+already have called RIPEMEncipherUpdate one or more times to process the
+text. (If neither RIPEMEncipherDigestUpdate or RIPEMEncipherUpdate has been
+called, this will still output a message with empty text.) ripemInfo points
+to the same structure which was initialized in RIPEMEncipherInit.
+ripemDatabase must already be initialized using InitRIPEMDatabase and is
+used for selecting certificates to find issuer names and serial numbers of
+recipients when using MESSAGE_FORMAT_PEM. The output is returned in partOut
+and partOutLen as in RIPEMEncipherUpdate. RIPEMEncipherFinal should only be
+called once per message.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMEncipherInit (RIPEMInfo *ripemInfo, enum enhance_mode
+enhanceMode, int messageFormat, int digestAlgorithm, int
+encryptionAlgorithm, RecipientKeyInfo *recipientKeys, unsigned int
+recipientKeyCount);
+
+NOTE: digestAlgorithm is a new parameter added in release 3.0 Beta 4.
+
+This initializes ripemInfo for enciphering a PEM-compliant message. Before
+calling this, you must call RIPEMLoginUser to properly initialize
+ripemInfo. enhanceMode must be MODE_ENCRYPTED, MODE_MIC_ONLY, or
+MODE_MIC_CLEAR. digestAlgorithm must be DA_MD2, DA_MD5 or DA_SHA1.
+
+If enhanceMode is MODE_ENCRYPTED, then encryptionAlgorithm must be
+EA_DES_CBC or EA_DES_EDE2_CBC. ripemInfo->randomStruct must be seeded (see
+Appendix A for RSAREF documentation on R_RandomUpdate). Also, recipientKeys
+must point to an array of RecipientKeyInfo structures of length
+recipientKeyCount (one for each message recipient). RecipientKeyInfo is
+defined as:
+
+typedef struct {
+  R_RSA_PUBLIC_KEY publicKey;
+  char *username;
+} RecipientKeyInfo;
+
+The publicKey holds the public key of the message recipient. You should
+obtain the recipient's public key by using SelectCertChain and using
+DERToCertificate to decode the user's certificate which contains the public
+key. The username in the RecipientKeyInfo points to a string containing the
+recipient's username. The username is used for backward compatibility with
+RIPEM 1.1 (under MESSAGE_FORMAT_RIPEM1 mode) and for looking up the
+recipient's issuer name and serial number (under MESSAGE_FORMAT_PEM mode).
+The array pointed to by recipientKeys (and the strings pointed to by each
+username) must remain valid until the first call to RIPEMEncipherUpdate.
+
+Also, for MODE_ENCRYPTED, note that you should add an entry in
+recipientKeys for the user logged in to ripemInfo (the -T m option in the
+RIPEM command line application). This is so that after creating an
+encrypted message, the user can decrypt it later if necessary. To make a
+recipientKey entry for the logged-in user, set the publicKey to
+ripemInfo->publicKey and set the username to
+GetDNSmartNameValue(&ripemInfo->userDN).
+
+messageFormat must be MESSAGE_FORMAT_RIPEM1 or MESSAGE_FORMAT_PEM.
+MESSAGE_FORMAT_RIPEM1 is compatible with all versions of RIPEM including
+those before 2.0. It has a Proc-Type version of 2001 and includes the
+Originator-Name field and uses Recipient-Key-Asymmetric (containing the
+public key) for the recipients of encrypted messages. MESSAGE_FORMAT_PEM is
+for compatibility with the RFC 1421 standards suite. It has a Proc-Type
+version of 4 and omits RIPEM-specific fields (such as Originator-Name) and
+uses only Recipient-ID-Asymmetric (containing issuer name and serial
+number) for the recipients of encrypted messages. (See the section
+"Specifying Message Format" in the RIPEM user manual and the document
+RIPEMFMT.TXT for more details.)
+
+After calling RIPEMEncipherInit, you should call RIPEMEncipherDigestUpdate
+to digest the text by parts, RIPEMEncipherUpdate to enhance the text by
+parts, and RIPEMEncipherFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMEncipherPKCSFinal (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, RIPEMAttributes
+*authenticatedAttributes);
+
+Use this to finalize the processing of a PKCS-compliant message which you
+are enciphering and to produce the final part of the output. You should
+already have called RIPEMEncipherPKCSUpdate one or more times to process
+the text. (If RIPEMEncipherPKCSUpdate has not been called, this will still
+output a message with empty text.) ripemInfo points to the same structure
+which was initialized in RIPEMEncipherPKCSInit. You should pass
+(RIPEMAttributes *)NULL for authenticatedAttributes, which is provided for
+future compatibility.
+
+The output is returned in partOut and partOutLen as in
+RIPEMEncipherPKCSUpdate. RIPEMEncipherPKCSFinal should only be called once
+per message.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMEncipherPKCSInit (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen, int pkcsMode, int digestAlgorithm, int
+encryptionAlgorithm, RecipientKeyInfo *recipientKeys, unsigned int
+recipientKeyCount, RIPEMDatabase *ripemDatabase);
+
+NOTE: digestAlgorithm is a new parameter added in release 3.0 Beta 4.
+
+This initializes ripemInfo for enciphering a PKCS-compliant message. Before
+calling this, you must call RIPEMLoginUser to properly initialize
+ripemInfo. pkcsMode must be PKCS_SIGNED for a signed message,
+PKCS_ENVELOPED for an enveloped message, or PKCS_SIGNED | PKCS_ENVELOPED
+for a signed and enveloped message. ripemDatabase must already be
+initialized using InitRIPEMDatabase and is used for selecting certificates
+to find issuer names and serial numbers of recipients. digestAlgorithm must
+be DA_MD2, DA_MD5 or DA_SHA1.
+
+If pkcsMode is PKCS_ENVELOPED or PKCS_SIGNED | PKCS_ENVELOPED, then
+encryptionAlgorithm must be EA_DES_CBC, EA_DES_EDE3_CBC or
+EA_RX2_CBC(effectiveBits). These are defined in rsaref.h.
+ripemInfo->randomStruct must be seeded (see Appendix A for RSAREF
+documentation on R_RandomUpdate). Also, recipientKeys must point to an
+array of RecipientKeyInfo structures of length recipientKeyCount (one for
+each message recipient). RecipientKeyInfo is defined as:
+
+typedef struct {
+  R_RSA_PUBLIC_KEY publicKey;
+  char *username;
+} RecipientKeyInfo;
+
+The publicKey holds the public key of the message recipient. You should
+obtain the recipient's public key by using SelectCertChain and using
+DERToCertificate to decode the user's certificate which contains the public
+key. The username in the RecipientKeyInfo points to a string containing the
+recipient's username. The username is used for looking up the recipient's
+issuer name and serial number.
+
+Also, for PKCS_ENVELOPED or PKCS_SIGNED | PKCS_ENVELOPED, note that you
+should add an entry in recipientKeys for the user logged in to ripemInfo
+(the -T m option in the RIPEM command line application). This is so that
+after creating an encrypted message, the user can decrypt it later if
+necessary. To make a recipientKey entry for the logged-in user, set the
+publicKey to ripemInfo->publicKey and set the username to
+GetDNSmartNameValue(&ripemInfo->userDN).
+
+To obtain the output from RIPEMEncipherPKCSInit, you should declare an
+unsigned char * and pass a pointer to this in partOut, and also declare an
+unsigned int and pass a pointer to this in partOutLen, so that
+RIPEMEncipherPKCSInit can return the pointer and length of a working buffer
+which contains the output. This buffer is allocated by RIPEM and maintained
+within ripemInfo. The buffer pointer returned in partOut is only valid
+until the next call to RIPEM, so it must be written out or copied
+immediately. Also, you do not need to free the memory buffer returned in
+partOut. This is done by RIPEMInfoDestructor. On error return, the pointer
+to the output is undefined.
+
+After calling RIPEMEncipherPKCSInit, you should call
+RIPEMEncipherPKCSUpdate to enhance the text by parts, and
+RIPEMEncipherPKCSFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMEncipherPKCSUpdate (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, unsigned char *partIn, unsigned int
+partInLen);
+
+Use this to process the text of a PKCS-compliant message which you are
+enciphering and to produce the output which is signed and encrypted as
+necessary. ripemInfo points to the same structure which was initialized in
+RIPEMEncipherPKCSInit. partIn points to the buffer of text to process, of
+length partInLen. The output is returned in partOut and partOutLen as in
+RIPEMEncipherPKCSInit.
+
+The input and output are "as is." No translation of '\n' to <CR><LF>is done
+because the PKCS message format can support binary data. The calling
+routine must do end-of-line character translation on the input if necessary
+before passing it to RIPEMEncipherPKCSUpdate.
+
+You can process text of unlimited length by calling this multiple times by
+reading in a part of the text and calling RIPEMEncipherPKCSUpdate, reading
+in the next part, calling again, etc. When you are done digesting the text
+in this manner, proceed to use RIPEMEncipherPKCSFinal.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMEncipherUpdate (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen, unsigned char *partIn, unsigned int partInLen,
+RIPEMDatabase *ripemDatabase);
+
+Use this to process the text of a PEM-compliant message which you are
+enciphering and to produce the output which is encoded and encrypted as
+necessary. You should already have called RIPEMEncipherDigestUpdate one or
+more times. ripemInfo points to the same structure which was initialized in
+RIPEMEncipherInit. ripemDatabase must already be initialized using
+InitRIPEMDatabase and is used for selecting certificates to find issuer
+names and serial numbers of recipients when using MESSAGE_FORMAT_PEM.
+partIn points to the buffer of text to process, of length partInLen.
+Textual lines must be delimited by the '\n' character as in
+RIPEMEncipherDigestUpdate.
+
+To obtain the output from each call to RIPEMEncipherUpdate, you should
+declare an unsigned char * and pass a pointer to this in partOut, and also
+declare an unsigned int and pass a pointer to this in partOutLen, so that
+RIPEMEncipherUpdate can return the pointer and length of a working buffer
+which contains the output. This buffer is allocated by RIPEM and maintained
+within ripemInfo. The buffer pointer returned in partOut is only valid
+until the next call to RIPEM, so it must be written out or copied
+immediately. Also, you do not need to free the memory buffer returned in
+partOut. This is done by RIPEMInfoDestructor. On error return, the pointer
+to the output is undefined.
+
+Textual lines in the output are delimited by the character '\n'. You must
+convert these to your platform's local line delimiter, which is done
+automatically if you use fwrite to write the output to a file which has
+been opened in text mode "w".
+
+You can process text of unlimited length by calling this multiple times
+just as you did for RIPEMEncipherDigestUpdate. On the first call to
+RIPEMEncipherUpdate, the output contains the message header. And of course
+the data that you pass to RIPEMEncipherUpdate should be the exact same data
+you passed to RIPEMEncipherDigestUpdate. This means that if the input is
+coming from a file, you must remember to rewind the file between the final
+call to RIPEMEncipherDigestUpdate and the first call to
+RIPEMEncipherUpdate. When you are done processing the text in this manner,
+proceed to use RIPEMEncipherFinal.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMGenerateKeys (RIPEMInfo *ripemInfo, unsigned int bits, unsigned
+int validityMonths, int digestAlgorithm, unsigned char *password, unsigned
+int passwordLen, RIPEMDatabase *ripemDatabase);
+
+NOTE: digestAlgorithm is a new parameter added in release 3.0 Beta 4.
+
+This generates a public/private keypair with a modulus of the given number
+of bits and creates a self-signed certificate and initial CRL, using
+digestAlgorithm to sign the certificate and CRL. You must construct
+ripemInfo using RIPEMInfoConstructor before calling this.
+ripemInfo->randomStruct must be seeded (see Appendix A for RSAREF
+documentation on R_RandomUpdate). ripemInfo->userDN should be set to the
+new user's distinguished name. (See "Distinguished Names " in the previous
+chapter for details on constructing a distinguished name.) ripemDatabase
+must already be initialized by InitRIPEMDatabase.
+
+When the private key or self-signed certificate is written to the database
+files, the smart name of ripemInfo->userDN is used in a User: field to
+identify it. Also, if ripemInfo->z.usernameAliases is not NULL, then it
+points to a TypList where each entry is a null-terminated string containing
+an alias for the username and each is also written in a User: field for the
+private key. The username aliases are only useful for RIPEM version 1.1 and
+earlier when the recipient of a message was identified by an email address
+instead of the public key. If you do not require compatibility with version
+1.1 and earlier, then you may leave ripemInfo->z.usernameAliases NULL as it
+is initialized by RIPEMInfoConstructor.
+
+This also writes the user's initial default preferences. Therefore, this
+will return an error if ripemDatabase->preferencesFilename cannot be
+opened.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+void RIPEMInfoConstructor (RIPEMInfo *ripemInfo);
+
+This initializes the RIPEMInfo structure pointed to by ripemInfo. You
+should call this on any RIPEMInfo structure you create before using it. (If
+the RIPEM API were C++, this would be the constructor for this type.) You
+must also call RIPEMInfoDestructor when you are done using the RIPEMInfo.
+
+RIPEMInfoConstructor sets ripemInfo->debug to zero by default. If you want
+a higher level of debug messages, you must set debug to the level and set
+ripemInfo->debugStream to the output stream for the debug messages.
+
+Note that some of the data members of the RIPEMInfo structure are within a
+struct named z for "zeroized". This is done so that RIPEMInfoConstructor
+can efficiently pre-zeroize these data members simply by zeroizing the z
+structure.
+
+void RIPEMInfoDestructor (RIPEMInfo *ripemInfo);
+
+This finalizes the RIPEMInfo structure pointed to by ripemInfo by zeroizing
+sensitive data such as the private key and freeing buffers and lists which
+were allocated during the use of the RIPEMInfo. Note that this does not
+close the file pointed to by ripemInfo->debugStream since this is opened by
+the calling application. Nor does this free the TypList pointed to by
+ripemInfo->userList (if the application sets it) since this is created by
+the calling application. RIPEMInfoDestructor is the complement to
+RIPEMInfoConstructor. You must call this when you are done with the
+RIPEMInfo structure. (If the RIPEM API were C++, this would be the
+destructor for this type.)
+
+char *RIPEMLoginUser (RIPEMInfo *ripemInfo, char *username, RIPEMDatabase
+*ripemDatabase, unsigned char *password, unsigned int passwordLen);
+
+This initializes ripemInfo with a user's public key, private key and other
+information. You must construct ripemInfo using RIPEMInfoConstructor and
+initialize ripemDatabase using InitRIPEMDatabase before calling this.
+username should be the smart name of the user's distinguished name.
+Typically, this is the common name attribute of the distinguished name.
+(See the description of GetDNSmartNameIndex for a definition of "smart
+name".)
+
+RIPEM locates the first record in ripemDatabase's private key files where
+the User: field matches the supplied username. RIPEM then uses the supplied
+password, of length passwordLen, to decrypt the private key and places it
+in ripemInfo->privateKey. RIPEM then constructs the user's public key from
+the private key and places it in ripemInfo->publicKey. To find the user's
+self-signed certificate, RIPEM locates the first record in ripemDatabase's
+public key files where the User: field matches the username, the associated
+certificate's public key is the user's public key, and the certificate is a
+valid self-signed certificate (with the same issuer and subject name). The
+user's distinguished name is placed in ripemInfo->userDN and the encoded
+self-signed certificate is placed in ripemInfo->z.userCertDER of length
+ripemInfo->z.userCertDERLen. RIPEM also loads the user's preferences from
+ripemDatabase's preference file.
+
+This returns (char *)NULL for success, otherwise an error string. There are
+some special error strings which RIPEMLoginUser may return:
+ERR_PREFERENCES_NOT_FOUND, ERR_PREFERENCES_CORRUPT and
+ERR_SELF_SIGNED_CERT_NOT_FOUND. (You should use strcmp to compare the error
+return string to the value such as ERR_PREFERENCES_NOT_FOUND.) You may wish
+to "catch" any of these special error cases and give it special treatment
+as follows:
+
+If this returns ERR_PREFERENCES_NOT_FOUND then the user has been
+successfully logged in, but the entry in the preferences file for the user
+doesn't exist. In this case, you should alert the application user that
+default preferences will be used. The preferences will be saved in the
+preferences file by the next call to RIPEMSavePreferences or other
+functions like SetChainLenAllowed which save the preferences. If the user
+believes that the preferences should have been there, the user may wish to
+abort since this may mean the preferences file has been tampered with.
+However, if the user is upgrading from RIPEM 1.2, ERR_PREFERENCES_NOT_FOUND
+is a normal condition since RIPEM 1.2 did not use preferences.
+
+If this returns ERR_PREFERENCES_CORRUPT, then the user has been
+successfully logged in, but the preferences information decodes badly or
+the signature doesn't verify. In this case, you should alert the
+application user that default preferences will be used and any previous
+preferences must be set again. New preferences will be saved by the next
+call to RIPEMSavePreferences or other functions like SetChainLenAllowed
+which save the preferences.
+
+If this returns ERR_SELF_SIGNED_CERT_NOT_FOUND, ripemInfo->publicKey and
+ripemInfo->privateKey have already been set in ripemInfo, but RIPEM could
+not find the user's self-signed certificate. This is an error condition
+unless you are trying to upgrade the user from RIPEM 1.1 which did not have
+self-signed certificates. In this case, you may set ripemInfo->userDN and
+call WriteSelfSignedCert. (See the description of WriteSelfSignedCert.) If
+your application does not support upgrading from RIPEM 1.1, you should
+treat ERR_SELF_SIGNED_CERT_NOT_FOUND as a fatal error.
+
+char *RIPEMPublishCRL (RIPEMInfo *ripemInfo, unsigned char **output,
+unsigned int *outputLen, int messageFormat, RIPEMDatabase *ripemDatabase);
+
+This produces a PEM-compliant CRL message containing the CRL for the user
+logged in to ripemInfo. Before calling this, you must call RIPEMLoginUser
+to properly initialize ripemInfo and InitRIPEMDatabase to initialize
+ripemDatabase.
+
+To obtain the output, you should declare an unsigned char * and pass a
+pointer to this in output, and also declare an unsigned int and pass a
+pointer to this in outputLen, so that RIPEMPublishCRL can return the
+pointer and length of a working buffer which contains the output. This
+buffer is allocated by RIPEM and maintained within ripemInfo. The buffer
+pointer returned in output is only valid until the next call to RIPEM, so
+it must be written out or copied immediately. Also, you do not need to free
+the memory buffer returned in output. This is done by RIPEMInfoDestructor.
+On error return, the pointer to the output is undefined.
+
+See RIPEMPublishCRLInit for the meaning of messageFormat.
+
+RIPEMPublishCRL internally just calls RIPEMPublishCRLInit and
+RIPEMPublishCRLFinal. It is provided for backward compatibility with
+earlier versions of the RIPEM API.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMPublishCRLFinal (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen);
+
+Use this to produce the final output of a PEM-compliant CRL message. You
+should already have called RIPEMPublishCRLInit and called
+RIPEMPublishCRLUpdate zero or more times. ripemInfo points to the same
+structure which was initialized in RIPEMPublishCRLInit. The output is
+returned in partOut and partOutLen as in RIPEMPublishCRLInit.
+RIPEMPublishCRLFinal should only be called once per message.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMPublishCRLInit (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen, int messageFormat, RIPEMDatabase *ripemDatabase);
+
+This initializes a PEM-compliant CRL message containing the CRL for the
+user logged in to ripemInfo. Before calling this, you must call
+RIPEMLoginUser to properly initialize ripemInfo and InitRIPEMDatabase to
+initialize ripemDatabase.
+
+To obtain the output, you should declare an unsigned char * and pass a
+pointer to this in partOut, and also declare an unsigned int and pass a
+pointer to this in partOutLen, so that RIPEM can return the pointer and
+length of a working buffer which contains the output. This buffer is
+allocated by RIPEM and maintained within ripemInfo. The buffer pointer
+returned in partOut is only valid until the next call to RIPEM, so it must
+be written out or copied immediately. Also, you do not need to free the
+memory buffer returned in partOut. This is done by RIPEMInfoDestructor. On
+error return, the pointer to the output is undefined.
+
+This adds Originator-Certificate and Issuer-Certificate fields to the CRL
+message if possible. If messageFormat is MESSAGE_FORMAT_PEM and there is
+only one issuer chain, then the Originator-Certificate field in the message
+will have the certificate from that issuer. Otherwise, messageFormat should
+be MESSAGE_FORMAT_RIPEM1 and the Originator-Certificate field will have the
+user's self-signed certificate. (This is the same technique used when
+enciphering a message.)
+
+This returns an error if the CRL cannot be found or the signature is
+corrupt. Otherwise, the CRL is used even if it is expired.
+
+Textual lines in the output are delimited by the character '\n'. You must
+convert these to your platform's local line delimiter, which is done
+automatically if you use fwrite to write the output to a file which has
+been opened in text mode "w".
+
+After calling this, you should call RIPEMPublishCRLUpdate zero or more
+times to add extra certificates, and RIPEMPublishCRLFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMPublishCRLUpdate (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen, TypList *certs);
+
+Call this zero or more times to add extra certificates to a PEM-compliant
+CRL message. You should already have called RIPEMPublishCRLInit. ripemInfo
+points to the same structure which was initialized in RIPEMPublishCRLInit.
+The output is returned in partOut and partOutLen as in RIPEMPublishCRLInit.
+
+Each entry in the certs list is added as an "Issuer-Certificate" field to
+the CRL message. This is not explicitly permitted by the PEM RFCs, but it
+is a way to export certificates for other users to import into their
+database. Note that this can be called an arbitrarily large number of times
+without overrunning memory. You can use RIPEMCertCursorUpdate to repeatedly
+select a certificate from the database and then add it to the CRL message.
+If you do this, then you can use FreeList to clear the certs list after it
+has been written to the message, allowing you to select more certificates
+from the database.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMRequestCRLsFinal (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen);
+
+Use this to produce the final output of a PEM-compliant CRL retrieval
+request. You should already have called RIPEMRequestCRLsUpdate one or more
+times. ripemInfo points to the same structure which was initialized in
+RIPEMRequestCRLsInit. The output is returned in partOut and partOutLen as
+in RIPEMRequestCRLsInit. RIPEMRequestCRLsFinal should only be called once
+per message.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMRequestCRLsInit (RIPEMInfo *ripemInfo, unsigned char **partOut,
+unsigned int *partOutLen);
+
+This initializes ripemInfo for producing a PEM-compliant CRL retrieval
+request message. Before calling this, you must call RIPEMLoginUser to
+properly initialize ripemInfo.
+
+To obtain the output, you should declare an unsigned char * and pass a
+pointer to this in partOut, and also declare an unsigned int and pass a
+pointer to this in partOutLen, so that RIPEM can return the pointer and
+length of a working buffer which contains the output. This buffer is
+allocated by RIPEM and maintained within ripemInfo. The buffer pointer
+returned in partOut is only valid until the next call to RIPEM, so it must
+be written out or copied immediately. Also, you do not need to free the
+memory buffer returned in partOut. This is done by RIPEMInfoDestructor. On
+error return, the pointer to the output is undefined.
+
+Textual lines in the output are delimited by the character '\n'. You must
+convert these to your platform's local line delimiter, which is done
+automatically if you use fwrite to write the output to a file which has
+been opened in text mode "w".
+
+After calling this, you should call RIPEMRequestCRLsUpdate to output the
+information for each requested CRL, and RIPEMRequestCRLsFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMRequestCRLsUpdate (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, DistinguishedNameStruct *name);
+
+Use this to output the name of the issuer for the CRL you are requesting in
+a PEM-compliant CRL retrieval request message. The issuer is given by the
+DistinguishedNameStruct pointed to by name. Typically, this is the issuer
+in the CertificateStruct returned by DERToCertificate when decoding the
+certificates in a certificate chain. You should already have called
+RIPEMRequestCRLsInit. ripemInfo points to the same structure which was
+initialized in RIPEMRequestCRLsInit. The output is returned in partOut and
+partOutLen as in RIPEMRequestCRLsInit.
+
+To request multiple CRLs (such as one for the issuer of each certificate in
+a chain), you can call RIPEMRequestCRLsUpdate multiple times, passing the
+name of a different issuer each time.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMSavePreferences (RIPEMInfo *ripemInfo, RIPEMDatabase
+*ripemDatabase);
+
+This saves the preferences in ripemInfo by writing them to
+ripemDatabase->preferencesFilename. Before calling this, you must call
+RIPEMLoginUser to properly initialize ripemInfo and InitRIPEMDatabase to
+initialize ripemDatabase.
+
+You might want to call this to explicitly save the preferences if
+RIPEMLoginUser returns ERR_PREFERENCES_NOT_FOUND or
+ERR_PREFERENCES_CORRUPT. Note that RIPEM functions SetChainLenAllowed,
+RIPEMChangePassword and RIPEMUpdateCRL which modify the preferences
+implicitly save the preferences, so you do not need to call
+RIPEMSavePreferences in this case.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMSignDetachedPKCSFinal (RIPEMInfo *ripemInfo, unsigned char
+**partOut, unsigned int *partOutLen, RIPEMAttributes
+*authenticatedAttributes);
+
+Use this to finalize the creating of a PKCS-compliant detached signature
+and to output the detached signature data. You should already have called
+RIPEMSignDetachedPKCSDigestUpdate one or more times to digest the text. (If
+RIPEMSignDetachedPKCSDigestUpdate has not been called, this will still
+output the signature of zero-length message.) ripemInfo points to the same
+structure which was initialized in RIPEMSignDetachedPKCSInit. You should
+pass (RIPEMAttributes *)NULL for authenticatedAttributes, which is provided
+for future compatibility.
+
+To obtain the output from RIPEMSignDetachedPKCSFinal, you should declare an
+unsigned char * and pass a pointer to this in partOut, and also declare an
+unsigned int and pass a pointer to this in partOutLen, so that
+RIPEMSignDetachedPKCSFinal can return the pointer and length of a working
+buffer which contains the output. This buffer is allocated by RIPEM and
+maintained within ripemInfo. The buffer pointer returned in partOut is only
+valid until the next call to RIPEM, so it must be written out or copied
+immediately. Also, you do not need to free the memory buffer returned in
+partOut. This is done by RIPEMInfoDestructor. On error return, the pointer
+to the output is undefined.
+
+RIPEMSignDetachedPKCSFinal should only be called once per signature.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMSignDetachedPKCSInit (RIPEMInfo *ripemInfo, int
+digestAlgorithm);
+
+NOTE: digestAlgorithm is a new parameter added in release 3.0 Beta 4.
+
+This initializes ripemInfo for creating a PKCS-compliant detached
+signature. Before calling this, you must call RIPEMLoginUser to properly
+initialize ripemInfo. digestAlgorithm must be DA_MD2, DA_MD5 or DA_SHA1.
+
+After calling RIPEMSignDetachedPKCSInit, you should call
+RIPEMSignDetachedPKCSDigestUpdate to digest the message data by parts, and
+RIPEMSignDetachedPKCSFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMSignDetachedPKCSDigestUpdate (RIPEMInfo *ripemInfo, unsigned
+char *partIn, unsigned int partInLen);
+
+Use this to digest the message data for a PKCS-compliant detached
+signature. ripemInfo points to the same structure which was initialized in
+RIPEMSignDetachedPKCSInit. partIn points to the buffer of message data to
+digest, of length partInLen.
+
+The input is "as is." No translation of '\n' to <CR><LF>is done because the
+PKCS message format can support binary data. The calling routine must do
+end-of-line character translation on the input if necessary before passing
+it to RIPEMSignDetachedPKCSDigestUpdate.
+
+You can digest a message of unlimited length by calling this multiple times
+by reading in a part of the text and calling
+RIPEMSignDetachedPKCSDigestUpdate, reading in the next part, calling again,
+etc. When you are done digesting the text in this manner, proceed to use
+RIPEMSignDetachedPKCSFinal. (There is no RIPEMSignDetachedPKCSUpdate
+because RIPEMSignDetachedPKCSFinal produces the entire output.)
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMUpdateCRL (RIPEMInfo *ripemInfo, UINT4 nextUpdate, unsigned char
+*serialNumber, unsigned int serialNumberLen, int digestAlgorithm,
+RIPEMDatabase *ripemDatabase);
+
+NOTE: digestAlgorithm is a new parameter added in release 3.0 Beta 4.
+
+This selects the current CRL for the user logged in to ripemInfo, sets the
+last update time to now and the next update time to nextUpdate, signs the
+CRL using digestAlgorithm and inserts the updated CRL into the first file
+listed in ripemDatabase->crlSource. Before calling this, you must call
+RIPEMLoginUser to properly initialize ripemInfo and InitRIPEMDatabase to
+initialize ripemDatabase. The nextUpdate time is represented as the number
+of seconds since January first, 1970 at midnight Greenwich Mean Time. It is
+an error if nextUpdate is before now (as returned by R_time). This will
+create a new CRL if one does not exist in the database. This also sets the
+current CRL last update time in the RIPEM preferences to the new value and
+saves the modified preferences. (Note that this updates the CRL even if the
+CRL last update time in the RIPEM preferences doesn't match the actual
+latest CRL.)
+
+If serialNumber is not NULL, then serialNumber and serialNumberLen give the
+serial number of a user to revoke by adding an entry to the CRL. The
+revocation time for the revoked user is set to now. In this case,
+serialNumber typically points to the serialNumber buffer in the
+CertificateStruct returned by DERToCertificate, and serialNumberLen is the
+sizeof this buffer. However, if serialNumber is NULL, serialNumberLen is
+ignored and no new revocation entry is added. This is useful for renewing
+the CRL when it expires by writing a fresh one to the database.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMVerifyDetachedPKCSFinal (RIPEMInfo *ripemInfo, TypList
+*certChain, ChainStatusInfo *chainStatus, RIPEMAttributes
+*authenticatedAttributes);
+
+Use this to finalize the verifying of a PKCS-compliant detached signature.
+You should already have called RIPEMVerifyDetachedPKCSUpdate one or more
+times to supply the detached signature. ripemInfo points to the same
+structure which was initialized in RIPEMVerifyDetachedPKCSInit.
+
+certChain, chainStatus and authenticatedAttributes are returned as in
+RIPEMDecipherPKCSFinal for a PKCS_SIGNED message. pkcsMode is not returned
+because it can only be PKCS_SIGNED.
+
+RIPEMVerifyDetachedPKCSFinal should only be called once per signature.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMVerifyDetachedPKCSInit (RIPEMInfo *ripemInfo, int
+digestAlgorithm);
+
+This initializes ripemInfo for verifying a PKCS-compliant detached
+signature. Before calling this, you must call RIPEMLoginUser to properly
+initialize ripemInfo. The digestAlgorithm is used by
+RIPEMVerifyDetachedPKCSDigestUpdate to digest the text and is also compared
+with the digest algorithm specified in the signature information.
+digestAlgorithm should be one of the tokens defined by RSAREF such as
+DA_MD2 or DA_MD5.
+
+After calling RIPEMVerifyDetachedPKCSInit, you should call
+RIPEMVerifyDetachedPKCSDigestUpdate to digest the message by parts,
+RIPEMVerifyDetachedPKCSUpdate to supply the detached signature, and
+RIPEMVerifyDetachedPKCSFinal to finish.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMVerifyDetachedPKCSDigestUpdate (RIPEMInfo *ripemInfo, unsigned
+char *partIn, unsigned int partInLen);
+
+Use this to digest the message data of a PKCS-compliant detached signature
+which you are verifying. You should already have called
+RIPEMVerifyDetachedPKCSInit. ripemInfo points to the same structure which
+was initialized in RIPEMVerifyDetachedPKCSInit.
+
+partIn points to the buffer of the input message to digest, of length
+partInLen. partIn may contain any number of bytes.
+
+The input is "as is." No translation of '\n' to <CR><LF>is done because the
+PKCS message format can support binary data. The calling routine must do
+end-of-line character translation on the output text if necessary.
+
+You can process a message of unlimited length by calling this multiple
+times by reading in a part of the message and calling
+RIPEMVerifyDetachedPKCSDigestUpdate, reading in the next part, calling
+again, etc. When you are done processing the message in this manner,
+proceed to use RIPEMVerifyDetachedPKCSUpdate.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *RIPEMVerifyDetachedPKCSUpdate (RIPEMInfo *ripemInfo, unsigned char
+*partIn, unsigned int partInLen, RIPEMDatabase *ripemDatabase);
+
+Use this to supply the signature data of a PKCS-compliant detached
+signature which you are verifying. You should already have called
+RIPEMVerifyDetachedPKCSDigestUpdate to digest the message data. (If
+RIPEMVerifyDetachedPKCSDigestUpdate has not been called, this will still
+verify the signature of zero-length message.) ripemInfo points to the same
+structure which was initialized in RIPEMVerifyDetachedPKCSInit.
+ripemDatabase must already be initialized using InitRIPEMDatabase and is
+used to process the certificate information in the message.
+
+partIn points to the buffer of the input signature data to process, of
+length partInLen. partIn may contain any number of bytes.
+
+You can call this multiple times by reading in a part of the signature data
+and calling RIPEMVerifyDetachedPKCSUpdate, reading in the next part,
+calling again, etc. When you are done supplying the signature in this
+manner, proceed to use RIPEMVerifyDetachedPKCSFinal.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+void *R_realloc (void *pointer, unsigned int size);
+
+This is just like the normal realloc, except it frees the original pointer
+if realloc fails, whereas the normal realloc does not. Also, this returns a
+non-null value if size is zero, whereas some implementations may return
+(void *)NULL when sizing a block down to zero (which might be mistaken for
+an error return value). In this way, R_realloc is a little more robust that
+the normal realloc. It is used throughout the RIPEM library and is made
+available in the RIPEM API as a general utility function.
+
+If pointer is (void *)NULL, this behaves like malloc. Otherwise, pointer
+must point to a previously allocated block. On success, this returns the
+new block, otherwise it returns (void *)NULL.
+
+void R_time (UINT4 *theTime);
+
+This sets theTime to the number of seconds since January first, 1970 at
+midnight Greenwich Mean Time. The type UINT4 is defined in global.h as
+unsigned long int. This representation of time is used by the RIPEM API in
+many places such as the beginning and end of a certificate validity period
+or the time of a CRL revocation entry (although these times are represented
+differently inside an encoded certificate or CRL as a "UTC Time"). Having a
+representation in seconds makes it easy to compare two times to see which
+is earlier or to compute a time interval by calculating the number of
+seconds in the interval.
+
+char *SelectCertChain (RIPEMInfo *ripemInfo, TypList *certChain,
+ChainStatusInfo *chainStatus, DistinguishedNameStruct *name,
+R_RSA_PUBLIC_KEY *publicKey, BOOL directCertOnly, RIPEMDatabase
+*ripemDatabase);
+
+This selects the best certificate chain for the distinguished name pointed
+to by name. Typically, the name is the subject of the CertificateStruct
+returned by DERToCertificate. The RIPEM User Manual explains what is meant
+by the "best" certificate chain. Before calling this, you must call
+RIPEMLoginUser to properly initialize ripemInfo and InitRIPEMDatabase to
+initialize ripemDatabase.
+
+The certificate chain is returned in the TypList pointed to by certChain.
+You must declare this TypList and initialize it using InitList before
+calling SelectCertChain. SelectCertChain will call FreeList on certChain to
+make sure it is empty before searching for the chain. You must also declare
+a ChainStatusInfo structure and pass a pointer to it in chainStatus, which
+SelectCertChain uses to return the status of the certificates in the chain.
+
+On success, certChain contains the chain where each entry is the
+certificate DER. The first entry is the certificate for the user given by
+name (called the "bottom" certificate), and each successive entry is an
+issuer certificate going up the chain. The caller can use DERToCertificate
+to get the contents of the certificates in the chain. Note that
+DERToCertificate will not return an error since the certificate was already
+successfully decoded, so you can use it without worrying about the return
+value. The array for chainStatus->individual contains the individual
+certificate statues and corresponds to the certificates in certChain where
+chainStatus->individual[0] is the status for the certificate at the
+"bottom" of the chain, etc. chainStatus->overall contains the overall
+status, defined as the "worst" of the individual statues. The status
+(individual or overall) is one the CERT_ statuses, such as CERT_VALID,
+CERT_REVOCATION_UNKNOWN, etc. Note that an application is usually only
+interested in the overall chain status. The individual certificate statuses
+are provided only for extra detail.
+
+If publicKey is not NULL, it points to the public key for the user given by
+name, and limits the search to include only certificates for the user where
+the public key matches the supplied value. This is useful if you already
+have a certificate such as one returned by GetCertsBySmartName. To find out
+whether it is validated, you can call SelectCertChain, passing the public
+key in the certificate as well as the subject name. This is important
+because you don't want a certificate chain returned for the same name but a
+different public key.
+
+Also, if directCertOnly is FALSE, chain lengths up to MAX_CERT_CHAIN_LEN
+will be allowed. This is the usual case for finding senders and recipients
+of messages. But if directCertOnly is TRUE, SelectCertChain limits the
+certificate chain to only one certificate issued directly by the user which
+is logged in to ripemInfo. This is useful for operations such as revoking
+or setting chain length allowed which are only meaningful on certificates
+issued directly by the logged-in user. (You don't want a longer certificate
+chain where the certificate for the user given by name is issued by someone
+else.)
+
+If no chain can be found, this sets chainStatus->overall to 0, the
+certChain is empty, values in chainStatus->individual are undefined, and
+the function return value is (char *)NULL.
+
+Returns: (char *)NULL for success, otherwise an error string. Note that
+failure to find a certificate chain does not result in an error string.
+
+char *SetChainLenAllowed (RIPEMInfo *ripemInfo, unsigned char
+*publicKeyDigest, unsigned int chainLenAllowed, RIPEMDatabase
+*ripemDatabase);
+
+This sets the chain length allowed for the user with the public key given
+by publicKeyDigest. This is the way that you specify that you trust a user,
+such as the Low Assurance Certification Authority, to certify other users.
+Before calling this, you must call RIPEMLoginUser to properly initialize
+ripemInfo. The public key in question usually comes from a user's
+certificate in a certificate chain. To get the public key digest, you
+should decode the certificate using DERToCertificate and pass the public
+key from the CertificateStruct to GetPublicKeyDigest.
+
+This modifies the certificate preferences in ripemInfo which were loaded
+during RIPEMLoginUser. If the public key digest is found, this modifies the
+entry to the given chainLenAllowed, otherwise it adds a new entry for the
+public key digest. However, if chainLenAllowed is zero, this removes the
+entry for the public key digest since zero is the default (and if there was
+no entry in the first place, this does not add one). This also calls
+RIPEMSavePreferences so that the stored preferences are updated. Therefore,
+this will return an error if ripemDatabase->preferencesFilename cannot be
+opened.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *ValidateAndWriteCert (RIPEMInfo *ripemInfo, CertificateStruct
+*certStruct, int digestAlgorithm, RIPEMDatabase *ripemDatabase);
+
+NOTE: digestAlgorithm is a new parameter added in release 3.0 Beta 4.
+
+This is the function which you should use to validate another user for the
+first time. This creates a new certificate based on the information in
+certStruct and signs it with the private key in ripemInfo using
+digestAlgorithm for the signature, then writes the new certificate to the
+database. Usually, this is done when RIPEMDecipherFinal returns a
+self-signed certificate from another user (indicated by a
+chainStatus->overall of zero). After verifying that the user given by the
+self-signed certificate should be validated (by making sure the self-signed
+certificate digest is correct) you can call ValidateAndWriteCert to make a
+new certificate which validates that user.
+
+You can also call this in other circumstances where you might want to make
+a new certificate, like making a certificate for the Low Assurance
+Certification Authority in order to hook into the low assurance certificate
+hierarchy by setting its chain length allowed to 2.
+
+When you call this, certStruct->subject should contain the distinguished
+name of the user to validate and certStruct->publicKey should contain that
+user's public key. certStruct->notBefore and certStruct->notAfter should
+contain the beginning and end times of the certificate's validity period.
+These represent the time in number of seconds since January first, 1970 at
+midnight Greenwich Mean Time. For example, you can get the begin time by
+calling R_time and the end time by adding the number of seconds in a year.
+It is an error if certStruct->notAfter is less than certStruct->notBefore.
+
+If the logged-in user in ripemInfo has already issued a certificate for the
+same user (even if it has been revoked) and if the validity period in
+certStruct does not begin after the end of the already-issued certificate's
+validity period, then this returns the error string
+ERR_CERT_ALREADY_VALIDATED. This prevents making a new certificate with an
+overlapping or earlier validity period. (You should compare the error
+return string to ERR_CERT_ALREADY_VALIDATED using strcmp.)
+
+This sets the certificate issuer to the logged-in user's distinguished name
+in ripemInfo and generates a unique serial number for this certificate by
+digesting the certificate data. This also sets the certificate version and
+digest algorithm to default values. This then signs the certificate with
+the private key in ripemInfo and adds the certificate to the first file
+listed in ripemDatabase->pubKeySource. The certificate is identified in the
+public key file by a User: field which is the smart name from
+certStruct->subject.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+char *WriteSelfSignedCert (RIPEMInfo *ripemInfo, unsigned int
+validityMonths, int digestAlgorithm, RIPEMDatabase *ripemDatabase);
+
+NOTE: digestAlgorithm is a new parameter added in release 3.0 Beta 4.
+
+This creates a self-signed certificate using the ripemInfo->publicKey and
+ripemInfo->userDN with a validity->period starting from the current time to
+validityMonths in the future. The self-signed certificate is signed with
+ripemInfo->privateKey using digestAlgorithm for the signature and written
+to the first file listed in ripemDatabase->pubKeySource.
+
+This function is provided only for applications which must upgrade a user
+from RIPEM 1.1 or earlier since these versions did not use self-signed
+certificates. And you should call this only in response to RIPEMLoginUser
+returning ERR_SELF_SIGNED_CERT_NOT_FOUND. If you do not need to convert
+RIPEM 1.1 users, you do not need to call WriteSelfSignedCert.
+(RIPEMGenerateKeys writes the new self-signed certificate itself, so you do
+not need to call WriteSelfSignedCert when creating a new user.)
+
+When RIPEMLoginUser returns ERR_SELF_SIGNED_CERT_NOT_FOUND,
+ripemInfo->publicKey and ripemInfo->privateKey are already set. You must
+set ripemInfo->userDN and then call WriteSelfSignedCert. After that, the
+self-signed certificate is available for normal RIPEM operation.
+
+Returns: (char *)NULL for success, otherwise an error string.
+
+Appendix A: Selected RSAREF functions
+
+A typical RIPEM application uses some functions from RSAREF for random
+numbers and computing a message digest. Here are some relevant excerpts
+from the RSAREF document which is rsaref.txt in the RSAREF doc directory.
+
+Random Structures
+
+A random structure contains a seed from which a pseudorandom sequence
+of bytes is derived. RSAREF generates keys and pads RSA encryption
+blocks with bytes derived from a random structure.
+
+Random structures are used by both message-processing and
+key-generation applications.
+
+RSAREF sets up a random structure with the procedure R_RandomInit. A
+typical application calls R_RandomInit on entry.
+
+A new random structure is not ready for use until it is seeded by
+mixing in some random bytes. RSAREF seeds a random structure with the
+procedure R_RandomUpdate and R_GetRandomBytesNeeded. A random
+structure is considered seeded when the number of bytes still needed
+reaches zero. More bytes can be mixed in after the random structure
+is seeded. A typical application calls R_GetRandomBytesNeeded and
+R_RandomUpdate immediately after calling R_RandomInit.
+
+RSAREF zeroizes a random structure with the procedure R_RandomFinal.
+A typical application calls R_RandomFinal on exit.
+
+R_RandomInit
+
+int R_RandomInit (
+  R_RANDOM_STRUCT *randomStruct     /* new random structure */
+);
+
+R_RandomInit sets up a new random structure.
+
+Return value:      0     success
+             nonzero     reserved for future compatibility
+
+R_RandomUpdate
+
+int R_RandomUpdate (
+  R_RANDOM_STRUCT *randomStruct,        /* random structure */
+  unsigned char *block,        /* block of values to mix in */
+  unsigned int blockLen                  /* length of block */
+);
+
+R_RandomUpdate mixes blockLen bytes from block into randomStruct.
+
+Return value:      0     success
+             nonzero     reserved for future compatibility
+
+R_GetRandomBytesNeeded
+
+int R_GetRandomBytesNeeded (
+  unsigned int *bytesNeeded,/* number of mix-in bytes needed */
+  R_RANDOM_STRUCT *randomStruct         /* random structure */
+);
+
+R_GetRandomBytesNeeded computes the number of mix-in bytes still
+needed to seed randomStruct, storing the result in bytesNeeded.
+
+Return value:      0     success
+             nonzero     reserved for future compatibility
+
+R_RandomFinal
+
+void R_RandomFinal (
+  R_RANDOM_STRUCT *randomStruct         /* random structure */
+);
+
+R_RandomFinal zeroizes randomStruct.
+
+No return value.
+
+R_DigestBlock
+
+int R_DigestBlock (
+  unsigned char *digest,                  /* message digest */
+  unsigned int *digestLen,      /* length of message digest */
+  unsigned char *content,                        /* content */
+  unsigned int contentLen,             /* length of content */
+  int digestAlgorithm           /* message-digest algorithm */
+);
+
+R_DigestBlock computes the message digest of content, storing the
+resulting message digest in digest and its length in bytes in
+digestLen.
+
+digestAlgorithm is the algorithm with which the content is digested,
+and must be one DA_MD2 or DA_MD5.
+
+digestLen will not be greater than MAX_DIGEST_LEN.
+
+Return value:       0    success
+  RE_DIGEST_ALGORITHM    digestAlgorithm is invalid

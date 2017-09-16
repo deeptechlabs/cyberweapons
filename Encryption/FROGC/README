@@ -1,0 +1,47 @@
+Submitter: TecApro. Cipher: FROG. Reference ANSI-C source diskette
+
+Readme  This file. Describes the files contained in this diskette.
+
+main.c	Builds all MonteCarlo and KAT files.
+
+frog.c	AES functions and internal Frog functions:
+
+	int blockDecrypt(cipherInstance *cipher, keyInstance *key, BYTE *input, int inputLen, BYTE *outBuffer);
+	int blockEncrypt(cipherInstance *cipher, keyInstance *key, BYTE *input, int inputLen, BYTE *outBuffer);
+	int cipherInit(cipherInstance *cipher, BYTE mode, char *IV);
+	int makeKey(keyInstance *key, BYTE direction, int keyLen, char *keyMaterial);
+
+	void binaryToHexString (BYTE *binaryArray, char *hexArray, int Size);
+	void decryptFrog (BYTE *cipherText, tInternalKey key);
+	void encryptFrog (BYTE *plainText, tInternalKey key);
+	void hashKey (BYTE *binaryKey, int keyLen, tInternalKey *randomKey);
+	void hexStringToBinary (char *hexString, BYTE *binaryData, int binaryLen);
+	BYTE hexToBinary (BYTE value);
+	void invertPermutation (BYTE *permutation, BYTE lastElem);
+	void makeInternalKey (BYTE direction, tInternalKey key);
+	void makePermutation (BYTE *permutation, BYTE lastElem);
+	void shiftBitLeft (BYTE *buffer, int size);
+
+frog.h 	Function declarations for frog.c
+
+tests.c	MonteCarlo, KAT and text file output functions:
+
+	void MonteCarloTestCBCDecrypt (char *filename);
+	void MonteCarloTestCBCEncrypt (char *filename);
+	void MonteCarloTestECB (char *filename, BYTE direction);
+	void VariableKeyKAT (char *filename);
+	void VariableTextKAT (char *filename);
+
+	void openFile (char *filename);
+	void closeFile ();
+	void outputLineFeed ();
+	void outputInteger (char *format, int i);
+	void outputBinary (char *Item, BYTE *value, int Size);
+	void outputString (char *Item);
+	void outputHeader (char *filename, char *title, char *title2);
+
+tests.h	Function declarations for tests.c
+
+aes.h	AES header file
+
+tests.exe executable that produces the KATs and MCTs

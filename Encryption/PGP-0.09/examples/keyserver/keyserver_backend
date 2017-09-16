@@ -1,0 +1,71 @@
+#!/usr/local/bin/perl -w -I.. -I/home/TheCrypt/perlmod2
+
+use strict;
+use LWP::UserAgent;
+use Stream::IO;
+use Message::Server;
+use PGP::PublicKeyRing;
+use PGP::PublicKeyRingEntry;
+use PGP::Key;
+
+
+#
+#	Logging function
+#
+sub logmsg
+{
+	print STDERR "@_\n";
+};
+
+sub fetch_key
+{
+	my $kr = shift;
+	my $reply_sub = shift;
+	my $id = shift;
+
+logmsg "Fetching key $id";
+	my $key = $kr->getByHexId($id);
+
+	if (ref $key)
+	{
+		&$reply_sub($key->save(), 0);
+	}
+	else
+	{
+		&$reply_sub($key, 1);
+	}
+}
+
+sub add_key
+{
+	my $kr = shift;
+	my $reply_sub = shift;
+	my $keydata = shift;
+
+	my $key = restore PGP::Key $keydata;
+	my $entry = new PGP::PublicKeyRingEntry $key;
+	foreach($key->ids())
+	{
+		$entry->addId($_);
+	}
+	my $id = $entry->id();
+
+logmsg "Adding key ", unpack("H*", $id);
+	$kr->add($entry);
+	&$reply_sub("", 0);
+}
+
+my $kr = PGP::PublicKeyRing->open("/home/gary/SOX/keys/pubring.pgp");
+ref $kr || die $kr;
+
+my $server = new Message::Server (
+		-port => 9020,
+		-msg_cb => \&logmsg,
+	);
+ref $server || die "Could not create message server ($server)";
+
+$server->registerRequestHandler("fetch-key", sub { fetch_key($kr, @_) } );
+$server->registerRequestHandler("add-key", sub { add_key($kr, @_) } );
+
+print "Mainloop\n";
+$server->MainLoop();

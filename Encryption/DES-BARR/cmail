@@ -1,0 +1,46 @@
+
+# cmail - a virtual mailer for sending secret mail
+#
+# To send secret mail, envoke as you normally envoke mail.
+#
+# To receive mail, run your normal mailer and when you receive secret
+# mail, send the message to cmail as follows:
+#
+#   s | cmail
+#
+# Note: the s| feature does not exist in the Berkely mailer.
+#
+# In both cases, you will be prompted for an encryption key.
+# 
+# NOTE: mail cleartext will appear in a temporory file which is
+#       readable only by you or the super user during the time that you 
+#       are editing the message. 
+#
+encr=cipher
+decr=decipher
+btoa=btoa	
+atob=atob
+mail=mailx				# Change for your mailer.
+edit=vi					# Change for your editor.
+tmp=$HOME/.Sm$$				# temp file
+#
+umask 077				# Secure for temp files.
+if [ $# -eq 0 ]				# If envoked with no arguments,
+then					# just invert the process.
+   $atob | $decr | uncompress -n
+else					# If sending mail...
+   trap "mv $tmp $home/smail.$$" 1 2 3 	# If killed.
+   rm -f $tmp				# Kill the temp file if it exists.
+   if tty -s				# if interactive, fork an editor.
+   then					# Here is where the cleartext is!
+      $edit $tmp
+   else					# Otherwise just cat the input into
+      cat >$tmp				# the tempfile.
+   fi
+   if [ -s $tmp ] 			# If file is not empty, send it.
+   then 				# Much handwaving for quoted stuff.
+      echo cat $tmp \| compress -n \| $encr \| $btoa \| $mail `(for i do
+	 echo \'$i\'
+      done)` \; rm $tmp | exec sh 	# note the EXEC!
+   fi					# NOT EXECUTED!
+fi

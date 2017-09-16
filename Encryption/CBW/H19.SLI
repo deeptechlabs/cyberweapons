@@ -1,0 +1,32 @@
+# For GRAPHICSMAP, the first char must be one of the following:
+# \G - graphics mode
+# \N - normal mode
+# \S - standout (inverse) mode
+# The remaining positions use the regular slash codes.
+#
+setenv GRAPHICSMAP	'tb=\Gh:lf=\Gk:cr=\Gg:na=\Gi:\
+			ff=\G~:cc=\Gw:uk=\G^:ul=\Gz:\
+			vb=\G'\`':hb=\Ga:ll=\Ge'
+
+# For KEYMAP, the symbol \E is the same as \033 (escape), it can
+# appear anywhere in the value fields.
+# Info in KEYMAP superceeds info in the TERMCAP file/variable.
+#
+#setenv KEYMAP \
+#'pr=\ES:ne=\033T:ac=\033U:jc=\033V:up=\EA:do=\EB:ri=\EC:le=\ED:'
+
+
+# Here is a full termcap entry for the heath.
+# The original was missing ks and ke.
+#
+setenv TERMCAP \
+'kb|h19|heath|h19-b|h19b|heathkit|heath-19|z19|zenith|heathkit h19:\
+	:cr=^M:nl=^J:bl=^G:\
+	:al=1*\EL:am:le=^H:bs:cd=\EJ:ce=\EK:cl=\EE:cm=\EY%+ %+ :co#80:dc=\EN:\
+	:dl=1*\EM:do=\EB:ei=\EO:ho=\EH:im=\E@:li#24:mi:nd=\EC:as=\EF:ae=\EG:\
+	:ms:ta=^I:pt:sr=\EI:se=\Eq:so=\Ep:up=\EA:vs=\Ex4:ve=\Ey4:\
+	:kb=^h:ku=\EA:kd=\EB:kl=\ED:kr=\EC:kh=\EH:kn#8:\
+	:k1=\ES:k2=\ET:k3=\EU:k4=\EV:k5=\EW:\
+	:l6=blue:l7=red:l8=white:k6=\EP:k7=\EQ:k8=\ER:\
+	:es:hs:ts=\Ej\Ex5\Ex1\EY8%+ \Eo:fs=\Ek\Ey5:ds=\Ey1:\
+	:ks=\Et:ke=\Eu'

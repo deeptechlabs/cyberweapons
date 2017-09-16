@@ -1,0 +1,16 @@
+#!/usr/local/bin/perl -w -I..
+
+use PGP::PublicKeyRing;
+
+
+my $name = "Billy";
+
+my $pkr = restoreFromFile PGP::PublicKeyRing "pubring.pgp";
+foreach (@{$pkr->allKeysByUserID()})
+{
+	my $id = $_->[0];
+	my $key = $_->[1]->key();
+
+	($id =~ m/$name/g) && print "$id\n$key\n";
+}
+

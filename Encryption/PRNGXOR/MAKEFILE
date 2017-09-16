@@ -1,0 +1,21 @@
+all: tran prngxor
+
+tran: tran.c rnd.c
+	cc -o tran -O rnd.c tran.c
+
+prngxor: prngxor.c rnd.c
+	cc -o prngxor -O rnd.c prngxor.c
+
+test: tmp tran
+	tran < tmp > tmpo ; more tmpo ; mv tmpo tmp
+
+ptest:  all
+	prngxor <foo |tran|prngxor > tmpo ;\
+	prngxor <tmpo |tran|prngxor > tmp ;\
+	diff foo tmp
+
+tmp: foo
+	cp foo tmp
+
+clean:
+	rm -f tmp tmpo tran tran.o rnd.o prngxor.o prngxor

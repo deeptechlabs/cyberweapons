@@ -1,0 +1,48 @@
+#!/usr/local/bin/perl -w -I.. -I/home/TheCrypt/perlmod2
+
+use FileHandle;
+use Stream::IO;
+use PGP::Armoury;
+use PGP::PacketFactory;
+
+
+#
+#	Read secret key
+#
+my $fis = new Stream::FileInput "secring.pgp";
+ref($fis) || die "Could not create Stream::FileInput ($fis)";
+my $dis = new Stream::DataInput $fis;
+ref($dis) || die "Could not create Stream::DataInput ($dis)";
+
+#
+#	Decrypt secret key
+#
+my $skc = PGP::PacketFactory::restore($dis);
+die $skc unless ref($skc);
+my $sk = $skc->decrypt("joe");
+die "Cannot decrypt secret key ($sk)" unless ref $sk;
+
+
+#
+#	Read packet from stdin
+#
+my $fis = new Stream::FileInput new FileHandle "< -";
+my $dis = new Stream::DataInput $fis;
+my ($pkt, $err);
+($pkt, $err) = PGP::Armoury::readPacket($dis);
+defined $err && die $err;
+
+my $sis = new Stream::StringInput $pkt;
+$dis = new Stream::DataInput $sis;
+
+my $pkek = PGP::PacketFactory::restore($dis);
+ref($pkek) || die $pkek;
+
+my $ced = PGP::PacketFactory::restore($dis);
+ref($ced) || die $ced;
+
+my $data = $ced->decrypt($pkek->decrypt($sk));
+
+my $lit = PGP::PacketFactory::restoreFromString($data);
+
+print $lit->data();

@@ -1,0 +1,26 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ MANIFEST                   1	This shipping list
+ Makefile                   3	makefile for pUnix, etc.
+ README                     1	general comments from the author
+ art.grm                    3	art critic grammar
+ ball.grm                   1	baseball grammar
+ getopt.c                   1	Gnu getopt
+ getopt.h                   1	interface to getopt.c
+ global.h                   3	general definitions
+ mimic.1                    3	a man page
+ mimic.c                    2	main program
+ mimic.doc                  2	detailed documentation
+ outsplit.c                 3	encryption output routine
+ outsplit.h                 2	interface to outsplit.c
+ parser.c                   2	decryption output routine
+ parser.h                   3	interface to parser.c
+ random.c                   1	random number generator
+ random.h                   3	interface to random.c
+ sample                     2	simple test case to decrypt
+ table.c                    2	grammar input module
+ table.h                    3	interface to table.c
+ utl.c                      3	miscellaneous functions
+ utl.h                      3	interface to utl.c
+ words.c                    3	lexical scanner for parser.c
+ words.h                    3	interface to words.c

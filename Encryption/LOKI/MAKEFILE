@@ -1,0 +1,51 @@
+#
+#	Makefile - for LOKI routines
+#
+#	major targets are:
+#		make all	- compile binaries in this directory
+#		make clean	- remove all object files
+#		make clobber	- remove all files except original source
+#
+#	Copyright 1988 Lawrence Brown and CITRAD
+#
+#	Compiler Defines:
+#	-----------------
+#	    if this program is compiled on a little-endian machine (eg Vax)
+#		define '-DLITTLE_ENDIAN' in CFLAGS & LINTF
+#		in order to enable the byte swapping  routines, 
+#		which will incur a time penalty
+#
+#	    if compiled on a machine requiring strict alignment of words/longs
+#		and cannot guarantee that the 8 char blocks passed are aligned
+#		define '-DSTRICT_ALIGN' in CFLAGS & LINTF
+#		this will incure about an 5% time penalty for each encryption
+#
+#	    if a detailed trace of LOKI function f is required for debugging
+#		define '-DTRACE=1', '-DTRACE=2' or '-DTRACE=3' in CFLAGS & LINTF
+#               for increasingly detailed diagnostics from the loki64 routines.
+
+CFLAGS=-O
+
+PROGS = cert89 cert91
+OBJS  = lokicert.o loki89.o loki91.o
+
+all: ${PROGS}
+
+cert89: lokicert.o loki89.o
+	${CC} ${CFLAGS} lokicert.o loki89.o -o cert89
+
+cert91: lokicert.o loki91.o
+	${CC} ${CFLAGS} lokicert.o loki91.o -o cert91
+
+${OBJS}:	loki.h
+
+clean:
+	-rm ${OBJS} a.out core
+
+clobber:	clean
+	-rm ${PROGS}
+
+.c.o: 
+	${CC} ${CFLAGS} -c $*.c
+
+

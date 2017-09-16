@@ -1,0 +1,20 @@
+# The Sapphire Stream Cipher     Listing 5
+
+# Make file for sapphire test programs using C++ and Object Pascal.
+# Tested with Borland Make 3.7, Borland C++ 4.02, and Borland Pascal
+# 7.0.
+# Written by Michael Paul Johnson, 12/20/94.
+
+default:    stest.exe sapptest.exe
+
+sapptest.exe:   sapptest.cpp sapphire.obj
+    bcc -ms -w -O2 sapptest.cpp sapphire.obj >> w
+    pklite -e -r sapptest.exe
+
+sapphire.obj:   sapphire.cpp sapphire.h
+    bcc -ms -w -O2 -c sapphire.cpp >> w
+
+stest.exe:  stest.pas
+    bpc stest.pas
+    pklite -e -r stest.exe
+

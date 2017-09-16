@@ -1,0 +1,856 @@
+#!/bin/sh
+# This is a shell archive (produced by GNU sharutils 4.1).
+# To extract the files from this archive, save it to some FILE, remove
+# everything before the `!/bin/sh' line above, then type `sh FILE'.
+#
+# Existing files will *not* be overwritten unless `-c' is specified.
+#
+# This shar contains:
+# length mode       name
+# ------ ---------- ------------------------------------------
+#   4015 -rw-r--r-- README
+#   1320 -rw-r--r-- makefile
+#   1561 -rw-r--r-- randbyte.c
+#   5428 -rw-r--r-- unix_truerand.c
+#   1425 -rw-r--r-- nt_truerand.c
+#   6749 -rw-r--r-- qshs.c
+#
+touch -am 1231235999 $$.touch >/dev/null 2>&1
+if test ! -f 1231235999 && test -f $$.touch; then
+  shar_touch=touch
+else
+  shar_touch=:
+  echo
+  echo 'WARNING: not restoring timestamps.  Consider getting and'
+  echo "installing GNU \`touch', distributed in GNU File Utilities..."
+  echo
+fi
+rm -f 1231235999 $$.touch
+#
+# ============= README ==============
+if test -f 'README' && test X"$1" != X"-c"; then
+  echo 'x - skipping README (file already exists)'
+else
+  echo 'x - extracting README (text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'README' &&
+/*
+X *	Almost "true" random numbers (very nearly uniform)
+X *	Based on code by D. P. Mitchell
+X *	Modified by Matt Blaze 7/95, 11/96
+X *	Version 2.1
+X *
+X *	This is completely unsupported software.
+X *
+X * The authors of this software are Don Mitchell and Matt Blaze.
+X *              Copyright (c) 1995, 1996 by AT&T.
+X * Permission to use, copy, and modify this software without fee
+X * is hereby granted, provided that this entire notice is included in
+X * all copies of any software which is or includes a copy or
+X * modification of this software and in all copies of the supporting
+X * documentation for such software.
+X 
+X *
+X * This software may be subject to United States export controls.
+X *
+X * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+X * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+X * REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+X * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+X */
+X
+/*
+X * Truerand is a dubious, unproven hack for generating "true" random
+X * numbers in software.  It is at best a good "method of last resort"
+X * for generating key material in environments where there is no (or
+X * only an insufficient) source of better-understood randomness.  It
+X * can also be used to augment unreliable randomness sources (such as
+X * input from a human operator).
+X *
+X * The basic idea behind truerand is that between clock "skew" and
+X * various hard-to-predict OS event arrivals, counting a tight loop
+X * will yield a little bit (maybe one bit or so) of "good" randomness
+X * per interval clock tick.  This seems to work well in practice even
+X * on unloaded machines.  If there is a human operator at the machine,
+X * you should augment trand with other measurements, such as keyboard
+X * event timing.  On server machines (e.g., where you need to generate
+X * a Diffie-Hellman secret but have no operator to type keys) trand
+X * alone may (or may not) be sufficient.
+X *
+X * Because the randomness source is not well-understood, I've made
+X * fairly conservative assumptions about how much randomness can be
+X * extracted in any given interval.  Based on a cursory analysis of
+X * the BSD kernel, there seem to be about 100-200 bits of unexposed
+X * "state" that changes each time a system call occurs and that affect
+X * the exact handling of interrupt scheduling, plus a great deal of
+X * slower-changing but still hard-to-model state based on, e.g., the
+X * process table, the VM state, etc.  There is no proof or guarantee
+X * that some of this state couldn't be easily reconstructed, modeled
+X * or influenced by an attacker, however, so we keep a large margin
+X * for error.  The truerand API assumes only 0.3 bits of entropy per
+X * interval interrupt, amortized over 24 intervals and whitened with
+X * SHA.
+X *
+X * The truerand API is in randbyte.c, and consists of trand8(),
+X * trand16(), and trand32().  Do not use raw_truerand() directly.
+X * 
+X * WARNING: depending on the particular platform, raw_truerand()
+X * output may be biased or correlated.  In general, you can expect no
+X * more than 8-16 bits of "pseudo-entropy" out of each 32 bit word.
+X * Always run the output through a good post-whitening function (like
+X * SHA, MD5 or DES or whatever) before using it to generate key
+X * material.  The API does this for you, providing 8, 16, and 32 bit
+X * properly "whitened" random numbers (trand8(), trand16(), and
+X * trand32(), respectively).  Use the trand calls instead of calling
+X * raw_truerand() directly.
+X *
+X * Test truerand on your own platform before fielding a system based
+X * on this software or these techniques.
+X *
+X * This software seems to work well (at 10 or so bits per
+X * raw_truerand() call) on a Sun Sparc-20 under SunOS 4.1.3 and on a
+X * P100 under BSDI 2.0.  You're on your own elsewhere.
+X *
+X * This version of truerand doesn't clobber the ITIMER, so any
+X * scheduled alarms will still occur (though alarms cannot occur while
+X * raw_truerand is running and will be delayed by about 250ms per
+X * raw_truerand call.
+X */
+SHAR_EOF
+  $shar_touch -am 1116142396 'README' &&
+  chmod 0644 'README' ||
+  echo 'restore of README failed'
+  shar_count="`wc -c < 'README'`"
+  test 4015 -eq "$shar_count" ||
+    echo "README: original size 4015, current size $shar_count"
+fi
+# ============= makefile ==============
+if test -f 'makefile' && test X"$1" != X"-c"; then
+  echo 'x - skipping makefile (file already exists)'
+else
+  echo 'x - extracting makefile (text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'makefile' &&
+# makefile for librand
+# tested on Sparc-20 (SunOS 4.x) and P100 (BSDI) only.
+# You're on your own elsewhere.  Read the comments for scary warnings.
+# nt_truerand.c is included but untested.  Figure out how to use it
+# youself, and don't say we didn't warn you.
+#
+# Usage: unsigned long trand8(), trand16(), trand32();
+#
+#* The authors of this software are Don Mitchell, Matt Blaze & Jack Lacy.
+#*              Copyright (c) 1995 by AT&T.
+#* Permission to use, copy, and modify this software without fee
+#* is hereby granted, provided that this entire notice is included in
+#* all copies of any software which is or includes a copy or
+#* modification of this software and in all copies of the supporting
+#* documentation for such software.
+#*
+#* THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+#* WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+#* REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+X
+SRCS=randbyte.c unix_truerand.c nt_truerand.c qshs.c
+OBJS=randbyte.o unix_truerand.o qshs.o
+CC=gcc
+CFLAGS=
+# No -O in CFLAGS! On some compilers, this optimizes out the counter...
+X
+librand.a: $(OBJS)
+X	ar rcv librand.a $(OBJS)
+X	ranlib librand.a
+X
+librand.shar: README makefile $(SRCS) 
+X	shar README makefile $(SRCS) > librand.shar
+X
+clean:
+X	rm -f $(OBJS) librand.a
+SHAR_EOF
+  $shar_touch -am 1116142496 'makefile' &&
+  chmod 0644 'makefile' ||
+  echo 'restore of makefile failed'
+  shar_count="`wc -c < 'makefile'`"
+  test 1320 -eq "$shar_count" ||
+    echo "makefile: original size 1320, current size $shar_count"
+fi
+# ============= randbyte.c ==============
+if test -f 'randbyte.c' && test X"$1" != X"-c"; then
+  echo 'x - skipping randbyte.c (file already exists)'
+else
+  echo 'x - extracting randbyte.c (text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'randbyte.c' &&
+/*
+X *	Random byte interface to truerand()
+X *	Matt Blaze 9/95
+X *	8, 16, 32 really random bits, at about .35 bits per clock
+X *      interrupt.
+X *
+X *	usage: 
+X *		unsigned char r8;
+X *		unsigned short r16;
+X *		unsigned long r32;
+X *		unsigned long trand8(), trand16(), trand32();
+X *		r8=trand8();
+X *		r16=trand16();
+X *		r32=trand32();
+X *
+X *	randbyte() is the same as trand8().
+X *	trand8() takes about .3 seconds on most machines.
+X */
+/*
+X * The author of this software is Matt Blaze.
+X *              Copyright (c) 1995 by AT&T.
+X * Permission to use, copy, and modify this software without fee
+X * is hereby granted, provided that this entire notice is included in
+X * all copies of any software which is or includes a copy or
+X * modification of this software and in all copies of the supporting
+X * documentation for such software.
+X *
+X * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+X * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+X * REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+X * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+X */
+X
+unsigned long randbyte()
+{
+X	unsigned long raw_truerand();
+X	unsigned char *qshs();
+X	unsigned long r[2];
+X	unsigned char *hash;
+X
+X	r[0]=raw_truerand(); r[1]=raw_truerand();
+X	hash = qshs(r,sizeof(r));
+X	return ((int) (*hash)) & 0xff;
+}
+X
+unsigned long trand8()
+{
+X	return randbyte();
+}
+X
+unsigned long trand16()
+{
+X	return randbyte() ^ (randbyte()<<8);
+}
+X
+unsigned long trand32()
+{
+X	return randbyte() ^ (randbyte()<<8)
+X		^ (randbyte()<<16) ^ (randbyte()<<24);
+}
+X
+SHAR_EOF
+  $shar_touch -am 1207151295 'randbyte.c' &&
+  chmod 0644 'randbyte.c' ||
+  echo 'restore of randbyte.c failed'
+  shar_count="`wc -c < 'randbyte.c'`"
+  test 1561 -eq "$shar_count" ||
+    echo "randbyte.c: original size 1561, current size $shar_count"
+fi
+# ============= unix_truerand.c ==============
+if test -f 'unix_truerand.c' && test X"$1" != X"-c"; then
+  echo 'x - skipping unix_truerand.c (file already exists)'
+else
+  echo 'x - extracting unix_truerand.c (text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'unix_truerand.c' &&
+/*
+X *	Almost "true" random numbers (very nearly uniform)
+X *	Based on code by D. P. Mitchell
+X *	Modified by Matt Blaze 7/95, 11/96
+X *	Version 2.1
+X *
+X *	This is completely unsupported software.
+X *
+X */
+/*
+X * The authors of this software are Don Mitchell and Matt Blaze.
+X *              Copyright (c) 1995, 1996 by AT&T.
+X * Permission to use, copy, and modify this software without fee
+X * is hereby granted, provided that this entire notice is included in
+X * all copies of any software which is or includes a copy or
+X * modification of this software and in all copies of the supporting
+X * documentation for such software.
+X 
+X *
+X * This software may be subject to United States export controls.
+X *
+X * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+X * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+X * REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+X * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+X */
+X
+/*
+X * Truerand is a dubious, unproven hack for generating "true" random
+X * numbers in software.  It is at best a good "method of last resort"
+X * for generating key material in environments where there is no (or
+X * only an insufficient) source of better-understood randomness.  It
+X * can also be used to augment unreliable randomness sources (such as
+X * input from a human operator).
+X *
+X * The basic idea behind truerand is that between clock "skew" and
+X * various hard-to-predict OS event arrivals, counting a tight loop
+X * will yield a little bit (maybe one bit or so) of "good" randomness
+X * per interval clock tick.  This seems to work well in practice even
+X * on unloaded machines.  If there is a human operator at the machine,
+X * you should augment trand with other measurements, such as keyboard
+X * event timing.  On server machines (e.g., where you need to generate
+X * a Diffie-Hellman secret but have no operator to type keys) trand
+X * alone may (or may not) be sufficient.
+X *
+X * Because the randomness source is not well-understood, I've made
+X * fairly conservative assumptions about how much randomness can be
+X * extracted in any given interval.  Based on a cursory analysis of
+X * the BSD kernel, there seem to be about 100-200 bits of unexposed
+X * "state" that changes each time a system call occurs and that affect
+X * the exact handling of interrupt scheduling, plus a great deal of
+X * slower-changing but still hard-to-model state based on, e.g., the
+X * process table, the VM state, etc.  There is no proof or guarantee
+X * that some of this state couldn't be easily reconstructed, modeled
+X * or influenced by an attacker, however, so we keep a large margin
+X * for error.  The truerand API assumes only 0.3 bits of entropy per
+X * interval interrupt, amortized over 24 intervals and whitened with
+X * SHA.
+X *
+X * The trurand API is in randbyte.c, and consists of trand8(),
+X * trand16(), and trand32().  Do not use raw_truerand() directly.
+X * 
+X * WARNING: depending on the particular platform, raw_truerand()
+X * output may be biased or correlated.  In general, you can expect no
+X * more than 8-16 bits of "pseudo-entropy" out of each 32 bit word.
+X * Always run the output through a good post-whitening function (like
+X * SHA, MD5 or DES or whatever) before using it to generate key
+X * material.  The API does this for you, providing 8, 16, and 32 bit
+X * properly "whitened" random numbers (trand8(), trand16(), and
+X * trand32(), respectively).  Use the trand calls instead of calling
+X * raw_truerand() directly.
+X *
+X * Test truerand on your own platform before fielding a system based
+X * on this software or these techniques.
+X *
+X * This software seems to work well (at 10 or so bits per
+X * raw_truerand() call) on a Sun Sparc-20 under SunOS 4.1.3 and on a
+X * P100 under BSDI 2.0.  You're on your own elsewhere.
+X *
+X * This version of truerand doesn't clobber the ITIMER, so any
+X * scheduled alarms will still occur (though alarms cannot occur while
+X * raw_truerand is running and will be delayed by about 250ms per
+X * raw_truerand call.
+X */
+X
+#include <signal.h>
+#include <setjmp.h>
+#include <sys/time.h>
+#include <math.h>
+#include <stdio.h>
+X
+static jmp_buf env;
+static unsigned count;
+static unsigned ocount;
+static unsigned buffer;
+X
+static int
+tick()
+{
+X	struct itimerval it;
+X
+X	timerclear(&it.it_interval);
+X	it.it_value.tv_sec = 0;
+X	it.it_value.tv_usec = 16665;
+X	if (setitimer(ITIMER_REAL, &it, NULL) < 0)
+X		perror("tick");
+}
+X
+static void
+interrupt()
+{
+X	if (count)
+X		longjmp(env, 1);
+X	(void) signal(SIGALRM, interrupt);
+X	tick();
+}
+X
+static unsigned long
+roulette()
+{
+X	if (setjmp(env))
+X		return count;
+X	(void) signal(SIGALRM, interrupt);
+X	count = 0;
+X	tick();
+X	for (;;)
+X		count++;	/* about 1 MHz on VAX 11/780 */
+}
+X
+/*
+X * basic interface to 32 bit truerand.
+X * note that any scheduled SIGNALRM will be delayed by about .3 secs.
+X */
+unsigned long
+raw_truerand()
+{
+X	void (*oldalrm)();
+X	struct itimerval it;
+X	unsigned long counts[12];
+X	unsigned char *qshs();
+X	unsigned char *r;
+X	unsigned long buf;
+X	int i;
+X
+X	getitimer(ITIMER_REAL, &it);
+X	oldalrm = signal(SIGALRM, SIG_IGN);
+X	for (i=0; i<12; i++) {
+X		counts[i]=0;
+X		while ((counts[i] += roulette()) < 512)
+X			;
+X	}
+X	signal(SIGALRM, oldalrm);
+X	setitimer(ITIMER_REAL, &it, NULL);
+X
+X	r = qshs(counts,sizeof(counts));
+X	buf = *((unsigned long *) r);
+X
+X	return buf;
+}
+X
+int
+raw_n_truerand(n)
+int n;
+{
+X	int slop, v;
+X
+X	slop = 0x7FFFFFFF % n;
+X	do {
+X		v = raw_truerand() >> 1;
+X	} while (v <= slop);
+X	return v % n;
+}
+X
+X
+X
+SHAR_EOF
+  $shar_touch -am 1116142296 'unix_truerand.c' &&
+  chmod 0644 'unix_truerand.c' ||
+  echo 'restore of unix_truerand.c failed'
+  shar_count="`wc -c < 'unix_truerand.c'`"
+  test 5428 -eq "$shar_count" ||
+    echo "unix_truerand.c: original size 5428, current size $shar_count"
+fi
+# ============= nt_truerand.c ==============
+if test -f 'nt_truerand.c' && test X"$1" != X"-c"; then
+  echo 'x - skipping nt_truerand.c (file already exists)'
+else
+  echo 'x - extracting nt_truerand.c (text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'nt_truerand.c' &&
+#include <wtypes.h>
+#include <winbase.h>
+#include <windef.h>
+#include <winnt.h>
+#include <winuser.h>
+#include <process.h>
+/* #include "libcrypt.h" */
+X
+volatile unsigned long count, ocount, randbuf;
+volatile int dontstop;
+char outbuf[1024], *bufp;
+X
+static void counter() {
+X	while (dontstop)
+X		count++;
+X	_endthread();
+}
+X
+X
+static unsigned long roulette() {
+X	unsigned long thread;
+X
+X	count = 0;
+X	dontstop= 1;
+X	while ((thread = _beginthread((void *)counter, 1024, NULL)) < 0)
+X		;
+X
+X	Sleep(16);
+X	dontstop = 0;
+X	Sleep(1);
+X
+X	count ^= (count>>3) ^ (count>>6) ^ (ocount);
+X	count &= 0x7;
+X	ocount = count;
+X	randbuf = (randbuf<<3) ^ count;
+X	return randbuf;
+}
+X
+X
+unsigned long raw_truerand() {
+X	int ii;
+X
+X	roulette();
+X	roulette();
+X	roulette();
+X	roulette();
+X	roulette();
+X	roulette();
+X	roulette();
+X	roulette();
+X	roulette();
+X	roulette();
+X	return roulette();
+}
+X
+#ifdef RAND_DEBUG
+int WINAPI WinMain(HINSTANCE hins, HINSTANCE hprevins, LPSTR cmdline, int cmdshow)
+{
+X	int i, j;
+X	unsigned char randbuf[1024];
+X	FILE *fp;
+X
+#ifdef nodef
+X	bufp = outbuf;
+X	memset(outbuf, 0, 1024);
+X	for (i=0; i<25; i++)
+X		bufp += sprintf(bufp, "%08lx\n", raw_truerand());
+X	MessageBox(NULL, outbuf, "TEST", MB_ABORTRETRYIGNORE);
+X	return 1;
+#endif
+X
+X	fp = fopen("/users/lacy/newrand.out","wb");
+X	
+X	for (i=0; i<1024; i++) {
+X		for (j=0; j<1024; j++) {
+X			randbuf[j] = (unsigned char)(truebyte() & 0xff);
+X		}
+X		fwrite(randbuf, 1, 1024, fp);
+X	}
+X	fclose(fp);
+X
+X	return 1;
+}
+#endif
+SHAR_EOF
+  $shar_touch -am 1205150095 'nt_truerand.c' &&
+  chmod 0644 'nt_truerand.c' ||
+  echo 'restore of nt_truerand.c failed'
+  shar_count="`wc -c < 'nt_truerand.c'`"
+  test 1425 -eq "$shar_count" ||
+    echo "nt_truerand.c: original size 1425, current size $shar_count"
+fi
+# ============= qshs.c ==============
+if test -f 'qshs.c' && test X"$1" != X"-c"; then
+  echo 'x - skipping qshs.c (file already exists)'
+else
+  echo 'x - extracting qshs.c (text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'qshs.c' &&
+/*
+X * The authors of this software are Jim Reeds and Jack Lacy
+X *              Copyright (c) 1992, 1994 by AT&T.
+X * Permission to use, copy, and modify this software without fee
+X * is hereby granted, provided that this entire notice is included in
+X * all copies of any software which is or includes a copy or
+X * modification of this software and in all copies of the supporting
+X * documentation for such software.
+X *
+X * This software may be subject to United States export controls.
+X *
+X * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+X * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+X * REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+X * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+X */
+X
+/*
+X * Secure Hash Standard
+X * proposed NIST SHS
+X * coded for byte strings: number of bits is a multiple of 8
+X *
+X * Copyright (c) 1992, 1994 AT&T Bell Laboratories
+X * Coded by Jim Reeds 5 Feb 1992
+X * Enhanced by Jack Lacy 1993, 1994
+X */
+X
+/*
+X * unsigned char * shs(char *s, int n);
+X *
+X * input:  
+X *                s character array to be hashed
+X *                n length of s in BYTES
+X * output:
+X *                return value: address of 5 unsigned longs holding hash
+X *
+X * machine dependencies:
+X *                assumes a char is 8 bits
+X */
+X
+/*
+X * passes test on:
+X *                gauss (vax)
+X *                3k (cray)
+X *                slepian (MIPS)
+X *                bird (sparcstation II)
+X */
+X
+#include <sys/types.h>
+#include <stdio.h>
+X
+typedef struct {
+X    long totalLength;
+X    unsigned long h[5];
+X    unsigned long w[80];
+} SHS_CTX;
+X
+unsigned char *qshs();
+#ifdef SOLARIS2X
+#define bzero(b, l)             memset(b, 0, l)
+#define bcopy(s, d, l)          memcpy(d, s, l)
+#define bcmp(s, d, l)           (memcmp(s, d, l)? 1 : 0)
+#endif
+X
+static long nbits;
+static unsigned long *h;
+static unsigned long *w;
+static void shs1();
+/*
+static void packl (unsigned long);
+static void pack (unsigned char, unsigned char, unsigned char, unsigned char);
+static void shs1(void);
+static void opack(unsigned char);
+*/
+X
+#define MASK        (unsigned long)0xffffffffL        /* in case more than 32 bits per long */
+X
+/*
+X * stick one byte into the current block; process the block when full
+X */
+static void opack(c)
+X  unsigned char c;
+{
+X	int n32, nd32, shiftbits;
+X	register unsigned long x, mask, y;
+X	
+X	nd32 = (int)(nbits >> 5);  /* nbits/32 */
+X	n32 = (int)(nbits & 0x1f); /* nbits%32 */
+X	shiftbits = 24-n32;
+X	
+X	x = (unsigned long)(c<<shiftbits);
+X	mask = (unsigned long)(0xff << shiftbits);
+X	mask = ~mask;
+X	
+X	y = w[nd32];
+X	y = (y & mask) + x;
+X	w[nd32] = y;
+X	
+X	nbits += 8;
+X	if(nbits==512){
+X		nbits = 0;
+X		shs1();
+X	}
+}
+X
+static void pack(c0, c1, c2, c3)
+X  unsigned char c0, c1, c2, c3;
+{
+X	int nd32;
+X	
+X	nd32 = (int)(nbits >> 5);
+X	w[nd32] = (u_long)(((u_long)c0<<24) | ((u_long)c1<<16) | ((u_long)c2<<8) | (u_long)c3);
+X	
+X	nbits += 32;
+X	if(nbits==512){
+X		nbits = 0;
+X		shs1();
+X	}
+}
+X
+/*
+X * stick a 4 byte number into the current block
+X */
+static void
+packl(x)
+X  unsigned long x;
+{
+X	pack((unsigned char)(x>>24), (unsigned char)(x>>16),
+X	     (unsigned char)(x>>8), (unsigned char)(x>>0));
+}
+X
+/*
+X * process one block
+X */
+static void
+shs1()
+{
+X	unsigned long *wp;
+X	unsigned long temp;
+X	unsigned long A, B, C, D, E;
+X	int t;
+X	
+#define S(n,x) (u_long)(((x)<<(n))|((MASK&(x))>>(32-(n))))
+X	
+X	wp = w;
+X	t = 8;
+X	do {
+X		wp[16] = S(1, (u_long)(wp[13]^wp[8]^wp[2]^wp[0]));
+X		wp[17] = S(1, (u_long)(wp[14]^wp[9]^wp[3]^wp[1]));
+X		wp[18] = S(1, (u_long)(wp[15]^wp[10]^wp[4]^wp[2]));
+X		wp[19] = S(1, (u_long)(wp[16]^wp[11]^wp[5]^wp[3]));
+X		wp[20] = S(1, (u_long)(wp[17]^wp[12]^wp[6]^wp[4]));
+X		wp[21] = S(1, (u_long)(wp[18]^wp[13]^wp[7]^wp[5]));
+X		wp[22] = S(1, (u_long)(wp[19]^wp[14]^wp[8]^wp[6]));
+X		wp[23] = S(1, (u_long)(wp[20]^wp[15]^wp[9]^wp[7]));
+X		wp += 8;
+X		t--;
+X	} while (t > 0);
+X	
+X	A = h[0];
+X	B = h[1];
+X	C = h[2];
+X	D = h[3];
+X	E = h[4];
+X	
+X	t = 0;
+X	while (t<20) {
+X		temp = S(5,A) + E + w[t++];
+X		temp += (unsigned long)0x5a827999L + ((B&C)|(D&~B));
+X		E = D; D = C; C = S(30,B); B = A; A = temp;
+X	}
+X	while (t<40) {
+X		temp = S(5,A) + E + w[t++];
+X		temp += (unsigned long)0x6ed9eba1L + (B^C^D);
+X		E = D; D = C; C = S(30,B); B = A; A = temp;
+X	}
+X	while (t<60) {
+X		temp = S(5,A) + E + w[t++];
+X		temp += (unsigned long)0x8f1bbcdcL + ((B&C)|(B&D)|(C&D));
+X		E = D; D = C; C = S(30,B); B = A; A = temp;
+X	}
+X	while (t<80) {
+X		temp = S(5,A) + E + w[t++];
+X		temp += (unsigned long)0xca62c1d6L + (B^C^D);
+X		E = D; D = C; C = S(30,B); B = A; A = temp;
+X	}
+X	h[0] = MASK&(h[0] + A);
+X	h[1] = MASK&(h[1] + B);
+X	h[2] = MASK&(h[2] + C);
+X	h[3] = MASK&(h[3] + D);
+X	h[4] = MASK&(h[4] + E);
+}
+X
+#define CHARSTOLONG(wp,s,i) {*wp++ = (u_long)((((u_long)(s[i])&0xff)<<24)|(((u_long)(s[i+1])&0xff)<<16)|(((u_long)(s[i+2])&0xff)<<8)|(u_long)(s[i+3]&0xff));}
+X
+X
+static void
+shsInit(mdContext)
+X  SHS_CTX *mdContext;
+{
+X	nbits = 0;
+X	mdContext->h[0] = (unsigned long)0x67452301L;
+X	mdContext->h[1] = (unsigned long)0xefcdab89L;
+X	mdContext->h[2] = (unsigned long)0x98badcfeL;
+X	mdContext->h[3] = (unsigned long)0x10325476L;
+X	mdContext->h[4] = (unsigned long)0xc3d2e1f0L;
+X	mdContext->totalLength = 0;
+}
+X
+X
+static void
+shsUpdate(mdContext, s, n)
+X  SHS_CTX *mdContext;
+X  unsigned char *s;
+X  unsigned int n;
+{
+X	register unsigned long *wp;
+X	long nn = n;
+X	long i;
+X	
+X	w = mdContext->w;
+X	h = mdContext->h;
+X	mdContext->totalLength += n;
+X	
+X	nbits = 0;
+X	n = n/(u_long)64;
+X	wp = w;
+X	
+X	while(n>0){
+X		CHARSTOLONG(wp,s,0);
+X		CHARSTOLONG(wp,s,4);
+X		CHARSTOLONG(wp,s,8);
+X		CHARSTOLONG(wp,s,12);
+X		CHARSTOLONG(wp,s,16);
+X		CHARSTOLONG(wp,s,20);
+X		CHARSTOLONG(wp,s,24);
+X		CHARSTOLONG(wp,s,28);
+X		CHARSTOLONG(wp,s,32);
+X		CHARSTOLONG(wp,s,36);
+X		CHARSTOLONG(wp,s,40);
+X		CHARSTOLONG(wp,s,44);
+X		CHARSTOLONG(wp,s,48);
+X		CHARSTOLONG(wp,s,52);
+X		CHARSTOLONG(wp,s,56);
+X		CHARSTOLONG(wp,s,60);
+X		n--;
+X		wp = w;
+X		s = (s + 64);
+X		shs1();
+X	}
+X	i=nn%64;
+X	while(i>3) {
+X		CHARSTOLONG(wp,s,0);
+X		s = (s + 4);
+X		nbits += (u_long)32;
+X		i -= 4;
+X	}
+X	while (i) {
+X		opack((unsigned char)*s++);
+X		i--;
+X	}
+}
+X
+static void
+shsFinal(mdContext)
+X  SHS_CTX *mdContext;
+{
+X	long nn = mdContext->totalLength;
+X	w = mdContext->w;
+X	h = mdContext->h;
+X	
+X	opack(128);
+X	while(nbits != 448)opack(0);
+X	packl((unsigned long)(nn>>29));
+X	packl((unsigned long)(nn<<3));
+X	
+X	/* if(nbits != 0)
+X	   handle_exception(CRITICAL,"shsFinal(): nbits != 0\n");*/
+}
+X
+unsigned char *
+qshs(s, n)
+X  unsigned char *s;
+X  long n;
+{
+X        SHS_CTX *mdContext;
+X	static SHS_CTX mdC;
+X	static unsigned char ret[20];
+X	int i;
+X	
+X	mdContext = &mdC;
+X
+X	shsInit(mdContext);
+X	shsUpdate(mdContext, s, n);
+X	shsFinal(mdContext);
+X	for (i=0; i<5; i++) {
+X		ret[i*4] = (mdContext->h[i]>>24)&0xff;
+X		ret[i*4+1] = (mdContext->h[i]>>16)&0xff;
+X		ret[i*4+2] = (mdContext->h[i]>>8)&0xff;
+X		ret[i*4+3] = (mdContext->h[i])&0xff;
+X	}
+X        
+X	return ret;
+}
+X
+SHAR_EOF
+  $shar_touch -am 1205134895 'qshs.c' &&
+  chmod 0644 'qshs.c' ||
+  echo 'restore of qshs.c failed'
+  shar_count="`wc -c < 'qshs.c'`"
+  test 6749 -eq "$shar_count" ||
+    echo "qshs.c: original size 6749, current size $shar_count"
+fi
+exit 0

@@ -1,0 +1,49 @@
+  File: README
+  Author: Douglas Jones
+  From: Douglas W. Jones <jones@pyrite.cs.uiowa.edu>
+  Date: Feb. 20, 1989 (Small bug fixes to Nov. 15 release).
+  Purpose: Description of the splay-tree based compression and encryption
+		software distribution.
+
+This software distribution includes the following files:
+
+	README     (you are reading this)
+	splay.1    A man page for the splay and unsplay programs; if these
+			programs are installed for public use, this file
+			should be put in /usr/contrib/man1/splay.1 or some
+			such (depending on how your local site manages this).
+	splay.c    Code for the splay compression and encryption utility;
+			typically, this should be compiled with a command
+			such as cc -O -o splay splay.c and then the executable
+			file should be stored in /usr/contrib/bin or some such
+			(depending on how your local site manages such things).
+	unsplay.c  Code for the unsplay expansion and decryption utility;
+			do for this what you did with splay.c
+	splay.i    Code used by both splay.c and unsplay.c, needed to compile
+			both of them.  Changes to the declarations of register
+			variables in the splay procedure in this file may be
+			needed to improve performance.  Some C preprocessors
+			may have trouble with some of the macros used here; in
+			this case, these should be changed to procedures.
+
+You may want to put splay.c, unsplay.c, and splay.i in /usr/contrib/src/splay
+or some such file (depending on how your local site manages such things).
+
+  NOTICE:  Please read the copyright notices in the source files before
+	selling them or putting them into production use.
+
+  NOTICE:  The development of this package was not funded by any agency.
+	Jeffrey Chilton did the hard work as a student in the University of
+	Iowa SSTP Summer Research Participation Program (SSTP = Student Science
+	Training Program).  This allows secondary school students to work in
+	university level research, and during the last 3 years, it and the few
+	comparable programs in the US have been severely underfunded.  If this
+	software is useful or even interesting to you, consider a donation to
+	the University of Iowa Foundation, Iowa City, IA 52242, earmarked
+	either for Computer Science or for Science Education (the former is
+	where this work was done, the latter administers SSTP).
+
+  NOTE:  This code was developed under BSD 4.3 UNIX.  Use under System V will
+	require at least the following:  In splay.c and in unsplay.c, replace
+	the include file <strings.h> with <string.h>.  In unsplay.c, line 106,
+	replace the call to rindex with a call to strrchr.

@@ -1,0 +1,47 @@
+#!/usr/local/bin/perl -w -I.
+
+use Crypt::SHA;
+use Crypt::MD5;
+
+my $global_hash_func = Crypt::SHA;
+
+my $md = new $global_hash_func;
+$md->reset();
+$md->add("ABC");
+my $hash = $md->digestAsHash();
+print "$hash\n";
+
+my ($type, $data);
+($type, $data) = split(':', "$hash");
+print "Type = $type, $data = $data\n";
+$type = "Crypt::Hash$type";
+
+my $hash2 = new $type pack("H*", $data);
+print "$hash2\n";
+
+die "failed" unless $hash == $hash2;
+
+
+
+my $global_hash_func = Crypt::MD5;
+
+my $md = new $global_hash_func;
+$md->reset();
+$md->add("ABC");
+my $hash = $md->digestAsHash();
+print "$hash\n";
+
+my ($type, $data);
+($type, $data) = split(':', "$hash");
+print "Type = $type, $data = $data\n";
+$type = "Crypt::Hash$type";
+
+my $hash2 = new $type pack("H*", $data);
+print "$hash2\n";
+
+die "failed" unless $hash == $hash2;
+
+print unpack("H*", $hash2->data()), "\n";
+
+#my $s = $hash2->data();
+#print "$s\n";

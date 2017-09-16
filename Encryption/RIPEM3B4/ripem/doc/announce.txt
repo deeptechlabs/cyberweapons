@@ -1,0 +1,66 @@
+announce.txt -- RIPEM Beta test announcement.
+Mark Riordan  mrr@scss3.cl.msu.edu   4 October 1992
+
+Dear RIPEM beta-tester:
+
+RIPEM, an RSA/DES encryption program, is now being beta tested.
+You are invited to participate.
+
+RIPEM is a public-key encryption program oriented toward use with
+electronic mail.  It provides capabilities very similar to
+Privacy-Enhanced Mail (PEM), as described by Internet RFC's 1113-1115.
+However, RIPEM lacks the concept of a "certificate", a document
+which guarantees that you have the correct public key of a
+correspondant.  RIPEM does implement a simple public key server,
+but this is much less secure than the certificate-based key management
+described in those RFC's.
+
+To give you a taste of what RIPEM is like, I present an abbreviated
+description of its calling sequence:
+
+Usage:  ripem {-e | -d | -g}     <in >out
+  [-r recipient] [-m {encrypted | mic-only | mic-clear}]
+  [-u myusername]  [-h head] [-b #_of_bits_in_gen_key]
+  [-p publickey_infile] [-s privatekey_infile] [-k key_to_private_key]
+  [-P publickey_outfile] [-S privatekey_outfile]
+  [-y pub_key_server_name] [-Y key_sources]
+  [-i infile] [-o outfile] [-D debug_level] [-Z debug_out_file]          
+  [-R random_sources] [-F random_input_file] [-C random_string]         
+where:
+  random_sources is one or more of "cefks", specifying "random" input from
+    Command line, Entire command line, File, Keyboard, or running System.
+  key_sources is a string of one or more of "fgs", which tell ripem to look
+    for public keys from a File, finGer, or Server, in the order specified.
+  head is one or more of "ipr", for Include headers in msg; Prepend headers
+    to ciphertext; get Recipients from headers.  For encryption only.
+Relevant environment variables:
+  RIPEM_PUBLIC_KEY_FILE, RIPEM_PRIVATE_KEY_FILE, RIPEM_KEY_TO_PRIVATE_KEY,
+  RIPEM_USER_NAME, RIPEM_RANDOM_FILE, RIPEM_SERVER_NAME, RIPEM_ARGS
+
+RIPEM works on various Unix machines, on MS-DOS, and on the Macintosh
+(console emulation only).  You may wish to help me port it to other platforms.
+
+I have set up a primitive key server that allows RIPEM users to
+exchange public keys.
+
+RIPEM itself is in the public domain, but it uses RSA Data Security's
+RSAREF cryptographic toolkit.  RSAREF is free to US and Canadian
+users, but only for personal use.  RSAREF, and hence RIPEM, requires
+that you agree to a license agreement.  A copy of this agreement is
+included in the RIPEM distribution--and you should read it.
+
+To obtain the beta-test copy of RIPEM, FTP to rpub.cl.msu.edu
+and look in the directory pub/ripem.  Both source and executables
+can be found there.  The FTP server is picky about who it lets in;
+if you have problems, send email to ripem-request@rpub.cl.msu.edu.
+
+The current version of RIPEM is in beta test, and may not be 
+suitable for general release.  (That's what the beta test is
+supposed to find out.)  Therefore, I ask that you not redistribute
+this version without my permission.
+
+Furthermore, RIPEM may fall under US Government export controls, so I 
+ask that you refrain from distributing this or any version outside of 
+USA and Canada, and from giving RIPEM to "foreign nationals".
+
+Mark Riordan  mrr@scss3.cl.msu.edu

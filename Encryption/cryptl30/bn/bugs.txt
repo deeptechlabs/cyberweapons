@@ -1,0 +1,93 @@
+Things to change
+----------------
+
+bn_fix_top is redefined in bn_lcl.h after being defined in bn.h.
+
+In bn_blind.c, BN_BLINDING_new() will die if the first malloc fails, and at
+the end you're returning an invalid pointer instead of NULL.  Also you're
+not checking the return value elsewhere.
+
+Calling abort() in bn_lib.c and bn_mulw.c is rather unfriendly (I've changed
+it to 'return( -1 )' and 'return( NULL )' as appropriate).
+
+In bn_lib.c, BN_num_bits_word() shifts 'l', a 32-bit value, right.  This
+results in a flurry of warnings about loss of precision from Borland
+compilers, to get rid of this change the end of the function to:
+
+		{
+#if defined(THIRTY_TWO_BIT) || defined(SIXTY_FOUR_BIT) || defined(SIXTY_FOUR_BIT_LONG)
+		if (l & 0xffff0000L)
+			{
+			if (l & 0xff000000L)
+				return(bits[(int)(l>>24)]+24);
+			else	return(bits[(int)(l>>16)]+16);
+			}
+		else
+#endif
+			{
+#if defined(SIXTEEN_BIT) || defined(THIRTY_TWO_BIT) || defined(SIXTY_FOUR_BIT) || defined(SIXTY_FOUR_BIT_LONG)
+			if (l & 0xff00L)
+				return(bits[(int)(l>>8)]+8);
+			else
+#endif
+				return(bits[(int)l   ]  );
+			}
+		}
+
+(ie add (int) casts when you shift the value).
+
+In bn_mont.c, BN_from_montgomery, the value t1 is never used.
+
+In bn_prime.c, P_I_I_P and MS_STATIC are used but I can't find where these
+are defined (they're not defined anywhere in /crypto).  I've replaced the
+callback prototype with 'callback( int, int, char * )' and MS_STATIC with
+plain 'static', the name of the latter implies MS braindamage.
+
+Oh yes, this file also locks up Turbo C when compiling it.  That's pretty
+impressive, I've never found anything which will do that before, it's only
+the second compiler bug I've ever found in this compiler in 10 years of use.
+
+Questions
+---------
+
+I dunno whether I like the way BN_CTX is being used.  The thing it's used for (allocating scratch
+bignums) is a bit nonoptimal, you'd be better off allocating the collection
+of bignums as part of the BN_CTX rather than making a dozen separate calls
+to malloc(), which really sucks in some environments (have you seen what the
+VC++ malloc() does with allocating small chunks?  No wonder you can buy third-
+party malloc()'s which are 10 times faster).
+
+(What I mean here is instead of having *BIGNUM[], have BIGNUM[] and either
+change the code which uses it to use &bn[ i ] or set up an array of pointers
+to the entries which mirrors the current usage).
+
+The thing BN_CTX isn't used for, but which would be very useful, is to record
+the state of the BN operations.  At the moment you need to do something like:
+
+  if( !BN_foo() ) goto error;
+  if( !BN_bar() ) goto error;
+  if( !BN_baz() ) goto error;
+
+However each of these functions is being passed a BN_CTX, so why not just
+record the error state in the CTX and once the CTX error flag is set return
+immediately from any function which is called.  Then you can do:
+
+  BN_foo();
+  BN_bar();
+  BN_baz();
+  if( BN_error( bn_ctx ) ) goto error;
+
+This makes the code much, much nicer and easier to follow (as well as
+eliminating lots of jumping in the code).
+
+Both of these are fairly trivial changes, if you want me to do it and beam
+over diffs let me know.
+
+Finally, it would be cool if you could perhaps combine a few of the files
+with similar functionality into a single larger file.  At the moment there
+are about 20 files each of which contain one or two functions, it'd make it
+a lot easier if they were combined into a few larger files (for one thing
+the disclaimer-to-code ratio would improve by a factor of about 10 to 1).
+
+Peter (resisting the temptation to rewrite the code himself the way he wants it to be).
+

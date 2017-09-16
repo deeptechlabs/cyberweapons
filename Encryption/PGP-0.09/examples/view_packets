@@ -1,0 +1,20 @@
+#!/usr/local/bin/perl -w -I/home/TheCrypt/perlmod2
+
+use Stream::IO;
+use PGP::PacketFactory;
+
+use PGP::Armoury;
+
+my $fis = new Stream::FileInput "/home/TheCrypt/data/testbank/keys/pubring.pgp";
+my $dis = new Stream::DataInput $fis;
+
+for (;;)
+{
+	my $packet = PGP::PacketFactory::restore($dis);
+	last unless defined $packet;
+	die $packet unless ref($packet);
+	print "\n";
+	print "Packet = ", ref($packet), "\n";
+	print $packet, "\n";
+	print $packet->asString(), "\n";
+}

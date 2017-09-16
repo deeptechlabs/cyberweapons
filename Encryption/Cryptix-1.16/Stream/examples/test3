@@ -1,0 +1,19 @@
+#!/usr/local/bin/perl -w -I.
+
+use StringOutputStream;
+use StringInputStream;
+use DataOutputStream;
+use DataInputStream;
+
+my $sos = new StringOutputStream;
+my $dos = new DataOutputStream $sos;
+
+$dos->writeString("Hello world\n");
+
+my $sis = new StringInputStream $sos->data();
+my $dis = new DataInputStream $sis;
+
+my $s = $dis->readString();
+
+print $s;
+

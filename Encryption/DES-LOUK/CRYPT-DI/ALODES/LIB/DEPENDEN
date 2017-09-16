@@ -1,0 +1,2 @@
+des-fun.o ecb-encrypt.o:	des-fun.h
+des-perms.o:	ip.h fp.h ip-rev.h fp-rev.h

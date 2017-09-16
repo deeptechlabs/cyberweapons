@@ -1,0 +1,237 @@
+
+		  TIS/MOSS Frequently Asked Questions
+		      Last Updated 28 August 1996
+	 Send questions and comments to tismoss-support@tis.com
+
+Questions answered:
+
+   0) What is TIS/MOSS?
+   1) What is MIME Object Security Services (MOSS)?
+   2) What is MIME?
+   3) How does MOSS compare to PEM, PGP, and S/MIME?
+   4) Where are MIME, MOSS, PEM, PGP, and S/MIME defined?
+   5) Are there implementations of MOSS available?
+   6) How do I get TIS/MOSS?
+   7) Why is TIS/MOSS only available in the US and Canada?
+   8) Are special privileges (e.g., root access) required to install
+      TIS/MOSS?
++  9) What cryptographic algorithm suites are supported by TIS/MOSS?
+  10) What about integrating TIS/MOSS into email user agents?
+  11) What about DOS and other non-UNIX platforms?
+  12) Is there a forum for MOSS users and developers?
+  13) What about certificates?
+* 14) What is the Internet Certification hierarchy?
+  15) What if I have questions or problems with TIS/MOSS?
+
+ * means that this entry has been recently updated.
+ + means that this entry has been added recently.
+
+
+0
+Q: What is TIS/MOSS?
+
+A: Trusted Information Systems' implementation of MIME Object Security
+   Services (MOSS).  It is a security toolkit that provides digital
+   signature and encryption services for MIME objects.
+
+1
+Q: What is MIME Object Security Services (MOSS)?
+
+A: MOSS is a Privacy Enhanced Mail (PEM) derivative that is a Proposed
+   Internet Standard (RFC 1847 & RFC 1848) for adding security
+   services to Multi-purpose Internet Mail Extensions (MIME).  It uses
+   the cryptographic techniques of digital signature and encryption to
+   provide origin authentication, integrity, and confidentiality to
+   MIME objects.  Users of MOSS can know who originated a message,
+   that the message has not been changed en route, and that the message
+   was kept secret from everyone except the intended recipients.
+
+   MOSS depends on the existence of public/private key pairs to
+   support its security services.  Users must exchange public keys
+   with those other users with whom they wish to exchange MOSS email.
+   This may be accomplished manually, via mechanisms available in the
+   protocol, via X.509 certificates, or any other suitable mechanism.
+
+2
+Q: What is MIME?
+
+A: MIME is an Internet Standard (RFC 1521) that defines the format of
+   email message bodies to allow multi-part textual and non-textual
+   message bodies to be represented and exchanged without loss of
+   information.  MIME does for message bodies what RFC822 does for
+   message headers.
+
+3
+Q: How does MOSS compare to PEM, PGP, and S/MIME?
+
+   PEM provides digital signature and encryption services to text-based
+   electronic mail.  It depends on X.509 certificates that are issued
+   within the Internet certification hierarchy.  PEM is a standard in
+   the Internet.
+
+   PGP can provide the same services.  It is not integrated with MIME
+   (although MIME can carry a PGP object) so the interpretation of the
+   protected content is necessarily user controlled.  PGP depends on
+   public/private key pairs and does not support X.509 certificates.
+   PGP is not a standard.
+
+   S/MIME provides the same services.  It is not integrated with MIME
+   although it is intended to be carried by MIME.  S/MIME is an RSADSI
+   standard.
+
+   MOSS is a PEM derivative.  It integrates the security services of PEM
+   and the user friendly functions of PGP with MIME, taking advantage of
+   the extensive structuring and formatting facilities of MIME.  MOSS is
+   a standard in the Internet.
+
+4
+Q: Where are MIME, MOSS, PEM, PGP, and S/MIME defined?
+
+A: MIME, MOSS, and PEM are Internet standards and are published as RFCS.
+   RFCs may be found in your favorite RFC repository.  Details on
+   obtaining RFCs via FTP or EMAIL may be obtained by sending an EMAIL
+   message to "rfc-info@ISI.EDU" with the message body "help:
+   ways_to_get_rfcs".  For example:
+
+        To: rfc-info@ISI.EDU
+        Subject: getting rfcs
+
+        help: ways_to_get_rfcs
+
+   Copies of the MOSS-related RFCs are available via anonymous ftp
+   from ftp.tis.com in the /pub/MOSS/doc directory.
+
+   PGP is defined by the document distributed with the software.
+
+   S/MIME is defined in the PKCS series of RSADSI standards.  They may
+   be obtained on the host "ftp.rsa.com" via anonymous FTP.
+
+5
+Q: Are there implementations of MOSS available?
+
+A: Yes, Trusted Information Systems (TIS), under ARPA sponsorship, has
+   released a reference implementation of MOSS (TIS/MOSS) to the
+   Internet community.
+
+   TIS/MOSS is a UNIX-based implementation that is easily integrated
+   with email user agents.  TIS/MOSS includes the "glue" necessary for
+   integration with Version 6.8.3 of the Rand MH Message Handling
+   System.  In addition, it includes generic Bourne shell scripts that
+   make it possible to use it with email user agents supporting UNIX
+   shell escapes.
+
+   The source code is openly available in the United States and Canada
+   for non-commercial use.  The current version of TIS/MOSS is 7.2.
+
+   Vendors interested in including TIS/MOSS in their products or
+   integrating it with their services should contact Trusted Information
+   Systems about licensing Trusted Mail (tm) by sending email to
+   tismoss-support@tis.com.
+
+6
+Q: How do I get TIS/MOSS?
+
+A: TIS/MOSS is available via anonymous ftp in the United States and
+   Canada to US and Canadian citizens and people with a US "green
+   card."  To retrieve TIS/MOSS please FTP to
+
+     host:   ftp.tis.com
+     login:  anonymous
+
+   and retrieve the files
+
+     pub/MOSS/README
+     pub/MOSS/LICENSE
+     pub/MOSS/BUGS
+
+   The README file contains further instructions.  
+
+7
+Q: Why is TIS/MOSS only available in the US and Canada?
+
+A: The export from the United States of the cryptography used in
+   TIS/MOSS is controlled by the United States government.
+
+8
+Q: Are special privileges (e.g., root access) required to install TIS/MOSS?
+
+A: No.
+
+9
+Q: What cryptographic algorithm suites are supported by TIS/MOSS?
+
+A: Two algorithm suites are currently supported by TIS/MOSS.  The first
+   is the suite that uses either MD2 or MD5 for hashing, uses RSA for
+   signature and key exchange, and uses DES for encryption.  The second
+   is the suite of algorithms supported by the FORTEZZA cryptographic
+   PC card.  In the FORTEZZA suite, SHA-1 is used for hashing, DSA for
+   signature, KEA for key exchange, and Skipjack-CBC for encryption.
+   The Internet Draft entitled "Privacy Enhancement for Internet
+   Electronic Mail: Part IIIB: Algorithms, Modes, and Identifiers for
+   FORTEZZA Cryptography" describes the integration of FORTEZZA with MOSS. 
+
+10
+Q: What about integrating TIS/MOSS into email user agents?
+
+A: TIS/MOSS includes "glue", in the form of shell scripts, to integrate
+   it with the Rand MH Message Handling System version 6.8.3.  It also
+   includes generic scripts that make the services accessible to any
+   UNIX application that supports shell escapes.  If you integrate
+   TIS/MOSS with a popular email user agent, we would be happy to make
+   it available to others.
+
+11
+Q: What about DOS and other non-UNIX platforms?
+
+A: TIS/MOSS has been ported to DOS and includes a DOS compiler option
+   that may be set to facilitate its installation in DOS environments.
+   It has also been ported to Macintosh although it does not yet include
+   a MAC compiler option.  If you port TIS/MOSS to other platforms, we
+   would be happy to make the changes available to others.
+
+12
+Q: Is there a forum for MOSS users and developers?
+
+A: Yes, there is an email list for users of TIS/MOSS called
+   "tismoss-users@tis.com".  To get added to the list send a message to
+   "tismoss-users-request@tis.com".
+
+   There is an email list for implementors and discussions of the MOSS
+   specifications called "pem-dev@tis.com".  This list originated with
+   the PEM protocol, from which MOSS is derived.  To get added to the
+   list send a message to "pem-dev-request@tis.com".
+
+13
+Q: What about certificates?
+
+A: TIS/MOSS supports the use of X.509 certificates including creation,
+   validation, certificate revocation lists, distribution, and
+   destruction.  Users may embody their public key in a certificate and
+   may participate in the Internet certification hierarchy or some other
+   private hierarchy.  TIS/MOSS neither requires nor enforces any
+   certification hierarchy policy.
+
+14
+Q: What is the Internet Certification hierarchy?
+
+A: The Internet Certification hierarchy is defined by RFC1422.  It is a
+   tree structured hierarchy of certificates with a single, global root
+   called the Internet PCA Registration Authority (IPRA).  The IPRA
+   issues certificates to Policy Certification Authorities (PCAs) who
+   issue certificates to Certification Authorities (CAs) who may issue
+   certificates to users or subordinate CAs.  Identities are based on
+   distinguished names and there are restrictions on their form and
+   content.
+
+   For more information on becoming a PCA see the IPRA WWW page at:
+
+	http://bs.mit.edu:8001/ipra.html
+
+   or contact the IPRA at:
+
+	ipra-info@isoc.org
+
+15
+Q: What if I have questions about or problems with TIS/MOSS?
+
+A: Send them to "tismoss-support@tis.com".

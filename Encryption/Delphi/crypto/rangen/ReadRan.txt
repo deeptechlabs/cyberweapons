@@ -1,0 +1,15 @@
+Random Number Generator Using MD5 and User Input.
+KeyFrm16.dpr is a DLL project file, with one form
+secretf.
+
+The form uses a 'spinning cube' component to give
+visual feedback to the user, it is NOT needed.
+
+If you do not wish to use the spinning cube component,
+just bring the project into Delphi and ignor all the 
+errors, then delete all references to the spinning 
+cube component, including in the USERS header.
+
+Also uses String16 unit, this unit mimics the string
+functions found in Delphi 2.0, place it in the same
+dir as the project files.

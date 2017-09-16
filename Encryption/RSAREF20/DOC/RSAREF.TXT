@@ -1,0 +1,1600 @@
+                 RSAREF(TM): A Cryptographic Toolkit
+                       Library Reference Manual
+
+                           RSA Laboratories
+                            March 21, 1994
+
+                             Version 2.0
+
+    Copyright (C) 1991-4 RSA Laboratories, a division of RSA Data
+                 Security, Inc. All rights reserved.
+
+
+1. INTRODUCTION
+
+This manual is a reference guide for users of RSAREF, RSA
+Laboratories' portable, educational, reference implementation of
+cryptography.
+
+RSAREF supports the following algorithms:
+
+     o    RSA encryption and key generation [1], as defined by RSA
+          Laboratories' Public-Key Cryptography Standards (PKCS) [2]
+
+     o    MD2 and MD5 message digests [3,4]
+
+     o    DES (Data Encryption Standard) in cipher-block chaining mode
+          [5,6]
+
+     o    Diffie-Hellman key agreement [7], as defined by PKCS #3 [8]
+
+     o    DESX, RSA Data Security's efficient, secure DES enhancement
+
+     o    Triple-DES, for added security with three DES operations
+
+RSAREF is written entirely in C. Its application interface includes
+the following routines:
+
+         R_SignInit,     computes a digital signature on data of
+       R_SignUpdate,       arbitrary length, processing in parts
+     and R_SignFinal
+
+       R_VerifyInit,     verifies a digital signature, processing in
+     R_VerifyUpdate,       parts
+   and R_VerifyFinal
+
+         R_SealInit,     creates a digital envelope on data of
+       R_SealUpdate,       arbitrary length, processing in parts
+     and R_SealFinal
+
+         R_OpenInit,     opens a digital envelope, processing in
+       R_OpenUpdate,       parts
+     and R_OpenFinal
+
+       R_DigestInit,     digests data of arbitrary length, processing
+     R_DigestUpdate,       in parts
+   and R_DigestFinal
+
+    R_EncodePEMBlock     encodes a message in printable ASCII
+                           according to RFC 1421 [9]
+    R_DecodePEMBlock     decodes a message encoded according to RFC
+                           1421
+
+   R_GeneratePEMKeys     generates an RSA public/private key pair
+
+        R_RandomInit     initializes a random structure
+      R_RandomUpdate     mixes bytes into a random structure
+R_GetRandomBytesNeeded   computes the number of mix-in bytes still
+                           needed to seed a random structure
+       R_RandomFinal     zeroizes a random structure
+
+  R_GenerateDHParams     generates Diffie-Hellman parameters
+  R_SetupDHAgreement     sets up a key agreement
+ R_ComputeDHAgreedKey    computes the agreed-upon key
+
+An Internet Privacy-Enhanced Mail [9-12] implementation can be built
+directly on top of these routines, together with message parsing and
+formatting routines and certificate-management routines.
+Implementations of PKCS #7 and #10 [13,14] can be built in a similar
+manner. Other secure applications can be built on top of the
+Diffie-Hellman routines.
+
+The following routines are supported for backward compatibility with
+RSAREF 1.0:
+
+      R_SignPEMBlock     computes a digital signature on a message
+         R_SignBlock     computes a digital signature on a block of
+                           data such as a certificate
+R_VerifyPEMSignature     verifies a digital signature on a message
+R_VerifyBlockSignature   verifies a digital signature on a block of
+                           data such as a certificate
+
+      R_SealPEMBlock     computes a digital signature and encrypts a
+                           message
+      R_OpenPEMBlock     decrypts an encrypted message and verifies a
+                           digital signature
+
+       R_DigestBlock     computes the message digest of a message
+
+This manual is divided into eight sections and three appendices.
+
+This section introduces RSAREF. The next six sections explain RSAREF
+procedures: random structures; cryptographic enhancements; printable
+ASCII encoding and decoding; key-pair generation; Diffie-Hellman key
+agreement; and version 1.0 routines. The last section documents the
+platform-specific run-time library.
+
+Appendix A lists RSAREF error types. Appendix B lists RSAREF types
+and constants. Appendix C lists platform-specific types and
+constants.
+
+
+2. RANDOM STRUCTURES
+
+A random structure contains a seed from which a pseudorandom sequence
+of bytes is derived. RSAREF generates keys and pads RSA encryption
+blocks with bytes derived from a random structure.
+
+Random structures are used by both message-processing and
+key-generation applications.
+
+RSAREF sets up a random structure with the procedure R_RandomInit. A
+typical application calls R_RandomInit on entry.
+
+A new random structure is not ready for use until it is seeded by
+mixing in some random bytes. RSAREF seeds a random structure with the
+procedure R_RandomUpdate and R_GetRandomBytesNeeded. A random
+structure is considered seeded when the number of bytes still needed
+reaches zero. More bytes can be mixed in after the random structure
+is seeded. A typical application calls R_GetRandomBytesNeeded and
+R_RandomUpdate immediately after calling R_RandomInit.
+
+RSAREF zeroizes a random structure with the procedure R_RandomFinal.
+A typical application calls R_RandomFinal on exit.
+
+
+R_RandomInit
+
+int R_RandomInit (
+  R_RANDOM_STRUCT *randomStruct             /* new random structure */
+);
+
+R_RandomInit sets up a new random structure.
+
+Return value:      0     success
+             nonzero     reserved for future compatibility
+
+
+R_RandomUpdate
+
+int R_RandomUpdate (
+  R_RANDOM_STRUCT *randomStruct,                /* random structure */
+  unsigned char *block,                /* block of values to mix in */
+  unsigned int blockLen                          /* length of block */
+);
+
+R_RandomUpdate mixes blockLen bytes from block into randomStruct.
+
+Return value:      0     success
+             nonzero     reserved for future compatibility
+
+
+R_GetRandomBytesNeeded
+
+int R_GetRandomBytesNeeded (
+  unsigned int *bytesNeeded,       /* number of mix-in bytes needed */
+  R_RANDOM_STRUCT *randomStruct                 /* random structure */
+);
+
+R_GetRandomBytesNeeded computes the number of mix-in bytes still
+needed to seed randomStruct, storing the result in bytesNeeded.
+
+Return value:      0     success
+             nonzero     reserved for future compatibility
+
+
+R_RandomFinal
+
+void R_RandomFinal (
+  R_RANDOM_STRUCT *randomStruct                 /* random structure */
+);
+
+R_RandomFinal zeroizes randomStruct.
+
+No return value.
+
+
+3. CRYPTOGRAPHIC ENHANCEMENTS
+
+RSAREF's cryptographic enhancements fall into five groups: signing
+data; verifying signatures; sealing data in digital envelopes;
+opening digital envelopes; and digesting data.
+
+All the procedures process data in parts; it is not necessary for all
+data to be stored in memory at once.
+
+
+3.1 Signing data
+
+RSAREF signs data with three procedures: R_SignInit, R_SignUpdate,
+and R_SignFinal. These procedures are typically called by
+message-processing applications, by key-generation applications when
+constructing a PEM or PKCS certification request, and by
+certification applications when signing a certificate.
+
+An application first calls R_SignInit, giving an integer specifying
+which message-digest algorithm to apply (see Appendix D). R_SignInit
+sets up a context for the signature operation, and returns the
+context.
+
+The application then calls R_SignUpdate any number of times, giving
+the context and the next data part. R_SignUpdate digests the part.
+
+After all the parts are supplied, the application calls R_SignFinal,
+giving the context and the signer's RSA private key. R_SignFinal
+encrypts the message digest with the private key and returns the
+result, which is the signature.
+
+An application may call R_SignUpdate again after R_SignFinal to
+sign other data, without setting up a new context.
+
+
+R_SignInit
+
+int R_SignInit (
+  R_SIGNATURE_CTX *context,                          /* new context */
+  int digestAlgorithm                   /* message-digest algorithm */
+);
+
+R_SignInit begins a signature operation, setting up a new context.
+
+digestAlgorithm is the algorithm with which data are digested, and
+must be one of the values listed in Appendix D.
+
+Return value:      0     success
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+
+
+R_SignUpdate
+
+int R_SignUpdate (
+  R_SIGNATURE_CTX *context,                              /* context */
+  unsigned char *partIn,                          /* next data part */
+  unsigned char partInLen               /* length of next data part */
+);
+
+R_SignUpdate continues a signature operation, digesting partIn, the
+next data part, with the specified message-digest algorithm. It may
+be called any number of times.
+
+Return value:      0     success
+
+
+R_SignFinal
+
+int R_SignFinal (
+  R_SIGNATURE_CTX *context,                              /* context */
+  unsigned char *signature,                            /* signature */
+  unsigned int *signatureLen,                /* length of signature */
+  R_RSA_PRIVATE_KEY *privateKey         /* signer's RSA private key */
+);
+
+R_SignFinal completes a signature operation, encrypting the message
+digest with the signer's private key. It stores the resulting
+signature in signature and its length in signatureLen.
+
+signatureLen will not be greater than MAX_SIGNATURE_LEN.
+
+Return value:      0     success
+      RE_PRIVATE_KEY     privateKey cannot encrypt message digest
+
+
+3.2 Verifying a signature
+
+RSAREF verifies signatures with three procedures: R_VerifyInit,
+R_VerifyUpdate, and R_VerifyFinal. These procedures are typically
+called by message-processing applications and by certification
+applications when processing a certification request.
+
+An application first calls R_VerifyInit, giving an integer specifying
+which message-digest algorithm to apply (see Appendix D).
+R_VerifyInit sets up a context for the verification operation, and
+returns the context.
+
+The application then calls R_VerifyUpdate any number of times, giving
+the context and the next data part. R_VerifyUpdate digests the part.
+
+After all the parts are supplied, the application calls
+R_VerifyFinal, giving the context, the signer's RSA public key, and
+the signature. R_SignFinal decrypts the signature with the public key
+and compares the result to the message digest to see whether the
+signature is valid.
+
+An application may call R_VerifyUpdate again after R_VerifyFinal to
+verify other signatures, without setting up a new context.
+
+
+R_VerifyInit
+
+int R_VerifyInit (
+  R_SIGNATURE_CTX *context,                          /* new context */
+  int digestAlgorithm                   /* message-digest algorithm */
+);
+
+R_VerifyInit begins a verification operation, setting up a new
+context.
+
+digestAlgorithm is the algorithm with which data are digested, and
+must be one of the values listed in Appendix D.
+
+Return value:      0     success
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+
+
+R_VerifyUpdate
+
+int R_VerifyUpdate (
+  R_SIGNATURE_CTX *context,                              /* context */
+  unsigned char *partIn,                          /* next data part */
+  unsigned int partInLen                /* length of next data part */
+);
+
+R_VerifyUpdate continues a verification operation, digesting partIn,
+the next data part, with the specified message-digest algorithm. It
+may be called any number of times.
+
+Return value:      0     success
+
+
+R_VerifyFinal
+
+int R_VerifyFinal (
+  R_SIGNATURE_CTX *context,                              /* context */
+  unsigned char *signature,                            /* signature */
+  unsigned int signatureLen,                 /* length of signature */
+  R_RSA_PUBLIC_KEY *publicKey            /* signer's RSA public key */
+);
+
+R_VerifyFinal completes a verification operation, decrypting the
+signature with the signer's public key and comparing it to the
+message digest.
+
+signatureLen must not be greater than MAX_SIGNATURE_LEN.
+
+Return value:      0     success
+              RE_LEN     signatureLen out of range
+       RE_PUBLIC_KEY     publicKey cannot decrypt signature
+        RE_SIGNATURE     signature is incorrect
+
+
+3.3 Sealing data in a digital envelope
+
+RSAREF seals data in digital envelopes with three procedures:
+R_SealInit, R_SealUpdate, and R_SealFinal. There may be any number of
+recipients. These procedures are typically called by
+message-processing applications.
+
+An application first calls R_SealInit, giving an integer specifying
+which data encryption algorithm to apply (see Appendix D), the public
+key of each recipient, and a random structure. R_SealInit sets up a
+context for the sealing operation, generates a data encryption key
+and an initialization vector, and encrypts the data encryption key
+with each recipient's public key.  It returns the context, the
+initialization vector, and the encrypted data encryption keys.
+
+The application then calls R_SealUpdate any number of times, giving
+the context and the next data part. R_SealUpdate encrypts the part
+and returns the next encrypted data part. (Depending on how data are
+supplied, it may return more or less data than are supplied.)
+
+After all the parts are supplied, the application calls R_SealFinal,
+giving the context. R_SealFinal returns the last encrypted data part.
+
+An application may call R_SealUpdate again after R_SealFinal to
+encrypt other data under the same data encryption key and
+initialization vector. This is useful when message content is signed
+and encrypted, and the digital signature must also be encrypted.
+
+
+R_SealInit
+
+int R_SealInit (
+  R_ENVELOPE_CTX *context,                                /* new context */
+  unsigned char **encryptedKeys,                       /* encrypted keys */
+  unsigned int *encryptedKeyLens,           /* lengths of encrypted keys */
+  unsigned char iv[8],                          /* initialization vector */
+  unsigned int publicKeyCount,                  /* number of public keys */
+  R_RSA_PUBLIC_KEY **publicKeys,                          /* public keys */
+  int encryptionAlgorithm,                  /* data encryption algorithm */
+  R_RANDOM_STRUCT *randomStruct                      /* random structure */
+);
+
+R_SealInit begins a "sealing" operation. It performs the following
+steps:
+
+    1.   It sets up a new context.
+
+    2.   It generates a random data encryption key and initialization
+         vector, storing the initialization vector in iv.
+
+    3.   It encrypts the data encryption key with each recipient's
+         public key, storing the encrypted keys in encryptedKeys and
+         their lengths in encryptedKeyLens. (Note that each
+         encryptedKeys member should be a pointer, initialized by
+         the application.)
+         
+The encryptedKeyLens members will not be greater than
+MAX_ENCRYPTED_KEY_LEN.
+
+encryptionAlgorithm is the algorithm with which data are encrypted,
+and must be one of the values listed in Appendix D.
+
+randomStruct must have been seeded.
+
+Return value:      0     success
+RE_ENCRYPTION_ALGORITHM  encryptionAlgorithm is invalid
+       RE_PUBLIC_KEY     publicKey cannot encrypt data encryption
+                           key
+      RE_NEED_RANDOM     randomStruct is not seeded
+
+
+R_SealUpdate
+
+int R_SealUpdate (
+  R_ENVELOPE_CTX *context,                               /* context */
+  unsigned char *partOut,               /* next encrypted data part */
+  unsigned int *partOutLen,   /* length of next encrypted data part */
+  unsigned char *partIn,                          /* next data part */
+  unsigned int partInLen                /* length of next data part */
+);
+
+R_SealUpdate continues a sealing operation, decrypting partIn, the
+next data part, with the specified data encryption algorithm, and
+returning partOut, the next encrypted data part. It may be called any
+number of times.
+
+partOutLen will always be a multiple of 8, and it will not be greater
+than partInLen+7. If partInLen is a multiple of 8, then partOutLen
+will be the same as partInLen.
+
+(As a special case, if partInLen is a multiple of 24, then partOutLen
+will be the same as partInLen; this is helpful when the output is to
+be encoded in ASCII, since the length of each part input to
+R_EncodePEMBlock should be a multiple of 3.)
+
+Return value:      0     success
+
+
+R_SealFinal
+
+int R_SealFinal (
+  R_ENVELOPE_CTX *context,                               /* context */
+  unsigned char *partOut,               /* last encrypted data part */
+  unsigned int *partOutLen    /* length of last encrypted data part */
+);
+
+R_SealFinal completes a sealing operation, returning partOut, the
+last encrypted data part.
+
+partOutLen will always be 8.
+
+Return value:      0     success
+
+
+3.4 Opening a digital envelope
+
+RSAREF opens digital envelopes with three procedures: R_OpenInit,
+R_OpenUpdate, and R_OpenFinal. These procedures are typically called
+by message-processing applications.
+
+An application first calls R_OpenInit, giving an integer specifying
+which data encryption algorithm to apply (see Appendix D), an
+initialization vector, the recipient's RSA private key, and an
+encrypted data encryption key. R_OpenInit sets up a context for the
+opening operation and decrypts the encrypted data encryption key with
+the private key. It returns the context.
+
+The application then calls R_OpenUpdate any number of times, giving
+the context and the next encrypted data part. R_OpenUpdate decrypts
+the encrypted part and returns the next recovered data part. (Depending
+on how data are supplied, it may return more or less data than are
+supplied.)
+
+After all the parts are supplied, the application calls R_OpenFinal,
+giving the context. R_OpenFinal returns the last recovered data part.
+
+As described for the sealing operations, an application may call
+R_OpenUpdate again after R_OpenFinal to decrypt other data under the
+same data encryption key and initialization vector.
+
+
+R_OpenInit
+
+int R_OpenInit (
+  R_ENVELOPE_CTX *context,                                /* new context */
+  int encryptionAlgorithm,                  /* data encryption algorithm */
+  unsigned char *encryptedKey,          /* encrypted data encryption key */
+  unsigned int encryptedKeyLen,               /* length of encrypted key */
+  unsigned char iv[8],                          /* initialization vector */
+  R_RSA_PRIVATE_KEY *privateKey           /* recipient's RSA private key */
+);
+
+R_OpenInit begins an "opening" operation, setting up a new context
+and decrypting encryptedKey with privateKey.
+
+iv is the initialization vector for the data encryption algorithm.
+encryptionAlgorithm is the algorithm with which the data is
+encrypted, and must be one of the values listed in Appendix D.
+
+encryptedKeyLen must not be greater than MAX_ENCRYPTED_KEY_LEN.
+
+Return value:      0     success
+              RE_LEN     encryptedKeyLen out of range
+RE_ENCRYPTION_ALGORITHM  encryptionAlgorithm is invalid
+      RE_PRIVATE_KEY     privateKey cannot decrypt encrypted key
+
+
+R_OpenUpdate
+
+int R_OpenUpdate (
+  R_ENVELOPE_CTX *context,                               /* context */
+  unsigned char *partOut,               /* next recovered data part */
+  unsigned int *partOutLen,   /* length of next recovered data part */
+  unsigned char *partIn,                /* next encrypted data part */
+  unsigned int partInLen      /* length of next encrypted data part */
+);
+
+R_OpenUpdate continues an opening operation, decrypting partIn, the
+next encrypted data part, and returning partOut, the next recovered
+data part. It may be called any number of times.
+
+partOutLen will always be a multiple of 8, and it will not be greater
+than partInLen+7.
+
+Return value:      0     success
+
+
+R_OpenFinal
+
+int R_OpenFinal (
+  R_ENVELOPE_CTX *context,                               /* context */
+  unsigned char *partOut,               /* last recovered data part */
+  unsigned int *partOutLen    /* length of last recovered data part */
+);
+
+R_SealFinal completes a sealing operation, returning partOut, the
+last recovered data part.
+
+partOutLen will not be greater than 7.
+
+Return value:      0     success
+              RE_KEY     recovered data encryption key cannot decrypt
+                           encrypted data
+
+3.5 Digesting a message
+
+RSAREF digests messages with three procedures: R_DigestInit,
+R_DigestUpdate, and R_DigestFinal. These procedures have no
+particular PEM application, but may be useful in PKCS #7.
+
+An application first calls R_DigestInit, giving an integer specifying
+which message-digest algorithm to apply (see Appendix D).
+R_DigestInit sets up a context for the digesting operation, and
+returns the context.
+
+The application then calls R_DigestUpdate any number of times, giving
+the context and the next data part. R_DigestUpdate digests the part.
+
+After all the parts are supplied, the application calls
+R_DigestFinal, giving the context. R_DigestFinal returns the message
+digest.
+
+An application may call R_DigestUpdate again after R_DigestFinal to
+digest other data, without setting up a new context.
+
+
+R_DigestInit
+
+int R_DigestInit (
+  R_DIGEST_CTX *context,                             /* new context */
+  int digestAlgorithm                   /* message-digest algorithm */
+);
+
+R_DigestInit begins a message-digest operation, setting up a new
+context.
+
+digestAlgorithm is the algorithm with which data are digested, and
+must be one of the values listed in Appendix D.
+
+Return value:      0     success
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+
+
+R_DigestUpdate
+
+int R_DigestUpdate (
+  R_DIGEST_CTX *context,                                 /* context */
+  unsigned char *partIn,                          /* next data part */
+  unsigned int partInLen                /* length of next data part */
+);
+
+R_DigestUpdate continues a message-digest operation, digesting the
+next data part with the specified message-digest algorithm. It may be
+called any number of times.
+
+Return value:      0     success
+
+
+R_DigestFinal
+
+int R_DigestFinal (
+  R_DIGEST_CTX *context,                                 /* context */
+  unsigned char *digest,                          /* message digest */
+  unsigned int *digestLen               /* length of message digest */
+);
+
+R_DigestFinal completes a message-digest operation, storing the
+message digest in digest and its length in bytes in digestLen.
+
+digestLen will not be greater than MAX_DIGEST_LEN.
+
+Return value:      0     success
+
+
+4. ENCODING AND DECODING
+
+RSAREF encodes and decodes blocks of data in printable ASCII
+according to RFC 1421 with two procedures: R_EncodePEMBlock
+and R_DecodePEMBlock. They are typically called by
+message-processing applications to format and parse fields
+of the encapsulated header of a privacy-enhanced message, as
+well as the message content.
+
+To encode a block in printable ASCII, an application calls
+R_EncodePEMBlock, giving a pointer to the block and the block length.
+R_EncodePEMBlock encodes the block in printable ASCII and returns the
+encoded block.
+
+To decode a block encoded in printable ASCII, an application calls
+R_DecodePEMBlock, giving a pointer to the encoded block, and the
+encoded block length. R_DecodePEMBlock decodes the encoded block and
+returns the decoded block.
+
+An application can process data in parts with these procedures,
+provided that the length of each input part (except possibly the
+last) is a multiple of the "quantum" size: three bytes for
+encoding, four bytes for decoding.
+
+
+R_EncodePEMBlock
+
+int R_EncodePEMBlock (
+  unsigned char *encodedBlock,                     /* encoded block */
+  unsigned int *encodedBlockLen,         /* length of encoded block */
+  unsigned char *block,                                    /* block */
+  unsigned int blockLen                          /* length of block */
+);
+
+R_EncodePEMBlock encodes block in printable ASCII according to RFC
+1421, storing the encoding in encodedBlock.
+
+encodedBlock will be an ASCII string, encoded according to RFC 1421.
+(It will not contain any line delimiters; the application must break
+the string into lines.) encodedBlockLen will not be greater than
+ENCODED_CONTENT_LEN(blockLen).
+
+When processing data in parts, blockLen should be a multiple of 3,
+except possibly for the last part.
+
+Return value:      0     success
+             nonzero     reserved for future compatibility
+
+
+R_DecodePEMBlock
+
+int R_DecodePEMBlock (block, blockLen, encodedBlock, encodedBlockLen)
+  unsigned char *block,                                    /* block */
+  unsigned int *blockLen,                        /* length of block */
+  unsigned char *encodedBlock,                     /* encoded block */
+  unsigned int encodedBlockLen           /* length of encoded block */
+);
+
+R_DecodePEMBlock decodes a block encoded according to RFC 1421. Its
+operation is the reverse of R_EncodePEMBlock.
+
+blockLen will not be greater than
+DECODED_CONTENT_LEN(encodedBlockLen).
+
+When processing data in parts, encodedBlockLen should be a multiple
+of 4, except possibly for the last part.
+
+Return value:      0     success
+         RE_ENCODING     encodedBlock has RFC 1421 encoding error
+
+
+5. KEY-PAIR GENERATION
+
+RSAREF generates key pairs with the procedure R_GeneratePEMKeys.
+R_GeneratePEMKeys is typically called by key generation applications.
+To generate a new key pair, an application calls R_GeneratePEMKeys,
+giving the length in bits of the modulus, the choice of public
+exponent (3 or 65537), and a random structure. R_GeneratePEMKeys
+generates an RSA key pair and returns the public and private keys.
+
+
+R_GeneratePEMKeys
+
+int R_GeneratePEMKeys (
+  R_RSA_PUBLIC_KEY *publicKey,                /* new RSA public key */
+  R_RSA_PRIVATE_KEY *privateKey,             /* new RSA private key */
+  R_RSA_PROTO_KEY *protoKey,                   /* RSA prototype key */
+  R_RANDOM_STRUCT *randomStruct                 /* random structure */
+);
+
+R_GeneratePEMKeys generates a random RSA key pair, storing the
+resulting RSA public key in publicKey and the resulting RSA private
+key in privateKey.
+
+Other parameters are as follows:
+
+            protoKey     The RSA prototype key specifying the length
+                           in bits of the RSA modulus and the public
+                           exponent. (See Appendix B.)
+
+        randomStruct     Random structure from which the key pair is
+                           derived. It must have been seeded.
+
+Return value:      0     success
+      RE_MODULUS_LEN     modulus length invalid
+      RE_NEED_RANDOM     randomStruct is not seeded
+
+
+6. DIFFIE-HELLMAN KEY AGREEMENT
+
+To generate new Diffie-Hellman parameters, an application calls
+R_GenerateDHParams, giving the length in bits of the Diffie-Hellman
+prime and a random structure. R_GenerateDHParams generates the
+parameters. Several users may share given Diffie-Hellman parameters,
+or they may be unique to a given user.
+
+To set up a key agreement, communicating applications call
+R_SetupDHAgreement, giving these parameters:
+
+  -  the Diffie-Hellman parameters
+  -  a random structure
+
+R_SetupDHAgreement generates a new "public value" and a new "private
+value" for each party. The applications then exchange their public
+values.
+
+To compute the agreed-upon key, the applications call
+R_ComputeDHAgreedKey, giving these parameters:
+
+  -  the Diffie-Hellman parameters
+  -  the other party's public value
+  -  the private value
+
+R_ComputeDHAgreedKey computes the agreed-upon key.
+
+The applications may encrypt subsequent data with the agreed-upon
+key. When the length of the Diffie-Hellman prime is large enough, it
+is considered impractical for someone who sees the Diffie-Hellman
+parameters and the exchanged public values to determine to
+agreed-upon key, so the subsequent encryption is secure.
+
+
+R_GenerateDHParams
+
+int R_GenerateDHParams (
+  R_DH_PARAMS *params,             /* new Diffie-Hellman parameters */
+  unsigned int primeBits,               /* length in bits of prime  */
+  unsigned int subPrimeBits,         /* length in bits of subprime  */
+  R_RANDOM_STRUCT *randomStruct                 /* random structure */
+);
+
+R_GenerateDHParams generates random Diffie-Hellman parameters,
+storing the result in params. primeBits specifies the length in bits
+of the Diffie-Hellman prime p, and subPrimeBits specifies the length
+in bits of the prime q that divides p-1. The resulting generator g
+has order q.
+
+The resulting params->primeLen and params->generatorLen will be at
+most DH_PRIME_LEN (bits); params->prime and params->generator should
+point to arrays at least that long.
+
+randomStruct must have been seeded.
+
+Return value:      0     success
+      RE_MODULUS_LEN     prime length invalid
+      RE_NEED_RANDOM     randomStruct is not seeded
+
+
+R_SetupDHAgreement
+
+int R_SetupDHAgreement (
+  unsigned char *publicValue,                   /* new public value */
+  unsigned char *privateValue,                 /* new private value */
+  unsigned int privateValueLen,          /* length of private value */
+  R_DH_PARAMS *params,                 /* Diffie-Hellman parameters */
+  R_RANDOM_STRUCT *randomStruct                 /* random structure */
+);
+
+R_SetupDHAgreement sets up a Diffie-Hellman key agreement by
+generating a public value and a private value from the Diffie-Hellman
+parameters. It stores the resulting public value in publicValue and
+the resulting private value in private value.
+
+The private value is a random number x whose length in bytes is
+privateValueLen, and the public value is the number y such that
+
+                            y = g^x mod p,
+
+where p and g are the prime and generator in params. (Typically, one
+selects privateValueLen according to the length in bits of the
+"subprime" q.)
+
+publicValue and privateValue will be represented most significant
+byte first, with no leading zero bytes. publicValue will have the
+same length as the prime.
+
+randomStruct must have been seeded.
+
+Return value:      0     success
+      RE_NEED_RANDOM     randomStruct is not seeded
+
+
+R_ComputeDHAgreedKey
+
+int R_ComputeDHAgreedKey (
+  unsigned char *agreedKey,                  /* new agreed-upon key */
+  unsigned char *otherPublicValue,          /* other's public value */
+  unsigned char *privateValue,                     /* private value */
+  unsigned int privateValueLen,          /* length of private value */
+  R_DH_PARAMS *params                  /* Diffie-Hellman parameters */
+);
+
+R_ComputeDHAgreedKey computes an agreed-upon key from the other
+party's public value, a private value, and the Diffie-Hellman
+parameters. It stores the resulting agreed key in agreedKey.
+
+The agreed key is the number z such that
+
+                            z = (y')^x mod p,
+
+where y' is the other party's public value, x is the private value,
+and p is the prime in params.
+
+The other party's private value y' should be between 0 and p-1.
+
+agreedKey will be represented most significant byte first, with no
+leading zero bytes. agreedKey will have the same length as the prime.
+
+Return value:      0     success
+             RE_DATA     other party's private value out of range
+
+
+7. VERSION 1.0 ROUTINES
+
+The following procedures are retained for backward compatibility with
+RSAREF 1.0: R_SignPEMBlock, R_SignBlock, R_VerifyPEMSignature,
+R_VerifyBlockSignature, R_SealPEMBlock, R_OpenPEMBlock, and
+R_DigestBlock.
+
+The procedures are typically called by message-processing
+applications. R_SignBlock is also typically called by key-generation
+applications when constructing a PEM or PKCS certification request,
+and by certification applications when signing a certificate.
+R_DigestBlock has no particular PEM application, but may be useful in
+PKCS #7.
+
+To sign a message, an application calls R_SignPEMBlock, giving these
+arguments:
+
+  -  a pointer to the message content, and the message length
+  -  an integer identifying which message-digest algorithm to apply
+       (see Appendix D)
+  -  a flag indicating whether to encode the message in printable
+       ASCII according to RFC 1421
+  -  the signer's RSA private key
+
+R_SignPEMBlock signs the message with the signer's private key and
+the specified message-digest algorithm, and optionally encodes the
+message in printable ASCII. It returns the signature and possibly the
+encoded message. The signature is encoded according to RFC 1421.
+
+To sign a block of data such as a certificate where the signature is
+not encoded in printable ASCII, an application calls R_SignBlock,
+giving these arguments:
+
+  -  a pointer to the block, and the block length
+  -  an integer identifying which message-digest algorithm to apply
+       (see Appendix D)
+  -  the signer's RSA private key
+
+R_SignBlock signs the message with the signer's private key and the
+specified message-digest algorithm. It returns the signature.
+
+To verify a signature on a message, an application calls
+R_VerifyPEMSignature, giving these arguments:
+
+  -  a pointer to the (possibly encoded) message, and the message
+       length
+  -  a pointer to the signature, and the signature length
+  -  an integer identifying which message-digest algorithm was applied
+       (see Appendix D)
+  -  a flag indicating whether the message was encoded in printable
+       ASCII
+  -  the signer's RSA public key
+
+R_VerifyPEMSignature decodes the message if it was encoded and
+verifies the signature on the message with the signer's public key
+and the specified message-digest algorithm. It returns the message
+content if the message was encoded.
+
+To verify a signature on a block of data such as a certificate where
+the signature is not encoded in printable ASCII, an application calls
+R_VerifyBlockSignature, giving these arguments:
+
+  -  a pointer to the block, and the block length
+  -  a pointer to the signature, and the signature length
+  -  an integer identifying which message-digest algorithm was applied
+       (see Appendix D)
+  -  the signer's RSA public key
+
+R_VerifyBlockSignature verifies the signature on the message with the
+signer's public key and the specified message-digest algorithm.
+
+To sign and encrypt a message, an application calls R_SealPEMBlock,
+giving these arguments:
+
+  -  a pointer to the message content, and the message length
+  -  an integer identifying which message-digest algorithm to apply
+       (see Appendix D)
+  -  the signer's RSA private key
+  -  the recipient's RSA public key
+  -  a random structure
+
+R_SealPEMBlock signs the message with the signer's private key and
+the specified message-digest algorithm, encrypts the message and the
+signature with a random DES key, and encrypts the DES key with the
+recipient's public key. It returns the encrypted message, the
+encrypted key, the encrypted signature, and the DES initialization
+vector. The encrypted message, key, and signature are encoded
+according to RFC 1421.
+
+To open a message (decrypt it and verify its signature), an
+application calls R_OpenPEMBlock, giving these arguments:
+
+  -  a pointer to the encrypted message, and the encrypted message
+       length
+  -  a pointer to the encrypted key, and the encrypted key length
+  -  a pointer to the encrypted signature, and the encrypted signature
+       length
+  -  a DES initialization vector
+  -  an integer identifying which message-digest algorithm was applied
+       (see Appendix D)
+  -  the signer's RSA public key
+  -  the recipient's RSA private key
+
+R_OpenPEMBlock decrypts the encrypted DES key with the recipient's
+private key, decrypts the encrypted message and the encrypted
+signature with the DES key, and verifies the signature on the message
+with the signer's public key and the specified message-digest
+algorithm. It returns the message content.
+
+To digest a block of data such as a prototype certificate, an
+application calls R_DigestBlock, giving these arguments:
+
+  -  a pointer to the block, and the block length
+  -  an integer identifying which message-digest algorithm to apply
+       (see Appendix D)
+
+R_DigestBlock digests the block with the specified message-digest
+algorithm. It returns the message digest.
+
+ENCODED_CONTENT_LEN, DECODED_CONTENT_LEN, ENCRYPTED_CONTENT_LEN, and
+DECRYPTED_CONTENT_LEN are macros that assist in determining the
+maximum lengths of the results of cryptographic enhancements.
+
+
+R_SignPEMBlock
+
+int R_SignPEMBlock (
+  unsigned char *encodedContent,                 /* encoded content */
+  unsigned int *encodedContentLen,     /* length of encoded content */
+  unsigned char *encodedSignature,             /* encoded signature */
+  unsigned int *encodedSignatureLen, /* length of encoded signature */
+  unsigned char *content,                                /* content */ 
+  unsigned int contentLen,                     /* length of content */ 
+  int recode,                                      /* recoding flag */
+  int digestAlgorithm,                  /* message-digest algorithm */
+  R_RSA_PRIVATE_KEY *privateKey         /* signer's RSA private key */
+);
+
+R_SignPEMBlock computes a digital signature on content. Specifically,
+R_SignPEMBlock performs the following steps:
+
+     1.   It digests content with digestAlgorithm, giving a message
+          digest.
+
+     2.   It encrypts the message digest with privateKey, giving a
+          digital signature, and encodes the result in printable
+          ASCII according to RFC 1421, storing the encoding in
+          encodedSignature.
+
+    3.    If recode is nonzero, it encodes content in printable ASCII,
+          storing the encoding in encodedContent.
+
+If recode is nonzero, encodedContent will be an ASCII string, encoded
+according to RFC 1421. (It will not contain any line delimiters; the
+application must break the string into 64-character lines.)
+encodedContentLen will not be greater than
+ENCODED_CONTENT_LEN(contentLen). If recode is zero, encodedContent is
+ignored.
+
+encodedSignature will be an ASCII string, encoded according to RFC
+1421. encodedSignatureLen will not be greater than
+MAX_PEM_SIGNATURE_LEN.
+
+digestAlgorithm is the algorithm with which the message content is
+digested, and must be one of the values listed in Appendix D.
+
+Return value:      0     success
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+      RE_PRIVATE_KEY     privateKey cannot encrypt message digest
+
+
+R_SignBlock
+
+int R_SignBlock (
+  unsigned char *signature,                    /* encoded signature */
+  unsigned int *signatureLen,        /* length of encoded signature */
+  unsigned char *block,                                    /* block */ 
+  unsigned int blockLen,                         /* length of block */ 
+  int digestAlgorithm,                  /* message-digest algorithm */
+  R_RSA_PRIVATE_KEY *privateKey         /* signer's RSA private key */
+);
+
+R_SignBlock computes a digital signature on block of data such as a
+certificate. Its operation is similar to R_SignPEMBlock, except that
+the resulting signature is an arbitrary byte string, rather than an
+RFC 1421-encoded string.
+
+signatureLen will not be greater than MAX_SIGNATURE_LEN.
+
+Return value:      0     success
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+      RE_PRIVATE_KEY     privateKey cannot encrypt message digest
+
+
+R_VerifyPEMSignature
+
+int R_VerifyPEMSignature (
+  unsigned char *content,                                /* content */ 
+  unsigned int *contentLen,                    /* length of content */ 
+  unsigned char *encodedContent,      /* (possibly) encoded content */
+  unsigned int encodedContentLen,      /* length of encoded content */
+  unsigned char *encodedSignature,             /* encoded signature */
+  unsigned int encodedSignatureLen,  /* length of encoded signature */
+  int recode,                                      /* recoding flag */
+  int digestAlgorithm,                  /* message-digest algorithm */
+  R_RSA_PUBLIC_KEY *publicKey            /* signer's RSA public key */
+);
+
+R_VerifyPEMSignature verifies a digital signature on a message. Its
+operation is the inverse of R_SignPEMBlock. R_VerifyPEMSignature
+operates on encodedSignature and encodedContent. If recode is
+nonzero, it first decodes encodedContent according to RFC 1421, and
+stores the result in content. If recode is zero, content is ignored.
+
+If recode is nonzero, contentLen will not be greater than
+DECODED_CONTENT_LEN(encodedContentLen).
+
+Return value:      0     success
+ RE_CONTENT_ENCODING     encodedContent has RFC 1421 encoding error
+RE_SIGNATURE_ENCODING    encodedSignature has RFC 1421 encoding error
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+       RE_PUBLIC_KEY     publicKey cannot decrypt signature
+        RE_SIGNATURE     signature on content is incorrect
+
+
+R_VerifyBlockSignature
+
+int R_VerifyBlockSignature (
+  unsigned char *block,                                    /* block */
+  unsigned int blockLen,                         /* length of block */
+  unsigned char *signature,                            /* signature */  
+  unsigned int signatureLen,                 /* length of signature */
+  int digestAlgorithm,                  /* message-digest algorithm */
+  R_RSA_PUBLIC_KEY *publicKey            /* signer's RSA public key */
+);
+
+R_VerifyBlockSignature verifies a digital signature on a block of
+data such as a certificate. Its operation is similar to
+R_VerifyPEMSignature, except that the block and signature are
+arbitrary byte strings, rather than RFC 1421-encoded strings.
+
+Return value:      0     success
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+       RE_PUBLIC_KEY     publicKey cannot decrypt signature
+        RE_SIGNATURE     signature on block is incorrect
+
+
+R_SealPEMBlock
+
+int R_SealPEMBlock (
+  unsigned char *encryptedContent,    /* encoded, encrypted content */
+  unsigned int *encryptedContentLen,
+                            /* length of encoded, encrypted content */
+  unsigned char *encryptedKey,        /* encoded, encrypted DES key */  
+  unsigned int *encryptedKeyLen,
+                            /* length of encoded, encrypted DES key */  
+  unsigned char *encryptedSignature,/* encoded, encrypted signature */
+  unsigned int *encryptedSignatureLen,
+                          /* length of encoded, encrypted signature */
+  unsigned char iv[8],                 /* DES initialization vector */
+  unsigned char *content,                                /* content */
+  unsigned int contentLen,                     /* length of content */
+  int digestAlgorithm,                  /* message-digest algorithm */
+  R_RSA_PUBLIC_KEY *publicKey,        /* recipient's RSA public key */
+  R_RSA_PRIVATE_KEY *privateKey,        /* signer's RSA private key */
+  R_RANDOM_STRUCT *randomStruct                 /* random structure */
+);
+
+R_SealPEMBlock computes a digital signature on content then encrypts
+the content and the signature. Specifically, R_SealPEMBlock performs
+the following steps:
+
+     1.   It digests content with digestAlgorithm, giving a message
+          digest.
+
+     2.   It encrypts the message digest with privateKey, giving a
+          digital signature.
+
+     3.   It generates a random DES key and initialization vector,
+          storing the initialization vector in iv.
+
+     4.   It encrypts content with the DES key and initialization vector
+          in cipher-block chaining mode, and encodes the result in
+          printable ASCII according to RFC 1421, storing the encoding
+          in encryptedContent.
+
+     5.   It encrypts the DES key with publicKey and encodes the
+          result in printable ASCII, storing the encoding in
+          encryptedKey.
+
+     6.   It encrypts the digital signature with the DES key and
+          initialization vector, and encodes the result in printable
+          ASCII, storing the encoding in encryptedSignature.
+
+encryptedContent will be an ASCII string, encoded according to RFC
+1421. (It will not contain any line delimiters; the application must
+break the string into 64-character lines.) encryptedContentLen will
+not be greater than ENCRYPTED_CONTENT_LEN(contentLen).
+
+encryptedKey and encryptedSignature will be ASCII strings, encoded
+according to RFC 1421. encryptedKeyLen will not be greater than
+MAX_PEM_ENCRYPTED_KEY_LEN. encryptedSignatureLen will not be greater
+than MAX_PEM_ENCRYPTED_SIGNATURE_LEN.
+
+digestAlgorithm is the algorithm with which the message content is
+digested, and must be one of the values listed in Appendix D.
+
+randomStruct must have been seeded.
+
+Return value:      0     success
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+      RE_PRIVATE_KEY     privateKey cannot encrypt message digest
+       RE_PUBLIC_KEY     publicKey cannot encrypt DES key
+      RE_NEED_RANDOM     randomStruct is not seeded
+
+
+R_OpenPEMBlock
+
+int R_OpenPEMBlock (
+  unsigned char *content,                                /* content */
+  unsigned int *contentLen,                    /* length of content */
+  unsigned char *encryptedContent,    /* encoded, encrypted content */
+  unsigned int encryptedContentLen,
+                            /* length of encoded, encrypted content */
+  unsigned char *encryptedKey,        /* encoded, encrypted DES key */  
+  unsigned int encryptedKeyLen,
+                            /* length of encoded, encrypted DES key */  
+  unsigned char *encryptedSignature,/* encoded, encrypted signature */
+  unsigned int encryptedSignatureLen,
+                          /* length of encoded, encrypted signature */
+  unsigned char iv[8],                 /* DES initialization vector */
+  int digestAlgorithm,                  /* message-digest algorithm */
+  R_RSA_PRIVATE_KEY *privateKey,     /* recipient's RSA private key */
+  R_RSA_PUBLIC_KEY *publicKey            /* signer's RSA public key */
+);
+
+R_OpenPEMBlock decrypts an encrypted message and verifies a digital
+signature. Its operation is the inverse of R_SealPEMBlock.
+
+contentLen will not be greater than
+DECRYPTED_CONTENT_LEN(encryptedContentLen).
+
+Return value:       0    success
+ RE_CONTENT_ENCODING     encryptedContent has RFC 1421 encoding error
+     RE_KEY_ENCODING     encryptedKey has RFC 1421 encoding error
+RE_SIGNATURE_ENCODING    encryptedSignature has RFC 1421 encoding
+                           error
+       RE_PUBLIC_KEY     publicKey cannot decrypt signature
+      RE_PRIVATE_KEY     privateKey cannot decrypt encrypted key
+              RE_KEY     recovered DES key cannot decrypt encrypted
+                           content or encrypted signature
+ RE_DIGEST_ALGORITHM     digestAlgorithm is invalid
+        RE_SIGNATURE     signature on content is incorrect
+
+
+R_DigestBlock
+
+int R_DigestBlock (
+  unsigned char *digest,                          /* message digest */
+  unsigned int *digestLen,              /* length of message digest */ 
+  unsigned char *content,                                /* content */
+  unsigned int contentLen,                     /* length of content */
+  int digestAlgorithm                   /* message-digest algorithm */
+);
+
+R_DigestBlock computes the message digest of content, storing the
+resulting message digest in digest and its length in bytes in
+digestLen.
+
+digestAlgorithm is the algorithm with which the content is digested,
+and must be one of the values in Appendix D.
+
+digestLen will not be greater than MAX_DIGEST_LEN.
+
+Return value:       0    success
+  RE_DIGEST_ALGORITHM    digestAlgorithm is invalid
+
+
+8. RUN-TIME LIBRARY
+
+RSAREF operates on memory blocks with three platform-specific library
+procedures that are modeled after conventional C library functions:
+
+             R_memcmp    compares two blocks of memory
+             R_memcpy    copies a block of memory
+             R_memset    sets a block of memory to a given value
+
+These procedures can be found in the file 'r_stdlib.c'.
+
+
+R_memcmp
+
+int R_memcmp (
+  POINTER firstBlock,                                /* first block */
+  POINTER secondBlock,                              /* second block */
+  unsigned int len                              /* length of blocks */
+);
+
+R_memcmp compares the first len bytes of firstBlock and secondBlock.
+The value of len can be zero, in which case firstBlock and secondBlock
+are undefined and R_memcmp returns 0. R_memcmp compares the blocks by
+scanning the blocks from lowest address to highest until a difference
+is found. The smaller-valued block is the one with the smaller-valued
+byte at the point of difference. If no difference is found, the
+blocks are equal.
+
+Return value:     < 0    firstBlock is smaller
+                  0      blocks are equal
+                  > 0    firstBlock is larger
+
+
+R_memcpy
+
+void R_memcpy (
+  POINTER output,                                   /* output block */
+  POINTER input,                                     /* input block */
+  unsigned int len                              /* length of blocks */
+);
+
+R_memcpy copies the first len bytes of input to output. The value of
+len can be zero, in which output and input are undefined. The blocks
+do not overlap.
+
+No return value.
+
+
+R_memset
+
+void R_memset (
+  POINTER output,                                   /* output block */
+  int value,                                               /* value */
+  unsigned int len                               /* length of block */
+);
+
+R_memset sets the first len bytes of output to value. The value of
+len is zero, in which case output is undefined.
+
+No return value.
+
+
+APPENDIX A: RSAREF ERROR TYPES
+
+This appendix lists RSAREF's error types.
+
+             RE_DATA     other party's private value out of range
+
+ RE_CONTENT_ENCODING     content, encrypted content, or encoded block
+                           has RFC 1421 encoding error
+
+ RE_DIGEST_ALGORITHM     message-digest algorithm is invalid
+
+         RE_ENCODING     encoded block has RFC 1421 encoding error
+
+RE_ENCRYPTION_ALGORITHM  encryption algorithm is invalid
+
+              RE_KEY     recovered DES key cannot decrypt encrypted
+                           content or encrypted signature
+
+     RE_KEY_ENCODING     encrypted key has RFC 1421 encoding error
+
+              RE_LEN     encrypted key length or signature length
+                           out of range
+
+      RE_MODULUS_LEN     modulus length out of range
+
+      RE_NEED_RANDOM     random structure is not seeded
+
+      RE_PRIVATE_KEY     private key cannot encrypt message digest,
+                           or cannot decrypt encrypted key
+
+       RE_PUBLIC_KEY     public key cannot encrypt data encryption
+                           key, or cannot decrypt signature
+
+        RE_SIGNATURE     signature on content or block is incorrect
+
+RE_SIGNATURE_ENCODING    signature or encrypted signature has RFC 1421
+                           encoding error
+
+
+APPENDIX B: RSAREF TYPES
+
+This appendix lists four RSAREF types: R_RSA_PUBLIC_KEY,
+R_RSA_PRIVATE_KEY, R_RSA_PROTO_KEY, and R_DH_PARAMS.
+
+
+R_RSA_PUBLIC_KEY
+
+typedef struct {
+  unsigned int bits;                   /* length in bits of modulus */
+  unsigned char modulus[MAX_RSA_MODULUS_LEN];            /* modulus */
+  unsigned char exponent[MAX_RSA_MODULUS_LEN];   /* public exponent */
+} R_RSA_PUBLIC_KEY;
+
+An R_RSA_PUBLIC_KEY value is a structure specifying an RSA public key.
+There are three fields:
+
+                bits     length in bits of the modulus (not less than
+                           MIN_RSA_MODULUS_BITS and not greater than
+                           MAX_RSA_MODULUS_BITS)
+
+             modulus     modulus n, represented as a
+                           MAX_RSA_MODULUS_LEN-byte number, most
+                           significant byte first, as many leading zero
+                           bytes as necessary
+
+            exponent     public exponent e, represented like modulus
+
+
+R_RSA_PRIVATE_KEY
+
+typedef struct {
+  unsigned int bits;                   /* length in bits of modulus */
+  unsigned char modulus[MAX_RSA_MODULUS_LEN];            /* modulus */
+  unsigned char publicExponent[MAX_RSA_MODULUS_LEN];
+                                                 /* public exponent */
+  unsigned char exponent[MAX_RSA_MODULUS_LEN];  /* private exponent */
+  unsigned char prime[2][MAX_RSA_PRIME_LEN];       /* prime factors */
+  unsigned char primeExponent[2][MAX_RSA_PRIME_LEN];
+                                               /* exponents for CRT */
+  unsigned char coefficient[MAX_RSA_PRIME_LEN];  /* CRT coefficient */
+} R_RSA_PRIVATE_KEY;
+
+An R_RSA_PRIVATE_KEY value is a structure specifying an RSA private
+key. There are seven fields:
+
+                bits     length in bits of the modulus (not less than
+                           MIN_RSA_MODULUS_BITS and not greater than
+                           MAX_RSA_MODULUS_BITS)
+
+             modulus     modulus n, represented as a
+                           MAX_RSA_MODULUS_LEN-byte number, most
+                           significant byte first, as many leading zero
+                           bytes as necessary
+
+      publicExponent     public exponent e, represented like modulus
+
+            exponent     private exponent d, represented like modulus
+
+               prime     prime factors p and q of modulus, each
+                           represented as MAX_RSA_PRIME_LEN-byte
+                           numbers, most significant byte first, as
+                           many leading zero bytes as necessary, where
+                           p > q
+
+      primeExponents     exponents (d mod p-1) and (d mod q-1) for
+                           Chinese remainder theorem (CRT) operations,
+                           each represented like prime factors
+
+         coefficient     coefficient (q^{-1} mod p) for Chinese
+                           remainder theorem operations, represented
+                           like prime factors
+
+
+R_RSA_PROTO_KEY
+
+typedef struct {
+  unsigned int bits;                   /* length in bits of modulus */
+  int useFermat4;                /* public exponent (1 = F4, 0 = 3) */
+} R_RSA_PROTO_KEY;
+
+An R_RSA_PROTO_KEY value is a structure specifying the length in bits
+of the RSA modulus and the public exponent for key-pair generation.
+There are two fields:
+
+                bits     length in bits of the modulus (not less than
+                           MIN_RSA_MODULUS_BITS and not greater than
+                           MAX_RSA_MODULUS_BITS)
+
+          useFermat4     a flag specifying the public exponent. If
+                           nonzero, it specifies F4 (65537); if 0, F0
+                           (3)
+
+
+R_DH_PARAMS
+
+typedef struct {
+  unsigned char *prime;                                    /* prime */
+  unsigned int primeLen;                         /* length of prime */
+  unsigned char *generator;                            /* generator */
+  unsigned int generatorLen;                 /* length of generator */
+} R_DH_PARAMS;
+
+An R_DH_PARAMS value is a structure specifying Diffie-Hellman
+parameters. There are four fields:
+
+               prime     prime p, represented as a primeLen-byte
+                           number, most significant byte first, as
+                           many leading zero bytes as necessary
+
+            primeLen     length in bytes of the prime
+
+           generator     generator g, represented like prime
+
+        generatorLen     length in bytes of the generator
+
+
+APPENDIX C: PLATFORM-SPECIFIC TYPES AND CONSTANTS
+
+This appendix lists three platform-specific types and one #define'd
+constant.
+
+
+TYPES
+
+RSAREF requires three platform-specific types: POINTER, UINT2, and
+UINT4. These are defined in the file 'global.h'.
+
+
+POINTER
+
+A POINTER value is a generic pointer to memory to which any other
+pointer can be cast.
+
+Example:
+
+    typedef unsigned char *POINTER;
+
+
+UINT2
+
+A UINT2 value is a 16-bit unsigned integer.
+
+Example:
+
+    typedef unsigned short int UINT2;
+
+
+UINT4
+
+A UINT4 value is a 32-bit unsigned integer.
+
+Example:
+
+    typedef unsigned long int UINT4;
+
+
+#DEFINE'D CONSTANTS
+
+RSAREF requires one #define'd constant: PROTOTYPES. This is defined
+in the 'makefile' on the C compiler command line.
+
+PROTOTYPES indicates the form that C function declarations are to
+take. If PROTOTYPES is nonzero, declarations take the form
+
+    type function (type, ..., type);
+
+Otherwise declarations take the form
+
+    type function ();
+
+
+APPENDIX D: ENCRYPTION ALGORITHMS AND IDENTIFIERS
+
+This appendix lists message-digest and data encryption algorithms and
+their identifiers.
+
+
+D.1 Message-digest algorithms
+
+RSAREF supports two message-digest algorithms, listed here with their
+integer identifiers:
+
+              DA_MD2     MD2 message-digest algorithm [3]
+
+              DA_MD5     MD5 message-digest algorithm [4]
+
+
+D.2 Data encryption algorithms
+
+RSAREF supports four data encryption algorithms, listed here with
+their integer identifiers:
+
+          EA_DES_CBC     Data Encryption Standard [5] in cipher-block
+                           chaining (CBC) mode [6]
+
+         EA_DESX_CBC     RSA Data Security's DESX enhancement of DES,
+                           in CBC mode (this algorithm exclusive-ors
+                           with the previous ciphertext block,
+                           exclusive-ors with a secret value, encrypts
+                           with DES, then exclusive-ors with a second
+                           secret value)
+
+      EA_DES_EDE3_CBC    Three-key triple-DES in CBC mode (this
+                           algorithm exclusive-ORs with the previous
+                           ciphertext block, encrypts with one DES
+                           key, decrypts with a second DES key, then
+                           encrypts with a third DES key)
+
+      EA_DES_EDE2_CBC    Two-key triple-DES in CBC mode (like three-
+                           key, except that the first and third DES
+                           keys are the same)
+
+All four algorithms have a block size of eight bytes, and hence an
+eight-byte initialization vector. All employ the padding rules
+described in RFC 1423 [11].
+
+
+REFERENCES
+
+[1]  R.L. Rivest, A. Shamir, and L. Adleman. A method for obtaining
+     digital signatures and public-key cryptosystems. Communications
+     of the ACM, 21(2):120-126, February 1978.
+
+[2]  RSA Laboratories. PKCS #1: RSA Encryption Standard. Version 1.5,
+     November 1993. (PKCS documents are available via electronic mail
+     to <pkcs@rsa.com>.)
+
+[3]  B. Kaliski. RFC 1319: The MD2 Message-Digest Algorithm. April
+     1992.
+
+[4]  R. Rivest. RFC 1321: The MD5 Message-Digest Algorithm. April
+     1992.
+
+[5]  National Bureau of Standards. FIPS Publication 46-1: Data
+     Encryption Standard. January 1988.
+
+[6]  National Bureau of Standards. FIPS Publication 81: DES Modes of
+     Operation. December 1980.
+
+[7]  W. Diffie and M.E. Hellman. New directions in cryptography. IEEE
+     Transactions on Information Theory, IT-22:644-654, 1976.
+
+[8]  RSA Laboratories. PKCS #3: Diffie-Hellman Key-Agreement Standard.
+     Version 1.4, November 1993.
+
+[9]  J. Linn. RFC 1421: Privacy Enhancement for Internet Electronic
+     Mail: Part I: Message Encryption and Authentication Procedures.
+     February 1993.
+
+[10] S. Kent. RFC 1422: Privacy Enhancement for Internet Electronic
+     Mail: Part II: Certificate-Based Key Management. February 1993.
+
+[11] D. Balenson. RFC 1423: Privacy Enhancement for Internet
+     Electronic Mail: Part III: Algorithms, Modes, and Identifiers.
+     February 1993.
+
+[12] B. Kaliski. RFC 1424: Privacy Enhancement for Internet Electronic
+     Mail: Part IV: Key Certification and Related Services. February
+     1993.
+
+[13] RSA Laboratories. PKCS #7: Cryptographic Message Syntax Standard.
+     Version 1.5, November 1993.
+
+[14] RSA Laboratories. PKCS #10: Certification Request Syntax
+     Standard. Version 1.0, November 1993.

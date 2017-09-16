@@ -1,0 +1,29 @@
+This is version 2.5a of Snefru.  Version 2.5a implements
+the same algorithm as Versions 2.0, 2.1, 2.2, and 2.3.
+Version 2.5a allows 8 passes, and includes the necessary
+tables for 8 passes.  The use of 4 passes for production
+use is not recommended at this time.  While 4 pass Snefru
+has not been broken as of 90.11.30, the use of additional
+passes seems advisable in view of the break of 2 pass Snefru.
+Snefru reads from the standard input, hashes whatever is
+read, and writes the hash result (in hex) to the standard output.
+
+While 2.5a has not been optimized for speed, it should
+provide reasonable performance.  At the same time, the
+implementation should be relatively easy to understand.
+
+One C source file has been provided:  snefru.c
+
+To compile, simply say:
+
+cc -o snefru snefru.c
+
+The shell script "testSnefru" is provided, along with the
+correct output values in "correctSnefruOutput".  Simply execute
+testSnefru to test the hash function.
+
+To generate a version of Snefru that produces 256-bit output, say:
+
+cc -o snefru256 -DOUTPUT_BLOCK_SIZE=8 snefru.c
+
+To test this version, execute the shell file "testSnefru256".

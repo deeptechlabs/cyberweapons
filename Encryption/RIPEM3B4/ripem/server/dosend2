@@ -1,0 +1,4 @@
+#!/bin/csh
+while(1)
+sendsock
+end

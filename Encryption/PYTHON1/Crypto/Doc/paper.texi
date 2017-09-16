@@ -1,0 +1,221 @@
+\input texinfo   @c -*- Texinfo -*-
+@setfilename pctpaper.info
+@settitle Cryptography and Python
+@titlepage
+@title Cryptography and Python
+@author by A.M. Kuchling
+@page
+@end titlepage
+
+Python is one of those languages that fills many roles.  It can be used
+for prototyping, for writing actual production code, as an interface
+between software components, or as a handy tool for easily writing quick
+scripts.  For many of these purposes, cryptography can be a useful
+capability.  Some relevant modules come with the standard Python
+distribution; there's already a module supporting the MD5 hash
+algorithm, and there's a demo implementing the RSA public key system.
+However, the core distribution can't support everything, or it would
+have to come on its own CD-ROM.  The Python Cryptography Toolkit is a
+collection of extension modules for Python.  One part of the Toolkit is
+a number of different algorithms.  The list includes most of the common
+ones:
+
+@itemize @bullet
+@item        Encryption algorithms: Alleged RC4, Blowfish, DES, Diamond,
+IDEA, LOKI91, RC5, REDOC III, Sapphire.
+@item        Hash algorithms: MD2, MD4, MD5, Secure Hash Algorithm.
+@item        Public key algorithms: ElGamal, RSA, Digital Signature Algorithm.
+@end itemize
+
+An important design criterion was that, assuming the Python code to be
+carefully written, it should be trivial to replace one algorithm with
+another.  To this end, modules that implement a particular class of
+algorithm share identical interfaces, and variables parameterizing the
+module's characteristics are available to help in programming portably.
+
+Encryption algorithms transform their input data (called
+@dfn{plaintext}) in some way that is
+dependent on a variable @dfn{key}, producing @dfn{ciphertext};
+this transformation can easily be reversed, if (and, hopefully, only
+if) one knows the key.  The key can be varied by the user or
+application, chosen from some very large space of possible keys. 
+
+For block private-key encryption, the @code{new()} function is called
+with the key and an encryption mode parameter.  Block algorithms operate
+on fixed chunks of plaintext, usually 8 or 16 bytes.  In Electronic
+Codebook (ECB) mode, each block is encrypted independently of each
+other.  This is the fastest mode, but long strings of repeated
+characters in the plaintext encrypt to repeating blocks, which may be
+helpful to an adversary.  In the Cipher Block Chaining (CBC) and Cipher
+Feedback (CFB) modes, plaintext is XORed with the previous ciphertext;
+this breaks up any such repeating patterns.
+
+As an example, let us encrypt a horrifying message:
+@example
+@cartouche
+>>> import des
+>>> obj=des.new('abcdefgh', des.ECB)
+>>> plain="Guido van Rossum is a space alien."
+>>> len(plain)
+34
+>>> obj.encrypt(plain)
+Traceback (innermost last):
+  File "<stdin>", line 1, in ?
+ValueError: Strings for DES must be a multiple of 8 in length
+>>> ciph=obj.encrypt(plain+'XXXXXX')
+>>> ciph
+'\021,\343Nq\214DY\337T\342pA\372\255\311s\210\363,\300j\330\250\312\347\342I\3215w\03561\303dgb/\006'
+>>> obj.decrypt(ciph)
+'Guido van Rossum is a space alien.XXXXXX'
+@end cartouche
+@end example
+
+Hash functions produce short "fingerprints" of arbitrary data.  Unlike
+simple checksums, it is very difficult to find two messages that produce
+the same hash value, or to modify a message without changing the
+resulting hash value.  Hash functions can be used as checksums, or as
+part of a digital signature system.
+
+@example
+@cartouche
+>>> import md5
+>>> obj=md5.new()
+>>> obj.digest()
+'\324\035\214\331\217\000\262\004\351\200\011\230\354\370B~'
+>>> obj.update("This is a test message for a hashing function.")
+>>> obj.digest()
+'F\315\344~\032\234\227\2627\276\366d\255\262%r'
+>>> obj.update('\000')
+>>> obj.digest()
+'\222?:\262g\252\255\023?w\314\305~\374=6'
+@end cartouche
+@end example
+
+Public-key cryptography uses two keys; one encrypts, one decrypts.  The
+public key encrypts data, producing ciphertext that can only be
+decrypted by the private key, which is only known to the legitimate
+owner (we hope).  The public key can then be listed in a directory or
+handed out to correspondents, who can then send the owner secure
+messages without having to arrange a key beforehand.  Also, digital
+signatures can be created by decrypting data with the private key;
+anyone can then encrypt the data with the corresponding public key and
+verify that the signature and the message match. 
+The PCT allows the use of various public-key systems.
+
+As an example, let us generate an RSA private key to sign a text string
+@code{plaintext}.  (Actually, we will sign a hash of the plaintext.)
+@code{randfunc()} is a random number generation function (not shown) 
+that accepts a single integer parameter @var{N}, and returns an
+@var{N}-byte string of random data; it's used in generating the prime
+numbers required for an RSA key.  A class for cryptographically strong
+random number generation is provided with the Toolkit, or you can
+implement your own technique.
+
+@example
+@cartouche
+>>> import md5, RSA
+>>> RSAkey=RSA.generate(384, randfunc)   # This will take a while...
+>>> hash=md5.new(plaintext).digest()
+>>> signature=RSAkey.sign(hash, "")
+>>> signature   # Print what an RSA sig looks like--you don't really care.
+('\021\317\313\336\264\315' ...,)
+>>> RSAkey.validate(hash, signature)     # This sig will check out
+1
+>>> RSAkey.validate(hash[:-1], signature)# This sig will fail
+0
+@end cartouche
+@end example
+
+Change @code{md5} to @code{SHA} or @code{MD4}, and everything will work
+identically.  
+
+The PGP module is only partially implemented; currently, public or
+private PGP keys can read from a file or a string, and be written out
+again.  Message support is not yet implemented, but the module is useful
+for manipulating keyrings; for example, a simple script to
+alphabetically sort PGP keyrings by user ID is included with the
+Toolkit.
+
+@section Future plans
+
+In future, adding algorithms will be of less importance in development.
+There are two classes of cryptographic algorithms: the innumerable ones
+that are proposed, and the few ones that are actually used.  New
+algorithms are constantly being invented, but relatively few of them
+become part of the security engineer's toolchest, and there's no point
+in trying to implement every single one of them.  There are a few that
+should still be implemented: the only one remaining on my list at this
+point is the Haval hashing algorithm.
+
+Afterwards, I will change my focus to optimizing and clarifying the
+existing C and Python code, and implementing some interesting protocols.
+There are many protocols that could be chosen.  As the use of the
+Internet for commercial purposes spreads, network security becomes more
+important as more and more financial data and proprietary information is
+transmitted across the network.  There is no single standard for secure
+Internet communications yet.  Instead, there are various standards being
+proposed, and it is probably best that Python be able to use them all.
+I am not currently planning to work on any of the following, though I'd
+certainly be willing to provide assistance.
+
+@itemize @bullet
+@item Kerberos: Kerberos is an identification and
+authentication protocol developed at MIT and described in RFC 1510,
+designed to operate in an environment of insecure individual
+workstations and a few trusted servers.  The Kerberos protocol is fairly
+complex and specialized, so it may not be worth the effort of actually
+implementing the RFC in Python.  Rather, it would be much simpler to
+write a wrapper module around the appropriate library routines for
+Kerberos version 4 or 5.
+
+@item Netscape's Secure Socket Layer: After glancing at the
+specification, SSL doesn't seem to be too difficult to implement.
+However, a complete implementation is probably impossible, because  it
+uses the RC2 encryption algorithm, which is proprietary to RSA Data
+Security, Inc., and has not been publicly described.  Thus, any Python
+implementation will not be able to fully interoperate with official
+implementations.
+
+@item Secure HTTP: SHTTP is yet another proposed standard, that allows
+more freedom in the algorithms used.  Version 1.1 of the specification
+is available at http://www.eit.com/projects/s-http/shttp.txt, and has
+been submitted as an Internet draft.  Because of SHTTP's more open
+and flexible nature, I'd prefer that it be implemented first.  Why
+contribute to making SSL a de facto standard when we'll probably never
+be able to fully implement it?
+@end itemize
+
+There are also Python-specific applications for cryptography.  One of
+the demo scripts included with the Toolkit implements a crude version of
+a secure import statement.  Armed with a public key and a list of
+signatures (which are assumed to be magically available and known to be
+correct), any compiled module is run through a hash function before
+being imported.  The hash value is then checked against the
+corresponding signature; if it fails, an ImportError exception is
+raised.  This has obvious relevance to implementing distributed systems
+and agents in Python.
+
+The next release of the Toolkit is 0.0.3, and includes the Digital
+Signature Algorithm and improved documentation.
+Hopefully, the encumbered modules will be reimplemented and optimized as
+well.  I will also tackle implementing the issues on my wish list, which
+leads naturally to...
+
+@section My wish list
+
+There are some enhancements to Python that would improve the Toolkit by
+making it simpler or faster.  
+
+@itemize @bullet
+@item The @code{struct} module does not yet allow specifying the byte
+order, nor does it support character arrays, C strings, or converting a
+string to a Python long integer.  This would really speed up the PGP
+module, and might make it almost as fast as PGP itself, which is written
+purely in C.
+@item Your integer arithmetic routines can never be too fast.  Python's
+long integers are reasonably speedy, but I intend to benchmark various 
+arbitrary-precision integer libraries, and see which comes out on top.
+@end itemize
+@bye
+
+

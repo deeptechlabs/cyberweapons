@@ -1,0 +1,19 @@
+#!/usr/local/bin/perl -w -I. -I.. -I/home/TheCrypt/perlmod2
+
+use strict;
+use POSIX;
+
+use PGP::PublicKeyRing;
+
+print POSIX::ctime(time());
+my $kr = PGP::PublicKeyRing->open("/u/data/keys/pubring.pgp");
+ref $kr || die $kr;
+
+print "Searching ...\n";
+
+print POSIX::ctime(time());
+
+my $key;
+my $key = $kr->get('[Ss]mith');
+print $key->asString(), "\n";
+print POSIX::ctime(time());

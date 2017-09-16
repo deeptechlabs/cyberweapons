@@ -1,0 +1,82 @@
+                          RDEMO Test Scripts
+
+                           RSA Laboratories
+                            March 21, 1994
+
+                             Version 2.0
+
+    Copyright (C) 1991-4 RSA Laboratories, a division of RSA Data
+                 Security, Inc. All rights reserved.
+
+
+RDEMO comes with several test scripts that test RSAREF cryptographic
+operations of various key sizes.
+
+The test scripts are: '508.in', '512a.in', '512b.in', '767.in' and
+'1024.in'. The scripts consist of RDEMO commands. To exercise a
+script, redirect RDEMO's input to the script.  For example, on a UNIX
+or DOS system you would run the command
+
+     rdemo < 508.in
+
+to exercise the test script '508.in'. Use the '-s' flag to suppress
+RDEMO's prompts.
+
+The scripts work with a number of input files. Each script also
+produces output files that you can compare against reference files
+supplied with RDEMO. Both the scripts and the reference files are
+stored in the 'rdemo/scripts' subdirectory.
+
+See the file 'rdemo.txt' in the 'doc' subdirectory for more
+information on the demonstration program.
+
+
+'508.in' script
+
+     1.   Generates a 508-bit RSA key pair, writing the key to
+          '508.key'.
+
+     2.   Signs 'file' with private key and MD5 message-digest
+          algorithm, writing signature to '508-5.sig'.
+ 
+     3.   Verifies signature.
+
+     4.   Seals 'file' in envelope with public key and DES-CBC
+          data encryption algorithm, writing encrypted file to
+          '508-1.env', encrypted data encryption key to '508-1.key',
+          and initialization vector to '508-1.iv'.
+
+     5.   Opens envelope and displays result: should be "Envelope
+          opened."
+
+'512a.in' script
+
+     1.   Signs 'file' with first built-in private key and MD2
+          message-digest algorithm, writing signature to '512a2.sig'.
+
+     2.   Verifies signature.
+
+     3.   Repeats (1) and (2) with MD5. Signature in '512a5.sig'.
+
+     4.   Seals 'file' in envelope with first built-in public key and
+          DES-CBC data encryption algorithm, writing encrypted file to
+          '512a1.env', encrypted data encryption key to '512a1.key',
+          and initialization vector to '512a1.iv'.
+
+     5.   Opens envelope and displays result.
+
+     6.   Repeats (4) and (5) with DESX-CBC, DES-EDE2-CBC, and
+          DES-EDE3-CBC. Files: '512ax.*', '512a2.*', '512a3.*'.
+
+     7.   Repeats (3-5) on 'bigfile'. Result should be "Envelope
+          opened \ This is a big file", repeated a few times.
+
+'512b.in'
+
+     Same as '508.in', except that '508' becomes '512b', and second
+     built-in key pair is used, rather than generating a new one.
+
+'767.in' and '1024.in'
+
+     Same as '508.in', except that '508' becomes '767' or '1024';
+     new key pairs are generated in both cases.

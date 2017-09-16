@@ -1,0 +1,24 @@
+I missed something for the a.out format assember :-(
+
+*** asm/dx86unix.cpp.orig    Tue Jan 14 15:21:49 1997
+--- asm/dx86unix.cpp Tue Jan 14 15:24:04 1997
+***************
+*** 8,13 ****
+--- 8,14 ----
+  #define des_encrypt   _des_encrypt
+  #define des_encrypt2  _des_encrypt2
+  #define des_encrypt3  _des_encrypt3
++ #define des_decrypt3  _des_decrypt3
+  #define ALIGN         4
+  #endif
+  
+***************
+*** 17,22 ****
+--- 18,24 ----
+  #define des_encrypt   _des_encrypt
+  #define des_encrypt2  _des_encrypt2
+  #define des_encrypt3  _des_encrypt3
++ #define des_decrypt3  _des_decrypt3
+  #define ALIGN         4
+  #undef SIZE
+  #undef TYPE

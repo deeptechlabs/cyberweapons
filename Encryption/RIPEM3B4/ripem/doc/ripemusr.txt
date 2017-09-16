@@ -1,0 +1,2124 @@
+RIPEM 3.0 User Guide
+
+By Jeff Thompson and Mark Riordan (mrr@ripem.msu.edu)
+
+Last revised 9/17/97; Converted to HTML August 1997
+
+NOTICE: No representations are made concerning either the merchantability
+of this software or the suitability of this software for any particular
+purpose. It is provided "as is" without express or implied warranty of any
+kind.
+
+License to copy and use this software is granted provided that these
+notices are retained in any copies of any part of this documentation and/or
+software.
+
+CONTENTS
+
+   * INTRODUCTION
+        o What is RIPEM?
+        o Public Key Encryption
+        o Privacy-Enhanced Mail
+   * ABOUT RIPEM
+        o What's New in RIPEM 3.0
+        o What Was New in RIPEM 2.0 and 2.1
+        o Platforms Supported
+        o Licensing
+        o How to Obtain RIPEM
+        o Caveats
+        o Credits
+   * USING RIPEM
+        o Usage Overview
+        o The RIPEM Home Directory
+        o Generating a Keypair
+        o Managing Private Key Components
+             + Changing the Key to Your Private Key (Changing your
+               password)
+        o Certificates
+             + CRLs
+             + Certificate statuses
+             + CRL OUT OF SEQUENCE status
+        o Self-Signed Certificates
+        o Certificate Chains
+             + Finding the "best" chain
+             + Setting chain length allowed
+        o RIPEM Preferences
+             + The preferences signature method
+             + Preventing the replay attack
+        o Encrypting a Message
+             + Encrypting a Message Specifying Input and Output Files (-i
+               and -o)
+             + Specifying Recipients and Processing Mail Headers (-r and
+               -h)
+        o Decrypting a Message
+        o Receiving in Validation Mode
+        o Getting a Persona Certificate
+        o Sending and Receiving CRLs
+        o Advanced Usage Specifying Encryption Algorithm (-A)
+             + Specifying Debug Mode (-D and -Z)
+             + Specifying Encryption Mode (-m)
+             + Specifying Message Format (-M)
+             + Specifying Your Username (Email Address) (-u)
+             + Specifying the Key to Your Private Component (-k, -K)
+             + Specifying Random Number Sources (-R, -F, -C)
+             + Specifying Recipient Options (-T)
+             + Specifying Binary Message File (-B)
+             + Specifying External Message File (-x) for detached
+               signatures
+             + Specifying Digest Algorithm (-a)
+        o Using UNIX Mail Programs and Utilities
+             + Setting Up Your Environment
+             + Creating a RIPEM Public Key
+             + Encrypting an Email Message Using "mail"
+             + Decrypting an Email Message Using "mail"
+             + Encrypting an Email Message Using "Mush"
+             + Decrypting an Email Message Using "Mush"
+             + Using RIPEM with ELM's MIME Features
+             + Using RIPEM with the MH Mailer
+             + Using RIPEM with EMACS
+        o Upgrading from RIPEM 1.2
+             + RIPEM home directory required
+             + -P and -S are obsolete
+             + Getting REVOCATION UNKNOWN certificate status
+        o Upgrading From RIPEM 1.1
+        o Managing Keys According to RIPEM 1.1 and Earlier
+             + Key Distribution via the RIPEM Internet Key Server
+                  + Key Server Description and Limitations
+                  + Registering a Key via the Key Server
+                  + Obtaining Keys from the Key Server: Live Access
+                  + Obtaining Keys from the Key Server: Email-Only Access
+             + Key Distribution via the Internet Finger Program
+             + Key Distribution via Flat Files
+             + Automatic Key Distribution via RIPEM Headers
+
+Introduction
+
+What is RIPEM?
+
+RIPEM (Riordan's Internet Privacy-Enhanced Mail, pronounced RYE-pehm) is a
+public key encryption program oriented toward use with electronic mail. It
+allows you to generate your own public keypairs, and to encrypt and decrypt
+messages based on your key and the keys of your correspondents. RIPEM is
+free, but each user is required to agree to a license agreement which
+places some limitations on its use.
+
+RIPEM also comes with RCERTS, a menu-driven utility for managing
+certificates and CRLs.
+
+This document is meant to instruct new users on the basic use of RIPEM and
+RCERTS. It does not replace the Unix man page ripem.man, also distributed
+with RIPEM. The man page describes all RIPEM options in reference format;
+some obscure options are discussed only in the man page. See the file
+changes.txt in the RIPEM distribution for a discussion of the changes
+between RIPEM 3.0 and earlier versions.
+
+Questions should be sent to the Usenet newsgroup alt.security.ripem.
+
+Public Key Encryption
+
+Public key encryption, a fairly recent concept, is an encryption scheme in
+which messages are encrypted and decrypted with pairs of keys. One
+component of a user's keypair is used for encryption; the other is used for
+decryption. Thus, public key cryptography is sometimes referred to as
+asymmetric cryptography. Though both halves of the keypair are computed at
+the same time, neither can be derived from the other. (However, for
+convenience, a copy of the public key information is usually kept with the
+private key.)
+
+This arrangement allows each correspondent to publish one half of his
+keypair (the encryption key, public key, or public component), keeping
+secret only the decryption half, or private component. Users wishing to
+send a message to, say, Alice, simply consult a non-secret directory of
+public components to find Alice's public key component. They encrypt their
+messages to Alice using her public key. Because only Alice knows her
+private component, only she can decrypt any of these messages to her. And
+none of the users corresponding with Alice need ever have first exchanged
+any secret information with her. Also, Alice can encrypt using her private
+component to produce a signature. Users can decrypt the signature using
+Alice's public component. Because only Alice knows her private component,
+only she could have produced the signature and so users trust that it came
+from her, just as if she put a handwritten signature on a document.
+
+Each user needs keep secret only his/her own private component. Contrast
+this with traditional secret-key, or symmetric, cryptography. In a group of
+N correspondents, each user must keep track of N-1 secret keys.
+Furthermore, the total number of secret keys required for traditional
+cryptography is (N)*(N-1)/2, much larger than the N keys required by public
+key cryptography.
+
+Thus, public key cryptography's value lies in improved key management,
+especially for large numbers of correspondents. However, for the value of
+public key cryptography to be realized, there must be an effective way for
+individual users to widely advertise their public key components. This
+problem is solved with certificates, which are explained later on.
+
+Privacy-Enhanced Mail
+
+RIPEM provides the capabilities of Privacy-Enhanced Mail (PEM) as described
+by Internet RFC's 1421-1424 and also the capabilities of the Public Key
+Cryptography Standards (PKCS) as described by PKCS #7 and #10 published by
+RSA Data Security, Inc. RIPEM uses the concept of a certificate, a document
+which guarantees that you have the correct public key of a correspondent.
+RIPEM supports a direct trust as well as hierarchical certification models.
+In direct trust, users certify each other directly without needing any
+third parties. In a hierarchy, you certify a user as in direct trust, but
+you also indicate that you trust certificates that user makes make for
+others. In this way you can "extend" trust to a wider range of users
+without having to make certificates for all of them.
+
+As specified in the standards, RIPEM generates a pseudo-random message key,
+and uses this key to encipher the message using a traditional symmetric-key
+encryption algorithm. In the current implementation of RIPEM, the DES (Data
+Encryption Standard) algorithm in one of two different modes. RIPEM then
+enciphers the message key using the RSA (Rivest-Shamir-Adleman) public key
+algorithm, and includes the enciphered message key with the message.
+Although the actual message text is never enciphered with a public key
+algorithm, the effect is the same. The advantage of this hybrid approach is
+performance-related: DES and other typical symmetric cryptosystems are
+typically thousands of times faster than public key systems.
+
+RIPEM also "signs" the message by computing a checksum or hash function of
+the message plaintext, and encrypting this hash value with the sender's
+private key component. (Private RSA key components are usually used for
+decryption of messages encrypted with the public component, but in fact the
+reverse process also works.) Rivest's MD5 message digest algorithm is used
+for the hash function. This signature is verified by the recipient, to
+ensure that the message really was from the purported sender. The recipient
+computes her own message digest of the message after decrypting the
+message. The recipient then decrypts the encrypted message digest using the
+sender's public key and checks it against the recomputed digest. If the two
+match, the message must have been encrypted by the sender, since only the
+sender knows his private component.
+
+The results of these computations--the encrypted message key, the encrypted
+message, the signature (encrypted hash value), and various pieces of
+control information--are formatted into lines of ASCII text suitable for
+inclusion into an electronic mail message.
+
+About RIPEM
+
+What's New in RIPEM 3.0
+
+   * The main new feature in RIPEM 3.0 is support for the Public Key
+     Cryptography Standards (PKCS). This allows compliance with S/MIME and
+     other PKCS-based messaging. This includes PKCS signed and/or enveloped
+     messages, "certs-and-CRLs-only" messages and PKCS certification
+     request messages.
+   * Add -G command line option which behaves like -g but allows you to
+     create any distinguished name when you generate your keypair.
+   * In RCERTS, added the ability to export your certificate database and
+     send it to another user in case they want the certificates you have
+     issued.
+
+What Was New in RIPEM 2.0 and 2.1
+
+   * The main new feature in RIPEM 2.0 and 2.1 over versions before 2.0 was
+     certificate chains. These allow you to participate in existing
+     certification hierarchies and develop extended trust for the public
+     keys of your correspondents. RIPEM includes support for certificate
+     revocation lists (CRLs) and a flexible certificate chain finding
+     algorithm.
+   * The new RCERTS utility lets you be an issuer, to select which
+     certificate chains you trust, publish your own CRLs and manage
+     certificates.
+   * RIPEM can now produce PEM-compliant messages which can be read by
+     other applications which follow RFC 1421.
+   * More support is provided for the RIPEM home directory. RIPEM will
+     create the directory if it doesn't exist and will use a default if one
+     is not specified. (Use of the RIPEM home directory is now required.
+     See Upgrading from RIPEM 1.2 below for more details.)
+   * Utilizing the new RSAREF 2.0 cryptographic library, the limit on
+     message size has been removed. (There is one case where message size
+     is limited. See caveats below.)
+   * RIPEM is based on the new RIPEM library application programming
+     interface (API). Any application, especially a user mail agent, can
+     now call the RIPEM library API to add security to its messages. Also,
+     using the RIPEM library, an application can process messages not only
+     in files, but in memory buffers, on the clipboard, anywhere. The RIPEM
+     library API is documented separately in ripemapi.doc.
+
+Platforms Supported
+
+RIPEM runs on MS-DOS, Macintosh, OS/2, Windows NT, and a variety of Unix
+systems, including NeXTStep, SunOS, Sun Solaris 2.1, DEC ULTRIX, IBM AIX,
+HP/UX, SGI Irix, MIPS RISC/os, Motorola System V/88, Apollo, SCO Unix,
+Jolitz's 386BSD, Linux, ESIX, and others. Ports to other platforms are
+anticipated. Some ports of RIPEM do not have all the functionality of the
+Unix version; in particular, some versions do not implement direct network
+access to the RIPEM key server.
+
+Licensing
+
+The source code to RIPEM itself is in the public domain. However, because
+RIPEM was developed using RSA Data Security's RSAREF toolkit, use of RIPEM
+requires an RSAREF license. A copy of this license is included in RIPEM
+distributions, and users of RIPEM should read this license before running
+the program. The author of RIPEM believes that the current RSAREF license
+allows free personal use of RIPEM by citizens of the United States and
+Canada. Commercial use is forbidden. However, this personal interpretation
+has no legal standing, and RIPEM users are urged to read the RSAREF license
+agreement themselves. Note: persons wishing to redistribute RIPEM should
+consider relevant US government export restrictions.
+
+How to Obtain RIPEM
+
+RIPEM is distributed via anonymous FTP from rsa.com. RIPEM's home base, on
+which the most recent version can always be found, is the site
+ripem.msu.edu. RIPEM is distributed via non-anonymous FTP from this site.
+To comply with export restrictions, cryptology-related files on this server
+cannot be obtained via anonymous FTP. To apply for FTP access to
+ripem.msu.edu, telnet to ripem.msu.edu, login as ripem (no password
+required) and follow the instructions.
+
+Note: You must know your hostname first. This is extremely
+important--experience distributing RIPEM to date has shown that many users
+do not know the canonical Internet hostname of their computer. To learn
+your hostname, FTP to ripem.msu.edu and login as anonymous. The system will
+greet you with your hostname.
+
+During the signup process, you will be asked to state:
+
+1. Your citizenship (must be USA or Canadian)
+
+2. Your willingness to comply with relevant export laws.
+
+3. Your willingness to comply with relevant software license terms. (You
+should get and read the file "rsaref-license.txt" on this host so you know
+what you are agreeing to if you get RIPEM.)
+
+4. The "canonical" Internet domain name of your host
+
+5. The country in which your host resides.
+
+After you answer these, you are issued a special FTP username and password.
+This username will work only from the hostname you specified in your
+message.
+
+Once you have retrieved RIPEM, you are free to redistribute it, subject to
+export restrictions and RSAREF license terms. The complex distribution
+mechanism described above applies only to the site ripem.msu.edu, due to
+local site restrictions.
+
+
+Caveats
+
+Text files only. RIPEM encrypts only text-based messages; "binary" messages
+must be printably encoded (for instance, with uuencode) before being
+encrypted.
+
+1023-character lines. The lines of text in plaintext messages processed by
+RIPEM must be less than 1024 characters long. (This restriction is borrowed
+from Internet RFC's on electronic mail and privacy-enhanced mail.)
+
+Message size limits. If RIPEM is used to encipher a PEM-compliant message
+which is read from stdin, the message text must fit entirely into the
+central memory of your computer. (There is no restriction for PKCS.) This
+is because, to make a PEM-compliant message, the text must be read twice
+and stdin cannot be rewound. This is unlikely to be a problem on most
+workstations and larger computers, but may be a problem for some PC users.
+The vanilla MS-DOS version of RIPEM restricts these messages to less than
+48,000 characters. A message which is enciphered from a file using the -i
+option, or any message which is deciphered can be of any length.
+
+Simple "filter" only. RIPEM acts only as a "filter": it simply reads an
+input source and produces output. RIPEM is not capable of formatting or
+delivering electronic mail messages. In fact, although RIPEM has some
+features to facilitate its use with electronic mail, it need not be used in
+conjunction with electronic mail at all. For use with electronic mail,
+RIPEM requires an external mail program; for instance, the Unix mail
+program.
+
+No guarantees. As RIPEM is free software, it should not be surprising that
+it comes with no guarantees of any type.
+
+
+Credits
+
+RIPEM was written primarily by Mark Riordan, but nearly all of the
+cryptographic technology comes from the RSAREF toolkit by RSA Data
+Security, Inc. Much-appreciated contributions were made by Mark Henderson,
+Richard Outerbridge, Greg Onufer, Marc VanHeyningen, Mark Windsor, and
+others. The Macintosh version of RIPEM was written by Ray Lau. RIPEM 2.0
+certification extensions, the RIPEM API, and RIPEM 3.0 PKCS support were
+written by Jeff Thompson.
+
+
+Using RIPEM
+
+Usage Overview
+
+Using RIPEM generally requires the following steps: generating a keypair,
+communicating the public component of your key to correspondents,
+encrypting messages, and decrypting messages. The default PEM-compliant
+messages are used as examples throughout this manual, however the concepts
+directly apply to PKCS-compliant messaging.
+
+RIPEM has a bewildering array of command line options. However, most of
+them are not needed for ordinary use. Also, RIPEM looks at certain
+environment variables to determine what to do in the absence of certain
+command line options. Environment variables are named entities attached to
+your session which have values which you can set, either interactively or,
+more commonly, automatically at login time. For instance, a Unix user
+running the C Shell might include a line like
+
+setenv RIPEM_USER_NAME fred@snark.edu
+
+in his/her .cshrc file, while an MS-DOS user would accomplish the same
+thing by including
+
+set RIPEM_USER_NAME=fred@snark.edu
+
+in the AUTOEXEC.BAT file.
+
+For discussion of individual environment variables, see the sections below
+and the RIPEM man pages. However, there is one environment variable of
+general interest: the variable RIPEM_ARGS can be given the value of options
+using exactly the same syntax as used in command line parameters. Conflicts
+between parameters specified both in RIPEM_ARGS and on the command line are
+resolved in favor of the command line.
+
+Here is a quick, simplified run-through of sample RIPEM usage:
+
+To generate a keypair for username fred@snark.edu, placing the public
+component and the private component in the default RIPEM home directory:
+
+ripem -g -R eks
+
+This assumes you have set the RIPEM_USER_NAME environment variable as
+above. It is a good idea to set this environment variable since RIPEM
+always needs it.
+
+This will create the RIPEM home directory if it doesn't exist. (Note: on
+some less common platforms, RIPEM may not know how to create a default
+RIPEM home directory. In this case you must use -H to specify the home
+directory and make sure to create it before using RIPEM.)
+
+Assume at this point that you have collected a number of correspondents'
+public components by validating messages from them using -v, and that the
+RIPEM_USER_NAME environment variable is set.
+
+To encrypt a message to recipient@bighost.edu, whose public key has already
+been validated and can be found in the default RIPEM home directory, with
+the input message in mymessage, and the encrypted output to be placed in
+cipher.out:
+
+ripem -e -r recipient@bighost.edu
+
+-i mymessage -o cipher.out
+
+To decrypt a message to you, reading from the file cipher.out and placing
+the decrypted message in the file plain.out:
+
+ripem -d -i cipher.out -o plain.out
+
+
+The RIPEM Home Directory
+
+Each of the RIPEM operations uses a home directory. The files in the RIPEM
+home directory contain your private key, your self-signed certificate which
+identifies you, the certificates you create to validate other users, and
+other information. You can specify the RIPEM home directory with the -H
+option. You may also set the RIPEM_HOME_DIR environment variable.
+
+If you do not specify the RIPEM home directory, RIPEM will use a default,
+which is ~/.ripemhome for Unix, C:\RIPEMHOM for MS-DOS, and RIPEM Home in
+the system preferences folder for Macintosh. Other platforms may be
+supported in future releases. (If a default is not specified for your
+platform, you must specify the RIPEM home directory, which has already been
+created, using the -H option or the RIPEM_HOME_DIR environment variable.)
+
+
+Generating a Keypair
+
+Before you can use RIPEM, you must generate your own keypair. To do this,
+you must run RIPEM with the -g (for generate) option, and specify sources
+of pseudo-random information that RIPEM can use to create a unique keypair
+for you. RIPEM can obtain pseudo-random information from the running
+system, from characters you type at the keyboard, from a file, and from the
+command line. The first two options are generally the most useful.
+
+Because keypairs are typically left unchanged for long periods of time--a
+year or more--it is very important that the private component of your
+keypair be kept secret. For this reason, RIPEM stores private key
+components only in encrypted form. (The key is encrypted using DES in CBC
+mode, with a pseudo-random "salt" added to the key.) When generating a
+keypair, RIPEM asks you for a key to be used to encrypt the private key
+component. This secondary key will be needed whenever you use RIPEM
+subsequently. It is critical that this key-to-a-key be chosen carefully,
+and that you remember it. If you forget the key to your private key
+component, your public key is worthless and unusable. The key to your
+private key can be up to 255 characters long. (This length limitation is an
+arbitrary implementation detail; RIPEM takes a hash function of the
+password you type before actually using it to encrypt the private
+component.)
+
+A typical invocation of RIPEM to generate a keypair is:
+
+ripem -g -R eks
+
+This example assumes you have set the RIPEM_USER_NAME environment variable
+and are using the default RIPEM home directory. This call requests RIPEM to
+generate a keypair (-g). It identifies you according to the
+RIPEM_USER_NAME; this information is placed in the output files. RIPEM
+creates a self-signed certificate and adds it to the file pubkeys in your
+RIPEM home directory. The file pubkeys contains all the certificates which
+RIPEM creates using your private key as well as issuer certificates you get
+from other users. The self-signed certificate contains your generated
+public key and your name, and is signed with your generated private key.
+Note that generate also displays the digest of your self-signed certificate
+which you should record for later use. (See below for more on self-signed
+certificates.) The private (or secret) component is placed in the file
+privkey in the RIPEM home directory. RIPEM will prompt you (twice) for an
+encryption password before writing to this file. The -R eks option means
+that to obtain a pseudo-random data for key generation, RIPEM will use the
+entire command line, will prompt you at the keyboard for a pseudo-random
+string, and will also query the system for pseudo-random information before
+generating the keypair.
+
+RIPEM identifies your key by your username, which is specified by the -u
+option. If you omit the -u option, RIPEM will attempt to determine your
+username by taking the value of the environment variable RIPEM_USER_NAME
+or, if that is not present, by querying the running system. It is best to
+specify your username in a form that others will be able to use as an email
+address. For instance, in the above example, fred@snark.edu is a better
+username than just fred, because it is more readily used by correspondents
+on other hosts. If your host is known on the network by several different
+names, or if you ordinarily use several different computers
+interchangeably, it may be safer to explicitly specify your username to
+RIPEM, rather than have it to figure out the email address from the running
+system.
+
+Note that not just a username, but a full distinguished name is needed for
+the self-signed certificate. With the -g option, RIPEM uses the username as
+the common name in a distinguished name for the Persona certification
+authority. If your RIPEM username is fred@snark.edu, then your full
+distinguished name is common name = fred@snark.edu, org unit = Persona
+Certificate, organization = RSA Data Security, Inc., country = US. However,
+you can use -G instead of -g to interactively create a distinguished name
+other than a Persona Certificate.
+
+When RIPEM generates your keypair, it also uses your new private key to
+create a certificate revocation list (CRL) and adds it to the file crls in
+your RIPEM home directory. Your CRL initially contains no revocation
+entries. (See below for more on CRLs.) RIPEM also creates your initial
+certification preferences and places them in the file preferen in you RIPEM
+home directory. Initially, you do not allow others to create certificate
+chains - only direct trust is allowed. (See below for more on certification
+preferences.)
+
+By default, RIPEM generates keypairs roughly 516 bits in size. The author
+of RIPEM believes that this size is more than adequate for most purposes.
+However, the -b parameter is available for users who wish to generate
+larger keys. Specify -b bitsize to generate a key of size bitsize bits;
+bitsize must be between 512 and 1024, inclusive. Large keys are slower to
+generate as well as to subsequently use for encryption.
+
+Generating a keypair is much slower than encryption or decryption. On a 386
+PC-class computer, be prepared to wait several minutes for the key
+generation to complete if the key size is large.
+
+Note that the first several bytes of all RIPEM keys are the same. This is
+due to RIPEM's use of OSI Distinguished Encoding Rules and associated key
+identifying strings to encode keys. It does not mean that the public keys
+generated are numerically similar.
+
+
+Managing Private Key Components
+
+Unlike public key components, private key components are stored in flat
+files only. Typically, a given user will have only one RIPEM key, and its
+private component will be kept by itself in the RIPEM home directory
+originally specified during key generation.
+
+RIPEM will need to consult this file to determine your private key
+component. RIPEM searches for your private key in the following order:
+
+   * In the file privkey in the RIPEM home directory.
+   * In the file given by the -s (for secret key component) command line
+     argument. If you specify -s myprivatekey on the RIPEM command line,
+     RIPEM will search myprivatekey as the flat file of private keys.
+   * In the file given by the RIPEM_PRIVATE_KEY_FILE environment variable.
+
+Note: RIPEM versions before 2.0 would also search a default file. On Unix
+this was ~/.ripemprv and on MS-DOS it was \RIPEMPRV. If you were relying on
+this default name, you must either specify it with -s or the environment
+variable, or better yet, move it to the file privkey in the RIPEM home
+directory.
+
+Because the private key component file generated by ripem -g identifies
+your key by your email address, it is possible to create a database of
+private keys by concatenating the generated private key files created by
+RIPEM. RIPEM uses only the private component that corresponds to your
+currently-specified username. This may be useful if, for some reason, you
+wish to maintain multiple public keys, identified by different email
+aliases. Also, because the private key components are encrypted, it is
+possible to maintain a publicly accessible file of private key components
+without great loss of security. However, it is generally best for each user
+to have exactly one public key, and for its private component to be kept in
+its own file, reasonably secured against access by others.
+
+
+Changing the Key to Your Private Key (Changing your password)
+
+You can change the key to your private component (also called your
+password) by using the -c option. This tells RIPEM to read your current
+private key file, decrypt it with your current key, prompt you for a new
+key, reencrypt your private component with the new key-to-the-key, and
+write out a new private component file. The old private key file is
+specified as described above. The private key file in the home directory is
+rewritten "in place". Thus, the sequence:
+
+$ ripem -c
+
+Enter password to private key:
+
+Enter new password to private key:
+
+Enter again to verify:
+
+reads the encrypted private key from privkey in the default RIPEM home
+directory and changes it to the same private component encrypted with a new
+key.
+
+Note: RIPEM versions before 2.0 allowed the -S option to specify the output
+file for the re-encrypted private key. RIPEM now always writes the output
+to privkey in the RIPEM home directory.
+
+Note that the -c option changes neither the private component nor the
+public component of your public key. If you believe that the key to your
+private component has been compromised, it is probably better to change
+your public key (by creating a new one) than to simply change the key to
+your private key. The -c option also displays the digest of your
+self-signed certificate. For more on self-signed certificates, see below.
+
+When you change your password with the -c option, RIPEM also re-signs your
+preferences using the new password. See RIPEM Preferences below for more
+information.
+
+If you are upgrading from RIPEM version 1.1 or earlier, the -c option will
+create a self-signed certificate for you. See Upgrading From Version 1.1
+below.
+
+Certificates
+
+A potential problem with public key cryptography is this: If you get a
+public key for some user, such as Alice, in order to encrypt a message for
+her or to verify a signature from her, how do you know that public key you
+have really belongs to her? If someone else could substitute their own
+public key, the message you encrypt could be read by them and they could
+send signed messages to you, impersonating Alice. This problem is solved by
+certificates.
+
+A certificate itself is a short message containing, among other things, the
+name and public key of a user (called the subject) as well as the name of a
+user (called the issuer) which is vouching that the subject really owns
+that public key. The certificate itself is signed by the issuer using their
+own private key. Note that if you have the public key of the issuer, and
+you trust that one public key, then you can use it to check the signature
+on any certificate that the issuer creates for other users, giving you
+trustworthy access to all those other public keys.
+
+You can also make use of certificates which you yourself issue for other
+users. When you develop trust in the public key of another user, you can
+make a certificate with yourself as the issuer and the other user as the
+subject. When you place certificates like this in your public key file, it
+is a safe way to store the public keys that you trust. Since the
+certificates are signed, no one can alter the public key or the name of the
+subject without breaking the signature on the certificate. This is the
+method RIPEM uses. It is called "direct trust" since you create
+certificates directly for users which you trust, and is discussed more in
+the next section. Certificate chains, which allow you to use a certificate
+with someone besides yourself as the issuer, are discussed later.
+
+Besides a subject's name and public key and the issuer's name, a
+certificate has a validity period which tells when the issuer created the
+certificate and how long the issuer believes the subject's public key can
+be trusted. Validity periods are usually one or two years. A certificate
+also has a serial number which the issuer generates when the certificate is
+created. The combination of issuer name and serial number always uniquely
+identifies any certificate. (RIPEM actually uses the MD5 digest of the
+information in the certificate as the serial number since this digest will
+always be unique.)
+
+CRLs
+
+A certificate can be revoked by the issuer for various reasons, such as if
+the subject's private key is compromised. The issuer revokes the
+certificate by placing the certificate's serial number on a certificate
+revocation list (CRL) which is signed document that the issuer periodically
+publishes. This is similar to the "hot list" that a credit card company
+distributes. To revoke a credit card, the company does not recall the
+credit card. Rather it places the number of the credit card on a hot list
+which any merchant must check before trusting a credit card. A CRL, like a
+certificate, is signed with the issuer's private key and has a validity
+period. Usually, the validity period is only a few months and the issuer
+publishes a fresh CRL near the end of the period. Once a certificate is
+placed on a CRL it is not removed until the certificate's validity period
+expires.
+
+Since you create certificates in the course of using RIPEM, you maintain
+your own CRL. Before trusting a certificate you have made for another user,
+RIPEM checks your CRL to see if you have revoked that user.
+
+Maintaining CRLs is easy using RCERTS. When the validity period on the CRL
+issued by you expires, use N to renew it. Any revocation entries in the CRL
+will be kept and you can choose the duration of the validity period of the
+new CRL. Also, if you don't have any CRLs, this will create a new one. To
+revoke a user, use S to select the user and R to revoke them. Remember,
+once a user's certificate is listed in you CRL, you cannot remove it.
+
+Certificate statuses
+
+Given all these factors, the certificate status for a certificate can be
+any of the following values. Note that if the signature on the certificate
+is corrupt, or the public key of the issuer cannot be found, the
+certificate is discarded altogether and none of the following certificate
+statuses apply.
+
+   * VALID: The certificate's validity period is current and a current CRL
+     from the issuer is found and the certificate is not in the revocation
+     list.
+   * REVOCATION UNKNOWN: The certificate's validity period is current but a
+     CRL from the issuer could not be found (or the signature on the CRL is
+     corrupt). You may want to request a CRL from the issuer. (See Sending
+     and Receiving CRLs below.) Note that REVOCATION UNKNOWN is the normal
+     status from issuers which choose not to publish CRLs.
+   * PENDING: The certificate's validity period has not yet started.
+   * EXPIRED: The certificate's validity period has passed. If a CRL from
+     the issuer can be found which was active when the certificate expired,
+     RIPEM checks the revocation list. If it is in the list, then the
+     REVOKED certificate status overrides EXPIRED.
+   * CRL EXPIRED: The certificate's validity period is current and the
+     certificate is not in the revocation list of the most recent CRL which
+     could be found. However, this CRL's validity period has passed. You
+     should get a current CRL from the issuer and check the certificate
+     status again because the certificate may have been revoked in the mean
+     time. (See Sending and Receiving CRLs below.)
+   * CRL OUT OF SEQUENCE: The certificate's validity period is current and
+     the certificate is not in the revocation list of the most recent CRL
+     which could be found. However, the issue date of the CRL does not
+     match the expected value. An important recent CRL may be missing. See
+     explanation below.
+   * REVOKED: The certificate is listed in the CRL from the issuer. The CRL
+     may be expired, or may be a CRL from the time at which the certificate
+     expired (see EXPIRED above). This means the public key in the
+     certificate should not be trusted.
+
+You may also get a status of UNVALIDATED when you encipher or decipher a
+message. This means no certificate could be found, but an old-style RIPEM
+1.1 public key was found. This public key is "stand alone" and not
+protected by a signature as public keys in certificates are. If you get
+this status, you should use caution in trusting it and ask the owner of the
+key to upgrade to using certificates.
+
+
+CRL OUT OF SEQUENCE status
+
+The CRL OUT OF SEQUENCE status requires extra explanation. Suppose you
+revoke Alice by listing her certificate in the next CRL that you issue. If
+Alice somehow has delete access to your CRL database, she might delete that
+CRL, effectively unrevoking herself. When you check the status on the
+certificate you made for her, you will find only the previous CRL. The
+certificate status will be CRL EXPIRED, or if the two CRL validity periods
+overlap, you might even get a VALID status!
+
+RIPEM solves this by keeping track of the date of the most recent CRL you
+issue. When RIPEM selects your current CRL from the database, it checks
+this date, and if it doesn't match, the certificate status is CRL OUT OF
+SEQUENCE. In the future, the standards for CRLs in general may be improved
+so that every CRL will include a sequence number. This would allow you to
+make sure there are no gaps in the sequence of other issuer's CRLs as well
+as your own.
+
+Note that the CRL last issue date is kept in the RIPEM preferences and is
+protected in the same manner as the other preferences. See RIPEM
+Preferences below for more details.
+
+
+Self-Signed Certificates
+
+A self-signed certificate is like a normal certificate, except that it is
+issued by you for your own public key and name and signed with your own
+private key. This has two purposes: first, it is a convenient format for
+transmitting your name and public key; and second, when someone uses the
+public key in the certificate to verify the certificate's signature, it
+proves that you actually had possession of your private key when you made
+the signature. This prevents some crypto attacks. A self-signed certificate
+is included in every RIPEM message so that the recipient has the name and
+public key of the sender. (For the -M "pem" message format, a self-signed
+certificate is not included if the sender is certified under exactly one
+certificate chain. See Specifying Message Format under Advanced Usage for
+more details.)
+
+Self-signed certificates are used to establish "direct trust" with another
+user. (The difference between direct and extended trust is explained in the
+next section.) To establish direct trust for another user, you need a
+signed RIPEM message from that user. The first time you try to receive
+their message, RIPEM will tell you that you have not yet validated that
+user, and RIPEM will show you the digest on the sender's self-signed
+certificate. You may now call the sender on the phone and ask them to read
+the digest of their self-signed certificate. (Or you may get their digest
+through some other trustworthy channel.) If the digests match, then you
+have good reason to trust that the self-signed certificate is actually
+theirs. Now you can receive their signed message again in validation mode
+(see Receiving in Validation Mode below). RIPEM creates a certificate
+signed by you containing the other person's name and public key and adds it
+to pubkeys in your RIPEM home directory. Now you are ready to send that
+user encrypted mail and to trust further signed messages from them.
+
+The reverse is also true: For another user to establish direct trust in
+your public key, you can send them a signed RIPEM message. Expect the other
+user to contact you and ask you to state the digest of your self-signed
+certificate. (If you forget your self-signed certificate digest, run RCERTS
+and use V to view detail for the selected user (which is you when RCERTS
+starts up). This will display your digest.) The other user then receives
+your signed message in validation mode, and now the two of you have a
+trusted channel.
+
+
+Certificate Chains
+
+The previous section described direct trust, where you only trust a user if
+there is a certificate for that user issued directly by you. In this model,
+you must issue a certificate for every one of your correspondents. But
+suppose another user, Bob, has already issued certificates for some users
+such as Alice and Carlos. If you trust Bob's certification procedures, then
+you can issue just one certificate for Bob and tell RIPEM that you allow
+certificates issued directly by Bob. In the terminology used here, you set
+"chain length allowed" for Bob to one. In other words, you trust Bob as a
+certification authority. Now you can trust Alice, Carlos, and any other
+users Bob certifies. This is called a certificate chain because there is a
+chain of trust from you to Bob to the users Bob certifies. This is also
+sometimes called "extended trust" in contrast to "direct trust."
+
+Furthermore, if you trust that Bob only certifies users which themselves
+can be trusted as certification authorities, then you might set the chain
+length allowed for Bob to two. In this case, you would trust a user who has
+a certificate from Alice, who in turn has a certificate from Bob. This is
+how a typical certificate hierarchy works on the Internet.
+
+To "hook into" the Low Assurance Certification Authority's hierarchy, you
+make a certificate for that certification authority and set the chain
+length allowed to two. (This is done automatically in RCERTS when you use E
+to enable standard issuers and select L for Low Assurance.) Doing this
+means you allow the Low Assurance Certification Authority to certify other
+certification authorities like the Persona certification authority, which
+can in turn certify ordinary users. Now for example, if a user posts a
+message to a newsgroup and includes a certificate issued for them by the
+Persona certification authority, and also a certificate for Persona from
+the Low Assurance Certification Authority, then you will be able to trust
+their public key and check the signature on their message. You never even
+had to interact with that user!
+
+
+Finding the "best" chain
+
+Note that if you trust multiple certification authorities, then it is
+possible that a single user could have more than one chain which you might
+trust. As well as these extended certificate chains, you may also have made
+a direct certificate for this user. Which one should you use? RIPEM solves
+this by looking at the chain status for each of the possible chains.
+
+The chain status is computed by looking at the certificate status of each
+of the certificates in the chain. The status of an entire chain is the
+worst of all the individual certificate statuses. Therefor, if all the
+certificates in the chain are VALID, except one which is EXPIRED, the chain
+status is EXPIRED. (Certificate statuses were explained above in the
+section on Certificates.) The "best to worse" certificate statuses go in
+the order listed above, starting from VALID and ending with REVOKED.
+
+When choosing among many possible certificate chains, RIPEM chooses the
+"best" one by comparing each chain status. (If two chain statuses are the
+same, the shorter chain is considered better.) In this way, RIPEM will find
+valid certificates if possible and avoid expired certificates or
+certificates from issuers which have not published a current CRL.
+
+
+Setting chain length allowed
+
+RIPEM will allow you to set the chain length allowed for a user as high as
+you want (up to the maximum chain length that RIPEM can handle). Typically,
+though, you will set it to one or two. Note that if you set chain length
+allowed to zero, then you revert to direct trust for that user. You still
+trust that user directly because you trust your own certificate that you
+issue for them, but you don't trust that user to certify others.
+
+To set the chain length allowed for a user, run RCERTS and use S to select
+that user as the current user. (This assumes you have already validated
+that user as described in Receiving in Validation Mode.) Then use M to
+modify the chain length allowed. When you are selecting the user, RCERTS
+asks if you want to allow any certificate chain for the user or to select
+only a direct certificate. Enter D for a direct certificate because you
+cannot set the chain length allowed on a user which is certified by someone
+else. This is necessary since RCERTS will select the "best" chain for a
+user as described above. If you allow any certificate chain and the
+certificate issued directly by you is expired, then a longer chain may have
+a valid status and RCERTS will select it instead, which is not what you
+want.
+
+You can also use E to enable a standard issuer such as the Low Assurance
+Certification Authority or the Commercial Certification Authority. In this
+case, since RCERTS already knows the name and public key, you do not need a
+self-signed certificate from that user, nor to validate the user ahead of
+time. You also do not need to use S to select them as the current user.
+RCERTS will automatically create a certificate issued by you and set the
+chain length allowed.
+
+
+RIPEM Preferences
+
+As discussed above, the RIPEM preferences store the chain length allowed
+you set for users and the date of the most recent CRL you issue. This
+information is kept in the file preferen in the RIPEM home directory. (See
+the document RIPEM Message and File Formats for details on the preferences
+file format.)
+
+The RIPEM preferences are signed to make them tamperproof. When RIPEM
+starts, if the preferences can't be found, or the preferences are corrupt,
+RIPEM warns you, disregards the preferences, and uses defaults. The
+defaults are that no user has chain length allowed of one or more. This
+means you do not trust any extended certificate chains. You must use RCERTS
+to set the chain length allowed as you did the first time for the users you
+trust as certification authorities. The default is also that there is no
+date for the most recent CRL. This means that RIPEM does not check for CRL
+OUT OF SEQUENCE. This preference will be set again the next time you issue
+a CRL in RCERTS by revoking a user or by using N to renew the CRL issued by
+you.
+
+
+The preferences signature method
+
+The RIPEM preferences are not signed with your RSA private key like other
+signed messages. Instead, the signature is computed by digesting your
+password and appending this to your preferences. Then all of this is
+digested and the result is the signature. When the signature is checked by
+computing the same digest, if the preferences are different, or you don't
+supply the same password, then the signature doesn't verify. Note that only
+a single user can create and verify the signature, since the password is
+secret. This is fine since you don't use someone else's preferences.
+
+The RIPEM preferences is synchronized with your current password. When you
+use the -c option to change your password, RIPEM not only encrypts your
+private key under the new password, but also recomputes the signature on
+your preferences using the new password.
+
+
+Preventing the replay attack
+
+The technique of using the password to make the preferences signature has
+the advantage that it makes the signature time-dependent. You can use this
+advantage to prevent the following security risk. Suppose you were trusting
+a user as a certification authority by setting their chain length allowed
+greater than one. If you no longer want to trust them as a certification
+authority, you use RCERTS to set the chain length allowed to zero, which
+creates new a preferences file. Now suppose someone replaces the new
+preferences file with the old one. If the signature were not time-dependent
+you would have no way of noticing the swap and you would suddenly be
+trusting the user as a certification authority again! This is called the
+"replay attack".
+
+Now suppose that you set the chain length allowed as before, but you also
+immediately change your password. If someone replaces the new preferences
+file with the old one, the signature will not verify since it is signed
+under a different password, and you will notice the swap instead of
+trusting the old information. RIPEM will detect a corrupt signature and
+reset the preferences to the defaults as described above. Note that the
+same method of changing your password can prevent replay attacks on other
+preferences information like the date of your most recent CRL.
+
+In summary, if you are concerned that someone can replace your current
+preferences information with older, inaccurate information, then every time
+you change your preferences, also change your password. This includes every
+time you modify the chain length allowed for a user and every time you
+revoke a user (which modifies the date of the most recent CRL you issue).
+
+
+Encrypting a Message
+
+The -e option specifies that RIPEM is encrypting a message.
+
+In encryption mode, RIPEM understands the -H, -u, -p, -s, -y, -Y, and -R
+options described above. The following options are also important:
+
+
+Specifying Input and Output Files (-i and -o)
+
+By default, RIPEM reads its input from standard input, and writes its
+output on standard output. If standard input and output are files, this is
+written as <infile and >outfile on most systems. Alternatively, an input
+file can be specified via the -i option, and an output file via the -o
+option:
+
+-i infile -o outfile.
+
+
+Specifying Recipients and Processing Mail Headers (-r and -h)
+
+The recipient(s) of a message can be specified in two ways: on the command
+line, or via message headers in the input plaintext.
+
+To specify recipients explicitly on the command line, use the -r option: -r
+recipient_addr. Recipient_addr must be the recipient's email address, in a
+form which RIPEM can use to look up the recipient's public key. For
+instance, suppose your recipient has valid email addresses
+bob@egr.biguniv.edu and bob@biguniv.BITNET. If Bob has registered his RIPEM
+public key only as bob@egr.biguniv.edu, then the address bob@biguniv.BITNET
+will not be adequate for RIPEM's purposes, even if it is a valid email
+address.
+
+The -r option can be used multiple times for multiple recipients.
+
+If the message plaintext has been prepared by a mail program, it may
+already contain mail headers which state the recipients' email addresses in
+"To:" and "cc:" lines. To take advantage of this situation, you can use the
+-h option. The -h option tells RIPEM how to handle plaintext input that
+contains mail headers. "Mail headers" are defined to be all the lines at
+the beginning of a message, up to the first blank line.
+
+The syntax is: -h header_opts, where header_opts is one or more of the
+letters i, p, and r. i tells RIPEM to include the headers as part of the
+message to be encrypted. p tells RIPEM to prepend the headers to the
+encrypted output. r tells RIPEM to examine the message headers, looking for
+"To:" and "cc:" lines. Any recipients named on those lines are included as
+recipients to RIPEM's encryption.
+
+The default is "-h i", which causes message headers to be included in the
+plaintext being encrypted, but no other header processing is done. This is
+equivalent to treating the message as if it does not contain mail headers
+at all.
+
+A useful combination is "-h pr", which extracts recipients' names from the
+mail headers at the beginning of the input, copies the mail headers
+unmodified and unencrypted to the beginning of the output, and then
+discards the headers before encrypting the rest of the message. This
+combination is suitable for instances in RIPEM is being used to encrypt a
+message after it has been prepared by a mail program but before it has been
+sent.
+
+To find the recipients' public keys for encrypting the message, RIPEM first
+searches for a certificate chain. This is either a direct certificate you
+previously created using the validation mode (see Receiving in Validation
+Mode below), or an extended certificate chain you have allowed another use
+to make. The value given by -r is usually the common name in the full
+distinguished name. If it can't find a certificate, RIPEM searches for
+version 1.1 and earlier style public keys first in pubkeys in the RIPEM
+home directory and then in other files specified with the -p option.
+
+When RIPEM has found the public keys, it outputs the recipient's full
+distinguished name and certificate status to the debug stream, which is
+your terminal unless you redirected it using -Z. This information is
+important for two reasons: first, the certificate you made for the
+recipient may have a certificate status other than VALID such as EXPIRED,
+or worse, REVOKED; and more importantly, your must make sure that the full
+distinguished name is what you expect. If you specify -r Bob, RIPEM may
+find a certificate for "common name = bob, organization = Gadgets" whereas
+you really want "common name = Bob, organization = Widgets". In this case,
+the message is encrypted for the wrong Bob and you should not send it.
+
+
+Decrypting a Message
+
+The -d option specifies that RIPEM is decrypting a message.
+
+During decryption, RIPEM looks at the values of the -H, -i, -o, -u, -p, -s,
+-y, and -Y options discussed above.
+
+If RIPEM cannot decrypt the input message, or if the input message fails
+the signature check, RIPEM will issue an error message on the standard
+error device, which is usually your terminal. In this case you should
+disregard any message text output to the -o file or the standard output
+since it is untrustworthy. RIPEM returns a value of zero to the operating
+system if the message decrypts properly, and it returns a non-zero value if
+there are problems. This is typical behavior for programs under Unix and
+MS-DOS and allows you to write command scripts which check to see whether
+decryption proceeded properly.
+
+If RIPEM does decrypt the message properly, it will write the decrypted
+plaintext to the -o file or to standard output. The output contains only
+the original plaintext (subject to any modifications performed by the -h
+option used by the sender of the message). It does not include any mail
+headers or other superfluous text added to the encrypted message--for
+instance, by a mail system--after the encryption. RIPEM also writes the
+name and certification status of the sender to the debug stream, which is
+your terminal unless you redirected it using -Z.
+
+Any time you use -d to receive a message, any certificates in the message
+are placed in your public key file. This is the means by which you get
+other user's certificates. Conversely, when another RIPEM user receives a
+message from you, any issuer certificates you send are placed in their
+database.
+
+By default, RIPEM assumes that the message you are decrypting is PEM-based.
+If RIPEM cannot find the PEM message boundary, it rewinds the input file
+and tries to read as a PKCS-based message. Of course, if the input is the
+standard input, RIPEM cannot rewind. In any case, if you know that the
+input message is PKCS, it is more efficient to specify "-M pkcs" in the
+command line so that RIPEM reads the input as a PKCS message.
+
+
+Receiving in Validation Mode
+
+Using the -d option, when you receive a RIPEM message from someone who you
+have not certified directly or indirectly, RIPEM will tell you that the
+public key in their self-signed certificate has not been validated by you
+and it will display the digest on their self-signed certificate. After
+verifying their self-signed certificate digest as explained in "Self-Signed
+Certificates" above, you can use your own private key to create a
+certificate for them by receiving the message again in validation mode. Use
+-d and all the other flags as before, but also add the -v option which
+specifies the number of months from today that the certificate will be
+valid. A typical value is 24 for two years. After this time, the status
+displayed by RIPEM when you use the certificate will change from VALID to
+EXPIRED. When the certificate expires you should contact the correspondent
+again to make sure their public key is still valid and repeat the
+procedure.
+
+Note that the self-signed certificate you receive from the other user has
+its own validity period which reflects the sender's opinion about how long
+they expect their keypair to be trustworthy. Even if you specify a longer
+period with -v when you validate that user's key, RIPEM will not make a
+validity period beyond the validity in their self-signed certificate.
+
+
+Getting a Persona Certificate
+
+As described in Generating a Keypair above, RIPEM uses your username to
+create a distinguished name for the Persona certification authority. If
+your RIPEM username is fred@snark.edu, then your full distinguished name is
+"common name = fred@snark.edu, org unit = Persona Certificate, organization
+= RSA Data Security, Inc., country = US". This is useful if you want to be
+certified by the Persona certification authority, which is under the Low
+Assurance Certification Authority hierarchy. Follow these steps:
+
+   * Generate your self-signed certificate using the -g option as described
+     above in Generating a Keypair. If you have already done this, even
+     using RIPEM 1.2 or later, you already have a self-signed certificate
+     which will work.
+   * Create your certification request message using the following command.
+     (This assumes you have set the RIPEM_USER_NAME environment variable
+     and are using the default RIPEM home directory.)
+
+          ripem -e -m mic-only -i mymessage -o request
+
+   * The input file mymessage can contain any short message, such as
+     "Here's my certificate." The file request now has a normal signed
+     message which contains your self-signed certificate. Email this
+     message to persona-request@rsa.com. It doesn't matter what the subject
+     line is in the email header. (Note that it is not necessary to create
+     the message with -M pem. The processor at persona-request is flexible
+     enough to handle RIPEM signed messages.)
+   * An automated responder at persona-request will check the self-signed
+     certificate in your message. If certain criteria are not met, such as
+     there is already a currently valid certificate from Persona for your
+     username, you will receive email denying your request. Otherwise, on
+     success you will receive a PEM format email message. (The responder
+     sends the message to the Reply-To field if present, or to the From
+     field in your request.)
+   * Place the message from Persona in the file response and use ripem -d
+     -i response to receive it. This is the same signed message you
+     originally sent, except now the Originator-Certificate field contains
+     not your self-signed certificate but a certificate for you issued by
+     the Persona certification authority. The message also has an
+     Issuer-Certificate for the Persona certification authority from the
+     Low Assurance Certification Authority. When you receive the message,
+     these certificates are placed in your public key file, and RIPEM says
+     that it received a signed message from you.
+   * If you want your Persona certificate included in every message you
+     create, or if you want to trust other users who have performed the
+     same process to be certified by the Persona certification authority,
+     then you need to tell RIPEM that you want to operate under the Low
+     Assurance Certification Authority hierarchy. Do this by running RCERTS
+     and selecting E to enable standard issuers. Then select L to enable
+     the Low Assurance Certification Authority. Your chain length allowed
+     for Low Assurance is set to 2.
+
+You may also want to request CRLs for the Persona and Low Assurance
+certification authorities. See the next section.
+
+
+Sending and Receiving CRLs
+
+The -d option can also be used to receive CRL messages. A CRL message has
+the same style as other messages, except that it contains only CRLs from a
+certification authority and any certificate chains which the certification
+authority includes. Usually, the CRL message you receive is one that you
+have requested because you need a current CRL to check the status of a user
+which is certified by another certification authority. This is done by
+sending a CRL retrieval request message to the certification authority.
+
+To create a CRL retrieval request, run RCERTS and use S to select the user
+for whom you need to check the revocation status. Note that this must be a
+user which has an extended certificate chain, such as a Persona user which
+is certified under the Low Assurance Certification Authority. (Otherwise
+the user is certified directly by you and there is no one else to request a
+CRL from.) After selecting the user, use C to create the CRL retrieval
+request message. This will request the latest CRL for every issuer in the
+certificate chain (besides yourself). In this case, it will request the
+CRLs issued by the Persona and Low Assurance certification authorities.
+
+You can get CRLs for any issuer under the Low Assurance hierarchy by
+emailing the CRL retrieval request message to crl-retrieval@rsa.com. It
+doesn't matter what the subject line is in the email header. An automated
+responder will send you a CRL message which you can receive using the -d
+option.
+
+You can also publish the CRL issued by you by using the P command in
+RCERTS. Note that this is only useful if another user trusts you as a
+certification authority and needs to check the status of users certified by
+you.
+
+
+Advanced Usage
+
+
+
+Specifying Encryption Algorithm (-A)
+
+When encrypting (-e -m encrypted), you can specify the encryption
+algorithm. The legal values are -A des-cbc, which is the default well-known
+DES in Cipher Block Chaining mode, -A des-ede-cbc, or -A rx2-cbc/bits.
+
+By default, RIPEM encrypts messages using DES in Cipher Block Chaining
+(CBC) mode (-A des-cbc). This is the data encryption algorithm and mode
+used by Internet PEM-conformant software.
+
+Although DES has proven quite resistant to theoretical attacks of
+cryptanalysts for 16 years, many cryptologists have expressed concern over
+DES's relatively small keyspace, which leaves it potentially vulnerable to
+brute-force attack by a well-funded opponent. (DES keys are 56 bits long.)
+One obvious solution to the keyspace problem is to use multiple passes of
+DES.
+
+A few years ago, IBM suggested a particular multi-pass usage of DES called
+Encrypt-Decrypt-Encrypt (EDE). There are two forms: DES-EDE2-CBC and
+DES-EDE3-CBC. In EDE usage (sometimes called Triple-DES), each 64-bit block
+is encrypted with a 56-bit key we'll call key1. The result of that
+encryption is decrypted with a second 56-bit key called key2. Finally, the
+64-bit result of that decryption is encrypted with key1 (in DES-EDE2-CBC)
+or encrypted with yet a third key called key3 (in DES-EDE3-CBC). This use
+of DES results in a dramatic increase of keyspace.
+
+RIPEM implements this use of DES. When encrypting, specify -A des-ede-cbc
+to select this algorithm. If the message format (see -M below) is "ripem1"
+or "pem", then RIPEM uses DES-EDE2-CBC. In the message format is "pkcs"
+then RIPEM uses DES-EDE3-CBC. When decrypting, RIPEM automatically detects
+the encryption algorithm used and decrypts appropriately.
+
+DES-EDE2-CBC has not been widely adopted by the PEM-compliant cryptographic
+and is not conformant with Internet PEM as of this writing. Therefor, use
+the default mode (which can also be explicitly requested via -A des-cbc)
+for all but your most critical "ripem1" or "pem" format messages.
+
+For "pkcs" format messages, however, support for DES-EDE3-CBC is explicitly
+recommended for S/MIME and should be considered interoperable.
+
+In addition, consider that there is some performance degradation associated
+with Triple-DES over "straight" DES.
+
+-A rx2-cbc/bits specifies RX2 in Cipher Block Chaining (CBC) mode which is
+an algorithm compatible with RC2-CBC from RSA Data Security.  The bits is
+the effective key size in bits.  For example, a typical value is -A
+rx2-cbc/40 which is explicitly recommended for S/MIME for compliance with
+United Stated export restrictions. (RIPEM uses "RX2" instead of simply
+using "RC2" because this is a trademark of RSA Data Security.  RIPEM does
+not claim that RX2 is RC2, only that it is compatible with it.)
+
+Specifying Debug Mode (-D and -Z)
+
+RIPEM uses the debug output to show the status of recipient public keys
+while encrypting a message and to show the status of sender's public key
+and signature while receiving a message. RIPEM also uses the debug output
+to show self-signed certificate digests and other important messages which
+come under the default level.
+
+Users experiencing problems with RIPEM, or simply wishing to examine the
+inner workings of the program, can use the -D option to increase the debug
+level which will cause RIPEM to print informative messages while it
+executes. Debugging options were originally implemented in RIPEM for
+development purposes, but have been left in place for the benefit of
+curious users. Specify -D debuglevel to turn on debug messages. Debuglevel
+is an integer specifying the amount of debug output desired. 1 is the
+default level for required information on senders and recipients, while 4
+is the maximum value currently implemented.
+
+Debug messages are normally written to the standard error output, which is
+usually your terminal screen. To write debug messages to a file, use the -Z
+debugfile option.
+
+
+Specifying Encryption Mode (-m)
+
+By default, in encryption (-e) mode RIPEM encrypts a message, encodes it to
+printable ASCII characters, and signs the message. This processing
+corresponds to the -m encrypted command line option. With non-default
+values for the -m option, RIPEM can perform other types of processing in -e
+mode.
+
+-m mic-clear specifies that the message is signed, but not encrypted. The
+body of the message is left in plaintext, so that the recipient can read it
+without decryption software of any sort. If the recipient wishes to verify
+the signature, however, he/she will have to use RIPEM in -d mode as usual.
+
+-m mic-only also specifies that the message is signed, but not encrypted.
+However, the body of the message is printably encoded into ASCII characters
+as per RFC 1113. This encoding expands the size of the message by about 33%
+and adds no security; it simply helps guarantee that the message will
+survive hostile mail software verbatim. In practice, mic-only mode is
+infrequently used.
+
+However, if you use -M pkcs (see below), RIPEM creates a PKCS message. A
+PKCS message itself is binary, so RIPEM encodes the whole message to
+printable ASCII characters. If you use -m encrypted (the default), RIPEM
+creates a PKCS signed and enveloped message. If you use -m mic-clear or -m
+mic-only, RIPEM creates a PKCS signed message. For -M pkcs, you can also
+use -m enveloped-only which creates a PKCS enveloped only message.
+
+
+Specifying Message Format (-M)
+
+When using encryption (-e) mode, you can specify the output message as
+either RIPEM format (-M ripem1), PEM format (-M pem) or PKCS format (-M
+pkcs). RIPEM format is the default.
+
+-M ripem1: This format uses the most flexible way to identify senders and
+recipients and is also compatible with RIPEM versions before 2.0. The
+Originator-Certificate field contains the your self-signed certificate.
+This format outputs Issuer-Certificate fields (which earlier versions of
+RIPEM ignore) if you have a certificate under any of the certification
+authorities you have enabled (by setting chain length allowed greater than
+one). These issuer certificate fields help the recipient trust you if they
+trust the same certification authority.
+
+Recipients are identified by Recipient-Key-Asymmetric fields, which give
+the recipient's public key (as opposed to "pem" which uses
+Recipient-ID-Asymmetric). Since the recipient knows their own public key,
+they don't have any problem recognizing that the recipient field is for
+them.
+
+-M pem: This format specifies that the message is to be compatible with the
+RFC 1421 message syntax and the RFC 1422 certification model. Recipients
+are identified by Recipient-ID-Asymmetric fields, which give an issuer name
+and serial number (as opposed to "ripem1" which uses
+Recipient-Key-Asymmetric). Since it is not known which issuer a recipient
+recognizes themself by, recipient fields are output for all possible
+issuers. Note that you must have a certificate in your public key file for
+that user from the issuer they recognize for this to work.
+
+If you are certified under exactly one certificate chain, the
+Originator-Certificate field contains the certificate from the issuer which
+certified you in that chain. However, if RIPEM finds certificates for you
+from more than one issuer, then it doesn't know which one to use, so it
+uses your self-signed certificate in the Originator-Certificate field as in
+"ripem1".
+
+-M pkcs: This format specifies that the message is to be compatible with
+the Public Key Cryptography Standards. A PKCS message itself is binary, so
+RIPEM base64 encodes the whole PKCS message so that you can put it in an
+email message. (base64 is the same encoding as used in the MIME
+content-transfer-encoding. However, note that RIPEM does not produce a
+MIME-compatible message with the correct headers.)
+
+
+Specifying Your Username (Email Address) (-u)
+
+As described above, you can specify your username via the -u option or via
+the environment variable RIPEM_USER_NAME. The default is for RIPEM to
+attempt to determine your email address from the running system. On MS-DOS,
+RIPEM defaults to the name "me." RIPEM makes use of this information in all
+three modes: key generation, encryption, and decryption.
+
+If you are using RIPEM for compatibility with version 1.1 and earlier and
+you have a number of email addresses that you wish to be regarded as
+equivalent, you can specify your username as a list of comma-separated
+email addresses. During key generation and encryption, RIPEM will use the
+first name in the list as your username. During decryption, RIPEM will
+identify you as the recipient by searching your private key file for your
+private component under each one of the comma-separated names until it
+succeeds in finding a matching key in the file. (The multiple username
+capability is only important for compatibility with RIPEM version 1.1 and
+earlier because those versions identify you as the recipient by username.
+The current version identifies you as the recipient by your public key and
+so matching the username is unnecessary.) These features make it easier to
+use RIPEM if you have mail forwarded to a primary mail account from a
+number of other email addresses. To make use of the multiple username
+capability, you must edit your private key file to include multiple User:
+lines.
+
+
+Specifying the Key to Your Private Component (-k, -K)
+
+By default, RIPEM prompts you interactively when it needs to know the key
+to the private component of your public key. However, with some loss in
+security, it is possible to inform RIPEM of this key by other means. This
+capability may be useful for instances when RIPEM is invoked by another
+program, or for when you are testing or benchmarking.
+
+You can specify the key to your private key via the -k option; specify -k
+keytokey on the command line. As a special case, you can specify -k -.
+Specifying - as your password on the command line causes RIPEM to read the
+password as the first line from standard input.
+
+If -k is not specified, RIPEM will check the value of the environment
+variable RIPEM_KEY_TO_PRIVATE_KEY. If this variable exists and has a
+non-null value, its value will be used as the key to the private key;
+otherwise, RIPEM will prompt you on your terminal for this key.
+
+When using -c to change your key to private key, you can also use upper
+case -K to specify the new key instead of letting RIPEM prompt you for the
+new key. This is useful so that all values can be supplied on the command
+line when invoking RIPEM from another application.
+
+Specifying the key to your private key via -k or via the environment
+variable is generally less secure than typing it interactively. Although
+RIPEM erases its command line arguments shortly after startup, there is a
+brief window of time during which other users on a Unix system could view
+your command line arguments by using the ps command. Likewise, other users
+could determine the value of your RIPEM_KEY_TO_PRIVATE_KEY variable by
+various means, especially if they had physical access to your terminal.
+Therefor, these options should be used with caution, if at all.
+
+
+Specifying Random Number Sources (-R, -F, -C)
+
+RIPEM needs to seed its random number generator when creating encrypted
+messages (-e) and generating new public and private keys (-g). To specify
+the source of random number seeds, use -R source, where source is any
+combination of the letters eksmfc as follows:
+
+          e (entire) means use information from the entire command line.
+
+          k (keyboard) means prompt the user for a string typed at the
+          keyboard.
+
+          s (system) means query the system for system-dependent
+          information. The type of randomness of this information depends
+          upon the specific computer.
+
+          m (message) means take characters from the input plaintext
+          message. (for -e only)
+
+          f (file) means read information from a file, where RIPEM selects
+          a pseudo-random amout of data from pseudo-random locations in the
+          file. You can specify the random input file using -F filename.
+          RIPEM looks for the random input file in the following order: -F
+          in the RIPEM_ARGS environment variable, -F on the command line,
+          the file randomin in the RIPEM home directory, and finally the
+          RIPEM_RANDOM_FILE environment variable.
+
+          c (command) means use information from the command line -C
+          option. You must include the -C option which specifies that the
+          remainder of the command line consists of strings to be used as
+          random input. The -C option must be the last option on the
+          command line , since any arguments following in will be used only
+          as random seed data.
+
+Specifying Recipient Options (-T)
+
+You can modify RIPEM's behavior in selecting the recipients of encrypted
+messages (-e with -m encrypted). To specify recipient options, use -T
+options, where options is any combination of the letters amn as follows:
+
+          a (abort) specifies that RIPEM should unconditionally abort if,
+          while encrypting, it is unable to find a valid public key for one
+          or more of the recipients. Without this option, RIPEM will ask
+          you if you want to proceed if it can't find valid public keys.
+
+          m (me) specifies that RIPEM should include you as a recipient
+          when you create an encrypted message, which will allow you to
+          decrypt the message later if necessary. This is the default
+          operation.
+
+          n (none) speifies that RIPEM should not use any of the above
+          options. RIPEM will not include you as a recipient of your own
+          message, and will prompt you if unable to find valid public keys.
+
+Specifying Binary Message File (-B)
+
+By default, RIPEM treats a message as line-oriented text and canonicalizes
+the end-of-line delimiters. In other words, when enciphering, RIPEM
+converts the local end-of-line characters to <CR><LF> when it puts the
+message data into the enciphered message, and when deciphering RIPEM
+converts the <CR><LF> back to the local end-of-line delimiters before
+outputting the message data.
+
+However, for PKCS-format messages (-M pkcs) you can use the -B flag to tell
+RIPEM to not translate the message data. Thus you can encipher arbitrary
+binary files. This affects the file given with the -i option when
+enciphering and the -o file when deciphering. The behavior of the -B flag
+is undefined when using the standard input or output for the message data.
+
+The -B option is not supported for PEM-format messages since the PEM
+specification restricts the message data to line-oriented text.
+
+
+Specifying External Message File (-x) for detached signatures
+
+For PKCS-format messages (-M pkcs), RIPEM can create a "detached signature"
+which contains the normal certificates and signature information but does
+not contain the actual message data. Thus the message data is "external."
+The -x option specifies the external message file and tells RIPEM to create
+a detached signature.
+
+To create a detached signature, use a command like the following:
+
+ripem -e -M pkcs -m mic-only -x message-file -o detached-signature
+
+To verify a detached signature, use a command like the following:
+
+ripem -d -M pkcs -x message-file -i detached-signature [-a rsa-md2]
+
+When creating the detached signature, any -i option is ignored. When
+verifying the detached signature, any -o option is ignored. In both cases,
+the -x message file is read as input.
+
+When verifying the signature, RIPEM digests the -x message file before
+processing the -i detached signature, and therefore must know the digest
+algorithm which can be specified with the -a option (see below).
+
+The -x option is not supported for PEM-format messages or for encrypted
+PKCS-format messages.
+
+
+Specifying Digest Algorithm (-a)
+
+To specify the digest algorithm, use -a algorithm, where algorithm is
+rsa-md5 (the default), rsa-md2 or sha-1.
+This digest algorithm is used to compute the signature when creating an
+enciphered message (-e) or for creating new certificates or CRLs. This
+digest algorithm is also used in verifying (as well as creating) a detached
+signature (see -x above).
+
+Note that "rsa-md5" should not be confused with the "RSA with md5"
+signature algorithm, but rather means the "md5 algorithm from RSA." (This
+nomenclature is used to conform with the identifiers in the original S/MIME
+multipart/signed message format.)
+
+
+Using UNIX Mail Programs and Utilities
+
+This section suggests techniques for using RIPEM in conjunction with
+popular Unix mail programs. Use of the C-Shell is assumed.
+
+It is possible, of course, to compose a message in a text editor, save the
+message to a file, run RIPEM to encrypt the message, start your mailer,
+insert the encrypted file into a message, and then send the message. In
+fact, the encryption and mailing can be done on separate systems, with
+appropriate file transfers. However, on most Unix systems it is possible to
+eliminate several of these tedious steps.
+
+
+Setting Up Your Environment
+
+It is recommended that Internet-connected Unix users include the following
+in their .cshrc file:
+
+setenv RIPEM_HOME_DIR ~/.ripemhome
+
+setenv RIPEM_SERVER_NAME ripem.msu.edu (for 1.1 compatibility)
+
+setenv RIPEM_USER_NAME (Your email address; e.g., smith@bigu.edu)
+
+Create a shell script to encrypt RIPEM messages. Place the following lines
+in a file named ripem-encrypt, put this file in a directory mentioned in
+your path, and give it execute permission. (This file is available in the
+RIPEM distribution, in the util directory.)
+
+#!/bin/sh
+
+tempfile=/tmp/msg-`whoami`
+
+ripem -e -h pr -i $1 -o $tempfile
+
+cp $tempfile $1
+
+rm $tempfile
+
+Create a shell script to decrypt RIPEM messages. As above, place these
+lines in the file ripemd:
+
+ripem -d | more
+
+Create a shell script to help reply to encrypted RIPEM messages. Place this
+in ripemr:
+
+ripem -d -h pr | quote -h
+
+Include the following lines in the file .mailrc in your home directory. (A
+sample .mailrc can be found in the RIPEM distribution, in the util
+directory.)
+
+set editheaders
+
+set EDITOR=ripem-encrypt
+
+
+Creating a RIPEM Public Key
+
+The initial generation of keys can proceed something like this:
+
+cd ~
+
+ripem -g -R eks
+
+Type random garbage at the keyboard when prompted.
+
+Type in a secret password when prompted for the password to your private
+key. Type it again when prompted for verification.
+
+Now you can create signed messages and send them to your correspondents.
+They will ask you for your self-signed certificate digest and validate your
+public key.
+
+
+Encrypting an Email Message Using "mail"
+
+If you are using the "mail" package that comes with many Unix systems, you
+can use the following procedure to compose, encrypt, and send a message. In
+this example, your input is in bold.
+
+$ TT smith@bigu.edu
+
+Subject: TT
+
+This is a test message
+
+~e
+
+Enter password to private key: (Type your password here.)
+
+(Type Control-D)
+
+$
+
+The ~e command to mail was originally designed to edit the message being
+composed. Nowadays, however, it is rarely used (in favor of the ~v visual
+edit command). The tricks described above effectively turn ~e into an
+"encrypt" command on SunOS and some other Unix systems. On some Unix
+systems, however, the mail command does not interpret the editheaders
+option. On those systems, you need to use a different approach, which
+requires you to type the recipient's address twice:
+
+$ TT smith@bigu.edu
+
+Subject: TT
+
+This is a test message
+
+~| ripem -e -r smith@bigu.edu
+
+Enter password to private key: (Type your password here.)
+
+(continue)
+
+(Type Control-D)
+
+$
+
+
+Decrypting an Email Message Using "mail"
+
+$ TT
+
+Mail version ......
+
+"/usr/spool/mail/jones": 1 message 1 new
+
+>N 1 smith@bigu.edu Wed Sep 30 22:38 29/1119 Greetings
+
+& TT ripemd
+
+Pipe to: "ripemd"
+
+Enter password to private key: (Type your password here.)
+
+(The plaintext message is displayed.)
+
+"ripemd" 29/1119
+
+& TT
+
+$
+
+
+Encrypting an Email Message Using "Mush"
+
+Mush is a mail package that is compatible with mail, but provides
+additional capabilities. The procedure described above for encrypting
+messages with mail also works with mush.
+
+
+Decrypting an Email Message Using "Mush"
+
+The procedures described for mail also work with mush. However, mush's
+greater power allows you to configure it to be easier to use than mail,
+especially in curses mode. Configure mush by creating a file named .mushrc
+in your home directory and placing the following lines in it:
+
+set edit_hdrs
+
+set editor=/home/scss3/mrr/bin/ripem-encrypt
+
+set visual=/usr/ucb/vi
+
+bind-macro D :pipe ripemd\n
+
+bind-macro R r~f\n~\|ripemr\n~v\n
+
+To decrypt and display a message in curses mode, simply type the letter D
+while the cursor is positioned on the corresponding message index line:
+
+     56 U Mark Riordan <mrr@cl-next Nov 3, (13/460) "test"
+
+     (press TT)
+
+     :pipe ripemd (This is generated automatically by the mush macro.)
+
+     Enter password to private key: (Type the password.)
+
+     (The plaintext is displayed.)
+
+     56 Mark Riordan <mrr@cl-next Nov 3, (13/460) "test"
+
+mrr 56: ...continue...
+
+To reply to an encrypted message, type R while the cursor is positioned on
+the corresponding message line. The R macro decrypts the message, quotes
+the text of the message with the traditional "> " line prefix, and enters a
+visual editor. For this procedure to work, you must have compiled the quote
+program--located in the ripem/util directory--and installed it in a
+directory on your path.
+
+     56 U Mark Riordan <mrr@cl-next Nov 3, (13/460) "test"
+
+     (press TT)
+
+     To: mrr@museum.cl.msu.edu
+
+     Subject: Re: test 5
+
+     ~f
+
+     Including message 56 ... (30 lines)
+
+     (continue editing letter)
+
+     ~|ripemr (All of this is generated automatically by the macro.)
+
+     Enter password to private key: (Type the password, to decrypt the
+     message.)
+
+     (Mush calls up a visual editor on a quoted copy of the plaintext of
+     the message to you. Compose your reply and exit the editor. To exit
+     vi, for instance, type ZZ.)
+
+     (continue editing letter)
+
+     ~TT (Type this to encrypt your reply)
+
+     Enter password to private key: (Type the password, to encrypt your
+     reply.)
+
+     (continue editing letter)
+
+     (Type control-D to finish the outgoing letter and have mush send it.)
+
+Using RIPEM with ELM's MIME Features
+
+The popular Unix mailer Elm has been extended to provide MIME (Multipurpose
+Internet Mail Extension) capabilities. (MIME is not particular to Elm, and
+MIME support is or will soon be available in other mailers as well.) RIPEM
+can be used with Elm's MIME support, though somewhat awkwardly. Below are
+preliminary instructions for interfacing RIPEM with Elm.
+
+Edit your local or system mailcap file to add the following lines:
+
+# This entry is for reading a mail message encoded by RIPEM
+
+application/ripem; ripem -d ; copiousoutput
+
+This is necessary only on the receiving end.
+
+On the sending end:
+
+   * Compose the message and encode it, saving the result in a temporary
+     file, say, mymsg.
+   * Start the mail message in Elm and include the temporary file as a MIME
+     message with a line of the form:
+   * [include mymsg application/ripem]
+   * Send the message.
+
+Upon receipt, Elm will recognize it as a MIME message and start RIPEM to
+decode it. If the receiving mailer does not understand MIME, the usual
+methods of decrypting RIPEM messages can be used.
+
+
+Using RIPEM with the MH Mailer
+
+The RIPEM source distribution contains two Perl scripts that facilitate
+reading and sending encrypted messages with RIPEM. display-ripem decrypts
+and displays RIPEM messages; send-ripem encrypts and sends messages. These
+utilities, written by Marc VanHeyningen, can be found in the ripem/util
+directory. See the source code for documentation.
+
+
+Using RIPEM with EMACS
+
+Jeff Thompson has written functions for the powerful EMACS editor to
+facilitate use of RIPEM. These functions are in the file
+ripem/util/ripem.el in the RIPEM source distribution. To enable the use of
+these functions, edit your ~/.emacs file and add to it a line like:
+
+(load "/home/local/ripem/util/emacs/ripem.el")
+
+(Modify the file name in quotes to be the correct path to the ripem.el
+file.)
+
+To encrypt a message, enter the message, including the To: and cc: lines,
+into an EMACS buffer and type:
+
+Esc x ripem-encrypt
+
+To decrypt a message, load it into an EMACS buffer and type:
+
+Esc x ripem-receive
+
+To receive a message in validation mode, load it into an EMACS buffer and
+type:
+
+Esc x ripem-validate-and-receive
+
+Online help is available by typing:
+
+Ctrl-h f function_name
+
+where function_name is one of: ripem-generate, ripem-encrypt, ripem-sign,
+ripem-sign-clear, ripem-receive, ripem-validate-and-receive,
+ripem-change-password, or ripem-list-users.
+
+
+Upgrading from RIPEM 1.2
+
+
+
+RIPEM home directory required
+
+RIPEM 2.0 relies on new files such as the CRLs database and the
+certification preferences file. Instead of adding yet more command line
+arguments, a RIPEM home directory is now required and the CRLs and
+preferences files are put there. If you are not already using a RIPEM home
+directory, you should move your public and private key files into there as
+pubkeys and privkey, respectively. You can use the default RIPEM home
+directory, which is ~/.ripemhome for Unix, C:\RIPEMHOM for DOS, and RIPEM
+Home in the system preferences folder for Macintosh. Otherwise, if you do
+not use the default, then you must specify the RIPEM home directory with
+the -H option or the RIPEM_HOME_DIR environment variable.
+
+
+-P and -S are obsolete
+
+RIPEM 2.0 also relies more heavily on having a public key output file for
+saving Issuer-Certificates from incoming messages. Instead of requiring -P
+in all cases, RIPEM now treats pubkeys in the home directory more as a
+read/write database. To prevent confusion with certificates going different
+places at different times, the -P option is now obsolete and RIPEM always
+writes public keys and certificates to pubkeys in the home directory. For
+consistency, the -S option is now also obsolete and RIPEM always writes
+private keys to privkey in the home directory.
+
+
+Getting REVOCATION UNKNOWN certificate status
+
+If you are a RIPEM 1.2 user, you will at first see a certificate status of
+REVOCATION UNKNOWN for the users you have validated. This is because RIPEM
+2.0 looks for a CRL from the issuer (which is you) of the user's
+certificate in order to see if it is revoked, but cannot find the CRL. To
+fix this, run RCERTS and select N to renew the CRL issued by you. This will
+create a new CRL issued by you with no revocation entries.
+
+Note: if you have validated a user in the past but no longer trust them,
+you should use RCERTS to revoke their certificate. This is better than just
+removing the user's certificate from your public key file because that same
+certificate may get re-inserted at a later date.
+
+
+Upgrading From RIPEM 1.1
+
+The most important part of upgrading from RIPEM version 1.1 or earlier is
+to create a self-signed certificate. This is done by changing your key to
+private key. Follow these steps:
+
+   * Create your RIPEM home directory. From now on, use -H to specify this
+     directory to RIPEM, or set the RIPEM_HOME_DIR environment variable.
+     You may also allow RIPEM to use the default home directory as
+     described above in The RIPEM Home Directory.
+   * Use ripem -c to change your password. The old and new passwords may be
+     the same. Specify -p and -s for your input public and private key
+     files as you did for RIPEM 1.1, but do not specify -P or -S output
+     files. Instead use -H to specify the RIPEM home directory. Note RIPEM
+     does not change your public or private key. It simply places your
+     private key under a different protection key. RIPEM creates a new
+     private key file in the home directory so you don't need the file
+     given by -s anymore.
+   * RIPEM will notice that you don't already have a self-signed
+     certificate, and will create one for you and add it to pubkeys in your
+     RIPEM home directory. The validity period defaults to 24 months from
+     now, but you may change the validity length with -v.
+   * RIPEM displays your self-signed certificate digest which you should
+     record for giving out to others.
+
+You do not need to put your self-signed certificate on a server or in your
+"finger". The correct way to disseminate it is to prepare a RIPEM signed
+message and send it to your correspondents. They will ask you for your
+self-signed certificate digest and will validate your public key. See
+Self-Signed Certificates above for a description of how to establish a
+trusted channel.
+
+You can still use -d to decrypt version 1.1 and earlier messages if you
+indicate the public key sources using -p or -y. See Managing Keys According
+to RIPEM 1.1 and Earlier above. When RIPEM displays the sender's name it
+will warn you that the sender's public key is not validated.
+
+Also, you can still send messages to users of version 1.1 or earlier. They
+still have access to your public key according to the old model, and
+current RIPEM messages are backwards compatible. When encrypting a message
+using -e you can specify sources of unvalidated keys for the recipients
+using -p or -y. RIPEM will show that the keys are not validated when it
+displays the recipient information.
+
+Preferably, each of your correspondents should upgrade to the current RIPEM
+and you should receive a message from each of them in validation mode to
+create a certificate for them. Once you have done this, you should not need
+to use -p or -y.
+
+
+Managing Keys According to RIPEM 1.1 and Earlier
+
+Once you have generated a keypair, you must publicize the public component
+so that others can use it to send messages to you. Also, you must obtain
+access to the keys of other users. The best way for users to publish their
+public keys is by sending a RIPEM message which contains their self-signed
+certificate, as described in the previous section. However, some users may
+still be using RIPEM 1.1 or earlier which did not have self-signed
+certificates. This section describes the older model where public keys were
+distributed without being signed. (These distribution techniques through
+key servers will be useful in the future when RIPEM will support
+certificate retrieval through remote directories.) If you don't need to
+interoperate with users of RIPEM 1.1 or earlier, skip this section.
+
+In RIPEM 1.1 and earlier, key distribution can be by:
+
+   * Internet key server (requires Internet access for key lookup, but not
+     for publication)
+   * The finger protocol (requires Internet access for key lookup and
+     publication)
+   * Flat files (can be used with little or no network access)
+
+You can choose the techniques that RIPEM uses to find a key by setting the
+-Y command line option. The -Y option takes an argument which is a string
+of one or more of the characters s, g, and f, which stand for Server,
+finGer, and File. For each correspondent, when necessary RIPEM will attempt
+to learn the correspondent's public key by consulting these sources in the
+order specified until the key is obtained.
+
+The default value of the -Y option is "sf", which means that RIPEM first
+attempts to look up a public key via an Internet key server. If it is
+unsuccessful, it attempts to look up the key in a flat file. Read the
+discussion below for details on other related command line options.
+
+
+Key Distribution via the RIPEM Internet Key Server
+
+
+
+Key Server Description and Limitations
+
+If you have Internet access, you can communicate your key to others by
+registering the key on an Internet RIPEM key server. Currently, there is an
+"experimental" RIPEM key server running on the host ripem.msu.edu. This
+host is experimental in that it is an unofficial service which may have to
+be terminated with little or no advance notice.
+
+This RIPEM key server acts as a central repository for public keys, saving
+users the effort of distributing their keys individually to all potential
+correspondents. This key server is not an especially secure mechanism. The
+level of security present in the key protocols is much less than that
+provided, for instance, by the Privacy Enhanced Mail certificate mechanism
+specified in the Internet PEM RFC's. The authenticity of keys maintained on
+the server is not guaranteed. The RIPEM key server is simply a means for
+RIPEM users to conveniently exchange keys.
+
+
+Registering a Key via the Key Server
+
+To allow the maximum number of users to publicize their keys via this
+mechanism, the RIPEM key server accepts key registration requests by
+electronic mail. Although the RIPEM key server itself is connected only to
+the Internet, users of non-Internet networks such as CompuServe, BITNET,
+and so on can register their keys by sending their key registration
+requests via an appropriate network gateway.
+
+To register your key, send the public component (the output file from the
+-P option) to the email address
+
+ripem-register-keys@ripem.msu.edu
+
+Note that only RIPEM versions before 2.0 support the -P option for
+outputting a public key (which is not in a certificate).
+
+On a Unix system, for instance, you can register your key by a command
+like:
+
+mail ripem-register-keys@ripem.msu.edu <mypublickey
+
+The key server will register your public key in its database and will send
+you a confirming message. The key is identified by the email address
+specified during the generation of the key, but the confirming message is
+sent to the address from which the key file was sent.
+
+If you read electronic mail on several different hosts but wish to use the
+same public key on all of them, you can register the key under multiple
+names. You can do this by editing the key file before sending it to the
+server, and adding additional User: lines. (See the separate document on
+file formats.) Or, you can register the key under different names via
+separate email messages.
+
+To subsequently delete your key from the server, encrypt a message starting
+with the string
+
+RemoveKey
+
+with the -m mic-only command line option and send the encrypted message to
+the address:
+
+ripem-remove-keys@ripem.msu.edu
+
+The message must have been encrypted by the owner of the key being removed.
+
+To change your key on the server, generate a new keypair and encrypt the
+public component (the file from RIPEM's -P option) with the -m mic-only
+command line option. Send the result to the address:
+
+ripem-change-keys@ripem.msu.edu
+
+The message must have been encrypted by the owner of the key being changed.
+
+
+
+Obtaining Keys from the Key Server: Live Access
+
+Real-time "live" queries to the RIPEM key server are made directly by RIPEM
+using the UDP IP network protocol. "Live" queries are possible if your
+computer is connected to the Internet, your copy of RIPEM has been compiled
+for network access, and your computer is running the right network
+software. This is often true of Unix computers but is generally not true of
+other computers. At this writing, for instance, the MS-DOS version of RIPEM
+supports only the PC/TCP network software from FTP Software, Inc.
+
+In order to access the key server, RIPEM needs to know its Internet
+address. You can tell RIPEM the address of the server in two ways: you can
+set the environment variable RIPEM_SERVER_NAME to the name of the server,
+or you can specify the server name with the -y command line option. In
+either case, you can specify more than one server name, separating the
+server names with commas (and no blank spaces). If you specify a list of
+server names in this way, when querying servers RIPEM will query the
+servers in the order listed until it obtains the desired public key, or
+exhausts the list.
+
+
+Obtaining Keys from the Key Server: Email-Only Access
+
+For users for whom live UDP network access to the RIPEM key server is not
+possible or not feasible, electronic mail access to the key server has been
+implemented. To obtain a copy of the complete database of registered RIPEM
+keys via email, send a message to the address:
+
+ripem-get-keys@ripem.msu.edu
+
+The subject and content of the message are ignored by the server, and hence
+can be left blank.
+
+The return email message will contain a flat file of public keys, readable
+directly by RIPEM. This same file can be gotten by anonymous FTP to the
+host ripem.msu.edu. This file can be used as described below in the section
+discussing flat files.
+
+
+Key Distribution via the Internet Finger Program
+
+Another means of distributing keys over the Internet is via the finger
+mechanism. Finger is a simple protocol which allows a user to publish
+personal information that can be accessed across a TCP/IP network. For the
+most part, only Unix users can publish their keys using this mechanism. The
+advantage of finger over a RIPEM key server is that it relies only upon the
+correct operation of the sender's and receiver's computers, and upon the
+link between them. If the RIPEM key server is unavailable due to hardware,
+networking, or human errors, finger will be a more reliable choice. In
+general, though, key lookup using finger is slower than the RIPEM key
+server.
+
+To set up your Unix account to give out your public key, include your
+public component in a file named .plan, located in your home directory.
+Your computer must be set up to run the fingerd finger daemon, which is
+normally the case on most Unix computers. Your computer must be up and
+running on the network for a correspondent to be able to access your key
+via the finger mechanism.
+
+In no case do you need the finger program itself; RIPEM contains its own
+implementation of the finger protocol sufficient for the purpose of looking
+up keys. Hence, in some cases you can use the finger mechanism to look up
+someone else's key even if you are unable to publish your own key via
+finger due to the lack of a fingerd server program on your computer. For
+instance, an MS-DOS version of RIPEM is available that can look up keys via
+finger on PC's running the PC/TCP network implementation from FTP Software,
+Inc.
+
+Aside from the -Y g command line option, there are no RIPEM command line
+options specific to the use of the finger mechanism.
+
+
+Key Distribution via Flat Files
+
+The key files generated by the -g option are ordinary text files formatted
+in such a way that a database of public keys can be created simply
+concatenating a collection of separate public key files. RIPEM is capable
+of scanning such flat files. It looks up a user's key based upon email
+address, so there is no ambiguity even if a flat file of keys contains keys
+for a large number of individuals from different sites.
+
+The best way of obtaining a flat file containing keys is from the RIPEM key
+server, via email or FTP as described above.
+
+When RIPEM uses a flat key for public key lookup, it determines the file's
+name in one of three ways:
+
+   * By looking in the file pubkeys in the RIPEM home directory
+   * By using the value of the -p (for public key component) command line
+     argument. If you specify -p mypubfile on the RIPEM command line, RIPEM
+     will use mypubfile as the flat file of public keys.
+   * In the absence of -p, by using the value of the RIPEM_PUBLIC_KEY_FILE
+     environment variable.
+
+It is possible to specify multiple public key files by specifying the -p
+option more than once. This allows you, for instance, to specify a common
+key file shared by a group of people, plus a separate key file for your
+personal correspondents.
+
+
+Automatic Key Distribution via RIPEM Headers
+
+One final way of distributing your public key component is automatic: If
+you are using version 1.1 or earlier and your public key is also in your
+private key file, RIPEM includes your public key in the PEM headers inside
+every message you encrypt. RIPEM takes advantage of this fact when
+deciphering, as follows:
+
+When you are deciphering a message, RIPEM needs to find the sender's public
+component in order to verify the signature on the message. If RIPEM cannot
+find the public key of the sender via the mechanisms described above, or in
+a certificate, it resorts to looking in the PEM headers that immediately
+precede the ciphertext in any RIPEM-enciphered message. If RIPEM finds the
+sender's public component in the header, it will use this key in attempting
+to verify the signature. It will also issue a warning message, since if the
+message is fake, the key inside the message is probably fake as well.
+
+If RIPEM does not find the sender's key, it exits with an error message.

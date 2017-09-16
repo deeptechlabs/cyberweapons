@@ -1,0 +1,28 @@
+#!/usr/local/bin/perl -w -I.
+
+use strict;
+
+use Crypt::Blowfish;
+use Crypt::CFB;
+
+#
+#	These should be chosen randomly, but we're testing Blowfish, not Random.
+#
+my $init = pack("H*", "1234567812345678");
+my $key = pack("H*", "12345678123456781234567812345678");
+my $msg = "the quick brown fox jumps over the lazy dog";
+
+my $block_cipher = new Crypt::Blowfish $key;
+my $cipher = new Crypt::CFB $block_cipher;
+
+my $ciphertext = $cipher->encrypt($init . $msg);
+my $plaintext = $cipher->decrypt($ciphertext);
+
+# Remove IVs
+# substr($plaintext, 0, 8) = '';
+# substr($ciphertext, 0, 8) = '';
+
+print "Plaintext            : ", unpack("H*", $msg), "\n";
+print "Ciphertext           : ", unpack("H*", $ciphertext), "\n";
+print "Decrypted ciphertext : ", unpack("H*", $plaintext), "\n";
+

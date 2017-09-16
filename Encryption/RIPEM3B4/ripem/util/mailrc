@@ -1,0 +1,3 @@
+set editheaders
+set EDITOR=ripem-encrypt
+set indentprefix=:

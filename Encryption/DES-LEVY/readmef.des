@@ -1,0 +1,87 @@
+ 
+Fast, portable DES
+ 
+Files here are:
+ 
+        Makefile.bsd    Use this for BSD systems (with bzero(), setkey())
+ 
+        Makefile.usg    Use this for USG systems (with memset(), no setkey())
+ 
+        Makefile.gen    Use this for non-UNIX systems
+ 
+        fastdes.c       Fast DES subroutines ``fencrypt()'' and ``fsetkey()'',
+                        see source for calling sequence
+ 
+        fdemo.c         Main program for testing & benchmarking.
+                        Knows correct values for a few encryptions,
+                        use a stopwatch for timing.
+ 
+        ftest.c         Main program for testing & benchmarking.
+                        Uses UNIX crypt routines (crypt, encrypt, setkey)
+                        for comparison, times() for timing.
+ 
+``make -f Makefile.xxx'' builds fdemo/ftest and runs a small demonstration.
+ 
+Run ``fdemo'' or ``ftest'' with no parameters for help.
+ 
+The "USG" (System V?) implementation of crypt() is somewhat deficient;
+it lacks the "setkey()" entry point, instead merging it into crypt(),
+and also doesn't allow decryption; ``encrypt()'' performs DES encryption
+on these systems regardless of the encrypt/decrypt flag.  So ftest doesn't
+demonstrate decryption if compiled with -DUSG.
+ 
+There's one performance-determining compilation switch, -DSLOWSHIFT.
+If defined, the code avoids 32-bit shift operations, preferring instead
+to extract 8- and 16-bit quantities from memory.  This may help for 16-bit
+processors or those which do not do shifts efficiently.  It hurts for
+32-bit CPUs with barrel shifters, e.g. the 68020.  Try it and see.
+ 
+If you -DSLOWSHIFT you must also define -DENDIAN=xxx where "xxx" is either
+   BIG    for machines where the MSByte is the low address: 68000, ...
+or LITTLE for machines where the LSByte is the low addr: VAX, 8086, ...
+ 
+If you get it wrong fsetkey() will print a message and dump core at run time.
+ 
+ 
+ 
+Some benchmarks follow.  All were compiled without SLOWSHIFT except as noted.
+ 
+microseconds    fencrypt        fsetkey         UNIX encrypt    UNIX setkey
+per operation   ========        =======         ============    ===========
+ 
+SUN-4           103             133             2466            1300
+ 
+Cray-2          119             137             5637            n/a
+ 
+SUN 3/280       253             346             7950            4400
+ 
+Altos [80386]   384             400             7840            4440
+ 
+SUN 3/180       423             563             12900           6816
+ 
+SUN 3/50        463             626             14300           7600
+ 
+VAX 8600, VMS C 472             456             n/a             n/a
+ 
+Altos 3068      646             986             13550           n/a
+ 
+Plexus P/55 (12.5 MHz 68020), with standard
+Plexus cc       746             1046            21640           n/a
+ 
+Plexus P/55 as above, with
+Greenhills cc   868             1681            21640           n/a
+ 
+VAX11/750, 4.3  1720            2310            32550           17810
+ 
+ATT 3B1         2163            3056            44133           n/a
+ 
+SUN 2/170       2490            3273            44366           26100
+ 
+VAX11/750, SysV 2800            3800            59000           n/a
+ 
+PC w/Turbo C    44000           50000           n/a             n/a
+(American 88 clone)
+ 
+PC w/Turbo C with
+-DSLOWSHIFT     11000           11500           n/a             n/a
+

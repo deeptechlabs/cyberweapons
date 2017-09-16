@@ -1,0 +1,28 @@
+#!/usr/local/bin/perl -w -I/home/TheCrypt/perlmod2
+
+use MIME::Base64;
+use Crypt::MD5;
+
+
+my $ht_entry = 'bill:$1$N3$cNjJ.u9AmQ2acUQzozzV91';
+$ht_entry =~ s/\./\+/g;
+my ($name, $entry);
+($name, $entry) = split(':', $ht_entry);
+
+my ($salt, $epass);
+$epass = decode_base64((split('\$', $entry))[3]);
+$salt = substr($epass, 0, 3);
+substr($epass, 0, 3) = '';
+
+my $hash = Crypt::MD5->hash($salt."scientology");
+$ht_entry = encode_base64($hash->data());
+$ht_entry =~ s/\+/\./g;
+
+print "$ht_entry\n";
+
+
+__END__
+$salt = substr($epass, 0, 4);
+print $epass
+my $salt
+encode_base64($salt.$passwd);

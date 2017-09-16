@@ -1,0 +1,91 @@
+# Version 1.94 has changed the strings_to_key function so that it is
+# now compatible with MITs when the string is longer than 8 characters.
+# If you wish to keep the old version, uncomment the following line.
+# This will affect the -E/-D options on des(1).
+#OPTS1= -DOLD_STR_TO_KEY
+
+# This #define specifies the use of an alternative D_ENCRYPT macro in
+# ecb_encrypt.  The choice of macro can make a %20 difference in the
+# speed.  Unfortunatly the choise of the best macro appears to be very
+# dependant on the compiler and the machine in question.
+# For the following combinations use the ALT_ECB option.
+# Sparc 2 (cc -O4), sun 3/260 (cc -O4)
+# For the following combinations do not use the ALT_ECB option.
+# Sparc 2 (gcc2 -O2), sun 3/260 (cc -O2), mvax2 (cc -O), MSDOS (Turbo Cv2)
+# For other machines, experiment with changing the option and run
+# ./speed to see which is faster.
+#OPTS2= -DALT_ECB
+
+OPTS= $(OPTS1) $(OPTS2)
+#CC=gcc
+#CFLAGS= -O2 $(OPTS)
+CC=cc
+CFLAGS= -O $(OPTS)
+
+LIBDIR=/usr/local/lib
+BINDIR=/usr/local/bin
+INCDIR=/usr/include
+MANDIR=/usr/local/man
+MAN1=1
+MAN3=3
+SHELL=/bin/sh
+
+OBJS=	cbc_cksum.o cbc_encrypt.o ecb_encrypt.o pcbc_encrypt.o \
+	quad_cksum.o random_key.o read_password.o set_key.o string_to_key.o \
+	enc_read.o enc_write.o fcrypt.o
+
+GENERAL=COPYING FILES INSTALLATION Imakefile README VERSION makefile times \
+	vms.com
+DES=	des.c des.man
+TESTING=destest.c speed.c rpw.c
+LIBDES=	des_crypt.man des.h cbc_cksum.c cbc_encrypt.c ecb_encrypt.c \
+	enc_read.c enc_write.c pcbc_encrypt.c quad_cksum.c random_key.c \
+	read_password.c set_key.c string_to_key.c fcrypt.c des_local.h \
+	podd.h sk.h spr.h
+PERL=	des.pl testdes.pl doIP doPC1 doPC2 PC1 PC2 shifts.pl
+
+ALL=	$(GENERAL) $(DES) $(TESTING) $(LIBDES) $(PERL)
+
+LIB=	libdes.a
+
+all: $(LIB) destest rpw des speed
+
+$(LIB):	$(OBJS)
+	/bin/rm -f $(LIB)
+	ar cr $(LIB) $(OBJS)
+	-if test -s /bin/ranlib; then /bin/ranlib $(LIB); \
+	else if test -s /usr/bin/ranlib; then /usr/bin/ranlib $(LIB); \
+	else exit 0; fi; fi
+
+destest: destest.o libdes.a
+	$(CC) $(CFLAGS) -o destest destest.o libdes.a
+	
+rpw: rpw.o libdes.a
+	$(CC) $(CFLAGS) -o rpw rpw.o libdes.a
+
+speed: speed.o libdes.a
+	$(CC) $(CFLAGS) -o speed speed.o libdes.a
+
+des: des.o libdes.a
+	$(CC) $(CFLAGS) -o des des.o libdes.a
+
+tar:
+	tar cf libdes.tar $(ALL)
+
+shar:
+	shar $(ALL) >libdes.shar
+
+clean:
+	/bin/rm -f *.o rpw destest des speed $(LIB)
+
+install: $(LIB) des
+	cp $(LIB) $(LIBDIR)/$(LIB)
+	chmod 644 $(LIBDIR)/$(LIB)
+	cp des $(BINDIR)/des
+	chmod 711 $(BINDIR)/des
+	cp des_crypt.man $(MANDIR)/man$(MAN3)/des_crypt.$(MAN3)
+	chmod 644 $(MANDIR)/man$(MAN3)/des_crypt.$(MAN3)
+	cp des.man $(MANDIR)/man$(MAN1)/des.$(MAN1)
+	chmod 644 $(MANDIR)/man$(MAN1)/des.$(MAN1)
+	cp des.h $(INCDIR)/des.h
+	chmod 644 $(INCDIR)/des.h

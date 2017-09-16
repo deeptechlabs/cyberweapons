@@ -1,0 +1,2 @@
+TYPEMAP
+Math::PRSG		T_PTROBJ

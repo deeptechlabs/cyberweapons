@@ -1,0 +1,4 @@
+Each of the files in mansrc should be processed in the following way:
+
+eqn *.3bm | troff -man
+

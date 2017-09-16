@@ -1,0 +1,9 @@
+PROGS:=		find-prime primes test-primes test-amp ndc share-secret
+ELIBS:=	-lamp -ldes -lhut
+
+all::	$(PROGS) $(OBJS)
+
+include Makerules
+
+test-mp:	test-mp.o mp.o -lmp
+	$(CC) -o $@ $^

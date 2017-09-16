@@ -1,0 +1,37 @@
+This directory contains two programs which transform an input stream of
+bytes in a trivially reversible way.  Neither of these programs nor any
+combination of them achieves privacy, but the results look unintelligible
+to the casual observer.
+
+TRAN takes the histogram of the first block of input bytes to seed a long
+period PRNG (not claimed to be secure).  It uses the output of the PRNG to
+transpose the bytes of input in up to 8KB blocks.  On EOF, the final short
+block is transposed by itself.
+
+PRNGXOR uses a constant array to seed the same PRNG which TRAN uses, and
+XORs each byte of input with a byte from that PRNG.
+
+Both TRAN and PRNGXOR are self-inverses.  They can be used alternately any
+number of times,   { t = TRAN ;  p = PRNGXOR }
+
+	t|p|t|p|t
+
+to produce a more complex self-inverse function but any combination which
+includes an adjacent pair of the same function reduces.  Eg.,
+
+	t|p|t|t|p|t
+
+reduces to
+
+	t|p|p|t
+
+to
+
+	t|t
+
+to a no-op.  This code is published here on clark.net for enjoyment of
+playing with it and for reference for those people who have seen me refer
+to it in my USENET postings.
+
+ - Carl Ellison  (cme@acm.org)
+

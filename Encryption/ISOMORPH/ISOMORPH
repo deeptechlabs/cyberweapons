@@ -1,0 +1,93 @@
+The following might be interesting.  It is a little tool I call
+isomorph.c and turns out to be quite useful for monoalphabetically
+enciphered material.  Note that this is more general than MA
+enciphered plaintext.  If one has several ciphered texts, each
+enciphered in a different alphabet, finding isomorphs can point to
+areas which share the same key, but different alphabets.  Consider
+Bazeries with the same disk ordering, for example, or Enigma with the
+same wheel settings but different plugboard wiring.
+
+Call it with a lexicon attached to stdin and a pattern word as argv[1].
+
+E.g.
+
+./isomorph ABCDEFGHIJKL < /usr/dict/words
+ambidextrous
+bluestocking
+exclusionary
+incomputable
+lexicography
+loudspeaking
+malnourished
+
+gives you a collection of 12-letter words, each containing 12
+different letters.  It's a pity that Schizotrypanum, ambidextrously,
+benzhydroxamic, dermatoglyphic, hydropneumatic, pseudomythical,
+sulphogermanic and undiscoverably (not to mention dermatoglyphics) are
+absent from /usr/dict/words
+
+
+Paul
+
+#include <stdio.h>
+
+main (argc, argv)
+char **argv;
+int argc;
+{
+   char word[30], map[128];
+   int i;
+   int getword (), isomorphic();
+
+/* This is just a silly little driver program to show how isomorphic()
+   might be used.  The character mapping is returned because it might be
+   useful, but we just ignore it here.
+*/
+
+   while (getword (word))
+      if (isomorphic (word, argv[1], map))
+	 printf ("%s\n", word);
+}
+
+int getword (word)
+char *word;
+{
+   int c;
+
+   if (feof (stdin)) return 0;
+   while ((c = getchar ()) != '\n' && c != EOF) *word++ = c;
+   *word = '\0';
+   return 1;
+}
+
+int isomorphic (s, p, map)
+char *s, *p, *map;
+{
+   int i;
+   char revmap[128];
+
+   if (strlen (s) != strlen (p)) return 0;
+   for (i = 0; i < 128; i++) map[i] = revmap[i] = 0;
+   
+   while (*p)
+   {
+      if (!map[*p])
+      {
+	 if (!revmap[*s])
+	 {
+	    map[*p] = *s;
+	    revmap[*s] = *p;
+	 }
+	 else
+	    return 0;
+      }
+      else
+	 if (map[*p] != *s || revmap[*s] != *p) return 0;
+      
+      p++;
+      s++;
+   }
+   return 1;
+}
+
+

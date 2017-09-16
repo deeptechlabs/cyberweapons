@@ -1,0 +1,51 @@
+#!/usr/local/bin/perl -w -I. -I.. -I/home/TheCrypt/perlmod2
+
+use strict;
+
+use PGP::Armour;
+use PGP::SecretKeyCertificate;
+use PGP::UserId;
+use PGP::CmdLine;
+use PGP::RandomStream;
+use PGP::PublicKeyRingEntry;
+use PGP::SecretKeyRingEntry;
+use PGP::Armoury;
+use PGP::UserId;
+
+
+#
+#	Create a random input stream
+#
+my $ris = new PGP::RandomStream;
+ref($ris) || die $ris;
+$ris->goodSeed();
+
+my $ui = new PGP::CmdLine;
+
+
+my $skc = generate PGP::SecretKeyCertificate(
+			-size => 384,
+			-ris => $ris
+		);
+ref($skc) || die $skc;
+
+my $passphrase = $ui->getNewPassphrase();
+$skc->encrypt($passphrase, $ris);
+
+
+my $id = new PGP::UserId 'Gary Howland <gary@systemics.com>';
+ref $id || die $id;
+my $key = new PGP::SecretKeyRingEntry $skc, $id;
+ref $key || die $key;
+
+print PGP::Armoury::message $key;
+print "\n";
+
+my $pkc = $skc->publicKeyCertificate();
+ref $pkc || die $pkc;
+
+my $key = new PGP::PublicKeyRingEntry $pkc, $id;
+ref $key || die $key;
+
+print PGP::Armoury::message $key;
+print "\n";

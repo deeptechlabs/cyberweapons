@@ -1,0 +1,18 @@
+SPEED_DATA_LEN = 64, SPEED_KEY_LEN = 64, SPEED_NO_OF_RND = 64
+key        = 00 00 00 00 00 00 00 00 
+plaintext  = 00 00 00 00 00 00 00 00 
+ciphertext = 2E 00 80 19 BC 26 85 6D 
+----------------------
+SPEED_DATA_LEN = 128, SPEED_KEY_LEN = 128, SPEED_NO_OF_RND = 128
+key        = FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+plaintext  = FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 
+ciphertext = 6C 13 E4 B9 C3 17 15 71 AB 54 D8 16 91 5B C4 E8 
+----------------------
+SPEED_DATA_LEN = 256, SPEED_KEY_LEN = 256, SPEED_NO_OF_RND = 256
+key        = 60 5F 5E 5D 5C 5B 5A 59 58 57 56 55 54 53 52 51 
+             50 4F 4E 4D 4C 4B 4A 49 48 47 46 45 44 43 42 41 
+plaintext  = 1F 1E 1D 1C 1B 1A 19 18 17 16 15 14 13 12 11 10 
+             0F 0E 0D 0C 0B 0A 09 08 07 06 05 04 03 02 01 00 
+ciphertext = 3D E1 6C FA 9A 62 68 47 43 4E 15 74 69 3F EC 1B 
+             3F AA 55 8A 29 6B 61 D7 08 B1 31 CC BA 31 10 68 
+----------------------

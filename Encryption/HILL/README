@@ -1,0 +1,10 @@
+hill - encryption program using Hill cipher
+
+Hill provides file encryption using the Hill cipher.
+In encryption mode, plaintext is read from the standard input
+and ciphertext is written to the standard output
+in accordance with a user-specified key.
+Additional options allow compressing the plaintext
+and/or expressing the ciphertext in ASCII.
+In decryption mode, the operations of encryption mode
+are reversed (provided the right key is supplied).

@@ -1,0 +1,283 @@
+Mimic Functions-- The Manual
+
+Copyright 1991 Peter Wayner
+All Rights Reserved
+
+DRAFT %JDo Not Circulate %JDRAFT % Do Not Circulate 
+
+This is a preliminary copy of a short manual I wrote to accompany the program. 
+Please do not circulate it. Wait for a more final version.
+
+This is the manual to accompany a simple program I've written to compute 
+"Mimic Functions." A more complete description of some of the mathematical
+details of mimic functions can be found in the Cornell Technical report I
+wrote in December 1990. 
+
+
+----------------------------------------------------------------------------
+<><>Introduction:
+
+
+One afternoon, Mike Hopcroft suggested the question, "Why don't you 
+encrypt some message into some other much more benign message?" This 
+piece of software is one of the answers to the questions I discovered. The 
+program will convert a file into something that "looks" like something else-- 
+in this case a something that is defined by a context-free grammar. The 
+cryptographic security it provides is untraditional. Instead of locking the
+data into a very strong mathematical "safe", the information is hidden like a 
+microdot.
+
+The security of the system really depends upon the ability of its output to go 
+undetected. Anyone who jumps ahead and sees some of the output might be 
+somewhat crestfallen. The sentences make grammatical sense and even 
+convey some silly meaning, but the text as a whole does not yield any 
+intelligent thought. This does not mean, however, that it is useless. It might 
+be posted on any one of a number of newsgroups without raising an eyebrow. 
+There is also the important fact that there is so much data flowing around 
+electronically that anyone attempting surveillance will probably be forced to 
+use computers to analyze the data. 
+
+There is another reason why this system is interesting. At this writing, 
+Congress is considering a bill that would mandate that anyone building a 
+"communications system" must provide a way for the "plain text" of any 
+message to be read by the police. Although just what the text of the bill means 
+is a subject for great debate, one straight-forward interpretation is that
+people will be forbidden to transmit encrypted messages. This system
+represents one way for people to circumvent any prohibition.
+
+I would like to make it clear that I did not write the system to give drug-
+runners or terrorists another leg up on the law. Mimic functions are just a 
+demonstration of how easy it is to encode messages in "plain text." Even if 
+encryption is prohibited, it will still be quite easy for anyone to move large 
+volumes of data in the form of something resembling bad, unstoppable poetry. 
+To take a riff from the NRA: When privacy is outlawed, only outlaws will 
+have privacy. 
+
+This manual has several sections. The first is an introduction to Context-Free 
+Grammars which can be skipped by most computer scientists. The second 
+describes the basic semantics of the language which the program uses to 
+describe context-free grammars. After that I describe some of the limitations
+of the software including the problems with ambiguous grammars. 
+
+----------------------------------------------------------------------------
+How To Use the Program:
+
+There are three different files to worry about. The first contains the
+description of the Context-Free Grammar which will be used by the program to
+turn data into something that is English-like. You can write your own versions
+of these grammars using a format that is described below.
+
+The second file is the data file. This can be any form of data. This will be
+converted into the third file, the Mimicry File, by the program. The next
+several sections describe how to construct a context-free grammar. Read them
+and then start to play with the program.
+
+The interface to the program is described in mimic.1, a Unix man page.
+
+----------------------------------------------------------------------------
+What is a Context-Free Grammar?
+
+The concept of a context-free grammar might be unfamiliar for those who 
+haven't slogged through either introductory computer science or linguistic 
+classes. It is one of the basic mathematical constructions that seems to act 
+something like language and many simple sentences can be described in terms 
+of the abstraction. A context-free grammar consists of a set of variables
+(which I will signify here by adding an asterisk ('*') as a prefix to them)
+and terminals which are regular words.
+
+For a simple example, let there be four variables (*start, *name, *verb, and
+*adverb) and eight terminals (Bob, Dan, Fred, ran, talked, played, hard, long).
+The connection between the variables and the terminals is a mechanism known as
+a production. Each production will convert a variable into another set of
+terminals and variables. There may be more than one production associated with
+a variable and usually there will be more than one. (In fact, this system
+needs there to be more than one to work.) 
+
+Here are the three variables and the productions they can yield:
+
+*start --> *name *verb 
+*name --> Bob / Dan / Fred
+*verb --> ran *adverb / talked / played *adverb
+*adverb --> hard/long
+
+The variables are on the left of the arrow and the list of productions is on
+the right separated by slashes ('/'). Notices that two of the productions of 
+variable "*verb" can convert the variable into a terminal and another variable. 
+
+The context-free grammar can be used to produce sentences by taking the first 
+variable, "*start" and using productions to convert it into other terminals and 
+variables. In this example, the sentence, 
+
+"Bob ran long" 
+
+can emerge from the grammar through the following path: 
+
+"*start" --> "*name *verb" --> "Bob *verb" --> "Bob ran *adverb"
+    --> "Bob ran long".
+
+The system can also produce the sentences, "Dan talked" or "Fred played hard"
+but it cannot produce the sentence "Bob talked long". 
+
+The trick to the mimic functions is using the data to be hidden to select the 
+productions. These productions can be recovered by a process known as 
+"parsing." This is something like what grade-school teachers called 
+"diagramming sentences." It is just a more consistent-- which is important 
+here because the system should find one way to parse a message. (There is 
+more information about this problem later.) 
+
+----------------------------------------------------------------------------
+How to describe Context-Free Grammars to the Mimic Function so it can use them:
+
+The language for describing the context-free grammars is straight-forward. 
+First of all, each variable must begin with an asterisk ('*'). Some examples
+are "*noun", "*city" or "*Toxic-Waste-Dump." If the asterisk is in the middle
+of the word, as it is in the word "M*A*S*H", then it is treated like a normal 
+letter. All other words including punctuation are treated as terminals. Spaces 
+are the separator between terminals. 
+
+There are two other reserved character: the slash, "/" and the equals sign "=". 
+The slash separates the different productions and the equals sign is used to 
+join a variable with its productions. Two slashes signify the end of the set of 
+productions for a variable. 
+
+Here is a simple example with four productions:
+
+*name = Wolfgang / .25 / MoonUnit /.25 / Simplicity /.125 / Klu-less / .25//
+
+Notice that every other entry in the list is a number. These numbers are not 
+productions, but the probabilities that govern the preceding production. When 
+the Mimic function finds itself with the variable "*name" and it is trying to 
+decide what to produce with it, it uses the probabilities to weight its choice. 
+The probabilities do not have to add up to 1 or 100; they are relative. They
+are also approximate, although I'm not going to bother to describe why right 
+here. The answer is in the tech report on mimic functions. 
+
+Here is a more complicated CFG defined for the Mimic Function Generator:
+
+*AAStart = The rockstar's son, *name *action /.5 / 
+*name = Wolfgang, / .25 / MoonUnit, /.25 / Simplicity, /.125 / Klu-less, / 
+.25//
+*action = followed his father and played *instrument *critical-assessment 
+/.25/
+slept too late and ignored his *instrument *critical-assessment/.25/
+drove to the Dairy Queen with his *instrument /.25/
+serenaded the daughter of the Daryl Gates with his *instrument *critical-
+assessment/.25//
+*instrument = fret-less bass /.25/ electric mandolin /.45 / asymmetric acoustic 
+guitar /.1/
+electric drum machine /.25 //
+*critical-assessment = badly /.5/ with the inspiration of 12 muses plus 2 /.25/ 
+unabashedly /.1/ with a strong commitment to the environment /.25 //
+
+Notice that one variable is called "*AAStart." Every CFG needs a place to 
+begin. The current version of the Mimic Function generator chooses the first 
+variable in alphabetical order. This is just a result of pure laziness on my
+part. Later versions will probably allow you to specify any particular start
+symbol.
+
+Here are a few strings produced by the more complicated CFG above:
+
+"The rockstar's son, Wolfgang, serenaded the daughter of Daryl Gates with his 
+electric drum machine with the inspiration of 12 muses plus 2. "
+
+"The rockstar's son, Simplicity, followed his father and played fret-less bass 
+badly."
+
+Right now I've required that all CFG's presented to the Mimic Function 
+generator be in what is called "Greibach Normal Form." This means that the 
+terminals come before the variables and every production takes the form of 
+either "<variable> = <terminal> ... <terminal> " or "<variable> = <terminal> 
+... <terminal><variable> ... <variable>" Note that "lists" of a single terminal 
+or a single terminal and a variable are permissible. "*instrument = guitar" is 
+okay, but "*instrument = *wild-adverb *even-wilder-adverb guitar" is not 
+because the variables come before the terminal. 
+
+Not all grammars are good for this machine because some have two or more 
+different ways they can be parsed. This is often referred to as being 
+"ambiguous." The restriction to Greibach Normal Form is an attempt to avoid 
+this problem and keep the CFG unambiguous. You can still screw it up, but the 
+format is makes it more obvious what is going on. It is possible to convert any 
+CFG into one in Greibach Normal Form so this restriction is only an 
+inconvenience. I think it is possible to play with the parser and use non-
+Greibach Normal Form CFGs, but I haven't had the time yet. Please let me 
+know if you think about this restriction. It is more the result of coding this
+up late at night than any deep thought about the issue.
+
+Here is an example of an ambiguous grammar:
+
+*AAstart = *first *second//
+*first = love / .5 / love and /.5//
+*second = death /.5/ and death /.5//
+
+As you can see, the phrase "love and death" can be produced in two ways. This 
+is a big headache for the parser and you should avoid this situation at all
+costs. Right now the parser will notice when it encounters ambiguities and
+signal an error, but in some sense this is too late. I am considering building
+in a function that will determine whether a certain grammar can lead to 
+ambiguity, but I haven't done it yet.  It will probably not be general because
+it is undecidable whether a particular language defined by a grammar is always 
+ambiguous in all manifestations. In the meantime, you can only detect 
+ambiguity by generating some mimicry and then parsing it. For that reason, try 
+to avoid ambiguous grammars at all costs. Keeping them in Greibach Normal 
+Form makes it somewhat easier to determine if this will happen.
+
+I hope you will take this occasion to generate some truly awesome grammars 
+that spew out funny or at least inscrutable prose. It might be interesting to 
+create one that mimicked Alan Ginsberg or the grand-daddy of the concept of 
+going-with-the-flow, James Joyce. If you come up with something interesting, 
+please send it to me.
+
+----------------------------------------------------------------------------
+Comments...
+
+Many people like to include comments in sections of text. I haven't included 
+any special command, though, because it is possible to include comments in a 
+trivial way. Simply define a variable that is never used elsewhere in the 
+language. For instance:
+
+*Unused = This grammar Copyright 1991 Jonathan Fishbreath / All Rights 
+Reserved /
+if found, please return to 111 Bayside Drive, Ocean Terrace, FL 94232 //
+
+If the variable, "*Unused" is not used anywhere else it can never be produced 
+and make its way into the text. I realize this is a cheap solution, but it has
+the advantage of not turning another character into a special form. 
+
+----------------------------------------------------------------------------
+Notes on Randomness....
+
+The Mimic Function generator comes with its own built-in random-number 
+generator that scrambles the state of the machine every time a production is 
+used. It is a cheap version of one derived by Steven Wolfram based on some of 
+his work with Cellular Automata. I can't seem to find the reference right now. 
+I haven't determined the  security the current random number generator and 
+you are welcome to substitute your own. It is also possible to turn it off by 
+setting the compiler variable in that section of code to false.
+
+----------------------------------------------------------------------------
+Errors...
+
+When the Mimic Function program starts to read in a grammar, it might 
+encounter some bad syntax. It will signal this with an error and often skip to 
+the end of the definition of that variable which is marked by the double-slash, 
+'//'. Often the error will be obvious, but if it isn't you can print out the
+parts of the grammar that it managed to understand and then work backwards.
+
+----------------------------------------------------------------------------
+Notes on problems with the software:
+
+The parser is pretty brute-force. The user-interface is minimal. The code could 
+be much more efficient. I apologize for all of these inadequacies. I'm afraid 
+that some bits might get lost off the end of the program when the grammars 
+get large, but I'm not sure. I wrote it in a weekend to demonstrate that it
+could be done. Thank you for putting up with them. Please feel free to make 
+suggestions. Really, just send them off to:
+
+Peter Wayner
+Department of Computer Science
+Cornell University
+Ithaca, NY 14853
+
+or
+
+wayner@cs.cornell.edu

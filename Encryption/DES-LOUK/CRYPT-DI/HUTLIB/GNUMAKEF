@@ -1,0 +1,2 @@
+LIBNAME:=	libhut.a
+include Makerules

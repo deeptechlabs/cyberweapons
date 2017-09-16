@@ -1,0 +1,20 @@
+
+	Possible goals for future releases:
+DES & DES3 - Handle parity properly
+Check that 3DES is correct
+Instrument randpool to optionally track stats on what's going into it
+
+	Generic cryptographic stuff:
+Optimize the feedback modes a bit
+Test modules further for endianness independence.
+Add checks for Ctrl-C to lengthy encryption/decryption loops.  (Or
+  maybe I shouldn't bother for the sake of speed?)
+
+	Documentation:
+Explain unpacking the kit better.
+Better indexing; tell me what you've found lacking in the index!
+
+	Demo programs:
+Shadowing of files into X parts
+Secure talk or telnet
+

@@ -1,0 +1,118 @@
+#!/usr/local/bin/perl -w
+
+use strict;
+
+use Stream::IO;
+use Math::MPI;
+use Math::Random;
+use Math::TestPrime;
+use Crypt::RSAKeyGen;
+use Crypt::RSASecretKeyPair;
+use PGP::RandomStream;
+use PGP::Armoury;
+use PGP::PublicKeyCertificate;
+use PGP::SecretKeyCertificate;
+use PGP::UserId;
+use PGP::CmdLine;
+use PGP::PacketFactory;
+
+
+#
+#	Generate P and Q for an n-bit N
+#	When complete, called deriveKeys and return the RSASecretKeyPair.
+#
+sub generateKeys
+{
+	my $ris = shift;
+	my $nbits = shift;
+
+	#
+	# What is the minimum?
+	# I know the code will break sometime around here,
+	# but I'm not exactly sure at what minimum.
+	#
+	if ($nbits < 16)
+	{
+		warn("Number of bits too small ($nbits)");
+		return;
+	}
+
+	my $bits = int(($nbits) / 2);
+
+	my $msg = "///Put+your+vanity+message+here///";
+	my $nd = PGP::Armoury::decode_base64($msg);
+	my $nbd = "1111" . unpack("B*", $nd);
+	print $nbd;
+	my $n;
+	do {
+print ".";
+		$n = Math::Random::randomSpecial($ris, 2 * $bits, $nbd, "");
+	} while (!Math::TestPrime::isPrime($n));
+
+	my $p;
+	do {
+print ".";
+		$p = Math::Random::randomSpecial($ris, $bits, "11", "1");
+	} while (!Math::TestPrime::isPrime($p));
+
+	my $q = new Math::BigInteger;
+	Math::BigInteger::div($q, new Math::BigInteger, $n, $p);
+
+	do {
+print ".";
+		$q++;
+	} while (!Math::TestPrime::isPrime($q));
+
+print "\n";
+print "Generating keys ...";
+
+
+	my $e = new Math::BigInteger 3;
+	my $sk = Crypt::RSAKeyGen::deriveKeys($p, $q, $e);
+	ref($sk) || die "Bad key";
+
+print "\n";
+print "Testing key ...";
+$sk->test();
+print "\n";
+
+	$sk;
+}
+
+
+#
+#   Create a random input stream
+#
+my $ris = new PGP::RandomStream;
+ref($ris) || die $ris;
+$ris->goodSeed();
+
+my $ui = new PGP::CmdLine;
+
+my $sk = generateKeys($ris, 512);
+ref($sk) || die $sk;
+
+my $passphrase = $ui->getNewPassphrase();
+
+my $skc = new PGP::SecretKeyCertificate $sk, $passphrase, $ris;
+ref $skc || die $skc;
+my $pkc = new PGP::PublicKeyCertificate $sk->publicKey();
+ref $pkc || die $pkc;
+
+my $id = new PGP::UserId 'joe';
+
+my ($err, $secpkt, $pubpkt, $idpkt);
+($secpkt, $err) = PGP::PacketFactory::saveAsString($skc);
+defined $err && die $err;
+($pubpkt, $err) = PGP::PacketFactory::saveAsString($pkc);
+defined $err && die $err;
+($idpkt, $err) = PGP::PacketFactory::saveAsString($id);
+defined $err && die $err;
+
+print "-----BEGIN PGP SECRET KEY BLOCK-----\n\n";
+print PGP::Armoury::messageWithChecksum("$secpkt$idpkt");
+print "-----END PGP SECRET KEY BLOCK-----\n\n";
+
+print "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n";
+print PGP::Armoury::messageWithChecksum("$pubpkt$idpkt");
+print "-----END PGP PUBLIC KEY BLOCK-----\n\n";

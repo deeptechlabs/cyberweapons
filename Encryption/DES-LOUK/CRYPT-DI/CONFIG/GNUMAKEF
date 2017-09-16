@@ -1,0 +1,2 @@
+PROGS:=		config
+include Makerules

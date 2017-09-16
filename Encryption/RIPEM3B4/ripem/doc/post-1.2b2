@@ -1,0 +1,153 @@
+Announcing the first public Beta release of RIPEM version 1.2.
+
+RIPEM 1.2b2 contains extensive modifications by Jeff Thompson of RSA
+Data Security to provide a measure of true Internet PEM interoperability,
+and to implement a "direct-trust" model for public keys.  This new
+certificate-based trust model is more secure than RIPEM 1.1's but
+less hierarchical than Internet PEM's.
+
+RIPEM 1.2 can read all RIPEM 1.1-formatted messages, and can also
+read genuine MIC-ONLY and MIC-CLEAR Internet PEM messages.  RIPEM
+1.2 cannot read or produce encrypted Internet PEM messages.  RIPEM
+1.2's outputed messages can be read by RIPEM 1.1.
+
+Before using RIPEM 1.2 to produce messages, you must first generate
+a "self-signed" certificate.  This is done automatically during
+key generation.  For current RIPEM users, you can create a self-signed
+certificate by simply invoking RIPEM in change-password mode:
+
+  ripem -c -S output-private-key-file -P output-public-key-file
+
+RIPEM 1.2beta2 is distributed in source form only.  RIPEM 1.1a
+remains the production version until the 1.2 beta period is over.
+The 1.2 beta period is not expected to last long.  However, RIPEM
+2.0, with certificate chaining ("web-of-trust") and full Internet
+PEM interoperability, is expected to be available within a few
+months.  (Note:  1.2beta1 was not a public release.)
+
+Jeff's work was inspired by user feedback and by discussions on
+the "certem" mailing list, as well as by his own creativity.
+
+As usual, this distribution can be found on ripem.msu.edu.
+Only US and Canadian citizens/permanent residents are allowed
+access; see ripem.msu.edu:/pub/crypt/GETTING_ACCESS.
+
+The following lists the changes made between successive releases of
+RIPEM.  The most recent version is 1.2beta2.
+
+Changes between 1.1 and 1.2beta2:
+
+*** Note:  All of the changes between 1.1 and 1.2beta1 marked by "*"
+were done by Jeff Thompson of RSA Data Security.
+
+* Added -H option or RIPEM_HOME_DIR environment variable to specify
+the RIPEM home directory where all the user's "local" data is kept
+such as private key and certificates created by the user.  The public
+and private keys files in the RIPEM home dir are searched before
+files given by -p and -s.
+
+* Generate (-g) also writes a self-signed certificate to the output
+public key file (-P or pubkeys in the RIPEM home dir).  The
+distinguished name has the Persona format with the RIPEM user name as
+the common name.  This displays the users distinguished name and
+certificate digest (useful for reading over the phone to other users
+who are doing a validation.)  (Jeff Thompson; below changes also by
+him.)
+
+* Change password will append a self-signed certificate to the public
+key output file (-P or pubkeys in the RIPEM home dir) if it doesn't
+already exist in the public key files specified by -p (or pubkeys in
+the RIPEM home dir).  This is useful for upgrading to RIPEM 1.2: a
+user only has to change their password to create a self-signed cert.
+Example: ripem -c -H <my home dir> -s <old private key file> -p <old
+public key file> -u <username>.  Note that the private key output
+file is implicitly in the RIPEM home dir which has the effect of
+"transferring" the private key from the -s file to the home dir -
+very useful for ugrading to 1.2.  After this, -s should never be
+necessary.
+
+* Messages prepared by RIPEM include the self-signed certificate in
+an Originator-Certificate field.  This allows other RIPEM users to
+directly validate the sender's public key.  Also, any MIC-ONLY or
+MIC-CLEAR message is "Persona ready" for sending to
+persona-request@rsa.com to get certified under the Persona CA.
+
+* When receiving a message and the sender is not recognized, RIPEM
+can validate the sender's public key if the message has a self-signed
+certificate and -v is used.  RIPEM creates a validation certificate
+for the sender valid for the number of months given by -v, and
+appends it to the public key file given by -P (or pubkeys in the
+RIPEM home dir).
+
+* When preparing an encrypted message, write the full names and
+validation status of the recipients to the debug file.  This is a
+security measure that forces the user to make sure that the message
+is being encypted for the right people.
+
+* On receiving a message, write sender info to the debug file to give the
+sender username or distinguished name and to give the key status,
+such as "key found but not validated" for RIPEM 1.x keys or "status
+VALID" for validated keys.
+
+* Added -v option to give the number of valid months of self-signed
+certificates (during key generation and change password) and new
+validation certificates created when receiving.  For key generation
+and change password, -v is optional and defaults to 24 months.
+
+* Accept Proc-Type verison 4 as well as 2001, for compatibility with
+future RIPEMs which will have full PEM compliance.
+
+* Added -K option which is the new password when changing the password.
+
+* (Bug fix) When changing the password (-c), do not use -k or
+RIPEM_KEY_TO_PRIVATE_KEY as the new password.
+
+* Allow the output private key file (-S or privkey in the RIPEM home
+dir) to be the same as the input private key file when changing the
+password, so the private key file can change "in place".
+
+* When changing passwords, always display the user's distinguished name
+and certificate digest if possible.  This way, a user can
+find their certificate digest just by changing their password.
+
+* The RIPEM user's public key is now derived from the
+password-protected private key, which is more secure than looking it
+up in the public key file.  (Jeff Thompson)
+
+* Use file randomin in the RIPEM home dir if -F is not given on the
+command line.  The random input file is now checked for in this
+order: -F in RIPEM_ARGS, -F on the command line, randomin in the RIPEM
+home dir, and finally RIPEM_RANDOM_FILE environment variable.
+
+* Modified util/ripem.el as follows:
+Added ripem-change-password and ripem-validate-and-receive.
+Removed generated-public-key-file since this is now in ripem-home-dir.
+Now, ripem-secret-key-file is used only during change password.
+Always prompt for password when preparing or receiving.
+Added ripem-home-dir which defaults to ~/.ripemhome . Create it if it
+  doesn't exist.
+Modified ripem-list-users to include pubkeys in ripem-home-dir.
+Change ripem-process-region to allow displaying output in another
+  window.  This is used during receive so that the original encrypted
+  message is not erased.   (Jeff Thompson)
+
++++ Changed the debug level of some messages so that -D 1 gives
+you only messages regarding the key status of recipients and senders.
+To get the output you used to get from -D 1, you now need to use
+-D 2.
+
++++ Made minor lint-type changes to getsys.c and keyman.c.
+
++++ Changed RIPEM termination to exit with errorcode 1 if RIPEM
+needs to use the message's copy of the public key of the sender 
+to decrypt a message.  (Christopher Wren)
+
++++ Changed a conditional compilation line in bemparse.c to use
+__STDC__ instead of __GNUC__ for HP.  (Mark Henderson)
+
++++ Added -Umips to makefile for SGI entry.  (Mark Henderson)
+
++++ Updated ripem-faq and ripem-attacks documents.  (Marc VanHeyningen)
+
++++ Added EMACS interface to RIPEM and PGP, mailcrypt.el.  (Jin S. Choi)
+

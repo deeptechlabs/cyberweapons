@@ -1,0 +1,30 @@
+This module requires the following Perl extensions:
+
+	Crypt-Blowfish
+	Crypt-DES
+	Crypt-IDEA
+	Crypt-MD5
+	Crypt-SHA
+	Math-BigInteger
+	Math-PRSG
+	Math-TrulyRandom
+
+and the following modules:
+
+	Math-Systemics
+	Stream
+
+and for the keyserver:
+
+	Message-0.01.tar.gz
+
+
+These are all available in the Cryptix-1.1 cryptographic toolkit,
+downloadable from http://www.systemics.com/software/
+
+Any comments, suggestions and help on this module would be much
+appreciated.  Mail bug reports to pgp-perl-bugs@systemics.com
+
+There is a mailing list available for users of this software.
+Check out our homepage (http://www.systemics.com/software) for
+more details.

@@ -1,0 +1,90 @@
+Index for CBW programs and data files.
+
+
+Template:
+
+Program Name:  
+Description:   
+Brief Doc:     
+Maintainer:    
+Files:         
+
+
+Programs:
+
+Program Name:  cbw
+Description:   Interactive code breaker's workbench.
+Brief Doc:     Execute "runcbw", see cbw.doc.
+Maintainer:    Bob Baldwin  (Baldwin@mit-xx) (eddie!baldwin.UUCP)
+Files:         dblock.h, layout.h, parser.h, specs.h, window.h,
+               banner.c, cblocks.c, dblock.c, dline.c, gblock.c,
+               keylib.c, knit.c, parser.c, screen.c, start.c,
+               stats.c, triglist.c, trigram.c, user.c, webster.c,
+               windowlib.c
+
+
+Program Name:  enigma
+Description:   Identical to crypt command based on one-rotor enigma.
+Brief Doc:     enigma <infile >outfile    It will ask for key.
+Maintainer:    Bob Baldwin
+Files:         enigma.c
+
+
+Program Name:  zeecode
+Description:   Zeecode assumes that the file zeecode.perm contains a .perm
+	       file produced by cbw.  It uses the A0 and Zee permutations
+	       in that file to decode the standard input, printing results
+	       on the standard output.
+Brief Doc:     zeecode <cipherfile >cleartextfile
+               Reads zeecode.save to get A0 and Zee.
+Maintainer:    Bob Baldwin
+Files:         zeecode.c
+
+
+
+Data Files:
+
+Template:
+
+File Name:	
+Description:	
+
+
+File Name:	*.slice
+Description:	Pieces of .login file to init CBW shell variables.
+
+File Name:	graphics
+Description:	Cat'ing this file displays all the graphics characters
+		on heath and vt100 terminals.
+
+File Name:	cbw.log
+Description:	History of changes to cbw source.
+
+File Name:	cbw.doc and cbw.mss
+Description:	User manual for cbw.
+
+File Name:	trigrams.stats
+Description:	Frequencies of common trigrams.
+
+File Name:	mss-bigram.stats
+Description:	Bigram statistics for scribe files. 
+
+File Name:	mss.stats
+Description:	Monogram statistics for scribe files. 
+
+File Name:	*.cipher
+Description:	Ciphertext file read by cbw.
+
+File Name:	*.perm
+Description:	Permutations saved by cbw to record partial solutions
+		to a ciphertext.
+
+File Name:	*.txt
+Description:	Original text used to create the .cipher files.
+
+File Name:	*.words
+Description:	Lists of words for use with the probable-word guessing
+		strategy.
+
+File Name:	test3.words
+Description:	Probable words for test3.cipher.

@@ -1,0 +1,21 @@
+#  simple makefile for elliptic curve stuff for Borland C++ v4.0
+
+CC = bcc -ml -DANSI_MODE
+LD = bcc -ml
+
+test: eliptic.obj bigint.obj support.obj krypto_knot.obj
+	$(LD) -eeliptic.exe krypto_knot.obj support.obj eliptic.obj bigint.obj
+
+krypto_knot.obj:	eliptic.h bigint.h eliptic_keys.h krypto_knot.c
+	$(CC) -c -O krypto_knot.c
+
+support.obj:	eliptic_keys.h eliptic.h bigint.h support.c
+	$(CC) -c -O support.c
+
+eliptic.obj:	eliptic.h bigint.h eliptic.c
+	$(CC) -c -O eliptic.c
+
+bigint.obj:	bigint.h bigint.c
+	$(CC) -c -O bigint.c
+	$(CC) -c -O bigint.c
+

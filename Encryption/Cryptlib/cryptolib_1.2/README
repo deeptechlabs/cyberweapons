@@ -1,0 +1,27 @@
+/*
+ * This is version 1.2 of CryptoLib
+ *
+ * The authors of this software are Jack Lacy, Don Mitchell and Matt Blaze
+ *              Copyright (c) 1991, 1992, 1993, 1994, 1995 by AT&T.
+ * Permission to use, copy, and modify this software without fee
+ * is hereby granted, provided that this entire notice is included in
+ * all copies of any software which is or includes a copy or
+ * modification of this software and in all copies of the supporting
+ * documentation for such software.
+ *
+ * NOTE:
+ * Some of the algorithms in cryptolib may be covered by patents.
+ * It is the responsibility of the user to ensure that any required
+ * licenses are obtained.
+ *
+ *
+ * SOME PARTS OF CRYPTOLIB MAY BE RESTRICTED UNDER UNITED STATES EXPORT
+ * REGULATIONS.
+ *
+ *
+ * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+ * REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+ * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+ */
+

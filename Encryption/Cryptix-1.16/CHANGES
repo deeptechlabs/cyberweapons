@@ -1,0 +1,40 @@
+$State: Exp $
+	Fixed Perl 5.004 'hidden variables' warnings in test.pl scripts
+
+	Stream:
+		Adds UnsignedInt*() methods for PGP
+
+		Dropped 'use POSIX' in File*.pm - watch this as it is not
+		clear what used it.  It caused warnings with clashes of
+		definitions.
+
+		DataEncoding::*codeArray now handles the empty array
+
+	Math-Lib::MPI has deprecated methods
+
+	Some methods now die instead of return when programmer errors are
+	detected.
+
+	Some of the revisions are regressed from those of 1.15 ... due
+	to CVS migrations.
+
+
+1.15:
+	Placed everything into CVS
+
+1.1b:
+	Maintenance release to correct missing SHA0 due to bad MANIFEST.
+	Manually added SHA0 (3 sets of lines) to MANIFEST - remade.
+	MANIFEST is still not made correctly, I couldn't quite make it tick.
+
+	Note that I haven't tested the make install with this yet...
+
+	Still some warnings on install ==> make
+
+		Warning: the following files are missing in your kit:
+		Math/BigInteger.pod
+		Math/PRSG.pod
+		Math/TrulyRandom.pod
+
+	They all seem to be about pod's so no big drama.
+

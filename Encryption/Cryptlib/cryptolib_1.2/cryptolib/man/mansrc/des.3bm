@@ -1,0 +1,125 @@
+.\" @(#)des.3bm 91/12/13;
+.EQ
+delim $$
+.EN
+.TH DES 3BM
+.SH NAME
+key_crunch, setupDESState, setupTripleDESState,
+blockEncrypt, blockDecrypt,
+block3Encrypt, block3Decrypt,
+bufferEncrypt, bufferDecrypt,
+buffer3Encrypt, buffer3Decrypt
+.SH SYNOPSIS
+.nf
+\fB#include "libcrypt.h"\fR
+
+\fC
+typedef struct {
+.in +5
+ModeType mode;
+unsigned char icv[8];
+unsigned char int_key[128];
+int count;
+Ulong setup;
+.in -5
+} DESState;
+
+typedef struct {
+.in +5
+ModeType mode;
+unsigned char icv[8];
+unsigned char int_key[3][128];
+int count;
+Ulong setup;	/* Set to 0xdeadbeef when setupTripleDESState is done */
+.in -5
+} TripleDESState;
+
+typedef int ModeType;
+
+#define ECB 10
+#define CBC 20
+#define OFM 30
+#define ECB3 13
+#define CBC3 23
+#define OFM3 33
+
+\fR
+
+.LP
+\fBvoid setupDESState (DESState *s, unsigned char *key, unsigned char *icv, ModeType mode)\fR
+.LP
+\fBvoid setupTripleDESState (TripleDESState *s, unsigned char *key[3], unsigned char *icv, ModeType mode)\fR
+.LP
+\fBvoid key_crunch (unsigned char buffer[], int buflen, unsigned char key[8])\fR
+.LP
+\fBvoid blockEncrypt (unsigned char block[8], DESState *state)\fR
+.LP
+\fBvoid blockDecrypt (unsigned char block[8], DESState *state)\fR
+.LP
+\fBvoid bufferEncrypt  (unsigned char *buf, int buf_len, DESState *state)\fR
+.LP
+\fBvoid bufferDecrypt  (unsigned char *buf, int buf_len, DESState *state)\fR
+.LP
+\fBvoid block3Encrypt (unsigned char block[8], TripleDESState *state)\fR
+.LP
+\fBvoid block3Decrypt (unsigned char block[8], TripleDESState *state)\fR
+.LP
+\fBvoid buffer3Encrypt (unsigned char *buf, int buf_len, TripleDESState *state)\fR
+.LP
+\fBvoid buffer3Decrypt (unsigned char *buf, int buf_len, TripleDESState *state)\fR
+.LP
+\fBvoid bignumDesEncrypt (BigInt, unsigned char key[8])\fR
+.LP
+\fBvoid bignumDesDecrypt (BigInt, unsigned char key[8])\fR
+.LP
+\fBvoid bignumCBCDesEncrypt (BigInt, unsigned char key[8])\fR
+.LP
+\fBvoid bignumCBCDesDecrypt (BigInt, unsigned char key[8])\fR
+.LP
+\fBvoid blockEightBitCFMEncrypt (unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8])\fR
+.LP
+\fBvoid blockEightBitCFMDecrypt (unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8])\fR
+.LP
+\fBvoid blockSixtyFourBitCFMEncrypt (unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8])\fR
+.LP
+\fBvoid blockSixtyFourBitCFMDecrypt (unsigned char in[8], int len, unsigned char sreg[8], unsigned char key[8])\fR
+.fi
+.SH DESCRIPTION
+.LP
+Single DES modes use DESState and $setupDESState$ to initialize state.
+Triple DES modes used TripleDESState and $setupTripleDESState$.
+Each of these setup functions transform a key into a 128 byte expanded key,
+set the mode in the state and do the appropriate thing with initialization
+vectors (icv's).
+
+$key_crunch$R expects input which is $numbytes$ long.  This is converted to
+an 8 byte key to be used in the block encryption functions.
+
+$blockEncrypt$ and $blockDecrypt$ are the basic DES block [en/de]cryption
+functions.  The mode in the state causes the appropriate mode implementations
+to function.
+.P
+The buffer encryption functions operate on buffers 8 bytes at a time.
+These functions handle buffers which are not an even multiple of
+8 bytes in a way which is interoperable with the corresponding buffer decryption
+functions.  The ECB buffer encryption functions encrypt an array containing
+the first 8 digits [0-7] and XOR the result with the remaining fractured block.
+The CBC and OFM functions just continue in their normal mode but only
+XOR their icv or mask with the appropriate number of bytes left in the
+fractured block.
+.P
+The functions which contain a 3 in their name, are triple DES [en/de]cryption
+functions which correspond to the single encryption functions described.
+Each of these assumes three 8 byte DES keys.  The most commmon way of using
+triple DES is to make key 1 and key 3 the same.  All of these functions
+do encryption as, encrypt[key1], decrypt[key2], encrypt[key3] and decryption
+as decrypt[key1], encrypt[key2], decrypt[key3].
+.P
+The bignum DES [en/de]cryption functions use eith CBC or ECB modes
+and single DES encryption.  Note that the length of an encrypted
+bignum is 8 bytes longer than the original.  The decrypt functions
+take this into account.
+.P
+The cipher feedback mode (CFM) functions are currently under revision.
+.fi
+

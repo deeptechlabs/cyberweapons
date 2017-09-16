@@ -1,0 +1,23 @@
+
+  Improvements TO DO as soon as possible:
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  1 - To move this code to OOP so other crypto systems may be added.
+  2 - Add UU/XX encode/decode routines, and IDEA routines (stronger than DES).
+  3 - Create a Multi-Password Manager system.
+  4 - Create a Menuing system to ease usage.
+  5 - Making a nice Help System to explain all the fuzz about crypto-stuff
+  6 - Make the move to W95 (it seems to be solid by now)
+  7 - Getting some $$$ from all the work i'll be doing by then...
+
+
+  Have a suggestion? I would like to ear it!
+
+  Cordially,
+  Dutra de Lacerda
+
+
+P.S.: Other things i would like:
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  1 - To see again a free Timor with the survivors of theyr holocaust.
+  2 - To see the politicians, and the others, following the Dodo...
+  3 - To Wake up in the morning and know i can trust...

@@ -1,0 +1,52 @@
+Shamir secret sharing
+
+   Based on "How to Share a Secret", by Adi Shamir,
+   Communications of the ACM, November, 1979, Volume 22, Number 11, page
+   612.
+
+   Copyright (C) 1993 Hal Finney, 74076.1041@compuserve.com.
+   Version 1.1, October, 1993.
+   This software is being placed in the public domain.
+
+   This program divides a file into n pieces, such that any k of them are
+   sufficient to reconstruct the original file, but that k-1 pieces give
+   NO information about the original file (except its length).
+
+   It has been written for and tested on DOS and Unix systems.
+
+   To split up a file, use the command;
+      secsplit n k file
+   where n is the number of pieces to split it up to, and k is the number
+   of pieces needed to reconstruct it.  k should be <= n and > 1.  If you
+   get n and k backwards the program will swap them for you so don't worry
+   too much about remembering the order.
+
+   The program will output to file.001, file.002, ....  If the file has an
+   extension (e.g. "file.c") the extension will be stripped off before the
+   ".001", etc., are added (so "file.c" will also output to "file.001", etc.).
+
+   To reconstruct a file, use the command:
+      secsplit k file.*
+   or
+      secsplit k file file1 file2...
+   k should be >= the k used when the file was split; the minimum number of
+   pieces needed to reconstruct the file.  If you have too few pieces then
+   the program won't give an error, but you'll get the wrong answer.
+
+   The first command form is for DOS or other systems which won't expand the
+   ".*" for you; the program scans for file.000, file.001, etc., and uses the
+   first k of them that it finds.  In the second form, the number of files
+   given should be at least k, and again the first k of them will be used.
+
+   The output in the first form will be file.out; in the second form it will
+   be the first file on the command line, stripped of its extension, and
+   with ".out" added, so generally it will be file.out too.
+
+   Shamir's algorithm relies on cryptographically strong, unguessable,
+   random numbers.  This version of the program uses the IDEA cryptographic
+   algorithm used in the PGP encryption program to generate its random
+   numbers.  This is thought to be a strong source of random numbers.
+   The main potential weakness is in the initialization of the random
+   number generator, which is based on the contents of the file being
+   split, along with the current time of day.  This should be an unguessable
+   seed as long as the contents of the file are not known by the attacker.

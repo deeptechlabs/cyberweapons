@@ -1,0 +1,542 @@
+
+
+
+RIPEM(1)            UNIX Programmer's Manual             RIPEM(1)
+
+
+
+NAME
+     ripem - RSAREF-based Internet Privacy Enhanced Mail, version
+     2.1.  Enciphers and deciphers messages using a public key
+     encryption system, and formats them for embedding in elec-
+     tronic mail messages.  Also generates RSA public keys.
+
+SYNOPSIS
+     ripem { -e | -d | -g | -G | -c }
+          [ -b #_of_bits ] [ -v #_of_months ]
+          [ -r recipient(s) ] [ -A { des-cbc | des-ede-cbc | rx2-cbc/bits } ]
+          [ -m { encrypted | mic-only | mic-clear | enveloped-only} ]
+          [ -M { ripem1 | pem | pkcs} ] [ -u myusername ] [ -h ipr ] [ -T amn ]
+          [ -p publickey_infile ] [ -s privatekey_infile ]
+          [ -H home_directory ]  [-B]
+          [ -k {key_to_private_key|-} ] [ -K {new_key} ]
+          [ -y pub_key_server_name ] [ -Y fgs ]
+          [ -i infile ] [ -o outfile ]
+          [ -D debug_level ] [ -Z debug_file ]
+          [ -R cefkms ] [ -F random_file ] [ -C random_string ]
+          [-x external_msg_file]  [-a dig_alg]
+          <in >out
+
+RIPEM Execution Mode Options
+     -e   (encipher) means apply the transformations specified by
+          the "-m" option to the input, writing to output an
+          encapsulated message suitable for inclusion in an elec-
+          tronic mail message.
+
+     -d   (decipher) means process the input file, producing plaintext and
+          inserting certificates and CRLs into the database as necessary.
+          The input is expected to be an encapsulated PEM-style
+          message.  If the "BEGIN PRIVACY-ENHANCED MESSAGE" boundary is
+          not found, RIPEM will attempt to rewind and read the input as a
+          PKCS message.  (This cannot be done if the input is stdin).
+          You can go directly to reading as a PKCS message by using
+          -M pkcs.
+
+     -g   (generate) means generate an RSA key.  The private com-
+          ponent will be written to the file privkey in the RIPEM
+          home dir.  The public component will be written as a self-signed
+          certificate to the file pubkeys in the RIPEM home dir.
+          For the self-signed certificate, a "Persona Certificate"
+          distinguished name is formed from your RIPEM user name.
+          You should periodically back up all files in the RIPEM home dir.
+          Note: key generation can be a time-consuming process.
+
+     -G   (generate) means generate an RSA key just like -G, except RIPEM
+          interactively lets you create a distinguished name of any form.
+
+     -c   (change) means change the key to your private key.  The
+          reencrypted private component will be written to the
+          file privkey in the RIPEM home dir.  This option also re-
+          displays the self-signed certificate digest.
+
+Other RIPEM Options
+     -A   (Algorithm) specifies the data encryption algorithm.
+          Used only with "-e".  The legal values are "des-cbc",
+          which is the default well-known DES in Cipher Block
+          Chaining mode, "des-ede-cbc", "rx2-cbc/bits".  
+          "des-ede-cbc" specifies Encrypt-Decrypt-Encrypt "Triple-DES" 
+          as suggested by IBM a few years ago.  "rx2-cbc/bits"
+          specifies RX2 which is an algorithm compatible with RC2
+          from RSA Data Security.  The bits is the effective key
+          size in bits.  For example, a typical value is rx2-cbc/40 .
+
+          When "des-ede-cbc" is specified,
+          "ripem1" and "pem" mode use DES-EDE2-CBC where each 64-bit block
+          is enciphered with one 56-bit key, deciphered with a second
+          56-bit key, and enciphered again with the first 56-bit key.
+          Cipher Block Chaining is applied only after all three
+          operations have been done.  The result is effectively a
+          112-bit key, much more difficult to exhaustively search
+          than single-DES.  Note that EDE-CBC mode is not widely used
+          in PEM, and that there is even some disagreement as to just
+          what crypto-graphic operations should be implied by this appella-
+          tion.  Use EDE-CBC mode only when data security is much
+          more important than compatibility, as EDE-CBC is not
+          yet a PEM standard.
+
+          When "des-ede-cbc" is specified,
+          "pkcs" mode uses DES-EDE3-CBC where each 64-bit block
+          is enciphered with one 56-bit key, deciphered with a second
+          56-bit key, and enciphered again with a third 56-bit key.
+          Cipher Block Chaining is applied only after all three
+          operations have been done.  The result is effectively a
+          168-bit key.  Support for DES-EDE3-CBC is explicitly recommended
+          in the S/MIME implementor's guide.
+
+     -a   (digest algorithm) specifies the digest algorithm used when
+          creating a message (-e), creating new certificates or CRLS,
+          or for verifying a PKCS detached signature
+          "-d -M pkcs -x message-file" (see -x).  
+          The legal values are "rsa-md5", which is the default MD5 message
+          digest algorithm from RSA, "rsa-md2" which is the MD2 algorithm
+          from RSA, and "sha-1" which is the SHA-1 algorithm.
+
+     -B   (Binary message file) specifies that end-of-line character
+          translation should not be performed on the message file.  Used
+          only for PKCS messages (-M pkcs).  The behavior of the
+          -B flag is undefined when using the standard input or output for
+          the message data.
+
+     -b   (bits) specifies the number of bits desired in the pub-
+          lic key being created.  Used only with the "-g" option.
+          Must be in the range 508 to 1024.  The default is a
+          pseudorandom number of bits between 512 and 523.
+
+     -C   (command line) specifies that the remainder of the com-
+          mand line consists of pseudo-random strings to be used
+          to construct message keys and so on.  This option must
+          be the last option on the command line, as any argu-
+          ments following it will be used only as pseudo-random
+          data.
+
+          The "-C" option should be used, when possible, with the
+          command substitution capabilities of command shells
+          such as Unix's C Shell.  The sequence "-C `ps -aux`
+          `finger` `df`" would generate a reasonable amount of
+          pseudo-random data on many Unix systems.
+
+     -D   (debug) specifies the debug level.  0 disables debug
+          output; larger values (up to about 4) specify increas-
+          ing amounts of debug output.  The output is written to
+          the destination specified by the "-Z" option.  The
+          default level is 1, which gives you only messages
+          regarding the key status of recipients and senders.
+
+     -F   (file) specifies the name of a file containing pseudo-
+          random information.  Used only for the "-e" and "-g"
+          options.  A pseudo-random amount of data from this
+          file, selected from pseudo-random locations in the
+          file, will be used as a source of pseudo-random ini-
+          tializing data for message keys and so on.  The file is
+          used only if the "f" suboption of the "-R" option is
+          specified.
+
+          If -F is not given on the command line, RIPEM uses the
+          file randomin in the RIPEM home directory. The random
+          input file is checked for in this order: -F in
+          RIPEM_ARGS, -F on the command line, randomin in the
+          RIPEM home dir, and finally RIPEM_RANDOM_FILE environ-
+          ment variable.
+
+     -H   (home directory) specifies the RIPEM home directory
+          where all the user's "local" data is kept, including
+          the private key and certificates created by the user.
+          The public and private keys files in the RIPEM home
+          directory are searched before files given by -p and -s.
+
+          If -H is not specified, the value of the environment
+          variable RIPEM_HOME_DIR is used.  If this is not specified,
+          ~/.ripemhome is used (on Unix) or C:\RIPEMHOM (on MS-DOS).
+
+          If the RIPEM home directory does not exist, RIPEM
+          creates it.
+
+     -h   (header) specifies options for enciphering messages
+          that contain mail headers.  Used only with the "-e"
+          option.  Following -h must be a string of option
+          letters selected from below:
+          i
+               (include) means include the message headers as
+               part of the plaintext message--that is, enciper
+               them.
+          p
+               (prepend) means place the unenciphered message
+               headers at the beginning of the enciphered output,
+               before the first Privacy Enhance Message Boundary.
+               This option is useful when using RIPEM as a filter
+               for messages that will be fed directly to a
+               mailer.
+          r
+               (recipients) means scan the message headers for
+               "To:" and "cc:" lines, and add these recipients to
+               the recipient list.
+
+     -i   (input) specifies input file.  Used by the "-e" and "-
+          d" options.  Default is standard input.
+
+     -K   (new key) specifies the new key used when changing the
+          key to the private key.  Normally, RIPEM prompts the
+          user interactively for the new key.  -K is intended to
+          be used by wrapper programs that invoke RIPEM.  Use
+          care with the -K and -k options, as you may inadver-
+          tantly reveal the key to your private key to individu-
+          als snooping on your computer.
+
+     -k   (key) specifies the key used to encrypt the RSA private
+          key that resides in the file referenced by the "-s"
+          option.  If the "-k" option is not used, RIPEM looks
+          for a non-empty environment variable named
+          "RIPEM_KEY_TO_PRIVATE_KEY"; if it is found, its value
+          is used as the key to decrypt the private component of
+          the user's public key.  If neither the "-k" option nor
+          the environment variable can be found, RIPEM prompts
+          the user interactively for the private key.  Use of the
+          "-k" option on a multiuser system is discouraged, as it
+          increases the chances that another user can discover
+          the key to your private key.
+
+          As a special case, if the key is specified as "-",
+          RIPEM will read the first line from standard input and
+          use it as the key the the private key.  This capability
+          is intended for use by programs that invoke RIPEM.
+
+     -M   (message compatibility) specifies the message format of
+          the outgoing message.  Used with the "-e" option.  (-M pkcs
+          can also be used with the "-d" option to decipher as a PKCS
+          message right away instead of trying PEM first.)
+
+          "ripem1" specifies that the message is to be compatible
+          with earlier versions of RIPEM.  This is the default.
+          The Originator-Certificate field contains the sender's
+          self-signed certificate.  This format will output
+          Issuer-Certificate fields (which earlier versions of RIPEM
+          ignore).
+
+          "pem" specifies that the message is to be compatible
+          with the RFC 1421 message syntax and the RFC 1422
+          certification model.  Recipients are identified by
+          Recipient-ID-Asymmetric fields, which give an issuer name
+          and serial number (as opposed to "ripem1" which uses
+          Recipient-Key-Asymmetric which gives the recipient's
+          public key).  Since it is not known which issuer a
+          recipient recognizes themself by, recipient fields are
+          output for all possible issuers.  If the sender is certified
+          under exactly one certificate chain, the Originator-
+          Certificate field contains the certificate from the sender's
+          immediate issuer.  However, if RIPEM finds certificates for
+          the sender from more than one issuer, then it doesn't know
+          which one to use, so it uses the self-signed certificate
+          as in "ripem1".
+
+          "pkcs" specifies that the message is to be compatible with
+          the Public Key Cryptography Standards.  If -m is "encrypted",
+          this creates a signed and enveloped message.  If -m is
+          "mic-only" or "mic-clear", this creates a signed message.  If -m
+          is "enveloped-only", this creates an enveloped-only message.
+
+     -m   (mode) specifies the mode of the outgoing encrypted
+          message.  Used only with the "-e" option.
+
+          "encrypted" specifies that the message is to be
+          encrypted using the algorithm given by -A, and that the message
+          is to be "signed" computing a message digest of the
+          input message, encrypting the digest with the sender's
+          private key, and including the result in the outgoing message.
+          For -M "ripem1" or "pem", the encrypted text of the message is
+          encoded in RFC 1421 printable form and included in the output.
+          (RFC 1421 printable form is similar to the well-known
+          "uuencoding" format, but differs in a few details.)
+          The MD5 message digest is always used upon output, but
+          incoming messages using the MD2 algorithm can be pro-
+          cessed correctly.  For -M "pkcs", this produces a PKCS
+          signed and enveloped message using the same algorithms as above.
+
+          "mic-only" specifies that the message is to be signed
+          as described above, but not encrypted.  For -M "ripem1" or "pem"
+          the text of the message is encoded in RFC 1421 form.  This option
+          provides authentication but no confidentiality.   For -M "pkcs",
+          this produces a PKCS signed message.
+
+          "mic-clear" specifies that the message is to be signed as
+          described above.  For -M "ripem1" or "pem", the text of the
+          message is neither encrypted nor printably encoded, so the text
+          of the message can be read by anyone with any standard mail
+          program.  For -M "pkcs", this produces a PKCS signed message.
+
+          "enveloped-only" is only valid for -M "pkcs" and specifies that
+          the message is to be encrypted using the algorithm given by -A,
+          but that the message is not signed.
+
+          For all -m options, if -M "pkcs" is used, the PKCS message (which
+          itself is binary output) is base64 encoded so that it
+          can be mailed.
+
+     -o   (output) specifies output file.  Used by the "-e" and
+          "-d" options.  Default is standard output.
+
+     -p   (public key) specifies a file containing the public
+          components of users' RSA public keys to be searched after
+          the file pubkeys in the RIPEM home dir has been searched.
+          The program also looks in files given by the environment variable
+          named RIPEM_PUBLIC_KEY_FILE if found.
+
+          Multiple values can be specified; RIPEM will search
+          these public key files in the order specified.
+
+     -R   (random) specifies the source(s) of pseudo-random input
+          used by RIPEM to generate message keys, initialization
+          vectors, and RSA keys.  Used only with the "-e" and "-
+          g" options.  Following -R must be a string of option
+          letters selected from below:
+          c
+               (command) means use information from the command-
+               line "-C" option.
+          e
+               (entire) means use information from the entire
+               command line.
+          f
+               (file) means read information from a file; see the
+               "-F" option.
+          k
+               (keyboard) means prompt the user for a string
+               typed at the keyboard.
+          m
+               (message) means take characters from the input
+               plaintext message as pseudo-random input.  (For -e
+               only.)
+          s
+               (system) means query the system for system-
+               dependent information.  The type and "randomness"
+               of this information depends upon both the specific
+               computer and the port of RIPEM that you are using.
+
+          Default is "efms", but command line and file data are
+          not used if the "-C" and "-F" arguments are not
+          present.
+
+     -r   (recipient) specifies the user to whom the message is
+          being sent.  Used only with the "-e" option. The reci-
+          pient name is usually specified as a complete email
+          address.  The recipient name is used to lookup the
+          recipient's public key component.  Multiple recipients
+          can be specified, each with a separate "-r" option.
+
+     -s   (secret key) specifies a file containing the user's secret
+          (or private) component of the RSA keypair to be searched after
+          the file privkey in the RIPEM home dir has been searched.
+          The program also looks in files given by the environment variable
+          named RIPEM_PRIVATE_KEY_FILE if found.
+
+          Multiple values can be specified; RIPEM will search
+          these private key files in the order specified.
+
+     -T   (recipienT options) specifies options related to the
+          processing of recipients.  Following -T must be a
+          string of option letters selected from below:
+          a
+               (abort) specifies that RIPEM should uncondition-
+               ally abort if, while in -e mode, it is unable to
+               find the public key of one or more recipients.
+               The default is to prompt the user for what to do.
+          m
+               (me) specifies that RIPEM should include the user
+               as a recipient if encrypting in "-m encrypted"
+               mode.  This is the default.
+          n
+               (none) specifies that RIPEM should clear the con-
+               ditions that would be specified by "a" and "m"
+               above.
+
+     -u   (username) specifies your username--actually, your
+          email address.  This is used to look up your self-signed
+          certificate when logging into RIPEM.  For encipherment, the
+          username is placed in the message header (along with
+          the self-signed certificate) to inform the recipient of the
+          sender's username.  For decipherment, the
+          message header is searched for the username so that
+          RIPEM will know which version of the message key to
+          decrypt.
+
+          If "-u" is not specified, RIPEM uses the value of the
+          environment variable RIPEM_USER_NAME, if non-empty.
+          Otherwise, the username defaults to
+          <loginname>@<hostname> or "me" under MS-DOS and most
+          other operating systems.
+
+          The username can be specified as a comma-separated list
+          of names.  In this case, the first name in the list is
+          used as your username for -g and -e.  For -d, RIPEM
+          will look for a recipient line that matches any of the
+          names specified in the list.  This is useful if you
+          have several email addresses that you wish RIPEM to
+          regard as equivalent.
+
+
+     -v   (valid months) specified the number of valid months for
+          self-signed certificates (during key generation and
+          change password) and new validation certificates
+          created when receiving.  For key generation and change
+          password, -v is optional and defaults to 24 months.
+
+     -x   (external message file) specifies the file to read as the
+          message data when creating or verifying a PKCS detached
+          signature.  When -x is specified, -i is ignore when using -e
+          (signing) and -o is ignored when using -d (verifying).  -x
+          may not be used with PEM-format messages or for encrypted
+          PKCS-format message.  When verifying (-d), use the -a option
+          if the digest algorithm is other than rsa-md5.  (This is 
+          necessary since RIPEM must digest the -x message text before it
+          can determine the digest algorithm from the -i input file.
+
+     -Y   (key sources) specifies the source(s) RIPEM should use
+          to obtain public keys.  Following -Y must be a string
+          of option letters selected from below.  The sources are
+          contacted in the order given; if a key cannot be
+          obtained from the first source, the second source, if
+          any, is used.  Default is "sf".
+          f
+               specifies that RIPEM should look in the public key
+               file; see the -p option.
+          s
+               specifies that RIPEM should contact a network
+               RIPEM key server; see the -y option.
+          g
+               specifies that RIPEM should attempt to contact the
+               recipient's host via "finger" to obtain the public
+               key.  The recipient must have included the -P out-
+               put from "ripem -g" in his/her ".plan" file.
+
+     -y   (server) specifies the domain name of an Internet RIPEM
+          key server.  Depending upon the value of the -Y option,
+          RIPEM may try to contact this server to obtain public
+          keys.  The default server port is 1611; to override
+          this, follow the name of the server with a ":" followed
+          by the server port number in decimal.  This feature may
+          be disabled on some platforms, depending upon the
+          development and networking environment.  If -y is not
+          specified, the value of the environment variable
+          RIPEM_SERVER_NAME, if any, is used.  There is no
+          default value.
+
+          If -y is specified as a comma-separated list of
+          servers, when consulting a key server RIPEM will try
+          the servers in the order listed until the desired key
+          is obtained.
+
+     -Z   (debug output) specifies the file to which debug out-
+          put, if any, should be written.  The default is stan-
+          dard error.
+
+
+     If the environment variable RIPEM_ARGS is present, ripem
+     uses its value to obtain additional command-line options.
+     Any conflicts are resolved in favor of the actual command-
+     line arguments.
+
+DESCRIPTION
+     RIPEM implements a filter to process messages as part of a
+     public key (asymmetric) cryptography privacy-enhanced mail
+     system.
+
+     RIPEM is expected to be used primarily to encrypt and
+     decrypt text to be embedded in electronic mail messages.
+     However, it also has two "sign-only" modes in which an
+     authentication check is added to the message, but no encryp-
+     tion of the message itself takes place.  RIPEM can also be
+     used to generate RSA public keypairs.
+
+     The techniques and data formats used by RIPEM are compa-
+     tible with Privacy-Enhanced Mail Internet RFCs 1421-1424, or
+     with the Public Key Cryptography Standards (PKCS) if -M "pkcs"
+     is used.
+
+     Briefly, messages are encrypted using a traditional private
+     key (symmetric) cipher (DES in CBC mode) with a message key
+     generated pseudo-randomly, enciphered using the RSA public
+     key (asymmetric) system, and included with the ciphertext of
+     the message.  A checksum or "message digest" of the
+     plaintext is computed, encrypted with public key cryptogra-
+     phy, and included in the ciphertext of the message.  For
+     more information, read the RFCs (available at many Internet
+     sites) and the Public-Key Cryptography Standards (available
+     from rsa.com as "pkcs" files).
+
+     When RIPEM exits, it returns a status of 0 indicating suc-
+     cessful completion, else a non-zero error code indicating
+     that a problem occured.  In the latter case, an error mes-
+     sage is written to standard error.
+
+FILES
+     RIPEM uses:
+
+     An input file or stream containing a message to process
+     (i.e., encipher / decipher / verify signature).
+
+     An output file or stream from the processing.
+
+     A file containing the user's encrypted private RSA key.
+
+     A file containing the unencrypted public keys of potentially
+     many users.
+
+HISTORY
+     RIPEM 1.0  Written in May - July 1992, with subsequent 1.x
+     revisions.  Used RSAREF 1.0, which was released in March 1992.
+
+     RIPEM 2.0 written in May-September 1994.  Uses RSAREF 2.0 released
+     March 1994.
+
+     RIPEM 3.0 written in September 1995-May 1996 adds PKCS support.
+
+     RIPEM itself is in the public domain.  However, it requires
+     the RSAREF toolkit from RSA Data Security, Inc.  RSAREF is
+     distributed freely for personal use within the USA, but is
+     not in the public domain.  Contact RSA Data Security for
+     terms and conditions.
+
+     Authors:
+
+     Mark Riordan         mrr@scss3.cl.msu.edu
+     Principal author; wrote most of the non-cryptographic rou-
+     tines, based in part on earlier work by the same author.
+     Send comments here.
+
+     RSA Data Security    rsaref-info@rsa.com
+     Wrote and distributed RSAREF 1.0, the cryptographic toolkit
+     used here.  Also, separately, designed and implemented the
+     MD5 message digest algorithm.
+
+     Raymond Lau          raylau@mit.edu
+     Wrote the Macintosh version of RIPEM.  This document does
+     not apply to the Macintosh version.
+
+     Jeff Thompson
+     Added certificate support, based partly on Ray's Mac certificate
+     encoding code.  Added most 2.0 enhancements for certificate chains
+     and 3.0 PKCS support.
+
+     Mark Henderson, Richard Outerbridge, Marc VanHeyningen, Greg
+     Onufer, Mark Windsor, and many others also contributed.
+
+SUPPORT
+     Questions should be sent to the Usenet newsgroup alt.security.ripem.
+
+DISCLAIMER
+     No representations are made concerning either the merchantability of
+     this software or the suitability of this software for any particular
+     purpose. It is provided "as is" without express or implied warranty
+     of any kind.  
+
+     License to copy and use this software is granted provided that these
+     notices are retained in any copies of any part of this documentation
+     and/or software.  

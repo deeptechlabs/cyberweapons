@@ -1,0 +1,39 @@
+  keyinit(3849674c, 2602319e)
+  enloki(126898d5, 5e911500)
+  f(5e911500, 3849674c) = P.S(66d8724c) = P(f87162a9) = 9efc9025
+  f(8c9408f0, 9674c384) = P.S(1ae0cb74) = P(33922c03) = 40ac22d9
+  f(1e3d37d9, 2602319e) = P.S(383f0647) = P(09581c84) = 1406e308
+  f(9892ebf8, 2319e260) = P.S(bb8b0998) = P(bb39254c) = 81ecd38e
+  f(9fd1e457, 987092ce) = P.S(07a17699) = P(f3060821) = 889824c9
+  f(100acf31, 092ce987) = P.S(192626b6) = P(c965744b) = 8f62961d
+  f(10b3724a, 3c4c0463) = P.S(2cff7629) = P(9f55c124) = a61c8d8e
+  f(b61642bf, c04633c4) = P.S(7650717b) = P(964f0840) = 85086cc4
+  f(95bb1e8e, 9d30e125) = P.S(088bffab) = P(ad7e306f) = 85f6dd59
+  f(33e09fe6, 0e1259d3) = P.S(3df2c635) = P(d5950b95) = d80d2d2f
+  f(4db633a1, c6789808) = P.S(8bceaba9) = P(c7fcaaf0) = fd756ca8
+  f(ce95f34e, 89808c67) = P.S(47157f29) = P(a20c6292) = 92a144b0
+  f(df177711, 4b3a61c2) = P.S(942d16d3) = P(4ddad7ce) = 7f06db7a
+  f(b1932834, a61c24b3) = P.S(178f0c87) = P(137d6e14) = 066d67ac
+  f(d97a10bd, 118cf130) = P.S(c8f6e18d) = P(0d92618c) = 5224994a
+  f(e3b7b17e, cf130118) = P.S(2ca4b066) = P(0d171eea) = 1116be7c
+  enloki returns c86caec1, e3b7b17e
+  deloki(c86caec1, e3b7b17e)
+  f(e3b7b17e, cf130118) = P.S(2ca4b066) = P(0d171eea) = 1116be7c
+  f(d97a10bd, 118cf130) = P.S(c8f6e18d) = P(0d92618c) = 5224994a
+  f(b1932834, a61c24b3) = P.S(178f0c87) = P(137d6e14) = 066d67ac
+  f(df177711, 4b3a61c2) = P.S(942d16d3) = P(4ddad7ce) = 7f06db7a
+  f(ce95f34e, 89808c67) = P.S(47157f29) = P(a20c6292) = 92a144b0
+  f(4db633a1, c6789808) = P.S(8bceaba9) = P(c7fcaaf0) = fd756ca8
+  f(33e09fe6, 0e1259d3) = P.S(3df2c635) = P(d5950b95) = d80d2d2f
+  f(95bb1e8e, 9d30e125) = P.S(088bffab) = P(ad7e306f) = 85f6dd59
+  f(b61642bf, c04633c4) = P.S(7650717b) = P(964f0840) = 85086cc4
+  f(10b3724a, 3c4c0463) = P.S(2cff7629) = P(9f55c124) = a61c8d8e
+  f(100acf31, 092ce987) = P.S(192626b6) = P(c965744b) = 8f62961d
+  f(9fd1e457, 987092ce) = P.S(07a17699) = P(f3060821) = 889824c9
+  f(9892ebf8, 2319e260) = P.S(bb8b0998) = P(bb39254c) = 81ecd38e
+  f(1e3d37d9, 2602319e) = P.S(383f0647) = P(09581c84) = 1406e308
+  f(8c9408f0, 9674c384) = P.S(1ae0cb74) = P(33922c03) = 40ac22d9
+  f(5e911500, 3849674c) = P.S(66d8724c) = P(f87162a9) = 9efc9025
+  deloki returns 126898d5, 5e911500
+Test  1,  K: 3849674c2602319e  P: 126898d55e911500  C: c86caec1e3b7b17e OK
+lokicert: 0 failures in 1 tests

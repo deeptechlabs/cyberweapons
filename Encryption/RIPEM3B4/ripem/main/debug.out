@@ -1,0 +1,154 @@
+ripem: {Riordan's | RSAREF-based} Internet Privacy Enhanced Mail, v 2.0b2
+Action=Decrypt  Recipients=
+Your Username=test  KeyToPrivKey=test1pw
+List of aliases to your username: 
+   test
+
+Input=..\test\message.enc Output=<stdout>
+PubKeyFiles=C:\RIPEMHOM\pubkeys test1.pub 
+PrivKeyFiles=C:\RIPEMHOM\privkey test1.prv 
+Home directory=C:\RIPEMHOM\
+Sources of "random" data: Command line, args 0-16;
+ File "<none>"; Message; running System.
+Random command-line arguments: C:\CIP\RIPEM\MAIN\ripem.exe -d -p test1.pub -s test1.prv -k test1pw -i ..\test\message.enc -u test -D 9 -Z debug.out 
+Public key servers:
+Public key key sources (in order) = server file UNKNOWN
+Could not find EncryptedPrivateKeyInfo: of keyValue test in file.
+Obtained EncryptedPrivateKeyInfo: for test from file.
+Obtained 388 byte encrypted private key for test:
+Constructed Universal SEQUENCE :
+   Constructed Universal SEQUENCE :
+      Universal OBJECT_IDENTIFIER 1 2 840 113549 1 5 3 
+      Constructed Universal SEQUENCE :
+         Universal OCTET_STRING 
+            b7 e2 85 be 3f 4e 36 cc 
+         Universal INTEGER 
+            64 
+   Universal OCTET_STRING 
+      a0 26 55 f3 60 b7 c8 46 54 17 31 87 56 2a 7e d3 
+      42 5c ed 76 8d 15 9a 8b bd d3 0c d6 1d 0f 64 87 
+      97 47 50 65 23 63 87 a6 48 33 0a 88 b4 ed e9 dd 
+      88 92 8c 7e c4 a6 f6 e5 1e f4 70 7b 44 81 71 82 
+      0a 74 d8 41 82 02 7d fd 27 a4 21 b1 dd 9a 37 bb 
+      00 95 c9 89 83 8a a8 4d 11 66 d7 88 f6 c2 0b d2 
+      9c 00 48 9a 1d d1 02 67 aa 71 c3 c8 cf 96 6e 7a 
+      95 4d 5a a8 b4 22 63 df 44 3c df 29 4b 52 8c ab 
+      b2 ea 98 cf f9 f7 dd 08 1b 59 95 17 70 e0 b5 e4 
+      60 57 d0 73 a2 b6 8e 1c 8b 72 ce ae 49 d2 bc 4b 
+      37 c6 28 3d 20 15 0b ea 44 3f 85 81 db 95 d8 35 
+      a2 50 fb cc a8 c0 98 b6 fe d7 8c 3e d1 dd 21 13 
+      5c 1c 0e 5e 4e 1e b1 7c 52 5a 7a e6 23 e4 1f 1c 
+      d4 7f 2c 3d 09 d7 27 2f 73 fa 21 86 e2 e9 36 9b 
+      2b ee f0 f0 bf 67 5d 99 53 35 e7 76 98 1c b4 36 
+      3b fa 28 16 d1 09 88 ca cf 49 fd 25 0a 32 70 95 
+      82 82 a6 26 b1 29 71 11 5c ac dd 0d 85 35 41 cd 
+      d7 50 db 09 35 5f f7 87 5c f4 8a 92 2e 92 c5 78 
+      90 8c aa 2b ff e7 63 1e 17 28 7c 66 41 9f f0 9e 
+      0e 01 d9 41 04 24 f5 24 0b 47 a5 40 85 17 08 fc 
+      97 65 3d 3f 85 7a da c5 77 8f 39 e8 f3 f2 6e 2a 
+      c1 0b 89 bb 0f 2e 15 d8 43 bf 75 96 7a 5c d7 9b 
+Dump of decrypted private key:
+Dump of 516 bit private key:
+ mod   =09C557C7812E1C2B2226089D5AD34FC96C93B80E42893A9C2964FC22E8DD88
+        CA9C4A1FE24553BCFA7BA05834CDC06DCB6844737CD7B9C0BCE7369C8D48A0
+        70A107
+ pubExp=010001
+ exp   =067FB1C0CA9526BB31BD666172F5B5CDDD5FEB3DE0D7719A4896187607B8C1
+        B12D55878F318C7C560F0AE03A4F09E80C9CF86753BBAC125F93005B7DCB97
+        A8C9A1
+ prime1=033EF9B748A9FED50BBDD682445A34B51E521699F9920476DDA51267012AF6
+        374F
+ prime2=030297C7EA908C754FEE41B9065396769637D369931CC3BBF81151C7CD1B20
+        8CC9
+ prExp1=0319E690225F2F7531BB94366EC153FBFA54E8FD00806DBD76B2DFEB03259D
+        8867
+ prExp2=02B657653FAA37A58CFC36242DDB2B7C77269E4C46CE685FFACA40523431F9
+        4661
+ coeffi=C3AA671B37A2E4A7E8D8DCD258CF4E2725EA62E5D7DF3790A514B6904DE9F3
+        D1
+Dump of 516 bit private key:
+ mod   =09C557C7812E1C2B2226089D5AD34FC96C93B80E42893A9C2964FC22E8DD88
+        CA9C4A1FE24553BCFA7BA05834CDC06DCB6844737CD7B9C0BCE7369C8D48A0
+        70A107
+ pubExp=010001
+ exp   =067FB1C0CA9526BB31BD666172F5B5CDDD5FEB3DE0D7719A4896187607B8C1
+        B12D55878F318C7C560F0AE03A4F09E80C9CF86753BBAC125F93005B7DCB97
+        A8C9A1
+ prime1=033EF9B748A9FED50BBDD682445A34B51E521699F9920476DDA51267012AF6
+        374F
+ prime2=030297C7EA908C754FEE41B9065396769637D369931CC3BBF81151C7CD1B20
+        8CC9
+ prExp1=0319E690225F2F7531BB94366EC153FBFA54E8FD00806DBD76B2DFEB03259D
+        8867
+ prExp2=02B657653FAA37A58CFC36242DDB2B7C77269E4C46CE685FFACA40523431F9
+        4661
+ coeffi=C3AA671B37A2E4A7E8D8DCD258CF4E2725EA62E5D7DF3790A514B6904DE9F3
+        D1
+GetCertsBySmartname looking for 'test'
+Could not find CertificateInfo: of keyValue test in file.
+Could not find CertificateInfo: of keyValue test in file.
+Obtained CertificateInfo: for test from file.
+GetPreferencesByDigest looking for MD5OfPublicKey:
+Could not find PreferencesInfo: of keyValue E50F516A4626002DF9B877A8D265BBF8 in file.
+Warning: User preferences were not found.  RIPEM will use defaults.
+First line of field: "Proc-Type: 2001,ENCRYPTED"
+Field = "Proc-Type:" [10] "2001" [4] "ENCRYPTED" [9]
+Field == type 0. Vals are types 8 0.
+First line of field: "DEK-Info: DES-CBC,40201BE7A28E1E05"
+Field = "DEK-Info:" [9] "DES-CBC" [7] "40201BE7A28E1E05" [16]
+Field == type 2. Vals are types 10 12.
+First line of field: "Originator-Name: test"
+Field = "Originator-Name:" [16] "test" [4]
+Field == type 3. Vals are types 12.
+Originator-Name = test [4 chars] test
+First line of field: "Originator-Key-Asymmetric: "
+Field = "Originator-Key-Asymmetric:" [26] "MFkwCgYEVQgBAQICAgQDSwAwSAJBCcVXx4EuHCsiJgidWtNPyWyTuA5CiTqcKWT8IujdiMqcSh/iRVO8+nugWDTNwG3LaERzfNe5wLznNpyNSKBwoQcCAwEAAR==" [124]
+Field == type 4. Vals are types 12.
+First line of field: "MIC-Info: RSA-MD5,RSA,"
+Field = "MIC-Info:" [9] "RSA-MD5" [7] "RSA" [3] "qC+mYiGzEBGVyurz7RXCCMm7XoScv6gs0aHdFe0yNlep5YPcWNU8w9fpv56HyKz/+7cw273thqfwIY8jCjFnbb2eQj96rq6I" [96]
+Field == type 11. Vals are types 6 7 12.
+First line of field: "Recipient-Name: test"
+Field = "Recipient-Name:" [15] "test" [4]
+Field == type 7. Vals are types 12.
+(This recipient is you.)
+First line of field: "Key-Info: RSA,"
+Field = "Key-Info:" [9] "RSA" [3] "BUY39/a3V4A2CpciaqVPf4SEZARC7DCsMaO+5ejShHE12xPUoLlRZVIYxNJqQXR0soQ6hRXDMSuDRkDDPQM+oGw=" [88]
+Field == type 10. Vals are types 7 12.
+From input encapsulated message header:
+  Proc-Type = ENCRYPTED  DES iv = 40201BE7A28E1E05 Digest of Encrypted Key = B23B7E6FA9BF6B50991189C897BB92F2
+
+  Originator-Name = test
+  Got Originator's public key in header.
+  96 bytes in encoded & encrypted MIC:
+   qC+mYiGzEBGVyurz7RXCCMm7XoScv6gs0aHdFe0yNlep5YPcWNU8w9fpv56HyKz/+7cw273thqfwIY8jCjFnbb2eQj96rq6I
+  88 bytes in encoded & encrypted message key:
+   BUY39/a3V4A2CpciaqVPf4SEZARC7DCsMaO+5ejShHE12xPUoLlRZVIYxNJqQXR0soQ6hRXDMSuDRkDDPQM+oGw=
+Error retrieving key for test from server: Sockets not implemented in this build of RIPEM.
+Looking in 'C:\RIPEMHOM\pubkeys' for public key for test.
+Didn't find test's public key in file.
+Looking in 'test1.pub' for public key for test.
+Found test's public key record in file.
+Found test's public key record:
+User: test
+PublicKeyInfo:
+ MFkwCgYEVQgBAQICAgQDSwAwSAJBCcVXx4EuHCsiJgidWtNPyWyTuA5CiTqcKWT8
+ IujdiMqcSh/iRVO8+nugWDTNwG3LaERzfNe5wLznNpyNSKBwoQcCAwEAAQ==
+MD5OfPublicKey: E50F516A4626002DF9B877A8D265BBF8
+
+Coded pub key="MFkwCgYEVQgBAQICAgQDSwAwSAJBCcVXx4EuHCsiJgidWtNPyWyTuA5CiTqcKWT8IujdiMqcSh/iRVO8+nugWDTNwG3LaERzfNe5wLznNpyNSKBwoQcCAwEAAQ=="
+der len=91
+Computed  MD5 of test's pubkey=E50F516A4626002DF9B877A8D265BBF8
+Retrieved MD5 of test's pubkey=E50F516A4626002DF9B877A8D265BBF8
+Decrypting.    keyLen=88, sigLen=96, user=test
+ MD5 of Encrypted Key     = B23B7E6FA9BF6B50991189C897BB92F2
+ MD5 of encrypted signat. = 0D473C86016DCC857E0A7FC2BEDE1B9C
+  Encrypted, encoded MIC =
+   qC+mYiGzEBGVyurz7RXCCMm7XoScv6gs0aHdFe0yNlep5YPcWNU8w9fpv56HyKz/
+   +7cw273thqfwIY8jCjFnbb2eQj96rq6I
+ Initializing vector      = 40201BE7A28E1E05 DigAlg=5
+Before call to ReadEnhancedTextLine, Username=test
+-------------------------
+Received signed and encrypted message.
+Sender username: test
+Signature status: key found but not validated.
+-------------------------

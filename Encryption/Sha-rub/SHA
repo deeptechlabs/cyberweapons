@@ -1,0 +1,176 @@
+From Mercury!netcom.com!phr Wed Nov 16 12:11:29 1994
+Return-Path: <Mercury!netcom.com!phr>
+Received: by chinet.chinet.com (/\==/\ Smail3.1.28.1 #28.1{chinet})
+	id <m0r7opN-0002PoC@chinet.chinet.com>; Wed, 16 Nov 94 12:11 CST
+Received: by mercury.mcs.com (/\==/\ Smail3.1.28.1 #28.1)
+	id <m0r7omm-000Ba6C@mercury.mcs.com>; Wed, 16 Nov 94 12:08 CST
+Received: by netcom7.netcom.com (8.6.9/Netcom)
+	id KAA05140; Wed, 16 Nov 1994 10:09:07 -0800
+Date: Wed, 16 Nov 1994 10:09:07 -0800
+From: phr@netcom.com (Paul Rubin)
+Message-Id: <199411161809.KAA05140@netcom7.netcom.com>
+To: schneier@chinet.chinet.com
+Subject: Re:  Applied Cryptography, Second Edition
+Status: RO
+
+/* Compact implementation of "old" NIST Secure Hash Algorithm,
+   follows description in Applied Cryptography, 1st ed. plus 
+   Peter Gutmann's version listed in back of the book.
+   Copyright 1994, Paul Rubin, phr@netcom.com.  May be redistributed
+   under GNU General Public License version 2, available from 
+   Free Software Foundation Inc., 675 Mass Ave., Cambridge MA 01239 USA. */
+
+#define TEST
+#define LITTLE_ENDIAN		/* intel cpu's are little endian */
+
+typedef unsigned long int uint32;
+typedef struct {
+  uint32 v[5];
+  struct { uint32 hi; uint32 lo; } n;
+  char buf[64];
+  int ncached;
+} SHA;
+
+void sha_init (SHA *);
+void sha_update (char *, int, SHA *);
+void sha_final (SHA *, void *);
+
+#ifndef LITTLE_ENDIAN
+#define byteswap(buf,nbytes)
+#else
+static void
+byteswap (void *buf, int nbytes)
+{
+  union { uint32 i; char b[4];} y;
+  
+  while (nbytes > 0) {
+#define B(i) ((char *) buf)[i]
+    y.b[0] = B(3);
+    y.b[1] = B(2);
+    y.b[2] = B(1);
+    y.b[3] = B(0);
+#undef B
+    *((uint32 *)buf)++ = y.i;
+    nbytes -= 4;
+  }
+}
+#endif LITTLE_ENDIAN
+
+#ifdef TEST
+main ()
+{
+  SHA sha;
+  int i;
+  uint32 digest[5];
+  sha_init (&sha);
+  sha_update ("abc", 3, &sha);
+  sha_final (&sha, digest);
+  for (i = 0; i < 5; i++)
+    printf ("%lx ", digest[i]);
+  printf ("\n");    
+  if( digest[ 0 ] == 0x0164b8a9 && digest[ 1 ] == 0x14cd2a5e &&
+     digest[ 2 ] == 0x74c4f7ff && digest[ 3 ] == 0x082c4d97 && 
+     digest[ 4 ] == 0xf1edf880 )
+    printf ("These are correct.\n");
+}
+#endif
+
+static void sha_block (SHA *);
+
+void
+sha_init (SHA *s)
+{
+  static const uint32 init[5] = {
+    0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
+  };
+  memcpy (s->v, init, sizeof init);
+  s->n.lo = s->n.hi = s->ncached = 0;
+}
+
+#define min(a,b) ((a<b) ? (a) : (b))
+
+void
+sha_update (char *msg, int count, SHA *ctx)
+{
+  int n;
+  uint32 old = ctx->n.lo;
+  ctx->n.lo += (uint32) count << 3; /* count bits, not chars */
+  if (ctx->n.lo < old)		/* there was an overflow */
+    ++ctx->n.hi;		/* so carry into high order word */
+  ctx->n.hi += count >> 29;
+
+  while (count > 0) {
+    n = min (count, 64 - ctx->ncached);
+    memcpy (&ctx->buf[ctx->ncached], msg, n);
+    if ((ctx->ncached += n) == 64) {
+      sha_block (ctx);
+      ctx->ncached = 0;
+    }
+    count -= n;
+    msg += n;
+  }
+  if (ctx->ncached == 0)
+    /* secret data in buf is no longer needed, so burn it */
+    memset (ctx->buf, 0, sizeof ctx->buf);
+}
+
+void
+sha_final (SHA *ctx, void *digest)
+{
+  
+  ctx->buf[ctx->ncached++] = 0x80;
+  if (ctx->ncached >= 56) {
+    memset (&ctx->buf[ctx->ncached], 0, 64 - ctx->ncached);
+    sha_block (ctx);
+    ctx->ncached = 0;
+  }
+  memset (&ctx->buf[ctx->ncached], 0, 56 - ctx->ncached);
+  memcpy (&ctx->buf[56], &ctx->n, 8);
+  byteswap (&ctx->buf[56], 8);	/* arggh */
+  sha_block (ctx);
+  memcpy (digest, ctx->v, 20);
+  /* burn any possibly secret data left in ctx */
+  memset (ctx, 0, sizeof (SHA));
+}
+
+static void 
+sha_block (SHA *ctx)
+{
+  uint32 W[80], temp, a, b, c, d, e, *s;
+  int t, i;
+
+  /* put bytes into big-endian order */
+  byteswap (ctx->buf, 64);
+
+  /* expand */
+  memcpy (W, (char*) ctx->buf, 64); /* copy first 16 words directly */
+  for (t = 16; t <= 79; t++)
+    W[t] = W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16];
+
+#define F1(x,y,z) ((x&y) | ((~x)&z))
+#define F2(x,y,z) (x ^ y ^ z)
+#define F3(x,y,z) ((x&y)|(x&z)|(y&z))
+#define R(w,n) ((w<<n) | (w >> (32-n)))
+#define ROUND(sp, kt, F) for (i = 0; i < 20; i++) { \
+  temp = R(a,5) + F(b, c, d) + e + W[i+sp] + kt; \
+  e = d; d = c; c = R(b,30); b = a; a = temp;}
+
+  /* copy old digest into a, b, c, d, e */
+  s = ctx->v;
+  a = *s++; b = *s++;  c = *s++;  d = *s++;  e = *s++; 
+
+  ROUND ( 0, 0x5a827999, F1);
+  ROUND (20, 0x6ed9eba1, F2);
+  ROUND (40, 0x8f1bbcdc, F3);
+  ROUND (60, 0xca62c1d6, F2);
+
+  /* add new info into digest */
+  s = ctx->v;
+  *s++ += a; *s++ += b; *s++ += c; *s++ += d; *s++ += e;
+
+  /* burn secret info */
+  a = b = c = d = e = temp = 0;
+  memset (W, 0, sizeof W);
+}
+
+

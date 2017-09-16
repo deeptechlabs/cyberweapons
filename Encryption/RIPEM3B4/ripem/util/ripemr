@@ -1,0 +1,2 @@
+#!/bin/sh
+ripem -d -h pr | quote -h

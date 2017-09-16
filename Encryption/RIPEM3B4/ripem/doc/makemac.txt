@@ -1,0 +1,128 @@
+===================================================
+
+Compiling RIPEM on the Macintosh using THINK C 5.0x
+(Beta 1, Version 1)
+
+By Richard Outerbridge
+
+0) The painful step.  
+
+	In order to use RIPEM with files greater than 15K or so, every
+	piece of it must be compiled to use 4-byte ints.  This means you
+	will need copies of the ANSI and unix libraries supplied with the
+	compiler that you have recompiled with these options in effect.
+
+1) Compiler settings and options.
+
+	Unless otherwise noted, each option should be turned OFF.
+
+	Language Settings
+		ANSI Conformance ON
+			 _STDC_ ON
+			Check pointer types ON
+		Language extensions ON
+			THINK C ON
+		Strict Prototype Enforcement ON (doesn't hurt)
+			Require prototypes ON
+
+	Compiler Settings
+		Generate 68020 instructions ON [if you can]
+		Generate 68881 instructions ON [if you can]
+	
+		[Classes, Methods, Optimize Monomorphic : Don't Care]
+	
+		4-byte ints ON
+		'\p' is unsigned char ON
+
+	Code Optimization
+		If you're using 5.02, go wild - turn them ALL ON!
+		If you're using 5.0>3<, DO NOT enable "Code Motion".
+
+	Debugging
+		None needed :-)  Turn them all off.
+
+	Prefix
+		#include <MacHeaders>
+		#define MACTC			<--- Important!
+
+2) Build RSAREF project
+
+	Switch into the RSAREF folder.  If your license from RSA DSI
+	allows you to use "substitute" files, replace the two files des.h
+	and desc.c in the "source" folder with their namesake replacements
+	from the "macmods:macstuff:rsaref" folder, and the file r_encode.c 
+	from the "macmods:rsaref" folder. These	are optimimized versions
+	of the originals.
+
+	Open a new project.  Add all the ".c" files in the rsaref:source
+	directory.  Set the compiler options as above.  Make all.  Done.
+
+	Close the project.  Move the resulting project up into the top level
+	"ripem" folder.  [If you want, you can move the "rsaref:source" folder
+	up to the same level.  All we need from it hereon are .h files.]
+
+3) Build ripem
+
+	Switch into the ripem folder.  Trash the file "global.h" that's
+	in the folder "ripem:main", and the file "msc7.c".  Open a new 
+	project. Under the Project menu, choose "Set Project Type".  Select 
+	Application.  If you wish, set the Creator string to, e.g., "ripe".
+	The partition size should be OK where it is, or you can bump it up 
+	to 512.  You can play with setting the SIZE flags: it is 32 bit clean.
+	Set the overall project options (under the Edit menu) as above.
+
+	If you want a faster DES, replace the file "ddes.c" with the file
+	"ddes68.c" from the folder "macmods:macstuff:main" folder.
+
+	Add all the ".c" files in the folder "ripem:main". In a second
+	a different segment, add the "RSAREF" project you just created.
+	In yet a third segment, add the THINK C library projects "ANSI"
+	and	"unix" - make sure they've been compiled correctly!
+
+	Now, just "Build Application" and you're all done.
+
+4) Gotchas
+
+	Some of the arguments can only be parsed if they're followed by
+	whitespace - which is only a problem if they're at the end of
+	the command line (-R for instance).  Normally we'd have a <cr>
+	there to handle this, but in our case we don't.  If you get a
+	spurious error message about invalid options >at the end of the
+	command line< try padding them out with a blank.  On the other
+	hand, when you run the test script in "testg.bat" make sure that
+	there are >no< trailing blanks following the args to "-C", or
+	else you will seed the random number machine differently and
+	will not generate the same keys that come in test1.pub and .prv.
+  
+5) Testing
+
+	Try the command line in ripem:test:testg.bat and verify that
+	the files you generated (test2.prv and test2.pub) are the same
+	as the files test1.prv and test1.pub.  Next try the command line
+	that's in the file ripem:test:testd.bat.  Make sure that the 
+	program name on the command line is "ripem".
+
+6) Environment variables
+
+	The UNIX and PC versions of RIPEM gather certain default information
+	from "environment variables".  In this Mac version there is a
+	similar feature, which keys off of "STR " resources in the application.
+	To use the feature create an "STR " resource, and add whichever of
+	the currently supported strings you wish:
+
+	/* meaning *			/* Resource ID */
+
+	PUBLIC_KEY_FILE_ENV   		21041
+	PRIVATE_KEY_FILE_ENV    	21042
+	USER_NAME_ENV           	21043
+	KEY_TO_PRIVATE_KEY_ENV  	21044
+	RANDOM_FILE_ENV				21045
+	SERVER_NAME_ENV				21046
+	RIPEM_ARGS_ENV 				21047
+
+	(In case you wondered: 21041 == 0x5231 == 'R1')
+
+921013/rwo
+
+==========
+Richard

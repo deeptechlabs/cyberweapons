@@ -1,0 +1,61 @@
+# $Header$
+
+# Gnu CC
+#CC = gcc
+#LDFLAGS = -L/usr/local/lib/gnu/cc/gcc4 -lg
+#CFLAGS = -Wall -g #-O
+#CFLAGS = -g
+
+# Unix definitions:
+OBJ = .o
+EXE =
+RM = rm -f
+
+# MS-DOS Definitions:
+#OBJ = .obj
+#EXE = .exe
+#RM = del
+
+SOURCES = Makefile README global.h mimic.c mimic.doc outsplit.c outsplit.h \
+  parser.c parser.h random.c random.h sample table.c table.h art.grm \
+  ball.grm utl.c utl.h words.c words.h getopt.h getopt.c mimic.1
+
+all:	mimic$(EXE)
+
+clean:
+	$(RM) *$(OBJ)
+
+clobber:
+	$(RM) *$(OBJ) mimic$(EXE)
+
+shar:
+	makekit -m -s64k -nMimic
+#	makekit -oMANIFEST -s64k -nMimic $(SOURCES)
+
+tar:
+	tar -cvAf mimic.tar $(SOURCES)
+
+.c$(OBJ):
+	$(CC) $(CFLAGS) -c $*.c
+
+getopt$(OBJ): getopt.c getopt.h
+
+mimic$(OBJ): global.h mimic.c words.h table.h random.h outsplit.h \
+  parser.h utl.h getopt.h
+
+outsplit$(OBJ): global.h outsplit.h outsplit.c random.h table.h utl.h
+
+parser$(OBJ): global.h parser.h parser.c words.h table.h random.h utl.h
+
+random$(OBJ): global.h random.h random.c utl.h
+
+table$(OBJ): global.h table.h table.c words.h utl.h
+
+utl$(OBJ): global.h utl.h utl.c
+
+words$(OBJ): global.h words.h words.c
+
+mimic: mimic$(OBJ) outsplit$(OBJ) parser$(OBJ) random$(OBJ) table$(OBJ) \
+       utl$(OBJ) words$(OBJ) getopt$(OBJ)
+	$(CC) $(CFLAGS) -o $@ mimic$(OBJ) outsplit$(OBJ) parser$(OBJ) \
+	  random$(OBJ) table$(OBJ) utl$(OBJ) words$(OBJ) getopt$(OBJ) $(LDFLAGS)

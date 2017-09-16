@@ -1,0 +1,427 @@
+#!/usr/bin/perl
+
+# display-ripem
+# version 1.0
+# Marc VanHeyningen <mvanheyn@whale.cs.indiana.edu>
+# Bug reports welcome, bug fixes more welcome.
+# Minor bugfixes by Greg Onufer, Oct 93.
+# But please be sure the bug is really in display-ripem and not in MH or RIPEM
+# or how you have things set up.
+# You may use and redistribute this code freely as long as you don't try to
+# make money off it or represent it as your own.  (Like you would want to.)
+
+# I use this code with MH 6.8 under SunOS 4, but it should be reasonably
+# portable.  Your mileage may vary.
+
+# A few configurations are needed as defaults.  This program is designed
+# for use with the MH mail system.  It may be used with other mailers, but
+# still needs to know where the MH library routines are; it uses ap and dp
+# to parse addresses and dates for (crude) verification.
+
+$mhlib = "/usr/local/mh/lib";
+
+# The time_threshold is the time, in seconds, which is the maximum acceptable
+# message latency; a message delay longer will result in a warning when the
+# message is displayed.  I use 86400, or one day.
+
+$time_threshold = 86400;
+
+# The showproc is the default program used to view the plaintext.  It also
+# may be modified by the command line argument -showproc.  The default is
+# to use the PAGER environment variable.  more, less, xless, or show -file
+# are all be reasonable values.
+
+$showproc = $ENV{"PAGER"};
+
+# This is a simple program designed to make RIPEM message reading more
+# convenient and secure.  It is based on MH, but may be used with any mailer
+# that can save its message to a file or send it down a pipe.  It does some
+# crude sanity checking on the headers and warns of some unusual values.
+
+# Use: display-ripem [ -[no]mh ] [ -showproc proc ] [ file [ ... ] ]
+#  showproc specifies the program used to view the plaintext.
+#   The default showproc is specified above.
+#  If mh is set, display-ripem will allow extraction and replies to be
+#   composed with standard MH techniques.  By default, mh will be set
+#   if the environment variable mhfolder is set.
+#  display-ripem will display all files in the list.  If the list is
+#   empty, it will try to display the standard input as a message.
+
+# Use in MH:
+#  In a directory in your PATH, make a symlink to show called pshow
+#  Put the line in your .mh_profile:
+#      pshow: -showproc display-ripem
+#  And you can just pshow RIPEM messages instead of showing them.  I prefer
+#  having a different command, since it forces me to be cognizant of the
+#  type of message I'm reading.
+
+#  If you use mhn, you may want a line something like:
+#      mhn-show-application/x-ripem: %l%e display-ripem -showproc 'show -file'
+#  Note that when display-ripem is called by mhn, it does not get to see
+#  the headers to the message, and thus cannot check their contents.
+
+# Note that this program assumes that RIPEM environment variables like
+# RIPEM_USER_NAME and the like are set up accordingly.
+
+# This program will not work with non-RIPEM mail.  It will not display 
+# the headers which are not cryptographically authenticated without an
+# indication of their status.  This is not a bug, it's a feature.  It
+# tries not to display suspect information without indicating it as such.
+
+# display-ripem will check the headers for consistency; it will look at
+# the external From: header, the Originator-Name PEM header, and the
+# encapsulated From: header (if there is one.)  It will complain if they
+# are not all the same.  In addition, the time stamps on the message are
+# checked, and latencies greater than $time_threshold will result in a
+# warning.  This is a rather crude attempt to increase the chances of the
+# detection of playback attacks.  Neither of these checks is really of
+# much value unless the plaintext contains a From: and Date: header, which
+# (IMHO) messages should.  The send-ripem program generates these headers
+# automatically.
+
+# After reading the message, you are (if the mh mode is on) given the
+# opportunity to reply to it with the plaintext included.  This is sort
+# of un-MH-ish, since it means having a mode instead of having everything
+# happen at the shell prompt.  However, it allows easy inclusion of the
+# text without requiring the message to be decrypted a second time.
+# In addition, if you type "m" at the prompt, it will generate an included
+# reply using text/richtext as the type.  This mode is still being played
+# with.
+
+# The model of replying is the Rnmail interface from rn; a components file
+# is built on the fly using here-is files in the code.  Thus, for the
+# moment, the only way to change the form of that file is to modify this
+# program.  This does, however, allow the text to be included easily by
+# this program, and allows things like annotations and Cc: lines to work.
+
+# An Encrypted: line is also added so that, if a mailer like send-ripem is
+# used, the reply to a RIPEM message will be ENCRYPTED by default.
+
+# You also may extract the plaintext into a new MH message.
+# This allows manipulations like bursting and the like on the plaintext.
+# Obviously this is a significant security risk, and you should only do
+# this if the plaintext is itself an RFC 822 message.
+
+# The plaintext is stored on a file on /tmp, and is overwritten when
+# the program finishes.  However, some other copies, like draft files,
+# may not be overwritten, a potential security risk.
+
+sub parse_headers {
+    local($filedes, $default, %rules) = @_;
+    local($label, $contents, $label_index, $bogus);
+
+    $_ = <$filedes>;
+    while($_ ne "" && ! /^$|^-/) {
+	($label, $contents) = /^([0-9A-Za-z\-]*):[ \t]*(.*\n)/;
+	($label_index = $label) =~ tr/[A-Z]/[a-z]/;
+	$_ = <$filedes>;
+
+	while($_ ne "" && /^[ \t]/) {
+	    $contents .= $_;
+	    $_ = <$filedes>;
+	}
+
+	if(defined $rules{$label_index}) {
+# the variable name indicates what I think about the fact that
+# perl won't allow associative array values as arguments to "do".
+	    $bogus = $rules{$label_index};
+	    do $bogus ($label, $contents);
+	}
+	else {
+	    do $default($label, $contents);
+	}
+    }
+}
+
+sub do_nothing {
+}
+
+sub print_header {
+    local($label, $contents) = @_;
+    print $label, ": ", $contents;
+}
+
+sub clobber {
+    local($filename) = @_;
+    local($size, $i);
+
+    $size = (stat($filename))[7];
+    return if $size <= 0;
+    $buf = "01234567890abcdef" x 256;
+    open(FD, "> $filename");
+    for($i = 0; $i < $size; $i += 4096) {
+      syswrite(FD, $buf, 4096);
+    }
+
+    close(FD);
+
+    unlink $filename;
+}
+
+umask 077;
+$tmpfile = "/tmp/rmh.$$";
+$formfile = "/tmp/rmhform.$$";
+
+sub cleanup {
+    &clobber($tmpfile);
+    &clobber($formfile);
+    exit -1;
+}
+$SIG{'HUP'} = $SIG{'INT'} = $SIG{'QUIT'} = $SIG{'TERM'} = 'cleanup';
+
+$mh = defined $ENV{'mhfolder'};
+
+ARGPARSE:
+    while($argument = shift) {
+	if($argument eq "-mh") { $mh = 1; }
+	elsif($argument eq "-nomh") { $mh = 0; }
+	elsif($argument eq "-showproc") { $showproc = shift; }
+	elsif($argument eq "-") { push(@filelist, ($argument)); }
+	elsif($argument =~ /^-/) {
+	    print STDERR "Unrecognized option $argument\n";
+	    print STDERR "Use:  $0 [ options ] [ files ]\n";
+	    print STDERR "Valid options: -[no]mh -showproc proc\n";
+	    exit -1;
+	} else {
+	    push(@filelist, ($argument));
+	    push(@filelist, @ARGV);
+	    last ARGPARSE;
+	}
+    }
+
+# If you don't have termcap installed or something, this may be commented
+# out.  It's just to increase the visibility of warning messages.
+
+open(TTY, "<&STDERR");
+require "ioctl.pl";
+ioctl(TTY,$TIOCGETP,$foo) || warn "ioctl failed";
+($ispeed,$ospeed) = unpack('cc',$foo);
+require 'termcap.pl';
+&Tgetent();
+
+sub parse_received {
+    local($label, $contents) = @_;
+# we only want the first received: line
+    if($date_received eq "") {
+	($date_received) = $contents =~ /;(.*)\n/;
+    }
+}
+$external_rules{"received"} = "parse_received";
+
+sub parse_date {
+    local($label, $contents) = @_;
+    $date_sent = $contents;
+    chop $date_sent;
+}
+$external_rules{"date"} = "parse_date";
+
+sub parse_from {
+    local($label, $contents) = @_;
+    $from_extern = $contents;
+    chop $from_extern;
+}
+$external_rules{"from"} = "parse_from";
+
+sub parse_subject {
+    local($label, $contents) = @_;
+    $subject = $contents;
+}
+$external_rules{"subject"} = "parse_subject";
+$plaintext_rules{"subject"} = "parse_subject";
+
+sub parse_originator_name {
+    local($label, $contents) = @_;
+    $originator_name = $contents;
+    chop $originator_name;
+    &print_header($label,$contents);
+}
+$pem_rules{"originator-name"} = "parse_originator_name";
+
+sub parse_proc_type {
+    local($label, $contents) = @_;
+    ($proc_type) = $contents =~ /,(.*)\n/;
+    &print_header($label, $contents);
+}
+$pem_rules{"proc-type"} = "parse_proc_type";
+
+sub parse_dek_type {
+    local($label, $contents) = @_;
+    ($dek_type) = $contents =~ /^(.*),/;
+    print "Dek is $contents";
+    &print_header($label, $contents);
+}
+$pem_rules{"dek-info"} = "parse_dek_type";
+
+sub parse_date_plain {
+    local($label, $contents) = @_;
+    $date_plain = $contents;
+    chop $date_plain;
+}
+$plaintext_rules{"date"} = "parse_date_plain";
+
+sub parse_from_plain {
+    local($label, $contents) = @_;
+    $from_plain = $contents;
+    chop $from_plain;
+}
+$plaintext_rules{"from"} = "parse_from_plain";
+
+if($#filelist < $[) {
+    push(@filelist, ("-"));
+}
+
+$show_filenames = $#filelist > $[;
+
+MESSAGE:
+    while($message = shift @filelist) {
+	
+	print $TC{"so"}, "-- $message --\n", $TC{"me"} if($show_filenames);
+
+	if(!open(MESSAGE, $message)) {
+		print STDERR "Cannot open $message\n";
+		next MESSAGE;
+	}
+	$time_file = ((stat(MESSAGE))[9]);
+
+	$from_extern = "";
+	$date_sent = "";
+	$date_received = "";
+	$subject = "";
+	$date_plain = "";
+	$from_plain = "";
+	&parse_headers(MESSAGE, "do_nothing", %external_rules);
+
+	while($_ ne "-----BEGIN PRIVACY-ENHANCED MESSAGE-----\n" &&
+	      ($_ = <MESSAGE>)) { ; }
+	if($_ ne "-----BEGIN PRIVACY-ENHANCED MESSAGE-----\n") {
+	    print STDERR "Unable to find PEM header in $message\n";
+	    next MESSAGE;
+	}
+
+	open(RIPEM, "| ripem -d > $tmpfile") || die "Cannot open ripem!"; 
+	select RIPEM;
+	print;
+	$originator_name = "";
+	$proc_type = "";
+	$dek_type = "";
+	&parse_headers(MESSAGE, "print_header", %pem_rules);
+	print;
+	select STDOUT;
+	print "Proc-Type: $proc_type\n";
+	print "DEK: $dek_type\n" if $dek_type ne "";
+	select RIPEM;
+	while(<MESSAGE>) { print; }
+	close(MESSAGE);
+	if(!close(RIPEM) || $? != 0) {
+	    print STDERR "RIPEM returned with error code $? on $message\n";
+	    next MESSAGE;
+	}
+	
+	open(PLAINTEXT, $tmpfile);
+	&parse_headers(PLAINTEXT, "do_nothing", %plaintext_rules);
+
+	($time_plain, $time_sent, $time_received) =
+	    split("\n", `$mhlib/dp -format '%(clock{text})' "$date_plain" "$date_sent" "$date_received"`);
+	$time_plain = $time_sent if $time_plain == -1;
+	$time_received = $time_file if $time_received == -1;
+	$time_plain = $time_received if $time_plain == -1;
+
+	@addrs = split("\n", `$mhlib/ap -format '%(putstr(addr{text}))' "$from_extern" "$from_plain" "$originator_name"`);
+
+	select STDOUT;
+	
+	print "Subject: $subject" if($subject ne "");
+	print $TC{"md"}, $TC{"mb"}, "Warning!", $TC{"me"}, $TC{"md"},
+	 "  Extra address @addr[3] parsed!\n", $TC{"me"}
+	if($#addr > 2);
+	if($addr[0] ne $addr[1] && $addr[1] ne "" || 
+	   $addr[1] ne $addr[2] && $addr[2] ne "") {
+	    print $TC{"md"}, $TC{"mb"}, "Warning!", $TC{"me"}, $TC{"md"},
+	     "  Inconsistent originator info:\n", $TC{"me"};
+	    print "External-From: $from_extern\n" if($from_extern ne "");
+	    print "Originator-Name: $originator_name\n";
+	    print "Internal-From: $from_plain\n" if($from_plain ne "");
+	    print $TC{"so"}, " WARNING!!! SOME OR ALL OF THE ABOVE APPEAR INACCURATE \n", $TC{"me"};
+	} else {
+	    if($from_plain eq "") {
+		if($from_extern eq "") {
+		    print "Originator-Name: $originator_name\n";
+		} else {
+		    print "External-From: $from_extern\n";
+		}
+	    } 
+	}			
+
+	if(($time_delta = $time_received - $time_plain) > $time_threshold) {
+	    printf("%sCaution: message latency of %d days, %d hours, %d minutes%s\n",
+		   $TC{"md"}, $time_delta / 86400,
+		   ($time_delta % 86400) / 3600,
+		   ($time_delta % 3600) / 60, $TC{"me"});
+	}
+	close PLAINTEXT;
+	$| = 1; print $TC{"so"}, "--Hit RETURN for the plaintext--", $TC{"me"};
+	<TTY>;
+	$| = 0;
+	system "$showproc $tmpfile";
+	&clobber($tmpfile) unless $mh;
+	next MESSAGE unless $mh;
+	$| = 1;
+	print $TC{"so"}, "--<cr> to proceed, <r> to reply, <e> to extract--", $TC{"me"};
+	$_ = <TTY>;
+	$| = 0;
+	if(/r/i || ($mime_rich = /m/i)) {
+	    open(FORM, ">$formfile") || die "Cannot create $formfile";
+	    select FORM;
+	    print "Encrypted: RIPEM, ENCRYPTED\n";
+
+	    if($from_plain ne "") { print "To: $from_plain\n"; }
+	    else { print <<EOF;
+%(lit)%(formataddr %<{reply-to}%|%<{from}%|%<{sender}%|%<{return-path}%>%>%>%>)\\
+%<(nonnull)%(void(width))%(putaddr To: )\\n%>\\
+EOF
+            }			      
+	    print <<EOF;
+%(lit)%(formataddr{to})%(formataddr{cc})\\
+%<(nonnull)%(void(width))%(putaddr cc: )\\n%>\\
+%<{fcc}Fcc: %{fcc}\\n%>\\
+%<{date}In-reply-to: Your message of "%<(nodate{date})%{date}%|%(pretty{date})%>."%<{message-id}
+             %{message-id}%>\n%>\\
+EOF
+
+             if ($subject eq "")
+	     { print <<EOF;
+%<{subject}Subject: Re: %{subject}\\n%>\\
+EOF
+             }
+	    else {if (!($subject =~ /^Re:/i)) { $subject = "Re: " . $subject; }
+		  print "Subject: ", $subject; }
+	    print "--------\n";
+	    print '#<text/richtext\n<bold>' if($mime_rich);
+
+	    if($from_plain ne "") { print "Previously, $from_plain said:\n"; }
+	    else { print "Previously, $originator_name said:\n"; }
+	    print '</bold><excerpt>\n' if $mime_rich;
+
+	    open(MSGFD, $tmpfile) || die "Cannot read from $tmpfile";
+	    while(<MSGFD>) { 
+		print ">" unless $mime_rich;
+		print '<nl>' if ($mime_rich && $_ =~ /^[>\t ]*\n/);
+		print $_;
+	    }
+	    print '</excerpt>\n' if $mime_rich;
+	    close MSGFD;
+	    close FORM;
+	    system "repl", "-form", $formfile;
+	    &clobber($formfile);
+	}			
+    	elsif(/e/i) {
+	    open(MSG_FD, $tmpfile) || die "Cannot read from $tmpfile";
+	    $extfn = `mhpath new`;
+	    open(NEW_FD, ">$extfn") || die "Cannot create $extfn";
+	    while(<MSG_FD>) { print NEW_FD; }
+	    close MSG_FD;
+	    close NEW_FD;
+	    print "Plaintext extracted into $extfn\n";
+	}
+	&clobber($tmpfile);
+}

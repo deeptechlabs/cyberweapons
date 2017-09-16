@@ -1,0 +1,28 @@
+#!/usr/local/bin/perl -w -I.
+
+use Crypt::SHA;
+
+my $hash = Crypt::SHA->hash("abc");
+my $hash2 = Crypt::SHA->hash("abc");
+
+print "ok 1\n" if ($hash eq $hash2);
+print "ok 2\n" if ($hash == $hash2);
+print "ok 3\n" unless ($hash ne $hash2);
+print "ok 4\n" unless ($hash != $hash2);
+
+my $hash3 = new Crypt::HashSHA $hash->data();
+print "ok 5\n" if ($hash eq $hash3);
+
+print "$hash\n";
+print $hash->asString(), "\n";
+print $hash, "\n";
+print "$hash\n";
+print unpack("H*", $hash->save());
+print unpack("H*", $hash->data());
+
+# do_test("1", "abc",
+# "0164b8a914cd2a5e74c4f7ff082c4d97f1edf880");
+# do_test("2", "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
+# "d2516ee1acfa5baf33dfc1c471e438449ef134c8");
+# do_test("3", "a" x 1000000,
+# "3232affa48628a26653b5aaa44541fd90d690603");

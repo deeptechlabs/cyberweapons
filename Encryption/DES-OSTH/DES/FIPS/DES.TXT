@@ -1,0 +1,169 @@
+			
+
+			DES (Data Encryption Standard)
+
+
+The following descriptions of the DES algorithm is from FIPS 46,
+1977 January 15, as described in the appendix of the book
+"An Introduction to Operating Systems" by Harvey M. Deitel
+(Addison-Wesley Publishing Company, Inc. ISBN 0-201-14502-2).
+
+This description is a simple "quick-reference" of DES for those already
+familiar with DES.
+
+The DES algorithm enciphers 64-bit data blocks of data under control
+of a 64-bit key. Deciphering is done with the same key as enciphering
+and the enciphering function in a different mode.
+
+
+			ENCIPHERING FUNCTION
+
+
+			   Input data (bit 1..64)
+				|
+				IP
+				|
+		+---------------+---------------+
+	       (L0 = bit 1..32 of IP)	       (R0 = bit 33..64 of IP)
+		|				|
+		|		+---------------------- K1
+		|		|		|
+		XOR <---------- F <-------------+
+		|				|
+		+-----------------------+	|
+					|	|
+		+---------------------- | ------+
+		|			|	
+		|			+-------+
+	       (L1 = R0)		       (R1 = L0 xor F(R0,K1))
+		|				|
+		|		+---------------------- K2
+		|		|		|
+		XOR <---------- F <-------------+
+		|				|
+		+-----------------------+	|
+					|	|
+		+---------------------- | ------+
+		|			|	
+		|			+-------+
+	       (L2 = R1)		       (R2 = L1 xor F(R1,K2))
+		|				|
+				...
+		|				|
+	       (L15 = R14)		       (R15 = L14 xor F(R14,K15))
+		|				|
+		|		+---------------------- K16
+		|		|		|
+	       XOR <----------- F <-------------+
+		|				|
+	       (R16 = L15 xor F(R15,K16)       (L16 = R15)
+		|	(bit 1..32)		|	(bit 33..64)
+		+---------------+---------------+
+				| -1
+				IP
+				|
+			  Output data (bit 1..64)
+
+Deciphering is done by substituting K1 for K16, K2 for K15, ... and
+K16 for K1.
+
+
+The Function F(Rn,Kn+1) used in the enciphering function above
+
+			Rn (bit 1..32)		       Kn+1 (bit 1..48)
+			|				|
+			E				|
+			|				|
+			(bit 1..48)			|
+			|				|
+			+------------> XOR <------------+
+					|
+	    (bit 1..6  7..12		|		   42..48)
+		   +-----+-----+-----+--+--+-----+-----+-----+
+		   |     |     |     |     |     |     |     |
+		   S1    S2    S3    S4    S5    S6    S7    S8		
+		   |     |     |     |     |     |     |     |
+		   +-----+-----+-----+--+--+-----+-----+-----+
+	    (bit 1..4  5..8		|		   29..32)
+					|
+					P
+					|
+				   Output of F (bit 1..32)
+
+
+			KEY SCHEDULE GENERATION
+
+
+				KEY (bit 1..64)
+				 |
+				PC1
+				 | (bit 1..56)
+		+----------------+--------------+
+		|				|
+	       (C0 = PC1(KEY) bit 1..28))      (D0 = PC1(KEY) bit 29..56))
+		|				|
+		LS1				LS1
+		|				|
+	       (C1 = LS1(C0) bit 1..28)	       (D1 = LS1(D0) bit 29..56)
+		|				|
+		+----------------+--------------+
+		|		 | (bit 1..56)	|
+		|		PC2		|
+		|		 |		|
+		|		K1 (bit 1..48)	|
+		|				|
+		LS2				LS2
+		|				|
+	       (C2 = LS2(C1) bit 1..28)	       (D2 = LS2(D1) bit 29..56)
+		|				|
+		+----------------+--------------+
+		|		 | (bit 1..56)	|
+		|		PC2		|
+		|		 |		|
+		|		K2 (bit 1..48)	|
+		|				|
+				...
+		|				|
+		LS16				LS16
+		|				|
+	       (C16 = LS16(C15) bit 1..28)     (D16 = LS16(D15) bit 29..56)
+		|				|
+		+----------------+--------------+
+				 | (bit 1..56)
+				PC2
+				 |
+				K16 (bit 1..48)
+
+The generation of key schedule K1..K16 is identical for both encryption and
+decryption.
+
+
+				TABLES
+
+			   -1
+The tables describing IP, IP , E, S, P, PC1, LS and PC2 are available as
+C source code in the following files:
+
+	fips_IP.h	The initial permutation function IP.
+								  -1
+	fips_IPinv.h	The inverse initial permutation function IP .
+
+	fips_E.h	The E bit selection table.
+
+	fips_S.h	Selection box 1 .. 8.
+
+	fips_P.h	Permutation function P.
+
+	fips_PC1.h	Permuted choice 1 in the key schedule generation.
+
+	fips_LS.h	Left shift for schedule 1 .. 16.
+
+	fips_PC2.h	Permuted choice 2 in the key schedule generation.
+
+Each table is represented as a 2 dimensional array of unsigned characters,
+except for LS (a vector) and S (a 3 dimensional array).
+
+					     _
+					Stig Ostholm
+					Chalmers University of Technology
+					Department of Computer Engineering

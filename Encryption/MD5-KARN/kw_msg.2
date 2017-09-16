@@ -1,0 +1,40 @@
+From msuinfo!caen!zaphod.mps.ohio-state.edu!usc!elroy.jpl.nasa.gov!swrinde!network.ucsd.edu!qualcom.qualcomm.com!chicago.qualcomm.com!karn Sat Mar 28 18:51:45 1992
+Path: msuinfo!caen!zaphod.mps.ohio-state.edu!usc!elroy.jpl.nasa.gov!swrinde!network.ucsd.edu!qualcom.qualcomm.com!chicago.qualcomm.com!karn
+From: karn@chicago.qualcomm.com (Phil Karn)
+Newsgroups: sci.crypt
+Subject: Re: Phil Karn's encryption
+Message-ID: <1992Mar23.063409.8363@qualcomm.com>
+Date: 23 Mar 92 06:34:09 GMT
+References: <29cd43f5@windsor.a92104.sai.com>
+Sender: news@qualcomm.com
+Organization: Qualcomm, Inc
+Lines: 26
+Nntp-Posting-Host: chicago.qualcomm.com
+
+
+Mark,
+
+Thanks for your comments. After posting that note I've since discovered
+that a) my scheme is not original, b) you do indeed need more than
+two rounds, and c) it's also important that the keys for each round be
+distinct.
+
+Somebody pointed me to the paper "A New Class of Cryptosystems Based
+on Interconnection Networks" by
+michaelp@terpsichore.informatik.rwth-aachen.de (so much for all of the
+world's cryptographic talent being in the US! :-) Anyway, this paper
+cites previous work in the field that shows three iterations of a
+keyed one-way function to be sufficient as long as at least two
+different keys are used. The paper in question is by Zheng, Matsumoto
+and Imai and appeared in Crypto 89.
+
+So I am now proposing that "my" cipher consist of three calls to the
+MD-5 primitive function "transform", and that the keys for each step
+be different. Since the subkey for each round is 64 bytes long, it
+should suffice to accept one 64-byte key and to use MD-5 in its usual
+mode to generate the rest of the subkeys by repetitive iteration.
+
+Comments?
+
+Phil
+

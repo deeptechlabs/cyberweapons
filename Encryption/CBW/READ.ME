@@ -1,0 +1,212 @@
+
+UNPACKING NOTES [by Rich $alz]
+	There Usenet distribution of CBW includes six files that have
+been UUENCODE'd because they contain non-printing characters:
+	    UU.foo UU.graphics UU.test UU.test1 UU.test2 UU.test3
+You must first decode these files before using them; one of
+the command sets will do the trick:
+	for I in UU.* ; do uudecode $I ; done	-- /bin/sh
+	foreach I (UU.*)			-- C shell
+	    uudecode $I				--
+	end					--
+
+	This directory contains the source, documentation, and
+auxilary files for the Crypt Breakers Workbench (cbw).  CBW is
+a multi-window integrated workbench of tools that help a cryptanalist
+read files encrypted with the BSD4.2 crypt command.  Anyone
+may copy, modify, use, or redistribute this system.  It was
+originally written by Robert W. Baldwin at MIT.
+
+
+GETTING STARTED
+
+	A user's manual is provided in cbw.doc.  The scribe source
+for the user's manual is in cbw.mss.  The file Index briefly describes
+the various programs in this directory.
+
+	CBW is written in C and distributed with the source code to
+encourage people to play with it.  It should run on any display
+terminal.  Read the users manual for information on terminal
+compatibility.
+
+
+	
+TO COMPILE CBW
+
+	Execute "make" with no arguments.  CBW uses routines from the termcap
+and curses libraries, but it does not use the full curses package.
+
+
+A FEW OTHER NOTES
+
+	Page 2 of the users manual mentions that CBW cannot work
+	against files that have been run through compress (1) before
+encryption.  Personally, I would prefer to have a DES-based
+self-inverse cipher.  Most DES programs need to be told whether they
+are in encrypt or decrypt mode.  However, IBM only grants free use of
+DES if it is used according to NBS guidelines, and self-inverse is not
+one of the accepted operating modes.
+
+
+TESTING
+
+     The following is a step by step sequence of commands to exercise
+the Crypt Breakers Workbench.  It demonstrates how easily crypt files
+can be broken.
+
+   1. Edit  stats.slice to set the name of the directory that contains the
+      statistics files.  Statistics for scribe documents are included with
+      the source files.
+
+      The  stats.slice  file  also  defines the location of the dictionary
+      used by the lookup-pattern  command.    The  default  dictionary  is
+      /usr/dict/words.    The  dictionary is just a list of words, one per
+      line.  Case does not matter.
+
+   2. Execute 'source  stats.slice'  to  initialize  the  necessary  shell
+      variables.
+
+   3. If there is a .slice file for your terminal type (e.g., vt100.slice,
+      or h19.slice), execute source on that file.   This  initializes  the
+      graphics map and key map.
+
+   4. Print  out  cbw.doc,  so you can read it after you have decided that
+      you can't figure out how the program works.
+
+   5. Copy test3.perm and .cipher to foo.perm and foo.cipher.    The  .txt
+      files contain the original plaintext.
+
+   6. Execute 'cbw foo'.
+
+   7. The  cursor  will  on the command line.  Use the arrow keys (or C-P,
+      C-N, C-F, C-B) to move the cursor to the upper lefthand position  of
+      the  decryption  window.   Try typing '@Device[Dover]'.  Notice that
+      most of the characters you type  deduced  other  characters  in  the
+      block.
+
+   8. The  'D'  in  'Dover'  is wrong.  Using the arrow keys, position the
+      cursor over the 'D' and type 'd'.
+
+   9. Advance to the position after the ']' and  type  C-T.    A  list  of
+      possible  characters  for this position will be displayed.  The list
+      is sorted with the most likely character on the left.   Notice  that
+      many characters are not possible because they would deduce non-ascii
+      characters elsewhere in the  block,  or  they  would  conflict  with
+      previously accepted guesses.
+
+      Try  guessing  tab,  comma  and linefeed for the character after the
+      ']'.  Use C-G to undo each guess.  Delete and C-D do not restore the
+      old  state,  they  just  erase  the  wiring  that  was  deduced by a
+      particular character.
+
+  10. Move the cursor down to the command line.  You can use emacs  cursor
+      characters  (C-N,  C-P, C-F, C-B) or the arrow keys.  Unfortunately,
+      C-U does not work as in emacs.  The C-X key or F4 will jump directly
+      to the command line.
+
+  11. Type  'pw  '.    The  space  will  cause  command completion for the
+      probable-word guessing command.  Type F2 (or C-S) to advance to  the
+      first  argument,  and  enter  the  file name 'mss.words'.  That file
+      contains a list of keywords used  by  the  Scribe  (Finalword)  text
+      formatter.    Press  F2  to  advance  to  the second argument, which
+      specifies a cut-off level for automatically accepting guesses.   The
+      level  is the maximum number of standard deviations that the scoring
+      function can be away from its expected value.  Enter 1.2, and  press
+      return to invoke the command.
+
+  12. A  partially filled in block will appear in the guessing window.  To
+      accept the result of this command, press F3 (or C-A).
+
+  13. Try the pword guess command again with a level of 3.   To  do  this,
+      just  move  to  the  command  line, change the 1.2 to a 3, and press
+      return.  Again F3 accepts the guess.  If  some  guesses  look  wrong
+      (such  as the 'F' on the second line under the '[Article]'), you can
+      correct them using the editor in the decryption block window.
+
+  14. Advance to block  1  of  the  file  by  moving  the  cursor  to  the
+      decryption  window and pressing F2 (or C-S).  F1 (or C-R) moves back
+      one block, F2 moves ahead one block.
+
+  15. The second block is likely to  be  plain  english  with  few  scribe
+      commands.    Move  to the command window, type C-U to erase the line
+      and type 'bi ' to  setup  the  bigram  guessing  command.    Try  an
+      acceptance  level  of  1.0  and  a minimum probability of 0.6.  Type
+      return to invoke the command.
+
+  16. After a short wait (~15  seconds),  a  partial  block  will  appear.
+      Accept the guess with the F3 key in the guessing window.
+
+  17. Try  looking  up a pattern in the dictionary.  In the command window
+      type 'look ', use F2 to advance to the  pattern,  and  type  in  the
+      pattern  '....llit.', and press return.  This will match against the
+      word 'satellite' if it is in you site's dictionary.
+
+  18. One could go on like this, but let's skip  ahead  by  loading  in  a
+      previously  saved state.  Invoke the load command (it loads the file
+      foo.perm, just as save dumps to foo.perm (making this command take a
+      filename  is  a  good implementation exercise)).  Type C-U, 'load ',
+      and return.  Notice that all the work so  far  is  replaced  by  the
+      information in the .perm file.  This can be considered a feature.
+
+  19. Use  the  F1 and F2 keys in the decryption window to view the blocks
+      that have been solved.  Notice that a fully solved  block  does  not
+      specify  all  the wirings of the block key (permutation).  Typically
+      only 105 of the 128 wires are used.
+
+  20. Lets try deducing the inter-block relationship (zee).   Execute  the
+      clear-zee command.
+
+  21. Execute  knit  blocks 0 through 3 with a min show count of 20.  This
+      means that the program should only show you guesses that  deduce  20
+      or more wirings of the zee permutation.  Press return to invoke this
+      guessing strategy.  The cursor will move  to  the  guessing  window.
+      Press F2 to start the first round of guessing.
+
+      The running time of the knit command is exponential in the number of
+      blocks knitted, and it will run for a very long time if any  of  the
+      blocks  are  decrypted incorrectly.  This means that it is better to
+      leave a position blank than to guess at it.
+
+  22. The program moves to block 4 and shows you the characters in block 4
+      that would be deduced from block 3 given the deduced wirings of zee.
+      If these look reasonable, press F3 to accept the guess, and press F2
+      to try the next guess.  To reject a guess, press F2 without pressing
+      F3.
+
+  23. Now that part of zee is known, try propagating the settings of block
+      1 into block 0 using zee.  The propagate command will do this.  Also
+      try propagating blocks 2, 3, and 4 to zero.
+
+      Notice that the number of known wires can increase without  deducing
+      additional characters in the block.
+
+  24. There should be a command that propagates information between groups
+      of blocks, but for now you must do this one block at a time.   After
+      propagating  block 1 - 4 to block zero, and block zero to blocks 1 -
+      4, et cetera, try the knit command again.
+
+  25. Propagate block 4 to 5  to  provide  a  framework  to  evaluate  new
+      guesses.
+
+  26. Knit block 0 through 4 with a minimum show level of 2.  You may want
+      to skip accepting guesses that do not deduce any characters.  Repeat
+      this process with a show level of 1.
+
+  27. The  program  should  now  know  all 256 wirings of zee.  Repeat the
+      process of propagating information  between  blocks  until  all  128
+      wires of the block zero are known.
+
+  28. Save  your  work  with the save-permutations command (on the command
+      line type 'sa ' and press return).  This writes the file foo.perm.
+
+  29. Exit the program with the quit command.
+
+  30. Copy foo.perm to zeecode.perm.
+
+  31. Execute 'zeecode < foo.cipher | more '.  This  program  reads  CBW's
+      save  file  to  find  the  permutation  for  block  zero and the Zee
+      permutation  that  describes  how  the  remaining  block  keys   are
+      generated.    Using  this  information it decodes standard input and
+      writes on standard output.
+
+  32. That's all.

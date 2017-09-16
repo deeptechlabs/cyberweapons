@@ -1,0 +1,45 @@
+#! /bin/sh
+# update-key-database -- Script to update a RIPEM key server's
+#  key database.
+#  Mark Riordan  8 Jan 93
+# modified by tale for uunet 12 Jan 93
+
+cd /usr/local/src/ripem/mirror
+rm -f pubkeys-old.gdmb pubkeys-new.gdbm pubkeys.txt.new
+
+# fetch a new copy of pubkeys.txt
+/home/archive/mirror/bin/mirror.pl mirror.conf
+
+if test ! -f pubkeys.txt.new; then
+  echo $0: no new pubkeys.txt file! >&2
+  exit 1
+fi
+
+if cmp -s pubkeys.txt.new pubkeys.txt; then
+  echo $0: pubkeys.txt unchanged >&2
+  exit 0;
+fi
+
+mv pubkeys.txt.new pubkeys.txt
+
+# Convert the flat ASCII file of keys to GDBM format.
+crekeydb -p pubkeys.txt -o pubkeys.gdbm
+
+# move it to the key server
+rcp pubkeys.txt ns.uu.net:/usr/ripem/pubkeys-new.txt
+rcp pubkeys.gdbm ns.uu.net:/usr/ripem/pubkeys-new.gdbm
+
+# update the server
+rsh ns.uu.net:/usr/ripem/reload-keys
+
+#! /bin/sh
+# reload-keys
+
+cd /usr/ripem
+
+mv pubkeys.gdbm pubkeys-old.gdbm
+mv pubkeys-new.gdbm pubkeys.gdbm
+mv pubkeys.txt pubkeys-old.txt
+mv pubkeys-new.txt pubkeys.txt
+kill -USR1 `cat server.pid`
+

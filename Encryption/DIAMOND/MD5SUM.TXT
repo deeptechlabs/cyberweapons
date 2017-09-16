@@ -1,0 +1,159 @@
+MD5SUM.TXT -- Documentation for MD5SUM.EXE
+
+
+WHAT IS THIS?
+
+MD5SUM is a Public Domain program used for computing and checking
+cryptographic message digests (or check values) of files.  It was written
+with the Unix philosophy of reading from standard input and writing to
+standard output, and options are delimited with "-" instead of "/".  To get a
+rather terse help message, type
+
+md5sum -h
+
+at the DOS prompt.  Md5sum.exe will respond with:
+
+usage: md5sum [-bv] [-c [file]] | [file...]
+	Generates or checks MD5 Message Digests
+	    -c  check message digests (default is generate)
+	    -v  verbose, print file names when checking
+	    -b  read files in binary mode
+	The input for -c should be the list of message digests and file names
+	that is printed on stdout by this program when it generates digests.
+
+When checking files, MD5SUM generates no output if the files match their
+fingerprints, unless you also specify the -v switch.  If there is a problem,
+it will generate one or more of the following messages:
+
+MD5SUM.EXE: can't open filename
+MD5SUM.EXE: error reading filename
+MD5SUM.EXE: MD5 check failed for filename
+MD5SUM.EXE: _ of _ file(s) failed MD5 check
+MD5SUM.EXE: no files checked
+
+
+WHY WOULD I WANT TO DO THAT?
+
+If the MD5 message digest "fingerprint" of a file has not changed, this is a
+VERY good indication that the contents of the file has not changed.  Even if
+you wanted to change a file in such a way that it still had the same MD5
+"fingerprint," you probably couldn't do it without a lot of supercomputer
+time (and neither could a bad guy).  This makes it useful for detection of
+forgeries, viruses, and just plain transmission errors.  Note that this is
+much more powerful than a normal CRC, which is good at detecting some kinds
+of transmission errors, but can easily be forged.  This is also useful for
+signing a collection of files with a digital signature (using PGP, a PEM
+implementation, or some kind of DSA implementation, for example), without
+having to individually sign each file.  Simply create a text file with the
+"fingerprints" of each file you wish to sign, then sign that text file.
+
+
+COMPUTING FILE MD5 FINGERPRINTS
+
+To compute the MD5 fingerprint of a text file, simply type
+
+MD5SUM filename(s)
+
+Unfortunately, "wild cards" (like * and ?) are not supported by this program,
+but you can put more than one file name on the command line.  Since the
+program is assuming that this is a text file, line endings conventions may
+differ and still result in the same check value.
+
+To compute the MD5 fingerpring of any file, include the -b option (for
+binary):
+
+MD5SUM -b filename(s)
+
+To see the file names displayed while computing "fingerprints," include the
+-v option, like:
+
+MD5SUM -bv filename(s)
+
+To write the output to a file instead of just displaying it on the screen,
+use redirection with the ">" character, like:
+
+MD5SUM -bv filename(s) > md5file
+
+To append the output to an existing file, use two > characters, like:
+
+MD5SUM -bv filename(s) >> md5file
+
+
+ADDING COMMENTS TO CHECK FILES
+
+Sometimes it is nice to add comments to files containing MD5 fingerprints. To
+do this, just edit the files made using the above instructions to add in what
+you want to say.  Lines that do not start with valid hexadecimal digits are
+ignored as comments.
+
+
+CHECKING FILES AGAINST STORED FINGERPRINTS
+
+To check all of the files listed in check files as generated above to see if
+they have changed:
+
+MD5SUM -c md5file
+
+For a more verbose listing of results (listing file names followed by "OK" or
+"FAILED"), type:
+
+MD5SUM -cv md5file
+
+
+DETECTING MODIFICATION OR FORGERY OF FINGERPRINT FILES
+
+One way to prevent alteration of fingerprint files is to store several copies
+in different secure places, then compare them from time to time.  Another way
+is to use a digital signature produced by PGP, some PEM implementation, or a
+DSS implementation.  PGP is the most widely used digital signature program in
+the public sector right now.
+
+
+SOURCE CODE
+
+The source code I used to compile MD5SUM.EXE is available in the file
+MD5SUM.ZIP (available on the Colorado Catacombs BBS at 303-772-1062).  I did
+some minor edits to the source code as distributed with the Pretty Good
+Privacy program (PGP) to make the compile completely free of warning messages
+with my compiler, but made no functional changes to the code.  I checked to
+make sure that the result was compatible with the "pure" code from the PGP
+distribution.  I resisted temptation to make the command line and user
+interface more like a DOS program, so this works exactly like the PGP
+distribution compiled for other platforms.  Source code is supplied so that
+you can see how this works and see for yourself that there is no "monkey
+business" in the code.  You may also have an opportunity to make use of some
+of it for other applications.
+
+These are the commands used with Borland C++ 4.02 and PKLITE professional
+1.13 that I used to compile MD5SUM.EXE:
+
+bcc -mh -O2 md5sum.c md5.c getopt.c
+pklite -r md5sum.exe
+
+
+LEGAL NOTICES AND CREDITS
+
+Nobody involved in this program makes any warranty of any kind regarding this
+documentation or its associated source code and executable programs.  Because
+this is in the Public Domain, we have no legal control over it anyway.  Even
+though we might think this is useful and performs substantially as
+documented, variations in computer hardware, operating systems, bugs, errors,
+and other effects could happen.  It is up to you to determine if this is
+useful, and if you use it, you do so entirely at your own risk. In case the
+nearest star goes supernova, this program will likely cease to function for
+lack of any hardware to run on.
+
+This program and its documentation are in the Public Domain.  Copy it, use
+it, sell it, modify it, or ignore it as you see fit.  Just don't attempt to
+claim it as your own work and copyright it or patent it, or we will be very
+angry.  The message digest algorithm used is MD5, invented by Ron Rivest. The
+message digest code used was written by Colin Plumb in 1993 with no copyright
+claimed.  It has been tested against the RSA Data Security, Inc., reference
+implementation, but does not use that implementation.  The MD5SUM main
+program was written by Branko Lankester in 1993, and modified slightly by
+Colin Plumb.  The getopt.c source code is public domain code from AT&T. This
+documentation was written by Michael Paul Johnson in 1995. The compiler used
+was Borland C++. Unix is a trademark of AT&T and is used for identification
+purposes only. This program is not a munition, but it can be modified to be a
+munition (for example, by adding some high explosives and a detonator).
+

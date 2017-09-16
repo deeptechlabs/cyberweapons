@@ -1,0 +1,2 @@
+LIBNAME:=	libamp.a
+include Makerules

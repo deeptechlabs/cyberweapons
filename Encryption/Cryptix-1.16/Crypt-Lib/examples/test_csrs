@@ -1,0 +1,60 @@
+#!/usr/local/bin/perl -w -I.
+
+use Crypt::CSRandomStream;
+use Stream::DataInput;
+use Carp;
+
+$prs = new Crypt::CSRandomStream pack("H*", "0123456789ABCDEF0123456789ABCDEF01234567");
+
+my $dis = new Stream::DataInput $prs;
+
+for(1..10000)
+{
+	croak("Failed") if (ord($prs->readNonZero(1)) == 0);
+}
+
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";
+print $dis->readInt16(), "\n";

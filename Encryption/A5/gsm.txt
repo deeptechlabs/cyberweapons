@@ -1,0 +1,153 @@
+Article: 3273 of mail.cypherpunks
+Xref: news.gw.com mail.cypherpunks:3273
+Path: news.gw.com!ngw.gw.com!not-for-mail
+From: rishab@dxm.ernet.in (Rishab Aiyer Ghosh)
+Newsgroups: mail.cypherpunks
+Subject: More GSM crypto/auth details
+Message-ID: <TX225c10w165w@dxm.ernet.in>
+Date: 21 Apr 95 15:42:40 GMT
+References: <9504192330.AA05883@sharpwa.com>
+Sender: owner-cypherpunks@toad.com
+Distribution: mail
+Organization: Deus X Machina
+Lines: 137
+
+
+Bhaktha finally responded to my GSM enquiries. So A3 and A8 are placeholders,
+not defined crypto algorithms...
+-Rishab
+
+KESHAVAC.SMTMHS@smtmhs.sharpwa.com (Bhaktha Keshavachar) writes:
+[...]
+> First the phones and the network per se have nothing to do with 
+> authentication
+> in GSM. The key is the SIM in the MS and the HLR and VLR databases in the
+> network. Further A3 (the authentication algorithm) and A8 (for generating 
+> the
+> ciphering key) are NOT speced in the GSM docs. The A5 (the actual
+> encryption algorithm) is the same all over the world (to guarantee 
+> interoperability) and is available from ETSI under strict copyright 
+> conditions.
+> 
+> Now when an operator decides to start a GSM network he buys equipment
+> from the telecom companies with the databases empty and the A3/A8 
+> unspecified
+> still. Now the operator decides on algorithms A3 and A8 and programs it in 
+> all
+> the SIM's (which he will distribute to end customers) and in the network 
+> database.
+> 
+> When a customer wants GSM service he buys an off-the-shelf GSM compatible
+> phone and goes to the service provider for getting his SIM card. A GSM phone
+> without the SIM is not capable of making any calls except the 112 emergency 
+> call.
+> The customer gets a new phone number (MSISDN), the directory entry with the
+> SIM. In addition the operator programs another number called Ki and updates
+> the customer database on the network with the Ki. Note that the Ki is never 
+> transmitted by air or otherwise. The SIM is designed in such a way that
+> the customer cannot read the Ki from the SIM under any condition.
+> 
+> The SIM has just an interface for running the A3 and A8 algorithms and 
+> getting
+> the response back. So now when the mobile needs service from the network
+> (like a location update or a call) he identifies himself with his number. 
+> The network
+> challenges it with a 128 challenge (RAND). This RAND is given to the SIM. 
+> The SIM
+> runs the A3 and A8 algorithm and gives back SRES (a 32-bit response) and Kc
+> (the 64-bit ciphering key). The SRES is returned to the network over the air 
+> to the network.
+> 
+> 		 RAND			 Ki
+> 		  |				 |
+> 		  |				 |
+> 		-------------------
+> 		|				   	|
+> 		|					|
+> 		|		A3			|
+> 		|					|
+> 		-------------------
+> 					|
+> 					|
+> 				  SRES
+> 
+> 
+> 
+> 		RAND			Ki
+> 		  |				 |
+> 		  |				 |
+> 		-------------------
+> 		|				   	|
+> 		|					|
+> 		|		A8			|
+> 		|					|
+> 		-------------------
+> 					|
+> 					|
+> 					Kc
+> 
+> The network performs the same calculation and compares the SRES from
+> the mobile and its own value.If both are the same the mobile is
+> who it claims and is successfully authenticated. This is fairly 
+> foolproof as the A3 and A8 is not known to anyone as also the Ki 
+> (the cornerstone of all security in GSM). Hope that makes that it
+> clear the authentication procs in GSM.
+> 
+> In addition when the mobile is in a foriegn operator region, the
+> visited network gets in advance a challenge response pair from the
+> customer's home network and uses it to authenticate the user. Thus
+> even other networks do not have a knowledge of the home A3/A8/Ki
+> of the visiting customer.
+> 
+> The Kc generated in the authentication process (by A8) is used for
+> encryption. After successful authentication both the network and
+> the MS have the same Kc and encryption can thus be started immediately.
+> In GSM each burst of transmission has 114 bits. The Kc and the present
+> TDMA frame number is used to generate a 114 bit enciphering sequence
+> (A5) which is added to each burst of transmission and thus securely
+> enciphered. Thus we see that the ciphering key never goes on the
+> air and A5 as such is not public domain. But maybe, just maybe
+> the code for A5 will be known more freely than now ! Imagine the
+> A5 on the net ! Just kidding :-) BTW I do not have access to A5
+> and probably will not have in future too as I work on the protocol
+> stack and not layer 1 mechanisms where the A5 should be embedded.
+> 
+> 
+> 				Kc				TDMA frame number
+> 				 |						|
+> 				 |						|
+> 			---------------------------------
+> 			|									|
+> 			|				A5					|
+> 			|									|
+> 			|									|
+> 			---------------------------------
+> 							|
+> 							|
+> 				114 bit enciphering sequence
+> 
+> Now I am not sure whether a new Kc is generated for every call. This
+> is an option left to the discretion of the operator. There are other
+> security mechanisms in GSM defined like allocating TMSI (a 32 bit
+> secret temporary number to customer on his first authentication)
+> and using it thereafter. More about that later in a later mail if
+> you are still interested. On the test equipment where we have
+> detailed I have seen authentication for each call even after
+> a successful location update.
+> 
+> Hope the explanation helps.
+> 
+> Regards,
+> -Bhaktha
+> 
+
+
+
+----------------------------------------------------------------------
+Rishab Aiyer Ghosh                   For Electric Dreams subscriptions 
+rishab@dxm.ernet.in                    and back issues, send a mail to
+rishab@arbornet.org                           rishab@arbornet.org with
+Vox +91 11 6853410 Voxmail 3760335       'help' in lower case, without
+H 34C Saket, New Delhi 110017, INDIA       the quotes, as the Subject.
+
+

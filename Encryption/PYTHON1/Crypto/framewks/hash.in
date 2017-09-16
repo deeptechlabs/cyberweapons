@@ -1,0 +1,211 @@
+/*
+ *  hash.in : Generic framework for hash function extension modules
+ *
+ * Part of the Python Cryptography Toolkit, version 1.0.0
+ *
+ * Copyright (C) 1995, A.M. Kuchling
+ *
+ * Distribute and use freely; there are no restrictions on further 
+ * dissemination and usage except those imposed by the laws of your 
+ * country of residence.
+ *
+ */
+  
+/* Basic object type */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifdef _HAVE_STDC_HEADERS
+#include <string.h>
+#endif
+
+#define Py_USE_NEW_NAMES
+#include "Python.h"
+#include "modsupport.h"
+
+       /* Endianness testing and definitions */
+#define TestEndianness(variable) {int i=1; variable=BIG_ENDIAN;\
+                                  if (*((char*)&i)==1) variable=LITTLE_ENDIAN;}
+
+#define LITTLE_ENDIAN 1
+#define BIG_ENDIAN 0
+
+	/* This is where the actual code for the hash function will go */
+
+#define PCTObject_HEAD PyObject_HEAD
+@@IMPLEMENTATION@@ 	
+
+staticforward PyTypeObject @@ALGORITHM@@type;
+
+#define is_@@ALGORITHM@@object(v) ((v)->ob_type == &@@ALGORITHM@@type)
+
+static @@ALGORITHM@@object *
+new@@ALGORITHM@@object()
+{
+	@@ALGORITHM@@object *@@ALGORITHM@@ptr;
+
+	@@ALGORITHM@@ptr = PyObject_NEW(@@ALGORITHM@@object, &@@ALGORITHM@@type);
+	if (@@ALGORITHM@@ptr == NULL)
+		return NULL;
+
+	@@ALGORITHM@@init(@@ALGORITHM@@ptr);
+	return @@ALGORITHM@@ptr;
+}
+
+/* Internal methods for a hashing object */
+
+static void
+@@ALGORITHM@@_dealloc(ptr)
+	PyObject *ptr;
+{
+	@@ALGORITHM@@object *@@ALGORITHM@@ptr=(@@ALGORITHM@@object *)ptr;
+	PyMem_DEL(@@ALGORITHM@@ptr);
+}
+
+
+/* External methods for a hashing object */
+
+static PyObject *
+@@ALGORITHM@@_copy(self, args)
+	@@ALGORITHM@@object *self;
+	PyObject *args;
+{
+	@@ALGORITHM@@object *newobj;
+
+	if (!PyArg_NoArgs(args))
+		return(NULL);
+
+	if ( (newobj = new@@ALGORITHM@@object())==NULL)
+		return(NULL);
+
+	@@ALGORITHM@@copy(self, newobj);
+	return((PyObject *)newobj); 
+}
+
+static PyObject *
+@@ALGORITHM@@_digest(self, args)
+	@@ALGORITHM@@object *self;
+	PyObject *args;
+{
+
+	if (!PyArg_NoArgs(args))
+		return NULL;
+
+	return (PyObject *)@@ALGORITHM@@digest(self);
+}
+
+static PyObject *
+@@ALGORITHM@@_update(self, args)
+	@@ALGORITHM@@object *self;
+	PyObject *args;
+{
+	unsigned char *cp;
+	int len;
+
+	if (!PyArg_Parse(args, "s#", &cp, &len))
+		return NULL;
+
+	@@ALGORITHM@@update(self, cp, len);
+
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
+static PyMethodDef @@ALGORITHM@@_methods[] = {
+	{"copy",		(PyCFunction)@@ALGORITHM@@_copy},
+	{"digest",		(PyCFunction)@@ALGORITHM@@_digest},
+	{"update",		(PyCFunction)@@ALGORITHM@@_update},
+	{NULL,			NULL}		/* sentinel */
+};
+
+static PyObject *
+@@ALGORITHM@@_getattr(self, name)
+	@@ALGORITHM@@object *self;
+	char *name;
+{
+	if (strcmp(name, "blocksize")==0)
+	  return PyInt_FromLong(1);
+	if (strcmp(name, "digestsize")==0)
+	  return PyInt_FromLong(@@DIGESTSIZE@@);
+	
+	return Py_FindMethod(@@ALGORITHM@@_methods, (PyObject *)self, name);
+}
+
+static PyTypeObject @@ALGORITHM@@type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,			/*ob_size*/
+	"@@ALGORITHM@@",			/*tp_name*/
+	sizeof(@@ALGORITHM@@object),	/*tp_size*/
+	0,			/*tp_itemsize*/
+	/* methods */
+	@@ALGORITHM@@_dealloc, /*tp_dealloc*/
+	0,			/*tp_print*/
+	@@ALGORITHM@@_getattr, /*tp_getattr*/
+	0,			/*tp_setattr*/
+	0,			/*tp_compare*/
+	0,			/*tp_repr*/
+        0,			/*tp_as_number*/
+};
+
+
+/* The single module-level function: new() */
+
+static PyObject *
+@@ALGORITHM@@_new(self, args)
+	PyObject *self;
+	PyObject *args;
+{
+	@@ALGORITHM@@object *@@ALGORITHM@@ptr;
+	unsigned char *cp = NULL;
+	int len;
+
+	if (!PyArg_Parse(args, "")) {
+		PyErr_Clear();
+		if (!PyArg_Parse(args, "s#", &cp, &len))
+			return NULL;
+	}
+
+	if ((@@ALGORITHM@@ptr = new@@ALGORITHM@@object()) == NULL)
+		return NULL;
+
+	if (cp)
+		@@ALGORITHM@@update(@@ALGORITHM@@ptr, cp, len);
+
+	return (PyObject *)@@ALGORITHM@@ptr;
+}
+
+
+/* List of functions exported by this module */
+
+static struct PyMethodDef @@ALGORITHM@@_functions[] = {
+	{"new",			(PyCFunction)@@ALGORITHM@@_new},
+	{"@@MODNAME@@",		(PyCFunction)@@ALGORITHM@@_new},
+	{NULL,			NULL}		 /* Sentinel */
+};
+
+
+/* Initialize this module. */
+
+#define insint(n,v) {PyObject *o=PyInt_FromLong(v); if (o!=NULL) {PyDict_SetItemString(d,n,o); Py_DECREF(o);}}
+
+void
+init@@MODNAME@@()
+{
+	PyObject *d, *m;
+
+	m = Py_InitModule("@@MODNAME@@", @@ALGORITHM@@_functions);
+
+	 /* Add some symbolic constants to the module */
+	d = PyModule_GetDict(m);
+	insint("blocksize", 1);  /* For future use, in case some hash
+			    functions require an integral number of
+			    blocks */ 
+	insint("digestsize", @@DIGESTSIZE@@);
+
+ /* Check for errors */
+ if (PyErr_Occurred())
+  Py_FatalError("can't initialize module @@MODNAME@@");
+}
+
+

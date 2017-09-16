@@ -1,0 +1,377 @@
+.TH DES_CRYPT 3 
+.SH NAME
+des_read_password, des_string_to_key, des_read_pw_string,
+des_random_key, des_set_key,
+des_key_sched, des_ecb_encrypt, des_cbc_encrypt,
+des_pcbc_encrypt, des_cbc_cksum, des_quad_cksum,
+des_enc_read, des_enc_write, des_set_odd_parity,
+des_is_weak_key, crypt \- (non USA) DES encryption
+.SH SYNOPSIS
+.nf
+.nj
+.ft B
+#include <des.h>
+.PP
+.B int des_read_password(key,prompt,verify)
+des_cblock *key;
+char *prompt;
+int verify;
+.PP
+.B int des_string_to_key(str,key)
+char *str;
+des_cblock *key;
+.PP
+.B int des_read_pw_string(buf,length,prompt,verify)
+char *buf;
+int length;
+char *prompt;
+int verify;
+.PP
+.B int des_random_key(key)
+des_cblock *key;
+.PP
+.B int des_set_key(key,schedule)
+des_cblock *key;
+des_key_schedule schedule;
+.PP
+.B int des_key_sched(key,schedule)
+des_cblock *key;
+des_key_schedule schedule;
+.PP
+.B int des_ecb_encrypt(input,output,schedule,encrypt)
+des_cblock *input;
+des_cblock *output;
+des_key_schedule schedule;
+int encrypt;
+.PP
+.B int des_cbc_encrypt(input,output,length,schedule,ivec,encrypt)
+des_cblock *input;
+des_cblock *output;
+long length;
+des_key_schedule schedule;
+des_cblock *ivec;
+int encrypt;
+.PP
+.B int des_pcbc_encrypt(input,output,length,schedule,ivec,encrypt)
+des_cblock *input;
+des_cblock *output;
+long length;
+des_key_schedule schedule;
+des_cblock *ivec;
+int encrypt;
+.PP
+.B unsigned long des_cbc_cksum(input,output,length,schedule,ivec)
+des_cblock *input;
+des_cblock *output;
+long length;
+des_key_schedule schedule;
+des_cblock *ivec;
+.PP
+.B unsigned long des_quad_cksum(input,output,length,out_count,seed)
+des_cblock *input;
+des_cblock *output;
+long length;
+int out_count;
+des_cblock *seed;
+.PP
+.B int des_check_key;
+.PP
+.B int des_enc_read(fd,buf,len,sched,iv)
+int fd;
+char *buf;
+int len;
+des_key_schedule sched;
+des_cblock *iv;
+.PP
+.B int des_enc_write(fd,buf,len,sched,iv)
+int fd;
+char *buf;
+int len;
+des_key_schedule sched;
+des_cblock *iv;
+.PP
+.B extern int des_rw_mode;
+.PP
+.B void des_set_odd_parity(key)
+des_cblock *key;
+.PP
+.B int des_is_weak_key(key)
+des_cblock *key;
+.PP
+.B char *crypt(passwd,salt)
+char *passwd;
+char *salt;
+.PP
+.fi
+.SH DESCRIPTION
+This library contains a fast implementation of the DES encryption
+algorithm.
+.PP
+There are two phases to the use of DES encryption.
+The first is the generation of a
+.I des_key_schedule
+from a key,
+the second is the actual encryption.
+A des key is of type
+.I des_cblock.
+This type is made from 8 characters with odd parity.
+The least significant bit in the character is the parity bit.
+The key schedule is an expanded form of the key; it is used to speed the
+encryption process.
+.PP
+.I des_read_password
+writes the string specified by prompt to the standard output,
+turns off echo and reads an input string from standard input
+until terminated with a newline.
+If verify is non-zero, it prompts and reads input again and verifies
+that both entered passwords are the same.
+The entered string is converted into a des key by using the
+.I des_string_to_key
+routine.
+The new key is placed in the
+.I des_cblock
+that was passed (by reference) to the routine.
+If there were no errors,
+.I des_read_password
+returns 0,
+-1 is returned if there was a terminal error and 1 is returned
+any other error.
+.PP
+.I des_read_pw_string
+is called by
+.I des_read_password
+to read and verify a string from stdin.
+The string is returned in
+.I buf.
+The size of but is passed to the routine via the
+.I length
+parameter.
+.PP
+.I des_string_to_key
+converts a string into a valid des key.
+.PP
+.I des_random_key
+returns a random key that is made of a combination of process id,
+time and an increasing counter.
+.PP
+Before a des key can be used it is converted into a
+.I des_key_schedule
+via the
+.I des_set_key
+routine.
+If the
+.I des_check_key
+flag is non-zero,
+.I des_set_key
+will check that the key passed is of odd parity and is not a week or
+semi-weak key.
+If the parity is wrong,
+then -1 is returned.
+If the key is a weak key,
+then -2 is returned.
+If an error is returned,
+the key schedule is not generated.
+.PP
+.I des_key_sched
+is another name for the
+.I des_set_key
+function.
+.PP
+The following routines all operate on an input and output stream of
+.I des_cblock's.
+.PP
+.I des_ecb_encrypt
+is the basic DES encryption routine that encrypts or decrypts a single 8-byte
+.I des_cblock
+in
+.I electronic code book
+mode.
+It always transforms the input data, pointed to by
+.I input,
+into the output data,
+pointed to by the
+.I output
+argument.
+If the
+.I encrypt
+argument is non-zero (DES_ENCRYPT),
+the
+.I input
+(cleartext) is encrypted in to the
+.I output
+(ciphertext) using the key_schedule specified by the
+.I schedule
+argument,
+previously set via
+.I des_set_key.
+If
+.I encrypt
+is zero (DES_DECRYPT),
+the
+.I input
+(now ciphertext)
+is decrypted into the
+.I output
+(now cleartext).
+Input and output may overlap.
+No meaningful value is returned.
+.PP
+.I des_cbc_encrypt
+encrypts/decrypts using the
+.I cipher-block-chaining
+mode of DES.
+If the
+.I encrypt
+argument is non-zero,
+the routine cipher-block-chain encrypts the cleartext data pointed to by the
+.I input
+argument into the ciphertext pointed to by the
+.I output
+argument,
+using the key schedule provided by the
+.I schedule
+argument,
+and initialization vector provided by the
+.I ivec
+argument.
+If the
+.I length
+argument is not an integral multiple of eight bytes, 
+the last block is copied to a temporary area and zero filled.
+The output is always
+an integral multiple of eight bytes.
+.PP
+.I des_pcbc_encrypt
+encrypt/decrypts using a modified block chaining mode.
+It provides better error propagation characteristics than cbc
+encryption.
+.PP
+.I des_cbc_cksum
+produces an 8 byte checksum based on the input stream (via cbc encryption).
+The last 4 bytes of the checksum is returned and the complete 8 bytes is
+placed in
+.I output.
+.PP
+.I des_quad_cksum
+returns a 4 byte checksum from the input bytes.
+The algorithm can be iterated over the input,
+depending on
+.I out_count,
+1, 2, 3 or 4 times.
+If
+.I output
+is non-NULL,
+the 4 bytes generated by each pass are written into
+.I output.
+.PP
+.I des_enc_write
+is used to write
+.I len
+bytes
+to file descriptor
+.I fd
+from buffer
+.I buf.
+The data is encrypted via
+.I pcbc_encrypt
+(default) using
+.I sched
+for the key and
+.I iv
+as a starting vector.
+The actual data send down
+.I fd
+consists of 4 bytes (in network byte order) containing the length of the
+following encrypted data.  The encrypted data then follows, padded with random
+data out to a multiple of 8 bytes.
+.PP
+.I des_enc_read
+is used to read
+.I len
+bytes
+from file descriptor
+.I fd
+into buffer
+.I buf.
+The data being read from
+.I fd
+is assumed to have come from
+.I des_enc_write
+and is decrypted using
+.I sched
+for the key schedule and
+.I iv
+for the initial vector.
+The
+.I des_enc_read/des_enc_write
+pair can be used to read/write to files, pipes and sockets.
+I have used them in implementing a version of rlogin in which all
+data is encrypted.
+.PP
+.I des_rw_mode
+is used to specify the encryption mode to use with 
+.I des_enc_read
+and 
+.I des_end_write.
+If set to
+.I DES_PCBC_MODE
+(the defualt), des_pcbc_encrypt is used.
+If set to
+.I DES_CBC_MODE
+des_cbc_encrypt is used.
+These two routines and the variable are not part of the normal MIT library.
+.PP
+.I des_set_odd_parity
+sets the parity of the passed
+.I key
+to odd.  This routine is not part of the standard MIT library.
+.PP
+.I des_is_weak_key
+returns 1 is the passed key is a weak key (pick again :-),
+0 if it is ok.
+This routine is not part of the standard MIT library.
+.PP
+.I crypt
+is a replacement for the normal system crypt.
+It is much faster than the system crypt.
+.PP
+.SH FILES
+/usr/include/des.h
+.br
+/usr/lib/libdes.a
+.PP
+The encryption routines have been tested on VAX,
+sun 3 (68020), sun 4 (Sparc), DECstation 3100 (MIPS R2000).
+.PP
+.SH BUGS
+.PP
+If you think this manual is sparse,
+read the des_crypt(3) manual from the MIT kerberos (or bones outside
+of the USA) distribution.
+.PP
+.I des_read_pw_string
+only really works under bsd based systems.
+.PP
+.I des_string_to_key
+is almost definitely different from the MIT version since there are lots
+of fun ways to implement one-way encryption of a text string.
+.PP
+.I des_quad_cksum
+is almost definitely different from the MIT version since the algorithm
+calls for 64-bit multiplication.
+My fudge is probably different from MIT's
+.PP
+The routines are optimized for 32 bit machines and so are not efficient
+on IBM PCs.
+.SH AUTHOR
+Eric Young (eay@psych.psy.uq.oz.au),
+Psychology Department,
+University of Queensland, Australia.
+.SH RESTRICTIONS
+There are none.
+Since I am not a US citizen,
+this software can
+be freely exported outside of the US without a special license
+from the US Dept of Commerce :-).
+This has been implemented from FIPS publication 46 which I has
+been in my local library for several years.

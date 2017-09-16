@@ -1,0 +1,22 @@
+CC=cc
+LDFLAGS=-g -Llibdir 
+CFLAGS=-g -O -Ilibdir 
+LIBS=
+ELIBS=-lamp -ldes -lhut
+OBJS=find-prime.o primes.o test-primes.o test-amp.o ndc.o share-secret.o
+PROGS=find-prime primes test-primes test-amp ndc share-secret
+all:	$(PROGS)
+find-prime:	find-prime.o $(LIBS)
+	$(CC) $(LDFLAGS) -o find-prime find-prime.o $(LIBS) $(ELIBS)
+primes:	primes.o $(LIBS)
+	$(CC) $(LDFLAGS) -o primes primes.o $(LIBS) $(ELIBS)
+test-primes:	test-primes.o $(LIBS)
+	$(CC) $(LDFLAGS) -o test-primes test-primes.o $(LIBS) $(ELIBS)
+test-amp:	test-amp.o $(LIBS)
+	$(CC) $(LDFLAGS) -o test-amp test-amp.o $(LIBS) $(ELIBS)
+ndc:	ndc.o $(LIBS)
+	$(CC) $(LDFLAGS) -o ndc ndc.o $(LIBS) $(ELIBS)
+share-secret:	share-secret.o $(LIBS)
+	$(CC) $(LDFLAGS) -o share-secret share-secret.o $(LIBS) $(ELIBS)
+clean::
+	rm -f $(PROGS) $(OBJS)

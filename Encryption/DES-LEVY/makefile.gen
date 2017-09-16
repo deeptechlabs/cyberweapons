@@ -1,0 +1,32 @@
+ 
+CFLAGS= -O -DUSG=0 -DBSD=0
+# or CFLAGS= -O -DUSG=0 -DBSD=0 -DSLOWSHIFT -DENDIAN=BIG
+# or CFLAGS= -O -DUSG=0 -DBSD=0 -DSLOWSHIFT -DENDIAN=LITTLE
+ 
+FILES=  README Makefile.bsd Makefile.usg Makefile.gen fdemo.c ftest.c fastdes.c
+ 
+all:    demo test
+ 
+# demo -- evaluate, test and time DES, works even on non-UNIX systems
+ 
+demo:   fdemo
+        fdemo -demo -c 1000
+ 
+fdemo:  fdemo.o fastdes.o
+        ${CC} -o $@ $@.o fastdes.o
+ 
+# test -- evaluates DES, compares with UNIX crypt
+ 
+test:   ftest
+        ftest 4869207468657265 a820105412de3991 77129bd8c052e7
+        ftest 1.21280ac -c 5000 -k 5000 -C 1000 -K 1000
+ 
+ftest:  ftest.o fastdes.o
+        ${CC} -o $@ $@.o fastdes.o
+ 
+dist:
+        @tar cvf - ${FILES}
+ 
+clean:
+        rm -f clean core fdemo ftest fdemo.o ftest.o fastdes.o
+
