@@ -1,0 +1,43 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Site map{% endblock %}
+{% block js_import %}
+	<script src="/static/js/admin_site_map.js"></script>
+{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>WebServer Site Map</h1>
+			<h4 class="text-muted" ng-show="map">:: {{map.length}} available paths ::</h4>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-hover" ng-show="map">
+				<tr class="active">
+					<th>Url</th><th>Function</th><th>Methods</th><th>Protected</th><th>Admin</th><th></th><th></th>
+				</tr>
+				<tr ng-repeat="page in map | orderBy:['protected','admin_only','url']" ng-class="{danger:!page.protected, success:page.admin_only}">
+					<td>{{page.url | breakableStr}}</td>
+					<td>{{page.function}}</td>
+					<td>{{page.methods | joinBy:' | '}}</td>
+					<td class="text-muted">
+						<span ng-show="page.protected" class="glyphicon glyphicon-ok text-success"></span>
+						<span ng-hide="page.protected" class="glyphicon glyphicon-remove text-danger"></span>
+					</td>
+					<td class="text-muted">
+						<span ng-show="page.admin_only" class="glyphicon glyphicon-ok text-success"></span>
+						<span ng-hide="page.admin_only" class="glyphicon glyphicon-remove text-danger"></span>
+					</td>
+                    <td class="text-muted">
+						<span ng-repeat="priv in page.req_priv" class="icon-square{{ priv | lowercase }}" ng-class="{'text-danger': priv=='E', 'text-success': priv=='R', 'text-warning': priv=='W'}">&nbsp;</span>
+					</td>
+                    <td class="text-muted">
+						<span ng-show="page.audit" class="glyphicon glyphicon-eye-open text-info"></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-show="loading"{% endblock %}

@@ -1,0 +1,105 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - {{user.uname}} settings{% endblock %}
+{% block js_import %}
+	<script src="/static/js/settings.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};forced={{forced}};start();"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>User's Settings</h1>
+			<h4 class="text-muted">:: {{user.name}} ::</h4>
+		</div>
+		<section id="section_scan_params" ng-show="params">
+			<div class="menuheader" data-toggle="collapse" data-target="#scan_param">
+				<span class="text-big">Scan/View Parameters</span>
+			</div>
+			<div id="scan_param" class="collapse in">
+				<div class="checkbox">
+					<label ng-class="{checked:params.ignore_filtering}">
+						<input type="checkbox" ng-model="params.ignore_filtering"> Scan files even if filtering services marks them as known good
+					</label>
+				</div>
+				<div class="checkbox">
+					<label ng-class="{checked:params.ignore_cache}">
+						<input type="checkbox" ng-model="params.ignore_cache"> Force rescan of the file even if the cache already have the result
+					</label>
+				</div>
+				<div class="checkbox">
+					<label ng-class="{checked:params.ignore_tag}">
+						<input type="checkbox" ng-model="params.ignore_tag"> Send all files to all services even if the service cannot process this file type
+					</label>
+				</div>
+				<div class="checkbox">
+					<label ng-class="{checked:params.profile}">
+						<input type="checkbox" ng-model="params.profile"> Profile all my scans
+					</label>
+				</div>
+				<div class="checkbox">
+					<label ng-class="{checked:params.deep_scan}">
+						<input type="checkbox" ng-model="params.deep_scan"> Perform a deep analysis on the submitted files
+					</label>
+				</div>
+				<div class="checkbox">
+					<label ng-class="{checked:params.hide_raw_results}">
+						<input type="checkbox" ng-model="params.hide_raw_results"> Hide results footer that displays the RAW JSON results (Makes UI slower, Un-check for debugging only)
+					</label>
+				</div>
+				<div class="form-group">
+					<label for="dl_enc">Download encoding</label>
+					<select id="dl_enc" class="form-control" ng-model="params.download_encoding">
+						<option value="raw">No encoding</option>
+						<option value="cart">CaRT (Assemblyline's malware neutering format)</option>
+						{% endraw %}{% block encodings%}{% endblock%}{% raw %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label>Time to live for my scans (in days)</label>
+					<input type="number" class="form-control" min="1" max="180" ng-model="params.ttl">
+				</div>
+				<div class="form-group">
+					<label>Minimum score for a service to auto-expand the section</label>
+					<input type="number" class="form-control" min="-10000" ng-model="params.expand_min_score">
+				</div>
+				<div ng-if="user.c12n_enforcing" class="form-group">
+                    <label>Default submission classification</label>
+                    <div ng-controller="classificationCtrl" classification-picker></div>
+                    <div class="label text-large classification {{params.classification | class_label_color}}" data-toggle="modal" href="#classification_picker" ng-click="setClassification(params.classification)">{{params.classification | class_long}}</div>
+                </div>
+			</div>
+		</section>
+		<section id="section_service_selection" ng-show="params">
+			<div class="menuheader" data-toggle="collapse" data-target="#services">
+				<span class="text-big">Services Selection</span>
+				<div class="btn-group" style="padding-left: 10px;">
+					<button class="btn btn-default btn-xs" ng-click="serviceSelectionNone($event)">None</button>
+					<button class="btn btn-default btn-xs" ng-click="serviceSelectionReset($event)">Reset</button>
+					<button class="btn btn-default btn-xs" ng-click="serviceSelectionAll($event)">All</button>
+				</div>
+			</div>
+			<div id="services" class="collapse in">
+				<div ng-repeat="service_group in params.services | orderBy:'name'">
+					<div class="checkbox">
+						<label ng-class="{checked:service_group.selected}">
+							<input type="checkbox" ng-model="service_group.selected" ng-change="toggleCBGroup(service_group.name, service_group.selected);"> {{service_group.name}}
+						</label>
+					</div>
+					<div ng-repeat="service in service_group.services | orderBy:'name'">
+						<div class="checkbox indent">
+							<label ng-class="{checked:service.selected}">
+								<input type="checkbox" ng-model="service.selected" ng-change="toggleCBService(service.category, service.name, service.selected);"> {{service.name}}
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div class="bigpad text-center" ng-show="params">
+			<span class="btn btn-primary bigbutton" ng-click="saveParams();">Save current selection as default</span>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="params"{% endblock %}

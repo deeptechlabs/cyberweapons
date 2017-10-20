@@ -1,0 +1,77 @@
+############################# Filebeat ######################################
+filebeat:
+  prospectors:
+    -
+      paths:
+        - /var/log/al.log
+
+      input_type: log
+      # exclude_lines: ["^DBG"]
+      # include_lines: ["^ERR", "^WARN"]
+      # exclude_files: [".gz$"]
+      document_type: syslog
+      #scan_frequency: 10s
+
+    -
+      paths:
+        - /var/log/alui-audit.log
+
+      input_type: log
+      # exclude_lines: ["^DBG"]
+      # include_lines: ["^ERR", "^WARN"]
+      # exclude_files: [".gz$"]
+      document_type: audit
+      #scan_frequency: 10s
+
+  #spool_size: 2048
+  #publish_async: false
+  #idle_timeout: 5s
+  registry_file: /var/lib/filebeat/registry
+
+############################# Output #########################################
+
+output:
+  logstash:
+    hosts: ["localhost:5000"]
+
+    #worker: 1
+    #compression_level: 3
+
+    #index: filebeat
+
+    #tls:
+      # List of root certificates for HTTPS server verifications
+      #certificate_authorities: ["/etc/pki/tls/certs/logstash.crt"]
+      #certificate: "/etc/pki/client/cert.pem"
+      #certificate_key: "/etc/pki/client/cert.key"
+      #insecure: true
+      #cipher_suites: []
+      #curve_types: []
+
+
+  # console:
+    #pretty: false
+
+
+############################# Shipper #########################################
+
+shipper:
+  #name:
+  #tags: ["service-X", "web-tier"]
+  #ignore_outgoing: true
+  #refresh_topology_freq: 10
+  #topology_expire: 15
+  #queue_size: 1000
+
+############################# Logging #########################################
+
+logging:
+  to_syslog: false
+  to_files: true
+  files:
+    path: /var/log/filebeat
+    name: filebeat
+    rotateeverybytes: 10485760 # = 10MB
+    keepfiles: 7
+
+  level: warning

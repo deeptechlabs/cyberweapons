@@ -1,0 +1,59 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Configuration Editor{% endblock %}
+{% block css_import %}<link rel="stylesheet" href="/static/css/jsoneditor.css"/>
+    <link rel="stylesheet" href="/static/css/jsondiffpatch-html.css"/>{% endblock %}
+{% block js_import %}
+	<script src="/static/js/ace/ace.js"></script>
+	<script src="/static/js/jsondiffpatch/jsondiffpatch-full.min.js"></script>
+	<script src="/static/js/jsondiffpatch/jsondiffpatch-formatters.min.js"></script>
+	<script src="/static/js/jsoneditor/jsoneditor.js"></script>
+	<script src="/static/js/admin_seed.js"></script>
+{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Configuration Editor</h1>
+		</div>
+        <div ng-show="seed">
+            <div class="pull-right">
+                <span class="btn btn-default btn-sm" ng-disabled="modified" ng-click="diff_source();">Diff with source seed</span>
+                <span class="btn btn-default btn-sm" ng-disabled="modified" ng-click="diff_original();">Diff with original seed</span>
+                <span class="btn btn-default btn-sm" ng-disabled="modified" ng-click="diff_previous();">Diff with previous seed</span>
+                <span class="btn btn-success btn-sm" ng-disabled="!modified" ng-click="save_seed();">Save changes</span>
+            </div>
+            <ul class="nav nav-tabs" id="tabContent">
+                <li id="form_tab" class="active"><a href="#" data-toggle="tab" ng-click="switch_mode('form');">Form editor</a></li>
+                <li id="raw_tab"><a href="#" data-toggle="tab" ng-click="switch_mode('code');">Raw editor</a></li>
+            </ul>
+            <div id="jsoneditor" class="jedit pad"></div>
+        </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div ng-show="diff_only" class="btn pull-right" data-dismiss="modal">X</div>
+						<div ng-show="diff_only">
+                            <h4 class="modal_title">{{modal_title}}</h4>
+                            These are the changes that were applied to the current seed:
+                        </div>
+                        <div ng-show="!diff_only">
+                            <h4 class="modal_title">Changing configuration seed</h4>
+                            These are the changes the will be applied:
+                        </div>
+					</div>
+					<div class="modal-body">
+						<div id="vdiff"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" ng-show="!diff_only" class="btn btn-primary" ng-click="apply_save_seed();">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="seed!=null"{% endblock %}

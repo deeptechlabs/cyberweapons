@@ -1,0 +1,51 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - File viewer [{{srl}}]{% endblock %}
+{% block js_import %}
+	<script src="/static/js/file_viewer.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};srl='{{srl}}';start();"{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>File viewer</h1>
+			<h4 class="text-muted">:: {{srl}} ::</h4>
+		</div>
+		
+		<div ng-show="hex">
+			<div class="pull-right">
+			<a href="/search.html?query=files:{{srl}} OR results:{{srl}}" class="btn btn-default" title="Related submissions"><span class="glyphicon glyphicon-tasks"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Related Submissions</span></a>
+			<a href="/api/v3/file/download/{{srl}}/" class="btn btn-default" title="Download file"><span class="glyphicon glyphicon-download-alt"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Download File</span></a>
+			</div>
+			<ul class="nav nav-tabs" id="tabContent">
+				<li id="raw_tab" class="active"><a href="#raw" data-toggle="tab">Raw</a></li>
+				<li id="string_tab"><a href="#string" data-toggle="tab">Strings</a></li>
+				<li id="hex_tab"><a href="#hex" data-toggle="tab" >Hex</a></li>
+			</ul>
+			
+			<div class="tab-content">
+				<div class="tab-pane active" style="margin-top: 20px" id="raw">
+					<pre>{{raw}}</pre>
+				</div>
+                <div class="tab-pane" style="margin-top: 20px" id="string">
+					<pre>{{string}}</pre>
+				</div>
+				<div class="tab-pane" style="margin-top: 20px" id="hex">
+					<pre>{{hex}}</pre>
+				</div>
+			</div>
+		</div>
+
+        <div ng-show="!on_server">
+            <div class="jumbotron text-center">
+				<h2 class="text-muted">
+					This file does not exists in our file storage
+				</h2>
+			</div>
+        </div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="hex||!on_server"{% endblock %}

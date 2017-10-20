@@ -1,0 +1,19 @@
+{
+  "timeout": 60,
+  "files":
+    {
+      "/bootstrap.bat": {
+        "render": true,
+        "contents": [
+          "sc stop \"netprofm\"",
+          "sc config \"netprofm\" start= disabled",
+          "netsh interface ipv4 reset",
+          "netsh interface ip set address name=\"Local Area Connection\" static {{ ip }} {{ netmask }} {{ gateway }}",
+          "netsh interface ip set dns name=\"Local Area Connection\" static {{ dns_ip }}",
+          "wmic ComputerSystem where name=\"%COMPUTERNAME%\" call Rename Name=\"{{ hostname }}\"",
+          "shutdown -s -f -t 5",
+          "del c:\bootstrap.bat"
+        ]
+      }
+    }
+}

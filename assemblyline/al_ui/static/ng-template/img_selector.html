@@ -1,0 +1,16 @@
+<div image-dropzone class="thumbnail thumbnail-256" drop="handleFile">
+	<img id="avatar" src="/static/images/user_default.png" style="max-width: 150px;">
+</div>
+<span id="add" class="btn btn-xs btn-default file-btn" ng-class="{hide: current_user.avatar}" style="width: 100%; max-width: 200px;">
+	Add avatar
+	<input image-selector type="file" select="handleFile"></input>
+</span>
+<div id="remove" class="btn-group" ng-class="{hide: !current_user.avatar}" style="width: 100%; max-width: 200px;">
+	<span class="btn btn-xs btn-info file-btn" style="width: 50%; max-width: 100px;">
+		Change
+		<input image-selector type="file" select="handleFile"></input>
+	</span>
+	<span class="text-right btn btn-xs btn-danger file-btn" ng-click="removeAvatar();" style="width: 50%; max-width: 100px;">
+		Remove
+	</span>
+</div>

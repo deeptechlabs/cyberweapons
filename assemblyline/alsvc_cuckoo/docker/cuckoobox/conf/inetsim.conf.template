@@ -1,0 +1,92 @@
+start_service dns
+start_service http
+start_service https
+start_service smtp
+start_service smtps
+start_service pop3
+start_service pop3s
+start_service ftp
+start_service ftps
+start_service tftp
+start_service irc
+start_service ntp
+start_service finger
+start_service ident
+start_service syslog
+start_service time_tcp
+start_service time_udp
+start_service daytime_tcp
+start_service daytime_udp
+start_service echo_tcp
+start_service echo_udp
+start_service discard_tcp
+start_service discard_udp
+start_service quotd_tcp
+start_service quotd_udp
+start_service chargen_tcp
+start_service chargen_udp
+start_service dummy_tcp
+start_service dummy_udp
+service_bind_address	{{ interface_address }}
+dns_default_ip	{{ interface_address }}
+http_fakefile		txt	sample.txt	text/plain
+http_fakefile		htm	sample.html	text/html
+http_fakefile		html	sample.html	text/html
+http_fakefile		php	sample.html	text/html
+http_fakefile		gif	sample.gif	image/gif
+http_fakefile		jpg	sample.jpg	image/jpeg
+http_fakefile		jpeg	sample.jpg	image/jpeg
+http_fakefile		png	sample.png	image/png
+http_fakefile		bmp	sample.bmp	image/x-ms-bmp
+http_fakefile		ico	favicon.ico	image/x-icon
+http_fakefile		exe	sample_gui.exe	x-msdos-program
+http_fakefile		com	sample_gui.exe	x-msdos-program
+http_default_fakefile	sample.html	text/html
+https_fakefile		txt	sample.txt	text/plain
+https_fakefile		htm	sample.html	text/html
+https_fakefile		html	sample.html	text/html
+https_fakefile		php	sample.html	text/html
+https_fakefile		gif	sample.gif	image/gif
+https_fakefile		jpg	sample.jpg	image/jpeg
+https_fakefile		jpeg	sample.jpg	image/jpeg
+https_fakefile		png	sample.png	image/png
+https_fakefile		bmp	sample.bmp	image/x-ms-bmp
+https_fakefile		ico	favicon.ico	image/x-icon
+https_fakefile		exe	sample_gui.exe	x-msdos-program
+https_fakefile		com	sample_gui.exe	x-msdos-program
+https_default_fakefile	sample.html	text/html
+smtp_service_extension		VRFY
+smtp_service_extension		EXPN
+smtp_service_extension		HELP
+smtp_service_extension		8BITMIME
+smtp_service_extension		SIZE 102400000
+smtp_service_extension		ENHANCEDSTATUSCODES
+smtp_service_extension		AUTH PLAIN LOGIN ANONYMOUS CRAM-MD5 CRAM-SHA1
+smtp_service_extension		DSN
+smtp_service_extension		ETRN
+smtp_service_extension		STARTTLS
+smtps_service_extension		VRFY
+smtps_service_extension		EXPN
+smtps_service_extension		HELP
+smtps_service_extension		8BITMIME
+smtps_service_extension		SIZE 102400000
+smtps_service_extension		ENHANCEDSTATUSCODES
+smtps_service_extension		AUTH PLAIN LOGIN ANONYMOUS CRAM-MD5 CRAM-SHA1
+smtps_service_extension		DSN
+smtps_service_extension		ETRN
+pop3_capability		TOP
+pop3_capability		USER
+pop3_capability		SASL PLAIN LOGIN ANONYMOUS CRAM-MD5 CRAM-SHA1
+pop3_capability		UIDL
+pop3_capability		IMPLEMENTATION "POP3 server"
+pop3_capability		STLS
+pop3s_capability	TOP
+pop3s_capability	USER
+pop3s_capability	SASL PLAIN LOGIN ANONYMOUS CRAM-MD5 CRAM-SHA1
+pop3s_capability	UIDL
+pop3s_capability	IMPLEMENTATION "POP3s server"
+tftp_option		BLKSIZE 512 65464
+tftp_option		TIMEOUT 5 60
+tftp_option		TSIZE 10485760
+redirect_external_address	{{ interface_address }}
+redirect_exclude_port		tcp:22

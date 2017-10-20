@@ -1,0 +1,14 @@
+<div class="part" ng-show="sections">
+	<section ng-repeat="sec in sections">
+		<div class="result_title" data-toggle="collapse" data-target="#{{''+parent+$index}}"><span class="text-info"><strong><span class="{{sec.classification | class_text_color }}" ng-if="sec.classification">({{sec.classification | class_sm}})</span>&nbsp;<span class="{{sec.score | score_color}}">{{sec.score}}</span></strong></span><span class="text-muted">::&nbsp;</span><span replace-tags  data="sec.title_text" tags="tags"></span></div>
+		<div id="{{parent+$index}}" class="collapse in">
+			<div ng-if="sec.body_format == null" class="result_body" ng-show="sec.body"><div replace-tags data="sec.body" tags="tags"></div></div>
+			<pre ng-if="sec.body_format == 'MEMORY_DUMP'" class="result_body" ng-show="sec.body">{{sec.body}}</pre>
+			<div graph-section ng-if="sec.body_format == 'GRAPH_DATA'" class="result_body" ng-show="sec.body" graph-data="{{sec.body}}"></div>
+			<div url-section ng-if="sec.body_format == 'URL'" class="result_body" ng-show="sec.body" url-data="{{sec.body}}"></div>
+			<div class="indent">
+				<ng-include src="'/static/ng-template/result_section.html'" ng-init="sections=sec.subsections;parent=''+parent+$index;tags=tags"></ng-include>
+			</div>
+		</div>
+	</section>
+</div>

@@ -1,0 +1,1 @@
+* /5 * * * root rm /opt/avg/av/var/data/eventlog.db 2> /dev/null

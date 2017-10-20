@@ -1,0 +1,1 @@
+from al_services.alsvc_virustotal_static.virustotal_static import VirusTotalStatic

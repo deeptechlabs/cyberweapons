@@ -1,0 +1,68 @@
+<div class="row">
+	<div class="col-md-10">
+		<div id="vm_name_group" class="form-group">
+			<label class="control-label">Service used in virtual machine</label>
+            <input ng-hide="new_vm" type="text" class="form-control input-sm " ng-model="current_vm.name" disabled>
+			<select ng-hide="!new_vm" class="form-control input-sm" ng-model="current_vm.name">
+				<option ng-repeat="s in nonProvisioned()" value="{{s.name}}">{{s.name}}</option>
+			</select>
+			<div id="error_ctrl" class="text-danger"><b>{{error_exist}}</b></div>
+		</div>
+		<div class="form-group">
+			<label class="control-label">OS Type</label>
+			<select class="form-control input-sm" ng-model="current_vm.os_type">
+				<option value="windows">Windows</option>
+				<option value="linux">Linux</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label class="control-label">OS Variant</label>
+			<select class="form-control input-sm" ng-model="current_vm.os_variant">
+				<option value="winxp">Windows XP</option>
+				<option value="winxp_nat">Windows XP (NAT)</option>
+				<option value="win2k8">Windows 2008</option>
+				<option value="win2k8_nat">Windows 2008 (NAT)</option>
+				<option value="win7">Windows 7</option>
+				<option value="win8">Windows 8</option>
+				<option value="win10">Windows 10</option>
+				<option value="ubuntuprecise">Ubuntu 12.04 LTS - Precise</option>
+				<option value="ubuntuprecise_nat">Ubuntu 12.04 LTS - Precise (NAT)</option>
+				<option value="ubuntutrusty">Ubuntu 14.04 LTS - Trusty</option>
+                <option value="centos6">CentOS 6</option>
+                <option value="centos7">CentOS 7</option>
+                <option value="linux">Other linux distro</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label class="control-label"># vCPUs</label>
+			<input type="number" class="form-control input-sm " ng-model="current_vm.vcpus" min=1>
+		</div>
+		<div class="form-group">
+			<label class="control-label">RAM (mb)</label>
+			<input type="number" class="form-control input-sm " ng-model="current_vm.ram" min=256>
+		</div>
+		<div class="form-group">
+			<label class="control-label"># workers</label>
+			<input type="number" class="form-control input-sm " ng-model="current_vm.num_workers" min=1 max="48">
+		</div>
+		<div class="form-group">
+			<label class="control-label">Revert Every (sec)</label>
+			<input type="number" class="form-control input-sm " ng-model="current_vm.revert_every" min=0>
+		</div>
+		<!-- <div class="form-group">
+			<label class="control-label">Default Snapshot</label>
+			<input type="text" class="form-control input-sm" ng-model="current_vm.default_snapshot">
+		</div>  -->
+		<div class="form-group">
+			<label class="control-label">Virtual Disk Image</label>
+			<input type="text" class="form-control input-sm" ng-model="current_vm.virtual_disk_url">
+		</div>
+	</div>
+	<div class="col-md-2">
+		<div class="checkbox">
+			<label class="control-label">
+				<input type="checkbox" ng-model="current_vm.enabled" value="enabled" ng-checked="current_vm.enabled">Enabled
+			</label>
+		</div>
+	</div>
+</div>

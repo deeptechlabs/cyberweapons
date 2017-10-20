@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+from urllib import quote
+from assemblyline.al.install.seeds.assemblyline_appliance import seed, appliance_ip
+
+try:
+    from {update_seed_path} import update_seed
+    update_seed(seed)
+except:
+    pass
+
+seed['auth']['internal']['users']['admin']['password'] = '{password}'
+seed['auth']['internal']['users']['internal']['password'] = '{password}'
+
+seed['datastore']['port'] = 9087
+seed['datastore']['stream_port'] = 9098
+seed['datastore']['solr_port'] = 9093
+
+seed['datastore']['riak']['solr']['heap_max_gb'] = 1
+seed['datastore']['riak']['solr']['heap_min_gb'] = 1
+seed['datastore']['riak']['ring_size'] = 32
+seed['datastore']['riak']['nvals'] = {{'low': 1, 'med': 1, 'high': 1}}
+
+seed['filestore']['ftp_password'] = "{password}"
+seed['filestore']['support_urls'] = [
+    'ftp://alftp:{{ftp_pass}}@{{appliance_ip}}/opt/al/var/support'.format(appliance_ip=appliance_ip,
+                                                                          ftp_pass=quote('{password}'))
+]
+seed['filestore']['urls'] = [
+    'ftp://alftp:{{ftp_pass}}@{{appliance_ip}}/opt/al/var/storage'.format(appliance_ip=appliance_ip,
+                                                                          ftp_pass=quote('{password}'))
+]
+
+seed['installation']['hooks']['ui_pre'].append('al_private.common.hook_ui_pre')
+
+seed['monitoring']['harddrive'] = False
+
+seed['services']['master_list']['ConfigDecoder']['config']['SIGNATURE_PASS'] = "{password}"
+seed['services']['master_list']['ConfigDecoder']['config']['SIGNATURE_USER'] = 'internal'
+seed['services']['master_list']['Cuckoo']['install_by_default'] = False
+seed['services']['master_list']['Yara']['config']['SIGNATURE_PASS'] = "{password}"
+seed['services']['master_list']['Yara']['config']['SIGNATURE_USER'] = 'internal'
+
+seed['submissions']['password'] = "{password}"
+
+seed['system']['password'] = "{password}"
+seed['system']['internal_repository'] = {{
+    'branch': 'prod_3.2',
+    'url': 'http://{{appliance_ip}}/git/'.format(appliance_ip=appliance_ip)
+}}
+
+seed['ui']['audit'] = False
+seed['ui']['context'] = "al_private.ui.site_specific.context"
+seed['ui']['debug'] = True
+seed['ui']['secret_key'] = "{secret_key}"
+seed['ui']['uwsgi']['max_workers'] = 16
+seed['ui']['uwsgi']['start_workers'] = 1
+seed['ui']['uwsgi']['threads'] = 1
+
+seed['workers']['install_kvm'] = False
+
+if __name__ == '__main__':
+    import sys
+
+    if "json" in sys.argv:
+        import json
+        print json.dumps(seed)
+    else:
+        import pprint
+        pprint.pprint(seed)

@@ -1,0 +1,149 @@
+{% extends base_template %}
+
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Heuristics Stats{% endblock %}
+{% block js_import %}
+	<script src="/static/js/heuristics_stats.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Heuristic Statistics</h1>
+			<h4 class="text-muted">:: {{total}} heuristic<span ng-show="total > 1">s where</span><span ng-show="total <= 1"> was</span> triggered<span ng-show="filtered"> (filtered)</span> ::</h4>
+            <h4 class="text-muted"><span ng-hide="timestamp == null"> Last update: {{timestamp}}</span></h4>
+		</div>
+		<div>
+			<div ng-controller="pagerCtrl" ng-init="pager_page='heuristic'" pager></div>
+		</div>
+		<section class="table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr class="active" style="cursor: pointer;">
+						<th class="hover" ng-click="sort_stats('id')">ID
+                        <span ng-show="sort.column=='id' && sort.order" class="glyphicon glyphicon-sort-by-alphabet"></span><span ng-show="sort.column=='id' && !sort.order" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('count')">Count
+                        <span ng-show="sort.column=='count' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span><span ng-show="sort.column=='count' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('min')">Min Score
+                        <span ng-show="sort.column=='min' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span><span ng-show="sort.column=='min' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('avg')">Average Score
+                        <span ng-show="sort.column=='avg' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span><span ng-show="sort.column=='avg' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('max')">Max Score
+                        <span ng-show="sort.column=='max' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span><span ng-show="sort.column=='max' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-if="c12n_enforcing" ng-click="sort_stats('classification')">
+                            Classification
+                            <span ng-show="sort.column=='classification' && sort.order" class="glyphicon glyphicon-sort-by-alphabet"></span>
+                            <span ng-show="sort.column=='classification' && !sort.order" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+                        </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="viewHeuristic(u.id)" ng-repeat="u in heuristics_output" style="cursor: pointer;">
+						<td>{{u.id}}</td>
+						<td>{{u.count}}</td>
+						<td>{{u.min}}</td>
+                        <td>{{u.avg}}</td>
+                        <td>{{u.max}}</td>
+                        <td ng-if="c12n_enforcing">
+                            <label class="label classification  {{u.classification | class_label_color}}">
+                                {{u.classification | class_sm}}
+                            </label>
+                        </td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+        <div ng-show="heuristics_list.length == 0 && searchText == ''" >
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are no statistics in the system.
+				</h2>
+			</div>
+		</div>
+		<div ng-show="total == 0 && searchText != ''" >
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are no matching statistics found.
+				</h2>
+			</div>
+		</div>
+
+
+		<!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<section class="row">
+							<div class="col-md-9">
+								<h4 ng-if="editmode" class="modal_title" id="myModalLabel">Heuristic Details:: {{current_heuristic.id}}</h4>
+							</div>
+                            <div ng-if="c12n_enforcing" class="col-md-3">
+                                <label class="control-label">
+                                    Classification
+                                </label>
+                                <label class="label classification  {{current_heuristic.classification | class_label_color}}">
+                                    {{current_heuristic.classification | class_sm}}
+                                </label>
+                            </div>
+						</section>
+					</div>
+									
+					<div class="modal-body">
+						<section class="row">
+							<div class="col-md-6 pad">
+								<div class="form-group">
+									<label class="control-label">Name</label>
+									<input type="text" class="form-control input-sm input-medium" placeholder="Heuristic name" ng-model="current_heuristic.name" ng-disabled="editmode">
+								</div>
+							</div>
+							<div class="col-md-6 pad">
+								<div class="form-group">
+									<label class="control-label">File Type</label>
+									<input type="text" class="form-control input-sm input-medium" placeholder="Heuristic file type" ng-model="current_heuristic.filetype" ng-disabled="editmode">
+								</div>
+							</div>
+						</section>
+						<section class="row">
+							<div class="col-md-12 pad">
+								<div class="form-group">
+									<label class="control-label">Description</label>
+									<pre>{{current_heuristic.description}}</pre>
+								</div>
+							</div>
+						</section>
+                        <section>
+							<table class="table pad">
+								<thead>
+									<tr class="active">
+										<th>Count</th><th>Min Score</th><th>Average Score</th><th>Max Score</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{current_heuristic.count}}</td>
+										<td>{{current_heuristic.min}}</td>
+										<td>{{current_heuristic.avg}}</td>
+										<td>{{current_heuristic.max}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</section>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="heuristics_output != null"{% endblock %}

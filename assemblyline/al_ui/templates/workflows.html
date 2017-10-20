@@ -1,0 +1,111 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Workflows{% endblock %}
+{% block css_import %}
+    <link rel="stylesheet" href="/static/css/select.min.css"/>
+    <link rel="stylesheet" href="/static/css/selectize.bootstrap3.css"/>
+{% endblock %}
+{% block js_import %}
+	<script src="/static/js/angular/ui-bootstrap-custom.js"></script>
+	<script src="/static/js/workflows.js"></script>
+    <script src="/static/js/angular/angular-sanitize.min.js"></script>
+    <script src="/static/js/ui-select/select.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Workflow filters</h1>
+	{%raw%}
+			<h4 ng-hide="workflow_list == null || (total == 0 && !filtered)" class="text-muted">:: {{total}} Workflow filter<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4>
+		</div>
+        <div ng-hide="workflow_list == null || (total == 0 && !filtered)">
+			<div ng-controller="pagerCtrl" ng-init="pager_page='workflow'" pager></div>
+		</div>
+		<section class="table-responsive" ng-hide="workflow_list == null || (total == 0 && !filtered)">
+			<table class="table table-hover">
+				<thead>
+					<tr class="active">
+                        <th>Last&nbsp;seen</th><th>Name</th><th>Priority</th><th>Status</th><th>Hit&nbsp;Count</th><th ng-if="user.c12n_enforcing">Classification</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="editWorkflow(w)" ng-repeat="w in workflow_list | orderBy:'name'" style="cursor: pointer;">
+						<td>{{w.last_seen | date:"yyyy-MM-dd HH:mm:ss" }}</td>
+                        <td>{{w.name | maxLength:140 | breakableStr}}</td>
+						<td>{{w.priority}}</td>
+						<td>{{w.status}}</td>
+                        <td>{{w.hit_count}}</td>
+						<td ng-if="user.c12n_enforcing"><label class="label classification  {{w.classification | class_label_color}}">{{w.classification | class_sm}}</label></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+        <div ng-controller="classificationCtrl" classification-picker></div>
+
+        <!-- HIDE FOLLOWING: Should go inside a modal form -->
+        <div class="modal fade" id="workflowModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-resize">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div ng-show="cur_workflow.id" class="pull-right" style="padding-top: 5px;">
+							<button type="button" class="btn btn-danger" ng-click="delWorkflow(cur_workflow);">Remove</button>
+						</div>
+						<h3 ng-hide="!cur_workflow.id" class="modal_title" id="myModalLabel">Edit workflow filter</h3>
+                        <h3 ng-hide="cur_workflow.id" class="modal_title" id="myModalLabel">Adding workflow filter</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-danger text-center text-large">{{ last_error }}</div>
+                        <div style="margin-bottom: 10px; padding: 6px; font-size: 110%" class="label classification {{cur_workflow.classification | class_label_color}}" data-toggle="modal" href="#classification_picker" ng-click="setClassification(cur_workflow.classification)">{{cur_workflow.classification | class_long}}</div>
+                        <div id="name" class="form-group">
+                            <label id="name_lbl" class="control-label">Name (required)</label>
+                            <input type="text" class="form-control" ng-model="cur_workflow.name">
+                        </div>
+                        <div id="query" class="form-group">
+                            <label id="query_lbl" class="control-label">Query (required)</label>
+                            <input autocomplete="off" type="text" class="form-control" ng-model="cur_workflow.query" typeahead="s for s in suggestions | filter:$viewValue | limitTo:20" typeahead-min-length='1' typeahead-on-select='onSelectPart($item, $model, $label)'>
+                        </div>
+                        <div class="form-group form-inline">
+                            <label class="control-label">Labels</label><br/>
+                            <ui-select tagging multiple tagging-tokens='ENTER|TAB|SPACE|,' autofocus="true" ng-model="cur_workflow.label" theme="bootstrap" class="form-control input" style="width: 100%">
+                                <ui-select-match>{{ $item }}</ui-select-match>
+                                <ui-select-choices repeat="label in label_suggestions | filter:$select.search">{{ label }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Priority</label>
+                            <select class="form-control input" ng-model="cur_workflow.priority">
+                                <option></option>
+                                <option>LOW</option>
+                                <option>MEDIUM</option>
+                                <option>HIGH</option>
+                                <option>CRITICAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Status</label>
+                            <select class="form-control input" ng-model="cur_workflow.status">
+                                <option></option>
+                                <option>MALICIOUS</option>
+                                <option>NON-MALICIOUS</option>
+                                <option>ASSESS</option>
+                            </select>
+                        </div>
+                        <div class="text-center text-muted " ng-show="cur_workflow.last_seen">
+                            <b>Last seen on {{ cur_workflow.last_seen | date:"yyyy-MM-dd HH:mm:ss" }}&nbsp;&nbsp;::&nbsp;&nbsp;Seen {{ cur_workflow.hit_count }} times total</b>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button ng-if="cur_workflow.id" id="default_btn" type="button" class="btn btn-primary" ng-click="saveWorkflow();">Save workflow</button>
+                        <button ng-if="!cur_workflow.id" id="default_btn" type="button" class="btn btn-primary" ng-click="addWorkflow();">Add workflow</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END HIDE -->
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="workflow_list != null && !loading_extra"{% endblock %}

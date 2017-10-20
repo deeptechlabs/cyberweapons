@@ -1,0 +1,618 @@
+[
+  {
+    "_id": "Metrics-Overview",
+    "_type": "visualization",
+    "_source": {
+      "title": "Metrics - Overview",
+      "visState": "{\"title\":\"New Visualization\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"18\"},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_ingested\",\"customLabel\":\"Ingested\"}},{\"id\":\"2\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_completed\",\"customLabel\":\"Completed\"}},{\"id\":\"3\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"alert.saved\",\"customLabel\":\"Alerted\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Bucket-Distribution",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"SOLR - Bucket Distribution\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"searcher.numDocs\"}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"asc\",\"orderBy\":\"_term\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "SOLR - Bucket Distribution",
+      "uiStateJSON": "{\"vis\":{\"legendOpen\":false,\"colors\":{\"alert\":\"#B7DBAB\",\"emptyresult\":\"#F4D598\",\"error\":\"#70DBED\",\"file\":\"#F9BA8F\",\"filescore\":\"#F29191\",\"node\":\"#82B5D8\",\"profile\":\"#E5A8E2\",\"result\":\"#AEA2E0\",\"signature\":\"#E0F9D7\",\"submission\":\"#FCEACA\",\"user\":\"#CFFAFF\"}}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Top-20-Hosts",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"New Visualization\",\"type\":\"table\",\"params\":{\"perPage\":20,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"al_host\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Hosts\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Top 20 Hosts",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"logs-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Top-20-Components",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Top 20 Components\",\"type\":\"table\",\"params\":{\"perPage\":20,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"component\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Components\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Top 20 Components",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"logs-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Core-Statistics",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"SOLR - Core Statistics\",\"type\":\"table\",\"params\":{\"perPage\":12,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"searcher.numDocs\",\"customLabel\":\"Documents\"}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"asc\",\"orderBy\":\"_term\",\"customLabel\":\"Core\"}},{\"id\":\"3\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"select.avgRequestsPerSecond\",\"customLabel\":\"Q/s\"}},{\"id\":\"4\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"update.avgRequestsPerSecond\",\"customLabel\":\"U/s\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "SOLR - Core Statistics",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Ingested",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Metrics - Ingested\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"52\"},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_ingested\",\"customLabel\":\"Total Ingested Submissions\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Metrics - Ingested",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Load",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Load\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"load\",\"customLabel\":\"Load\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Load over time\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Load",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Load\":\"#F9BA8F\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Audit-Log-Severity",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Audit Log Severity\",\"type\":\"pie\",\"params\":{\"addLegend\":true,\"addTooltip\":true,\"isDonut\":false,\"shareYAxis\":true},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Event Severity Count\"}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"al_severity\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Severity\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Audit Log Severity",
+      "uiStateJSON": "{\"vis\":{\"legendOpen\":false,\"colors\":{\"info\":\"#82B5D8\",\"warning\":\"#F9BA8F\"}}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"audit-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Log-Severity-Distribution",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Log Severity Distribution\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"al_severity\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Severity\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Log Severity Distribution",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"warning\":\"#F4D598\",\"error\":\"#F29191\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"logs-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Submission-Completed",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Metrics - Submission Completed\",\"type\":\"metric\",\"params\":{\"fontSize\":\"42\",\"handleNoResults\":true},\"aggs\":[{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_completed\",\"customLabel\":\"Average / Minutes\"}},{\"id\":\"1\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_completed\",\"customLabel\":\"Maximum / Minutes\"}},{\"id\":\"3\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_completed\",\"customLabel\":\"Total\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Metrics - Submission Completed",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-Object-Size",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Riak - Object Size\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":true,\"yAxis\":{\"max\":5242880,\"min\":0}},\"aggs\":[{\"id\":\"3\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"node_get_fsm_objsize_100\",\"customLabel\":\"Max\"}},{\"id\":\"1\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"node_get_fsm_objsize_99\",\"customLabel\":\"99th Percentile\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Max size per time interval\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Riak - Object Size",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"99th Percentile Object Size\":\"#7EB26D\",\"Max Object Size\":\"#64B0C8\",\"Max\":\"#F4D598\",\"99th Percentile\":\"#EAB839\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"riak-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Service-Caching",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Metrics - Service Caching\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"2\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"svc.cache_miss\",\"customLabel\":\"Miss\"}},{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"svc.cache_hit\",\"customLabel\":\"Hit\"}},{\"id\":\"3\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"svc.cache_skipped\",\"customLabel\":\"Skipped\"}},{\"id\":\"4\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Service cache metrics per minute\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Metrics - Service Caching",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Hit\":\"#5195CE\",\"Miss\":\"#9AC48A\",\"Skipped\":\"#EA6460\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Audit-Events",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Audit Events\",\"type\":\"area\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"interpolate\":\"linear\",\"mode\":\"stacked\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"smoothLines\":false,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Events\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average events per minute\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"al_severity\",\"size\":5,\"order\":\"asc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Audit Events",
+      "uiStateJSON": "{\"vis\":{\"legendOpen\":false,\"colors\":{\"Events\":\"#1F78C1\",\"info\":\"#82B5D8\",\"warning\":\"#F9BA8F\"}}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"audit-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Log-Events-by-Severity",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Log Events by Severity\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Events\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Timestamp\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"al_severity\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Severity\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Log Events by Severity",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"warning\":\"#F2C96D\",\"error\":\"#E24D42\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"logs-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-PUTs-and-GETs-slash-Minute",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Riak - PUTs and GETs / Minute\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"node_gets\",\"customLabel\":\"GETs\"}},{\"id\":\"2\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"node_puts\",\"customLabel\":\"PUTs\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Total actions per minute\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Riak - PUTs and GETs / Minute",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"GETs\":\"#508642\",\"PUTs\":\"#E24D42\",\"Sum of node_puts\":\"#EA6460\",\"Sum of node_gets\":\"#629E51\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"riak-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Ingest-Distribution",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Metrics - Ingest Distribution\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_ingested\",\"customLabel\":\"Ingested\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average metric per minute\"}},{\"id\":\"3\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.duplicates\",\"customLabel\":\"Duplicates\"}},{\"id\":\"4\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.submissions_completed\",\"customLabel\":\"Completed\"}},{\"id\":\"5\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.skipped\",\"customLabel\":\"Skipped\"}},{\"id\":\"6\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.error\",\"customLabel\":\"Error\"}},{\"id\":\"7\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.timed_out\",\"customLabel\":\"Timed out\"}},{\"id\":\"8\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.whitelisted\",\"customLabel\":\"Whitelisted\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Metrics - Ingest Distribution",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Ingested\":\"#5195CE\",\"Duplicates\":\"#EAB839\",\"Completed\":\"#7EB26D\",\"Skipped\":\"#EF843C\",\"Error\":\"#E24D42\",\"Whitelisted\":\"#BA43A9\",\"Timed out\":\"#705DA0\"},\"legendOpen\":true}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Ingest-Bytes",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Metrics - Ingest Bytes\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.bytes_ingested\",\"customLabel\":\"Bytes Ingested\"}},{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"ingest.bytes_completed\",\"customLabel\":\"Bytes Completed\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average bytes per minute\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Metrics - Ingest Bytes",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Bytes Ingested\":\"#5195CE\",\"Bytes Completed\":\"#7EB26D\"},\"legendOpen\":true}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Network-RX",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Network RX\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"net_io.lo.bytes_recv\",\"customLabel\":\"lo\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"net_io.non_lo.bytes_recv\",\"customLabel\":\"physical\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Network received bytes over time\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Network RX",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"lo\":\"#508642\",\"physical\":\"#7EB26D\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Dispatcher-Completed",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Metrics - Dispatcher Completed\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"dispatch.files_completed\",\"customLabel\":\"Count\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average files completed per minute\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Metrics - Dispatcher Completed",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Count\":\"#82B5D8\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "CPU-Usage",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"CPU Usage\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":true,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":true,\"yAxis\":{\"max\":100,\"min\":0}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"cpu.percent\",\"customLabel\":\"CPU Percent\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"CPU usage over time\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "CPU Usage",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"CPU Percent\":\"#82B5D8\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Alert-Created",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Metrics - Alert Created\",\"type\":\"histogram\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"scale\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"alert.saved\",\"customLabel\":\"Count\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Total created alerts for time interval\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Metrics - Alert Created",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Count\":\"#EA6460\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Network-TX",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Network TX\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"net_io.lo.bytes_sent\",\"customLabel\":\"lo\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"net_io.non_lo.bytes_sent\",\"customLabel\":\"physical\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Network sent bytes over time\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Network TX",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"lo\":\"#BF1B00\",\"physical\":\"#EA6460\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Disk-Usage",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Disk Usage\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"disk_usage_agg.used\",\"customLabel\":\"Used\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"disk_usage_agg.total\",\"customLabel\":\"Total\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Disk usage over time\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Disk Usage",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Total\":\"#70DBED\",\"Used\":\"#447EBC\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Disk-Write",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Disk Write\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"disk_io.agg.write_bytes\",\"customLabel\":\"Write\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Disk write over time\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Disk Write",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Write\":\"#EA6460\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Disk-Read",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Disk Read\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"disk_io.agg.read_bytes\",\"customLabel\":\"Read\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Disk read over time\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Disk Read",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Read\":\"#9AC48A\"},\"legendOpen\":false}}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Top-20-Functions",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Top 20 Functions\",\"type\":\"table\",\"params\":{\"perPage\":20,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"al_function\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Function\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Top 20 Functions",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"audit-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Top-20-Users",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"title\":\"Top 20 Users\",\"type\":\"table\",\"params\":{\"perPage\":20,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"al_user\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"User\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Top 20 Users",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"audit-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Update-Rate",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - Update Rate",
+      "visState": "{\"title\":\"SOLR - Update Rate\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"40\"},\"aggs\":[{\"id\":\"1\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"update.avgRequestsPerSecond\",\"customLabel\":\"Max updates / second\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Query-Rate",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - Query Rate",
+      "visState": "{\"title\":\"SOLR - Query Rate\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"40\"},\"aggs\":[{\"id\":\"1\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"select.avgRequestsPerSecond\",\"customLabel\":\"Max queries / second\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Metrics-Alert-Stats",
+    "_type": "visualization",
+    "_source": {
+      "title": "Metrics - Alert Stats",
+      "visState": "{\"title\":\"Metrics - Alert Stats\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"32\"},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"alert.saved\",\"customLabel\":\"Avg/Minute\"}},{\"id\":\"2\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"alert.saved\",\"customLabel\":\"Max/Minute\"}},{\"id\":\"3\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"alert.saved\",\"customLabel\":\"Total\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"al_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-Cluster-99th-Percentile-GET-Latency",
+    "_type": "visualization",
+    "_source": {
+      "title": "Riak - Cluster 99th Percentile GET Latency",
+      "visState": "{\"title\":\"Riak - Cluster 99th Percentile GET Latency\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"node_get_fsm_time_99\",\"customLabel\":\"NODE 99th GET Latency\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"vnode_get_fsm_time_99\",\"customLabel\":\"VNODE 99th GET Latency\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average latency for time interval\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"NODE 99th GET Latency\":\"#7EB26D\",\"VNODE 99th GET Latency\":\"#3F6833\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"riak-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-Cluster-99th-Percentile-PUT-Latency",
+    "_type": "visualization",
+    "_source": {
+      "title": "Riak - Cluster 99th Percentile PUT Latency",
+      "visState": "{\"title\":\"Riak - Cluster 99th Percentile PUT Latency\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"node_put_fsm_time_99\",\"customLabel\":\"NODE 99th PUT Latency\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"vnode_put_fsm_time_99\",\"customLabel\":\"VNODE 99th PUT Latency\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average latency for time interval\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"NODE 99th PUT Latency\":\"#E24D42\",\"VNODE 99th PUT Latency\":\"#58140C\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"riak-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-Cluster-PUT-MEAN-Latency",
+    "_type": "visualization",
+    "_source": {
+      "title": "Riak - Cluster PUT MEAN Latency",
+      "visState": "{\"title\":\"Riak - Cluster PUT MEAN Latency\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"node_put_fsm_time_mean\",\"customLabel\":\"NODE PUT Mean Latency\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"vnode_put_fsm_time_mean\",\"customLabel\":\"VNODE PUT Mean Latency\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average latency for time interval\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"PUT Mean Latency\":\"#E24D42\",\"PUT 99th Latency\":\"#58140C\",\"VNODE PUT Mean Latency\":\"#58140C\",\"NODE PUT Mean Latency\":\"#E24D42\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"riak-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Memory-Usage",
+    "_type": "visualization",
+    "_source": {
+      "title": "Memory Usage",
+      "visState": "{\"title\":\"Memory Usage\",\"type\":\"area\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"interpolate\":\"linear\",\"mode\":\"overlap\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"smoothLines\":false,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"memory.total\",\"customLabel\":\"Total\"}},{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"memory.used\",\"customLabel\":\"Used\"}},{\"id\":\"3\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"memory.cached\",\"customLabel\":\"Cached\"}},{\"id\":\"4\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Memory usage over time\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"spy\":{\"mode\":{\"fill\":false,\"name\":null}},\"vis\":{\"colors\":{\"Cached\":\"#F2C96D\",\"Total\":\"#5195CE\",\"Used\":\"#E24D42\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-Cluster-GET-MEAN-Latency",
+    "_type": "visualization",
+    "_source": {
+      "title": "Riak - Cluster GET MEAN Latency",
+      "visState": "{\"title\":\"Riak - Cluster GET MEAN Latency\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"node_get_fsm_time_mean\",\"customLabel\":\"Node GET latency\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"vnode_get_fsm_time_mean\",\"customLabel\":\"VNode GET latency\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average latency for time interval\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Node GET latency\":\"#7EB26D\",\"VNode GET latency\":\"#3F6833\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"riak-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-Protobuf-Connections",
+    "_type": "visualization",
+    "_source": {
+      "title": "Riak - Protobuf Connections",
+      "visState": "{\"title\":\"Riak - Protobuf Connections\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":true,\"yAxis\":{\"max\":600,\"min\":0}},\"aggs\":[{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"pbc_connects\",\"customLabel\":\"New Connections\"}},{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"pbc_active\",\"customLabel\":\"Active connections\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average connections per time interval\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Active connections\":\"#5195CE\",\"New Connections\":\"#1F78C1\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"riak-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-99th-Percentile-Query-Time",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - 99th Percentile Query Time",
+      "visState": "{\"title\":\"SOLR - 99th Percentile Query Time\",\"type\":\"area\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"interpolate\":\"linear\",\"mode\":\"overlap\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"smoothLines\":false,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"select.99thPcRequestTime\",\"customLabel\":\"Microseconds\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average query time per time interval\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"alert\":\"#9AC48A\",\"emptyresult\":\"#F2C96D\",\"error\":\"#65C5DB\",\"file\":\"#F9934E\",\"filescore\":\"#EA6460\",\"node\":\"#5195CE\",\"profile\":\"#D683CE\",\"result\":\"#806EB7\",\"signature\":\"#B7DBAB\",\"submission\":\"#F4D598\",\"user\":\"#70DBED\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-99th-Percentile-Update-Time",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - 99th Percentile Update Time",
+      "visState": "{\"title\":\"SOLR - 99th Percentile Update Time\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"update.99thPcRequestTime\",\"customLabel\":\"Microseconds\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average update time per time interval\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"alert\":\"#9AC48A\",\"file\":\"#F9934E\",\"emptyresult\":\"#F2C96D\",\"filescore\":\"#EA6460\",\"error\":\"#65C5DB\",\"profile\":\"#D683CE\",\"result\":\"#806EB7\",\"node\":\"#5195CE\",\"signature\":\"#B7DBAB\",\"submission\":\"#F4D598\",\"user\":\"#70DBED\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Number-of-documents",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - Number of documents",
+      "visState": "{\"title\":\"SOLR - Number of documents\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":true,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"searcher.numDocs\",\"customLabel\":\"Docs per nodes\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Documents over time\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"alert\":\"#9AC48A\",\"emptyresult\":\"#F2C96D\",\"error\":\"#65C5DB\",\"file\":\"#F9934E\",\"filescore\":\"#EA6460\",\"node\":\"#5195CE\",\"profile\":\"#D683CE\",\"result\":\"#806EB7\",\"signature\":\"#B7DBAB\",\"submission\":\"#F4D598\",\"user\":\"#70DBED\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Average-Update-Time",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - Average Update Time",
+      "visState": "{\"title\":\"SOLR - Average Update Time\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"update.avgTimePerRequest\",\"customLabel\":\"Microseconds\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average update time per time interval\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"alert\":\"#9AC48A\",\"node\":\"#5195CE\",\"emptyresult\":\"#F2C96D\",\"profile\":\"#D683CE\",\"user\":\"#70DBED\",\"submission\":\"#F4D598\",\"file\":\"#F9934E\",\"filescore\":\"#EA6460\",\"error\":\"#65C5DB\",\"signature\":\"#B7DBAB\",\"result\":\"#806EB7\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Average-Updates",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - Average Updates",
+      "visState": "{\"title\":\"SOLR - Average Updates\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"update.avgRequestsPerSecond\",\"customLabel\":\"Updates\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average updates per seconds for time interval\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"alert\":\"#9AC48A\",\"emptyresult\":\"#F2C96D\",\"error\":\"#65C5DB\",\"file\":\"#F9934E\",\"filescore\":\"#EA6460\",\"node\":\"#5195CE\",\"profile\":\"#D683CE\",\"result\":\"#806EB7\",\"signature\":\"#B7DBAB\",\"submission\":\"#F4D598\",\"user\":\"#70DBED\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Average-Queries",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR - Average Queries",
+      "visState": "{\"title\":\"SOLR - Average Queries\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"select.avgRequestsPerSecond\",\"customLabel\":\"Queries\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average queries per seconds for time interval\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"alert\":\"#9AC48A\",\"emptyresult\":\"#F2C96D\",\"error\":\"#65C5DB\",\"file\":\"#F9934E\",\"filescore\":\"#EA6460\",\"node\":\"#5195CE\",\"profile\":\"#D683CE\",\"result\":\"#806EB7\",\"signature\":\"#B7DBAB\",\"submission\":\"#F4D598\",\"user\":\"#70DBED\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Average-Query-Time",
+    "_type": "visualization",
+    "_source": {
+      "title": "SOLR- Average Query Time",
+      "visState": "{\"title\":\"SOLR- Average Query Time\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"overlap\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"select.avgTimePerRequest\",\"customLabel\":\"Microseconds\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Average query time per time interval\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"core\",\"size\":12,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"alert\":\"#9AC48A\",\"emptyresult\":\"#F2C96D\",\"error\":\"#65C5DB\",\"file\":\"#F9934E\",\"filescore\":\"#EA6460\",\"node\":\"#5195CE\",\"profile\":\"#D683CE\",\"result\":\"#806EB7\",\"signature\":\"#B7DBAB\",\"submission\":\"#F4D598\",\"user\":\"#70DBED\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"solr-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "Network-Errors",
+    "_type": "visualization",
+    "_source": {
+      "title": "Network Errors",
+      "visState": "{\"title\":\"Network Errors\",\"type\":\"area\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"smoothLines\":false,\"scale\":\"linear\",\"interpolate\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"net_io.non_lo.errin\",\"customLabel\":\"Inbound\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"net_io.non_lo.errout\",\"customLabel\":\"Outbound\"}},{\"id\":\"3\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Network error count over time\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"Inbound\":\"#9AC48A\",\"Outbound\":\"#EA6460\"},\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"system_metrics-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]

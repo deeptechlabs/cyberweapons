@@ -1,0 +1,100 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Alert detail [{{alert_key}}]{% endblock %}
+{% block css_import %}
+    <link rel="stylesheet" href="/static/css/select.min.css"/>
+    <link rel="stylesheet" href="/static/css/selectize.bootstrap3.css"/>
+{% endblock %}
+{% block js_import %}
+	<script src="/static/js/alert_detail.js"></script>
+    <script src="/static/js/angular/angular-sanitize.min.js"></script>
+    <script src="/static/js/ui-select/select.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};alert_key='{{alert_key}}';start();"{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container" ng-show="alert">
+		<div class="header_title text-right">
+			<h1>Alert Details</h1>
+			<h4 ng-show="alert.event_id" class="text-muted">:: {{alert.event_id}} ::</h4>
+		</div>
+        <div class="modal fade" id="related_ids_mdl" tabindex="-1" role="dialog" aria-labelledby="related_id_label" aria-hidden="true">
+            <div class="modal-dialog modal-resize">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="pull-right text-muted text-big">{{ related_ids.length }} alert<span ng-show="related_ids.length>1">s</span></h3>
+                        <h3 class="modal_title" id="related_id_label">Listing of all related Alert IDs</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="pad">All IDs listed bellow match the following parameters:</div>
+                        <div ng-if="last_params.q"><b>Query:</b> {{ last_params.q }}</div>
+                        <div ng-if="last_params.fq"><b>Post filters:</b> {{ last_params.fq | split }}</div>
+                        <div ng-if="last_params.start&&last_params.tc"><b>Time restriction:</b> reporting_ts:[{{ last_params.start }}-{{ last_params.tc }} TO {{ last_params.start }}]</div>
+                        <hr/>
+                        <div class="form-group">
+                            <label for="alert_ids_ta">Alert IDs:</label>
+                            <textarea class="form-control" rows="10" id="alert_ids_ta">{{ related_ids | joinBy:", " }}</textarea>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="worflow_action" tabindex="-1" role="dialog" aria-labelledby="worflow_action_lbl" aria-hidden="true">
+            <div class="modal-dialog modal-resize">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal_title" id="worflow_action_lbl">Workflow action</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4>The workflow action will be applied to a single alert with the following alert ID: {{ alert.event_id }}</h4>
+                        <hr/>
+                        <h4>Change the following workflow attributes:</h4>
+                        <div style="padding-top: 20px;" class="form-group form-inline">
+                            <label class="control-label">Labels</label><br/>
+                            <ui-select tagging multiple tagging-tokens='ENTER|TAB|SPACE|,' autofocus="true" ng-model="user_input.label" theme="bootstrap" class="form-control input" style="width: 100%">
+                                <ui-select-match>{{ $item }}</ui-select-match>
+                                <ui-select-choices repeat="label in label_suggestions | filter:$select.search">{{ label }}</ui-select-choices>
+                            </ui-select>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Priority</label>
+                            <select class="form-control input" ng-model="user_input.priority">
+                                <option></option>
+                                <option>LOW</option>
+                                <option>MEDIUM</option>
+                                <option>HIGH</option>
+                                <option>CRITICAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Status</label>
+                            <select class="form-control input" ng-model="user_input.status">
+                                <option></option>
+                                <option>MALICIOUS</option>
+                                <option>NON-MALICIOUS</option>
+                                <option>ASSESS</option>
+                            </select>
+                        </div>
+                        <div class="text-danger text-center text-large">{{ last_error }}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button id="default_btn" type="button" class="btn btn-primary" ng-click="workflow_action(user_input);" ng-disabled="user_input.label.length==0&&!user_input.priority&&!user_input.status">Apply action</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<div ng-show="alert">
+			<div alert-detail></div>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="alert"{% endblock %}

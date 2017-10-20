@@ -1,0 +1,37 @@
+<div class="row">
+	<div ng-show="!disable_pager_filter">
+		<div class="col-sm-2 col-md-1" style="padding-right: 0px;">
+			<select class="form-control input-sm" style="padding: 5px;" ng-model="count" integer>
+				<option value="10">10</option>
+				<option value="25">25</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+			</select>
+		</div>
+		<div class="col-sm-2 col-md-3" ng-controller="SearchController" ng-init="bucket=pager_page;disabled=disable_pager_filter">
+            <form type="submit" ng-submit="$parent.tempSearchText=tempFilter">
+                <input autocomplete="off" id="search-box" placeholder="Search query" name="query" type="text" class="form-control input-sm" ng-model="tempFilter" typeahead="s for s in suggestions | filter:$viewValue | limitTo:20" typeahead-min-length='1' typeahead-on-select='onSelectPart($item, $model, $label)' />
+			</form>
+		</div>
+	</div>
+	<div ng-show="disable_pager_filter">
+		<div class="col-sm-4 col-md-3" style="padding-right: 0px;">
+			<select class="form-control input-sm" style="padding: 5px;" ng-model="count" integer>
+				<option value="10">10</option>
+				<option value="25">25</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+			</select>
+		</div>
+	</div>
+	<div class="col-sm-8 col-md-8" style="padding-left: 0px;">
+		<div class="text-right">
+			<button type="button" ng-if="show_pager_add" class="btn btn-success btn-sm" style="vertical-align: top; margin-right: 10px; padding: 5px 10px 4px" ng-click="pager_add();"><span class="glyphicon glyphicon-plus"><span class="hidden-sm">&nbsp;</span></span><span class="hidden-sm">{{pager_btn_text}}</span></button>
+			<ul class="pagination pagination-sm no-margin" ng-show="pagesToDisplay().length > 0">
+				<li ng-class="{disabled: offset==0}"><a class="clickable" ng-click="prev()"><span class="glyphicon glyphicon-backward"></span></a></li>
+				<li ng-class="{active: ((offset+count)/count)==p}" ng-repeat="p in pagesToDisplay()" ><a style="min-width: 36px;" class="clickable" ng-click="load_page(p)"><strong>{{p}}</strong></a></li>
+				<li ng-class="{disabled: (offset/count)>=pages}"><a class="clickable" ng-click="next()"><span class="glyphicon glyphicon-forward"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,1 @@
+user = ALL = NOPASSWD: /opt/al/pkg/assemblyline/al/install/stages/install_70_hostagent.py

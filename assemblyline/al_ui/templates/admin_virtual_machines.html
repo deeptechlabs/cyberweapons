@@ -1,0 +1,80 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Virtual Machines Management{% endblock %}
+{% block js_import %}
+	<script src="/static/js/admin_virtual_machine_configs.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Virtual Machines Management</h1>
+			<h4 ng-hide="vm_list == null" class="text-muted">:: {{vm_list.length}} Virtual Machine<span ng-show="vm_list.length > 1">s</span> ::</h4>
+            <button ng-hide="vm_list == null || vm_list.length == 0" type="button" class="btn btn-success btn-sm" ng-click="add_vm_modal()">
+                <span class="glyphicon glyphicon-plus"><span class="hidden-sm">&nbsp;</span></span>
+                <span class="hidden-sm ng-binding">Add VirtualMachine</span>
+            </button>
+		</div>
+		<section class="table-responsive" ng-hide="vm_list == null || vm_list.length == 0">
+			<table class="table table-hover">
+				<thead>
+					<tr class="active">
+						<th>Service</th><th>OS</th><th>vCPUs</th><th>RAM</th><th>Workers</th><th>Enabled</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="editVM(vm)" ng-repeat="vm in vm_list" style="cursor: pointer;">
+						<td>{{vm.name}}</td>
+						<td>{{vm.os_variant}}</td>
+						<td>{{vm.vcpus}}</td>
+						<td>{{vm.ram}}</td>
+						<td>{{vm.num_workers}}</td>
+						<td class="text-muted">
+							<span ng-show="vm.enabled" class="glyphicon glyphicon-ok text-success"></span>
+							<span ng-hide="vm.enabled" class="glyphicon glyphicon-remove text-danger"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+				
+		<div ng-show="vm_list != null && vm_list.length == 0 && !loading_extra">
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are currently no virtual machines in the system.
+				</h2>
+                                <div style="margin-top: 20px">
+                                        <button class="btn btn-success" ng-click="add_vm_modal();">Add a Virtual Machine</button>
+                                </div>
+
+			</div>
+		</div>
+		
+		<!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div ng-show="!new_vm" class="pull-right" style="padding-top: 5px;">
+							<button type="button" class="btn btn-danger" ng-click="del();">Remove</button>
+						</div>
+						<h4 ng-show="!new_vm" class="modal_title" id="myModalLabel">Virtual Machine Configuration :: {{current_vm.name}}</h4>
+						<h4 ng-show="new_vm" class="modal_title" id="myModalLabel">Add Virtual Machine</h4>
+					</div>
+					<div class="modal-body">
+						<div vm-config></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button ng-if="new_vm" type="button" class="btn btn-primary" ng-click="add();">Add virtual machine</button>
+						<button ng-if="!new_vm" type="button" class="btn btn-primary" ng-click="save();">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="vm_list != null"{% endblock %}

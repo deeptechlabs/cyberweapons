@@ -1,0 +1,46 @@
+{% extends base_template %}
+{% block title_page %}AL - Documentation{% endblock %}
+{% block content %}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Assemblyline Documentation</h1>
+			<h4 class="text-muted">:: {% if fname %}{{fname}}{% else %}Available documentation files{% endif %} ::</h4>
+			{% if fname %}
+				<a href="/admin/documentation.html">[ back to documentation list ]</a>
+			{% else %}
+				<a href="/admin/documentation.html?fname=assemblyline/docs/markdown_documentation_example.md"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>Markdown&nbsp;help</a>
+			{% endif %}
+		</div>
+		{% if fname %}
+			{% if raw %}
+				<div class="row">
+					<div class="col-md-6">
+						<h2 class="text-center"><span class="small glyphicon glyphicon-arrow-down"></span>&nbsp;Result HTML&nbsp;<span class="small glyphicon glyphicon-arrow-down"></span></h2>
+						{{content}}
+					</div>
+					<div class="col-md-6">
+						<h2 class="text-center"><span class="small glyphicon glyphicon-arrow-down"></span>&nbsp;Markdown format&nbsp;<span class="small glyphicon glyphicon-arrow-down"></span></h2>
+						<pre>{{raw}}</pre>
+					</div>
+				</div>
+			{% else %}
+				{{content}}
+			{% endif %}
+		{% else %}
+			{% block extra_section%}{%endblock%}
+            <div style="margin-top: 30px;">
+                <h4>Assemblyline documentation files:</h4>
+                {% for d in file_map %}
+                    <div style="margin-left: 1em;">
+                        <div class="text-large">{{ d.upper() }}</div>
+                            <ul>
+                            {% for f in file_map[d] %}
+                                <li><a class="text-large" href="/admin/documentation.html?fname={{d}}/{{ f }}" title="{{d}}/{{ f }}">{{d}}/{{ f }}</a></li>
+                            {% endfor %}
+                            </ul>
+                    </div>
+                {% endfor %}
+            </div>
+		{% endif %}
+	</section>
+{% endblock %}				

@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>AL - Unsupported Browser</title>
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+		<style>
+			html {
+				height: 100%;
+				width: 100%;
+				overflow: hidden;
+				min-width: 100%;
+				min-height: 100%; 
+			}
+			
+			body {
+				height: 100%;
+				width: 100%;
+				padding: 0px;
+				margin: 0px;
+				font-size: 14px; 
+				font-family: Helvetica, Arial, Sans-Serif;
+				color: #575757;
+			}
+			
+			.container-fluid {
+				height: 100%;
+				display: table;
+				width: 100%;
+				padding: 0px;
+			}
+			
+			.row-fluid {
+				height: 100%;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			
+			.centering {
+				float: none;
+				margin: 0 auto;
+				align: center;
+			}
+			
+			.text-tiny {
+				font-size: 70%;
+			}
+			
+			.text-big {
+				font-size: 200%;
+			}
+			
+			.pad {
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="centering text-center">
+					{%if is_ie %}
+						<img src="/static/images/ie.jpg"><br/><br/>
+					{%endif%}
+					<div class="alert alert-dismissable alert-danger">
+						<div class="pad">
+							<strong class="text-big">WARNING !!</strong><p>Your browser is not supported by our system. Upgrade to a proper browser (Chrome or Firefox are what you should be using).</p>
+							<span class="text-tiny">{{user_agent}}</span>
+						</div>
+					</div>
+					{%if is_ie %}
+						<p class="pad text-big">OMG you are using internet explorer, just go home you don't deserve to be here...</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

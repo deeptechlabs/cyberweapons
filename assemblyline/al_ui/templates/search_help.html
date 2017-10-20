@@ -1,0 +1,368 @@
+{% extends base_template %}
+{% block title_page %}AL - Search help{% endblock %}
+{% block body_param %}data-target=".bs-docs-sidebar" data-scroll-offset="60" data-spy="scroll"{% endblock %}
+{% block content %}
+<section id="appContent" class="container">
+	<div class="header_title text-right">
+		<h1>Riak Search</h1>
+		<h4 class="text-muted">:: Query Syntax ::</h4>
+	</div>
+
+	<div class="row">
+		<div class="col-md-10">
+
+			<section id="overview" class="bs-docs-section">
+				<h2 class="anchor-offset">Overview</h2>
+				<p>
+				    Riak uses Apache SOLR as its search engine which in turn uses 
+				    the Apache Lucene search syntax. This document describes how 
+				    you can leverage the power of the Apache SOLR/Lucene to search 
+				    through the Riak data store. 
+				</p>
+			</section>
+        
+			<section id="terms" class="bs-docs-section">
+				<h2 class="anchor-offset">Terms</h2>
+				<p>A query is broken up into terms and operators. There are two types of terms: Single Terms and Phrases.</p>
+				<p>A Single Term is a single word such as "test" or "hello".</p>
+				<p>A Phrase is a group of words surrounded by double quotes such as "hello dolly".</p>
+				<p>Multiple terms can be combined together with Boolean operators to form a more complex query (see below).</p>
+				<p>Note: The analyzer used to create the index will be used on the terms and phrases in the query string.
+				        So it is important to choose an analyzer that will not interfere with the terms used in the query string.</p>
+			</section>
+
+
+			<section id="fields" class="bs-docs-section">
+				<h2 class="anchor-offset">Fields</h2>
+				<p>Lucene supports fielded data. When performing a search you can either specify a field, or use the default field. The field names and default field is implementation specific.</p>
+				<p>You can search any field by typing the field name followed by a colon ":" and then the term you are looking for. </p>
+				<p>As an example, let's assume a Lucene index contains two fields, <b>description</b> and <b>text</b> and text is the <i>default</i> field.
+				        If you want to find the document with the description "The Right Way" which contains the text "don't go this way", you can enter: </p>
+				<pre class="code">description:"The Right Way" AND text:go</pre>
+				<p>or</p>
+				<pre class="code">description:"The Right Way" AND go</pre>
+				<p>Since text is the default field, the field indicator is not required.</p>
+				<p>Note: The field is only valid for the term that it directly precedes, so the query</p>
+				<pre class="code">description:The Wrong Way</pre>
+				<p>Will only find "The" in the description field. It will find "Wrong" and "Way" in the default field (in this case the text field). </p>
+				<section id="available_fields" class="bs-docs-section">
+					<h3 class="anchor-offset">Available Fields</h3>
+					<p>Our current Riak data store instance has the following field available for searches. Some field are copied over to a default search field, "text", that is used in the case where no fields are specified.
+                        Stored field will be returned by the index when issuing a query.
+                    </p>
+
+					<section id="alert" class="bs-docs-section">
+						<h4 class="anchor-offset">Alert:</h4>
+<pre>
+ Indexed and stored fields:
+ {% for field, val in field_list['alert'] if val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+ Indexed fields:
+ {% for field, val in field_list['alert'] if not val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+</pre>
+					</section>
+					<section id="file" class="bs-docs-section">
+						<h4 class="anchor-offset">File:</h4>
+<pre>
+ Indexed and stored fields:
+ {% for field, val in field_list['file'] if val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+ Indexed fields:
+ {% for field, val in field_list['file'] if not val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+</pre>
+					</section>
+					<section id="result" class="bs-docs-section">
+						<h4 class="anchor-offset">Result:</h4>
+<pre>
+ Indexed and stored fields:
+ {% for field, val in field_list['result'] if val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+ Indexed fields:
+ {% for field, val in field_list['result'] if not val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+</pre>
+					</section>
+					<section id="signature" class="bs-docs-section">
+						<h4 class="anchor-offset">Signature:</h4>
+<pre>
+ Indexed and stored fields:
+ {% for field, val in field_list['signature'] if val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+ Indexed fields:
+ {% for field, val in field_list['signature'] if not val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+</pre>
+					</section>
+					<section id="submission" class="bs-docs-section">
+						<h4 class="anchor-offset">Submission:</h4>
+<pre>
+ Indexed and stored fields:
+ {% for field, val in field_list['submission'] if val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+ Indexed fields:
+ {% for field, val in field_list['submission'] if not val['stored'] %}  {{ field }}   ::   {% if val.list %}[{% endif %}{{ lookup.get(val.type, val.type) }}{% if val.list %}, ...]{% endif %}
+ {% endfor %}
+</pre>
+					</section>
+					<p><b>Important: </b> When using the search engine in the UI, your search query is performed on all these buckets at the same time.</p>
+				</section>
+			</section>
+
+			<section id="term_modifiers" class="bs-docs-section">
+				<h2 class="anchor-offset">Term Modifiers</h2>
+				<p>Lucene supports modifying query terms to provide a wide range of searching options.</p>
+				<section id="wildcard_searches" class="bs-docs-section">
+					<h3 class="anchor-offset">Wildcard Searches</h3>
+					<p>Lucene supports single and multiple character wildcard searches within single terms
+					        (not within phrase queries).</p>
+					<p>To perform a single character wildcard search use the "?" symbol.</p>
+					<p>To perform a multiple character wildcard search use the "*" symbol.</p>
+					<p>The single character wildcard search looks for terms that match that with the single character replaced. For example, to search for "text" or "test" you can use the search:</p>
+					<pre class="code">te?t</pre>
+					<p>Multiple character wildcard searches looks for 0 or more characters. For example, to search for test, tests or tester, you can use the search: </p>
+					<pre class="code">test*</pre>
+					<p>You can also use the wildcard searches in the middle of a term.</p>
+					<pre class="code">te*t</pre>
+					<p>Note: You cannot use a * or ? symbol as the first character of a search.</p>
+				</section>
+				<section id="fuzzy_searches" class="bs-docs-section">
+					<h3 class="anchor-offset">Fuzzy Searches</h3>
+					<p>Lucene supports fuzzy searches based on the Levenshtein Distance, or Edit Distance algorithm. To do a fuzzy search use the tilde, "~", symbol at the end of a Single word Term. For example to search for a term similar in spelling to "roam" use the fuzzy search: </p>
+					<pre class="code">roam~</pre>
+					<p>This search will find terms like foam and roams.</p>
+					<p>Starting with Lucene 1.9 an additional (optional) parameter can specify the required similarity. The value is between 0 and 1, with a value closer to 1 only terms with a higher similarity will be matched. For example:</p>
+					<pre class="code">roam~0.8</pre>
+					<p>The default that is used if the parameter is not given is 0.5.</p>
+				</section>
+				<section id="proximity_searches" class="bs-docs-section">
+					<h3 class="anchor-offset">Proximity Searches</h3>
+					<p>Lucene supports finding words are a within a specific distance away. To do a proximity search use the tilde, "~", symbol at the end of a Phrase. For example to search for a "apache" and "jakarta" within 10 words of each other in a document use the search: </p>
+					<pre class="code">"jakarta apache"~10</pre>
+				</section>
+				<section id="range_searches" class="bs-docs-section">
+					<h3 class="anchor-offset">Range Searches</h3>
+					<p>Range Queries allow one to match documents whose field(s) values
+					            are between the lower and upper bound specified by the Range Query.
+					            Range Queries can be inclusive or exclusive of the upper and lower bounds.
+					            Sorting is done lexicographically.</p>
+					<pre class="code">size:[1024 TO 2048]</pre>
+					<p>This will find documents whose size field has values between 1024 and 2048, inclusive.
+					            Note that Range Queries are not reserved for date fields.  You could also use range queries with non-date fields:</p>
+					<pre class="code">description:{Aida TO Carmen}</pre>
+					<p>This will find all documents whose descriptions are between Aida and Carmen, but not including Aida and Carmen.</p>
+					<p>Inclusive range queries are denoted by square brackets.  Exclusive range queries are denoted by
+					            curly brackets.</p>
+				</section>
+			</section>
+
+
+   
+			<section id="boolean_operators" class="bs-docs-section">
+				<h2 class="anchor-offset">Boolean Operators</h2>
+				<p>Boolean operators allow terms to be combined through logic operators.
+				        Lucene supports AND, "+", OR, NOT and "-" as Boolean operators(Note: Boolean operators must be ALL CAPS).</p>
+				<section id="or" class="bs-docs-section">
+					<h4 class="anchor-offset">OR</h4>
+					<p>The OR operator is the default conjunction operator. This means that if there is no Boolean operator between two terms, the OR operator is used.
+					        The OR operator links two terms and finds a matching document if either of the terms exist in a document. This is equivalent to a union using sets.
+					        The symbol || can be used in place of the word OR.</p>
+					<p>To search for documents that contain either "jakarta apache" or just "jakarta" use the query:</p>
+					<pre class="code">"jakarta apache" jakarta</pre>
+					<p>or</p>
+					<pre class="code">"jakarta apache" OR jakarta</pre>
+				</section>
+				<section id="and" class="bs-docs-section">
+					<h4 class="anchor-offset">AND</h4>
+					<p>The AND operator matches documents where both terms exist anywhere in the text of a single document.
+					        This is equivalent to an intersection using sets. The symbol &amp;&amp; can be used in place of the word AND.</p>
+					<p>To search for documents that contain "jakarta apache" and "Apache Lucene" use the query: </p>
+					<pre class="code">"jakarta apache" AND "Apache Lucene"</pre>
+					</section>
+					<section id="plus" class="bs-docs-section">
+					<h4 class="anchor-offset">+</h4>
+					<p>The "+" or required operator requires that the term after the "+" symbol exist somewhere in a the field of a single document.</p>
+					<p>To search for documents that must contain "jakarta" and may contain "lucene" use the query:</p>
+					<pre class="code">+jakarta lucene</pre>
+				</section>
+				<section id="not" class="bs-docs-section">
+					<h4 class="anchor-offset">NOT</h4>
+					<p>The NOT operator excludes documents that contain the term after NOT.
+					        This is equivalent to a difference using sets. The symbol ! can be used in place of the word NOT.</p>
+					<p>To search for documents that contain "jakarta apache" but not "Apache Lucene" use the query: </p>
+					<pre class="code">"jakarta apache" NOT "Apache Lucene"</pre>
+					<p>Note: The NOT operator cannot be used with just one term. For example, the following search will return no results:</p>
+					<pre class="code">NOT "jakarta apache"</pre>
+					</section>
+					<section id="minus" class="bs-docs-section">
+					<h4 class="anchor-offset">-</h4>
+					<p>The "-" or prohibit operator excludes documents that contain the term after the "-" symbol.</p>
+					<p>To search for documents that contain "jakarta apache" but not "Apache Lucene" use the query: </p>
+					<pre class="code">"jakarta apache" -"Apache Lucene"</pre>
+				</section>
+			</section>
+        
+			<section id="grouping" class="bs-docs-section">
+				<h2 class="anchor-offset">Grouping</h2>
+				<p>Lucene supports using parentheses to group clauses to form sub queries. This can be very useful if you want to control the boolean logic for a query.</p>
+				<p>To search for either "jakarta" or "apache" and "website" use the query:</p>
+				<pre class="code">(jakarta OR apache) AND website</pre>
+				<p>This eliminates any confusion and makes sure you that website must exist and either term jakarta or apache may exist.</p>
+			</section>
+        
+			<section id="field_grouping" class="bs-docs-section">
+				<h2 class="anchor-offset">Field Grouping</h2>
+				<p>Lucene supports using parentheses to group multiple clauses to a single field.</p>
+				<p>To search for a description that contains both the word "return" and the phrase "pink panther" use the query:</p>
+				<pre class="code">description:(+return +"pink panther")</pre>
+			</section>
+
+			<section id="date_range_searches" class="bs-docs-section">
+				<h2 class="anchor-offset">Date Range Searches</h2>
+				<p>Although not technically a Syntax difference, please note that if you use the Solr "<a>DateField</a>" type, any queries on those fields (typically range queries) should use either the Complete ISO 8601 Date syntax that field supports, or the <a href="#datemath_syntax">DateMath</a> Syntax to get relative dates.</p>
+				<p>Exemples:</p>
+<pre class="code">
+times.submitted:[*&nbsp;TO&nbsp;NOW]
+    
+times.submitted:[1976-03-06T23:59:59.999Z&nbsp;TO&nbsp;*]
+    
+times.submitted:[1995-12-31T23:59:59.999Z&nbsp;TO&nbsp;2007-03-06T00:00:00Z]
+    
+times.completed:[NOW-1YEAR/DAY&nbsp;TO&nbsp;NOW/DAY+1DAY]
+    
+times.completed:[1976-03-06T23:59:59.999Z&nbsp;TO&nbsp;1976-03-06T23:59:59.999Z+1YEAR]
+    
+times.completed:[1976-03-06T23:59:59.999Z/YEAR&nbsp;TO&nbsp;1976-03-06T23:59:59.999Z]
+</pre>
+
+				<section id="datemath_syntax" class="bs-docs-section">
+					<h3 class="anchor-offset">DateMath Syntax</h3>
+					<p>A simple Utility class for parsing "math" like strings related to Dates.</p>
+					<p>The basic syntax supports addition, substraction and rounding at various levels of granularity. Commands can be chained together and are parsed for left to right. '+' and '-' denote addition and substraction, while '/' denotes "round". Round requires only a unit, while addition and substraction require an integer value and a unit. Command strings must not include white spaces.</p>
+<pre class="code">
+/HOUR
+    ... Round to the start of the current hour
+/DAY
+    ... Round to the start of the current day
++2YEARS
+    ... Exactly 2 years in the future from now
+-1DAY
+    ... Exactly 1 day prior to now
+/DAY+6MONTHS+3DAYS
+    ... 6 months and 3 days in the future from 
+        the start of the current day
++6MONTHS+3DAYS/DAY
+    ... 6 months and 3 days in the future from
+        now rounded to the nearest day
+</pre>
+				</section>
+			</section>
+
+        
+			<section id="escaping_special_characters" class="bs-docs-section">
+				<h2 class="anchor-offset">Escaping Special Characters</h2>
+				<p>Lucene supports escaping special characters that are part of the query syntax. The current list special characters are</p>
+				<p>+ - &amp;&amp; || ! ( ) { } [ ] ^ " ~ * ? : \</p>
+				<p>To escape these character use the \ before the character. For example to search for (1+1):2 use the query:</p>
+				<pre class="code">\(1\+1\)\:2</pre>
+			</section>
+		</div>
+
+		<!-- SIDENAV -->
+		<div class="col-md-2 hidden-sm hidden-xs">
+			<div data-spy="affix" data-offset-top="100" class="bs-docs-sidebar hidden-print" role="complementary">
+			    <ul class="nav bs-docs-sidenav">
+			        <li>
+			            <a href="#overview">Overview</a>
+			        </li>
+			        <li>
+			            <a href="#terms">Terms</a>
+			        </li>
+			        <li>
+			            <a href="#fields">Fields</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#available_fields">Available Fields</a>
+			                    <ul class="nav">
+					                <li>
+					                    <a href="#alert">Alert</a>
+					                </li>
+					                <li>
+					                    <a href="#file">File</a>
+					                </li>
+					                <li>
+					                    <a href="#result">Result</a>
+					                </li>
+					                <li>
+					                    <a href="#signature">Signature</a>
+					                </li>
+					                <li>
+					                    <a href="#submission">Submission</a>
+					                </li>
+					            </ul>
+			                </li>
+			            </ul>
+			        </li>
+			        <li>
+			        	<a href="#term_modifiers">Term Modifiers</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#wildcard_searches">Wildcard Searches</a>
+			                </li>
+			                <li>
+			                    <a href="#fuzzy_searches">Fuzzy Searches</a>
+			                </li>
+			                <li>
+			                    <a href="#proximity_searches">Proximity Searches</a>
+			                </li>
+			                <li>
+			                    <a href="#range_searches">Range Searches</a>
+			                </li>
+			            </ul>
+			        </li>    
+			        <li>
+			        	<a href="#boolean_operators">Boolean Operators</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#or">OR</a>
+			                </li>
+			                <li>
+			                    <a href="#and">AND</a>
+			                </li>
+			                <li>
+			                    <a href="#plus">+</a>
+			                </li>
+			                <li>
+			                    <a href="#not">NOT</a>
+			                </li>
+			                <li>
+			                    <a href="#minus">-</a>
+			                </li>
+			            </ul>
+			        </li>
+			        <li>
+			            <a href="#grouping">Grouping</a>
+			        </li>
+			        <li>
+			            <a href="#field_grouping">Field Grouping</a>
+			        </li>
+			        <li>
+			            <a href="#date_range_searches">Date Range Searches</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#datemath_syntax">DateMath Syntax</a>
+			                </li>
+			            </ul>
+			        </li>
+			        <li>
+			            <a href="#escaping_special_characters">Escaping Special Characters</a>
+			        </li>
+			    </ul>
+			    <a class="back-to-top" href="#top">Back to top</a>
+			</div>
+		</div>
+	
+	</div>
+</section>
+{% endblock %}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>500 - Internal Server Error</title>
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+		<script>
+			function show_stack(){
+				var elem = document.getElementById("error");
+				if (elem.className == "hide"){
+					elem.className = "";
+				}
+				else{
+					elem.className = "hide";
+				}
+			}
+		</script>
+		<style>
+			html {
+				height: 100%;
+				width: 100%;
+				overflow: hidden;
+				min-width: 100%;
+				min-height: 100%; 
+			}
+			
+			body {
+				height: 100%;
+				width: 100%;
+				padding: 0px;
+				margin: 0px;
+				font-size: 14px; 
+				font-family: Helvetica, Arial, Sans-Serif;
+				color: #575757;
+			}
+			
+			.container-fluid {
+				height: 100%;
+				display: table;
+				width: 100%;
+				padding: 0px;
+			}
+			
+			.row-fluid {
+				height: 100%;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			
+			.centering {
+				float: none;
+				margin: 0 auto;
+				align: center;
+			}
+			.debug {
+				position: fixed;
+				left: 0;
+				top: 0;
+				width: auto;
+				height: auto;
+				margin: 0.5em 0.25em;
+				z-index: 1999;
+			}
+			#error {
+				position: fixed;
+				left: 0px;
+				top: 0px;
+				width: 100%;
+				height: 100%;
+				min-height: 100%;
+				background: rgba(0, 0, 0, 0.4);
+				padding: 75px 0.5em 0.5em;
+				color: #333;
+				overflow: auto;
+				z-index: 99;
+			}
+			
+		</style>
+	</head>
+	<body>
+	
+		{% if exception %}
+		<div class="debug pull-left">
+			<button class="btn btn-sm btn-default " onclick="show_stack()"><span class="glyphicon glyphicon-list"></span> Show stack</button>
+		</div>
+		<div id="error" class="hide"><pre>{{exception}}</pre></div>
+		{% endif %}
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="centering text-center">
+					<img src="/static/images/500.png"/>
+					<br/>
+					<br/>
+					<h1>Internal server Error</h1><br/>
+					Notify your administrator that the application is unstable on this page...
+				</div>
+		
+			</div>
+		</div>
+	</body>
+</html>

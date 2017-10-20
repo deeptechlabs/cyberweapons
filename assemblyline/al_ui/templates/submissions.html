@@ -1,0 +1,61 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - {% if group %}Group Scans [{{group}}]{% else %}User Scans [{{user.uname}}]{% endif %}{% endblock %}
+{% block js_import %}
+	<script src="/static/js/submissions.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};{% if uname %}uname='{{uname}}';{% endif %}{% if group %}group='{{group}}';{% endif %}start();"{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div ng-show="group" class="header_title text-right">
+			<h1>Group Submissions</h1>
+			<h4 ng-hide="submission_list == null || (total == 0 && !filtered)" class="text-muted">:: {{group}} - {{total}} total submission<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4>
+		</div>
+		<div ng-show="uname" class="header_title text-right">
+			<h1>User Submissions</h1>
+			<h4 ng-hide="submission_list == null || (total == 0 && !filtered)" class="text-muted">:: {{uname}} - {{total}} total submission<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4>
+		</div>
+		
+		<div ng-hide="submission_list == null || (!filtered && submission_list.length == 0)">
+			<div ng-controller="pagerCtrl" ng-init="pager_page='submission'" pager></div>
+		</div>
+		<section class="table-responsive" ng-hide="submission_list == null || (!filtered && submission_list.length == 0)">
+			<table class="table table-hover table-striped table-clickthrough">
+				<thead>
+					<tr class="active">
+						<th nowrap>Start Time</th><th>Score</th><th>Description</th><th>User</th><th nowrap># Files</th><th ng-if="user.c12n_enforcing">Classification</th><th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="submission in submission_list | orderBy:'times.submitted':true">
+						<td nowrap><a href="/submission_detail.html?sid={{submission.submission.sid}}">{{submission.times.submitted | date:'yyyy-MM-dd HH:mm:ss'}}</a></td>
+						<td class="{{submission.submission.max_score | score_color}}"><a href="/submission_detail.html?sid={{submission.submission.sid}}"><strong>{{submission.submission.max_score}}</strong></a></td>
+						<td width="100%"><a href="/submission_detail.html?sid={{submission.submission.sid}}">{{submission.submission.description | maxLength:140 | breakableStr}}</a></td>
+						<td nowrap><a href="/submission_detail.html?sid={{submission.submission.sid}}">{{submission.submission.submitter}}</a></td>
+						<td><a href="/submission_detail.html?sid={{submission.submission.sid}}">{{submission.file_count}}</a></td>
+						<td ng-if="user.c12n_enforcing"><a href="/submission_detail.html?sid={{submission.submission.sid}}"><label class="label classification {{submission.classification | class_label_color}}">{{submission.classification | class_sm }}</label></a></td>
+						<td nowrap>
+							<a href="/submission_detail.html?sid={{submission.submission.sid}}">
+								<span ng-show="submission.state=='completed'&&submission.error_count==0" class="glyphicon glyphicon-ok text-success"></span>
+								<span ng-show="submission.state=='completed'&&submission.error_count>0" class="glyphicon glyphicon-remove text-danger"></span>
+								<span ng-show="submission.state=='completed'&&submission.error_count===undefined" class="text-muted"><strong>?</strong></span>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+		<div ng-show="submission_list != null && submission_list.length == 0 && searchText == '' && !loading_extra" >
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					No submissions for <span ng-show="group">group {{group}}</span><span ng-show="uname">user {{uname}}</span>.
+				</h2>
+			</div>
+		</div>
+		
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="submission_list != null"{% endblock %}

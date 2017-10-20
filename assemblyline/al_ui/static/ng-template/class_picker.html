@@ -1,0 +1,42 @@
+<div id="classification_picker" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="class_picker_label" aria-hidden="true">
+	<div class="modal-dialog modal-resize">
+		<div class="modal-content">
+			<div class="modal-header" style="padding-bottom: 5px">
+				<div class="label text-large classification {{_temp_classification | class_label_color}}">{{_temp_classification | class_long}}</div>
+				<div class="text-right">
+					<a class="btn btn-link" href="/classification_help.html" target="_blank"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>Classification&nbsp;help</a>
+				</div>
+
+			</div>
+			<div class="modal-body">
+				<div class="row text-center">
+                    <div class="col-sm-4">
+						<div class="list-group">
+                            <a ng-repeat="slvl in level_list()" id="#{{ slvl }}" class="clickable list-group-item" ng-class="{active: active_list.level[slvl], disabled: disabled_list.level[slvl]}" ng-click="toggle(slvl, 'level')">{{ classification_definition.levels_map_stl[slvl] }}</a>
+                        </div>
+					</div>
+					<div class="col-sm-4">
+						<div class="list-group">
+						    <a ng-repeat="(sreq, val) in classification_definition.access_req_map_stl" id="#{{ sreq }}" class="clickable list-group-item" ng-class="{active: active_list.req[sreq], disabled: disabled_list.req[sreq]}" ng-click="toggle(sreq, 'req')">{{ classification_definition.access_req_map_stl[sreq] }}</a>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="list-group">
+						    <a ng-repeat="(sgrp, val) in classification_definition.groups_map_stl" id="#{{ sgrp }}" class="clickable list-group-item" ng-class="{active: active_list.group[sgrp], disabled: disabled_list.group[sgrp]}" ng-click="toggle(sgrp, 'group')">{{ classification_definition.groups_map_stl[sgrp] }}</a>
+						</div>
+						
+						<div class="list-group">
+						    <a ng-repeat="(ssgrp, val) in classification_definition.subgroups_map_stl" id="#{{ ssgrp }}" class="clickable list-group-item" ng-class="{active: active_list.subgroup[ssgrp], disabled: disabled_list.subgroup[ssgrp]}" ng-click="toggle(ssgrp, 'subgroup')">{{ classification_definition.subgroups_map_stl[ssgrp] }}</a>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="receiveClassification(_temp_classification);">Use Selected Classification</button>
+			</div>
+			
+		</div>
+	</div>
+</div>

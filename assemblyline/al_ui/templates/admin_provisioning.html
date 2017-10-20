@@ -1,0 +1,213 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Cluster Provisioning{% endblock %}
+{% block css_import %}
+    <link rel="stylesheet" href="/static/css/bootstrap-slider.css"/>
+    <style type="text/css">
+        .gauge {
+            width: 300px;
+            height: 250px;
+            margin: 10px auto;
+        }
+
+        .chart-filled-cpu {
+            fill: #357ebd;
+        }
+
+        .chart-filled-ram {
+            fill: #31708f;
+        }
+
+        .chart-empty {
+            fill: #dedede;
+        }
+
+        .needle, .needle-center {
+            fill: #464A4F;
+        }
+
+        svg {
+            font: 10px sans-serif;
+        }
+    </style>
+{% endblock %}
+{% block js_import %}
+	<script src="/static/js/d3/d3.v3.min.js"></script>
+	<script src="/static/js/d3/d3_gauge.js"></script>
+	<script src="/static/js/bootstrap/bootstrap-slider.js"></script>
+	<script src="/static/js/admin_provisioning.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+    {%raw%}
+	<section id="appContent" class="container" ng-show="ready">
+        <div class="header_title text-right">
+			<h1>Cluster Provisioning</h1>
+			<h4 class="text-muted">:: {{host_list.length}} physical machines ::</h4>
+            <input type="button" class="btn btn-default btn-xs" ng-click="load_last_good()" value="Load last applied config"/>
+            <input type="button" class="btn btn-default btn-xs" ng-click="load_current()" value="Load running config"/>
+            <input type="button" class="btn btn-default btn-xs" ng-click="reset_sliders()" value="Reset sliders"/>
+		</div>
+        <div class="row">
+            <div class="col-md-4">
+                <h4 class="text-center" ng-class="{'text-danger': total_cpu_used>=total_cpu}">Cores<span ng-show="total_cpu != 0"> ({{(total_cpu_used/total_cpu)*100 | floatStr}}%)</span><span ng-show="total_cpu==0"> (100%)</span></h4>
+                <div class="gauge chart-gauge-cpu text-center" ng-class="{'text-danger': total_cpu_used>=total_cpu, 'text-muted': total_cpu_used<total_cpu}"><span>:: {{total_cpu_used | floatStr}} / {{total_cpu | floatStr}}</span> cores ::</div>
+                <h4 class="text-center" ng-class="{'text-danger': total_ram_used>=total_ram}">RAM<span ng-show="total_ram != 0"> ({{(total_ram_used/total_ram)*100 | floatStr}}%)</span><span ng-show="total_ram==0"> (100%)</span></h4>
+                <div class="gauge chart-gauge-ram text-center" ng-class="{'text-danger': total_ram_used>=total_ram, 'text-muted': total_ram_used<total_ram}">:: <span>{{total_ram_used | floatStr}} / {{total_ram | floatStr}}</span> MB  ::</div>
+            </div>
+            <div class="col-md-8">
+                <h4 class="text-center">Services Allocation</h4>
+                <div ng-repeat="(name, svc) in service_list" class="row">
+                    <div class="col-sm-1 hidden-xs"></div>
+                    <div class="col-sm-3 col-xs-4" style="padding-right: 0px;" ng-class="{'text-muted': !svc.enabled}">{{name}}:&nbsp;<span style="font-size: 90%;" class="clickable glyphicon glyphicon-cog" ng-class="{'text-extra-light': overrides[name]===undefined, 'text-info': overrides[name]!==undefined}" ng-click="add_special_req(name)"></span></div>
+                    <div class="col-sm-6 col-xs-6">
+                        <div ng-hide="overrides[name]!==undefined"><input id="svc_{{name}}" type="text" value="0" class="slider_item" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-orientation="horizontal" data-slider-tooltip="hide"/></div>
+                    </div>
+                    <div class="col-sm-2 col-xs-2">
+                        <input ng-hide="overrides[name]!==undefined" class="form-control input-xs" type="number" ng-change="set_slider_value('svc_{{name}}', resource_allocation['svc_'+name]);" min="0" ng-model="resource_allocation['svc_'+name]"/>
+                    </div>
+                </div>
+                <h4 class="text-center">Virtual Machines Allocation</h4>
+                <div ng-repeat="(name, vm) in vm_list" class="row">
+                    <div class="col-sm-1 hidden-xs"></div>
+                    <div class="col-sm-3 col-xs-4" ng-class="{'text-muted': !vm.enabled}">{{name}}:</div>
+                    <div class="col-sm-5 col-xs-5">
+                        <input id="vm_{{name}}" type="text" value="0" class="slider_item" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-orientation="horizontal" data-slider-tooltip="hide"/>
+                    </div>
+                    <div class="col-sm-3 col-xs-3">
+                        <div class="input-group">
+                            <input class="form-control input-xs" type="number" ng-change="set_slider_value('vm_{{name}}', resource_allocation['vm_'+name]);" min="0" ng-model="resource_allocation['vm_'+name]"/><span class="input-group-addon input-xs text-muted">{{count_vm_allocation('vm_'+name)}}</span>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-center">Flex Nodes Allocation</h4>
+                <div class="row">
+                    <div class="col-sm-1 hidden-xs"></div>
+                    <div class="col-sm-3 col-xs-4">Flex nodes:</div>
+                    <div class="col-sm-6 col-xs-6">
+                        <input id="flex" type="text" value="0" data-slider-step="1" data-slider-orientation="horizontal" data-slider-tooltip="hide"/>
+                    </div>
+                    <div class="col-sm-2 col-xs-2">
+                        <input id="input_flex" class="form-control input-xs" type="number" min="0" ng-change="set_slider_value('flex', flex_count);" ng-model="flex_count"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center" style="padding: 40px;">
+            <span class="btn btn-primary bigbutton" ng-click="test_plan();" ng-disabled="loading_extra">Test Provisioning Plan</span>
+        </div>
+
+        <!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="svc_overrides" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4>Service overrides for: {{current_svc}}</h4>
+					</div>
+					<div class="modal-body">
+                        <div class="row" style="padding: 2px 0px;" ng-repeat="(key, override) in current_overrides | orderBy:key ">
+                            <div class="col-md-2">
+                                <input type="number" step="1" min="1" max="100" class="form-control input-sm" ng-model="override.count" placeholder="count">
+                            </div>
+                            <div class="col-md-9">
+                                {{override.override}}
+                            </div>
+                            <div class="col-md-1 text-right">
+                                <span class="btn btn-sm btn-default btn-danger" ng-click="remove_temp_override(key);"><span class="glyphicon glyphicon-minus"></span></span>
+                            </div>
+                        </div>
+                        <div class="row pad">
+                            <div class="col-md-2">
+                                <input id="override_name" type="number" step="1" min="1" max="100" class="form-control input-sm" ng-model="temp_override_count" placeholder="Number of workers">
+                            </div>
+                            <div class="col-md-9">
+                                <input id="override_value" type="text" class="form-control input-sm" ng-model="temp_override_val" placeholder="JSON override">
+                            </div>
+                            <div class="col-md-1 text-right">
+                                <span class="btn btn-sm btn-default btn-success" ng-click="add_temp_override();"><span class="glyphicon glyphicon-plus"></span></span>
+                            </div>
+                        </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" ng-click="save_overrides();">Save Overrides</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+
+        <!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="plan_preview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="pull-right">
+                            <div class="text-muted">&nbsp;Legend:</div>
+                            <span class="label label-info label-tag" style="font-size: 85%">Services</span>
+                            <span class="label label-primary label-tag" style="font-size: 85%">Virtual Machines</span>
+                        </div>
+                        <h4 class="modal_title" id="myModalLabel">Current Plan Detail</h4>
+					</div>
+					<div class="modal-body">
+                        <div class="row">
+                            <div ng-repeat="host in host_list" class="pad col-sm-6">
+                                <div class="host_card" style="margin: 0px;">
+                                    <div class="pull-right text-muted small">{{host.mac}}</div>
+                                    <div class="title">{{host.hostname}}</div>
+                                    <div class="small text-muted">{{host.cores}} cores - {{host.memory}} MB</div>
+                                    <div class="row">
+                                        <div class="col-sm-4" style="padding-right: 0px;" ng-show="current_plan.flex_nodes.indexOf(host.mac) == -1">
+                                            <div>
+                                                <i class="text-icon icon-cpualt-processoralt"></i>&nbsp;
+                                                <span class="usage" style="width: 82px;">
+                                                    <svg ng-style="{ width: host.core_percent + '%' }" height="14">
+                                                        <linearGradient id="{{host.mac}}_gradient_cpu" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                            <stop offset="0%" stop-color="#5bc0de"></stop>
+                                                            <stop offset="100%" stop-color="#428bca"></stop>
+                                                        </linearGradient>
+                                                        <rect x="0" y="0" width="80" height="14" fill="url(#{{host.mac}}_gradient_cpu)"></rect>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <i class="text-icon icon-ram"></i>&nbsp;
+                                                <span class="usage" style="width: 82px;">
+                                                    <svg ng-style="{ width: host.ram_percent + '%' }" height="14">
+                                                        <linearGradient id="{{host.mac}}_gradient_cpu" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                            <stop offset="0%" stop-color="#5bc0de"></stop>
+                                                            <stop offset="100%" stop-color="#428bca"></stop>
+                                                        </linearGradient>
+                                                        <rect x="0" y="0" width="80" height="14" fill="url(#{{host.mac}}_gradient_cpu)"></rect>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8" ng-show="current_plan.flex_nodes.indexOf(host.mac) == -1">
+                                            <span class="label label-info label-tag" style="font-size: 85%" ng-repeat="(service, data) in current_plan.allocation_data.profiles['auto-'+host.hostname+'-'+host.mac]['services']">
+                                                {{data.workers}}x {{service}}
+                                            </span>
+                                            <span class="label label-primary label-tag" style="font-size: 85%" ng-repeat="(vm, data) in current_plan.allocation_data.profiles['auto-'+host.hostname+'-'+host.mac]['virtual_machines']">
+                                                {{data.num_instances}}x {{vm}}
+                                            </span>
+                                        </div>
+                                        <span ng-show="current_plan.flex_nodes.indexOf(host.mac) != -1">
+                                            <h1 class="text-center text-muted">FLEX</h1>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" ng-click="apply_plan();">Apply plan</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+    </section>
+    {%endraw%}
+{% endblock %}
+{% block loading_jumbo %}ng-hide="ready"{% endblock %}

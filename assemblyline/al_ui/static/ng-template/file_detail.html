@@ -1,0 +1,312 @@
+<div>
+	<div class="header_title text-right">
+		<h1>File Details</h1>
+		<h4 ng-show="current_file.name" class="text-muted">:: {{current_file.name | split}} ::</h4>
+		<p ng-show="current_file" style="font-size: 120%;">
+			<a href="/search.html?query=files:{{current_file.file_info.sha256}} OR results:{{current_file.file_info.sha256}}" class="btn btn-default btn-sm" title="Related submissions"><span class="glyphicon glyphicon-tasks"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Related Submissions</span></a>
+			<a href="/api/v3/file/download/{{current_file.file_info.sha256}}/?name={{current_file.name}}" class="btn btn-default btn-sm" title="Download file"><span class="glyphicon glyphicon-download-alt"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Download File</span></a>
+			<a href="file_viewer.html?srl={{current_file.file_info.sha256}}" class="btn btn-default btn-sm" title="File viewer"><span class="glyphicon glyphicon-info-sign"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">File Viewer</span></a>
+			<a class="btn btn-default btn-sm" title="Resubmit Dynamic" ng-click="resubmit_dynamic_async(current_file.file_info.sha256, sid, current_file.name)"><span class="glyphicon glyphicon-repeat"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Resubmit Dynamic</span></a>
+		</p>
+	</div>
+	<div ng-show="current_file">
+		<section class="header_title">
+			<div class="menuheader " data-toggle="collapse" data-target="#file_meta">
+				<span class="text-big">File identification</span>
+			</div>
+			<div id="file_meta" class="collapse in">
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>MD5</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.md5}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>SHA1</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.sha1}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>SHA256</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.sha256}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>ssdeep</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.ssdeep}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>Size</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.size}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>Type</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.tag}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>Mimetype</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.mime}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>Magic</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.magic}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>Entropy</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.entropy}}
+					</div>
+				</div>
+			</div>
+
+            <div class="raw_footer" ng-if="!options.hide_raw_results" data-toggle="collapse" data-target="#fileinfo_raw">
+                <div id="fileinfo_raw" class="collapse">
+                    <div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+                    <pre class="part" style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(current_file.file_info)}}</pre>
+                </div>
+            </div>
+		</section>
+		<section class="header_title">
+			<div class="menuheader " data-toggle="collapse" data-target="#sub_freq">
+				<span class="text-big">File Frequency</span>
+			</div>
+			<div id="sub_freq" class="collapse in">
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>First seen</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.seen_first | date:"yyyy-MM-dd HH:mm:ss"}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>Last seen</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.seen_last | date:"yyyy-MM-dd HH:mm:ss"}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5 col-sm-3 col-md-2"><strong>Count</strong></div>
+					<div class="col-xs-7 col-sm-9 col-md-10">
+						{{current_file.file_info.seen_count}}
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section class="header_title" ng-if="current_file.metadata">
+			<div class="menuheader " data-toggle="collapse" data-target="#sub_meta">
+				<span class="text-big">Submissions Summary</span>
+			</div>
+			<div id="sub_meta" class="collapse in">
+				<div ng-show="val.length>0" ng-repeat="(key, val) in current_file.metadata">
+                    <div class="row">
+                        <div class="col-xs-5 col-sm-3 col-md-2"><strong>{{key | titleCase}}</strong></div>
+                        <div class="col-xs-7 col-sm-9 col-md-10">
+                            <span class="label label-tag label-nolight" style="cursor: default;" ng-repeat="meta in val">{{meta.1}}x {{meta.0}}</span>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</section>
+
+		<section class="header_title" ng-if="current_file.parents">
+			<div class="menuheader " data-toggle="collapse" data-target="#sub_parents">
+				<span class="text-big">Possible parent files</span><span ng-show="current_file.parents.length == 10" class="text-muted">&nbsp;&nbsp;::&nbsp;&nbsp;Last 10</span>
+			</div>
+			<div id="sub_parents" class="collapse in">
+				<div ng-repeat="parent in current_file.parents">
+					<a href="file_detail.html?srl={{parent | getHashFromKey}}" class="compact_item"><span>{{parent | getHashFromKey}}</span><span class="text-muted">&nbsp;::&nbsp;</span><span class="text-muted text-tiny">[{{parent | getServiceFromKey}}]</span></a>
+				</div>
+			</div>
+		</section>
+		
+		<section class="header_title" ng-if="current_file.childrens">
+			<div class="menuheader " data-toggle="collapse" data-target="#sub_childrens">
+				<span class="text-big">Children files</span>
+			</div>
+			<div id="sub_childrens" class="collapse in">
+				<div ng-repeat="child in current_file.childrens">
+					<a href="file_detail.html?srl={{child.srl}}" class="compact_item"><span>{{child.name}}</span><span class="text-muted">&nbsp;::&nbsp;</span><span class="text-muted text-tiny">[{{child.srl}}]</span></a>
+				</div>
+			</div>
+		</section>
+		
+		<section class="header_title">
+			<div class="menuheader " data-toggle="collapse" data-target="#file_tags">
+				<span class="text-big">Generated Tags</span>
+				<span class="indent"><input type="button" class="btn btn-xs btn-default text-tiny" ng-click="clear_selection();$event.stopPropagation();" value="Clear selection"/></span>
+			</div>
+			<div id="file_tags" class="collapse in">
+				<div ng-if="current_file.tags.length != 0">
+					<div class="row" ng-repeat="tagType in tagTypeList(current_file.tags) | filter:filterTagType | orderBy:'type'">
+						<div class="col-xs-6 col-sm-4 col-md-3"><strong>{{tagType.type}}</strong></div>
+						<div class="col-xs-6 col-sm-8 col-md-9">
+							<span title="{{tag.context}}" id="{{tag.value}}" class="label label-tag" style="cursor: pointer;" ng-repeat="tag in current_file.tags | filter:{type: tagType.type} | orderBy:'value'" ng-class="{'label-context': !isHighlighted(tag.type, tag.value)&&hasContext(tag), 'label-nolight': !isHighlighted(tag.type, tag.value)&&!hasContext(tag), 'label-highlight': isHighlighted(tag.type, tag.value)}" ng-click="trigger_highlight(tag.type, tag.value);" >{{tag.value | breakableStr }}<a href='/search.html?query=result.tags.type:{{uri_encode(tag.type)}} AND result.tags.value:"{{uri_encode(tag.value)}}"' class="search_tag clickable_color glyphicon glyphicon-search" ng-click="$event.stopPropagation();"></a></span>
+						</div>
+					</div>
+				</div>
+				
+				<div ng-if="current_file.tags.length == 0">
+					<span class="text-muted">No tags generated</span>
+				</div>
+			</div>
+		</section>	
+		
+		<section class="header_title">
+			<div class="menuheader" data-toggle="collapse" data-target="#analysis">
+				<span class="text-big">Service Results</span>
+			</div>
+			<div id="analysis" class="collapse in">
+				<div ng-if="(current_file.results | filter:useless_results()).length == 0">
+					<span class="text-muted">No service results</span>
+				</div>
+				<div ng-if="(current_file.results | filter:useless_results()).length != 0">
+					<div ng-repeat="res in current_file.results | orderBy:sort_by_name | filter:useless_results()">
+						<section id="{{res.response.service_name}}" class="card">
+							<div class="header_title" data-toggle="collapse" data-target="#{{res.response.service_name}}_content" ng-class="{'highlight': hasHighlightedTags(tagTypeList(res.result.tags))}">
+								<div ng-if="current_file.alternates[res.response.service_name].length == 1" class="text-muted pull-right">
+									{{res.created | date:"yyyy-MM-dd HH:mm:ss"}}
+								</div>
+								<div ng-if="current_file.alternates[res.response.service_name].length > 1" class="dropdown pull-right">
+									<button class="btn btn-default btn-xs dropdown-toggle" type="button" id="#{{res.response.service_name}}_select" data-toggle="dropdown">
+										{{res.created | date:"yyyy-MM-dd HH:mm:ss"}}
+										<span class="caret"></span>
+									</button>	
+									<ul class="dropdown-menu" role="menu" aria-labelledby="#{{res.response.service_name}}_select">
+										<li class="small" ng-repeat="a in current_file.alternates[res.response.service_name]" ng-class="{disabled: a.created==res.created}"><a ng-click="select_alternate(a.response.service_name, a.created);$event.stopPropagation();">{{a.response.service_name}} :: {{a.response.service_version}} <span ng-show="a.response.service_context"> ({{a.response.service_context}}) </span>:: [{{a.result.score}}] @ {{a.created | date:"yyyy-MM-dd HH:mm:ss"}}</a></li>
+									</ul>
+								</div>
+								<strong><span ng-if="res.result.classification" class="{{res.result.classification | class_text_color }}" >({{res.result.classification | class_sm}})&nbsp;</span>{{res.response.service_name}}</strong>&nbsp;[<span class="{{res.result.score | score_color}}"><strong>{{res.result.score}}</strong></span>]&nbsp;<span class="text-muted">:: {{res.response.service_version}}<span ng-show="res.response.service_context"> ({{res.response.service_context}})</span></span>
+							</div>
+							<div id="{{res.response.service_name}}_content" class="content collapse" ng-class="{'in': res.result.score >= options.expand_min_score || res.response.service_name == switch_service }">
+								<div ng-if="res.result.sections.length == 0" >
+									<span class="center text-muted">No results generated by this service</span>	
+								</div>
+								<div ng-if="res.result.sections.length != 0" >
+									<div ng-include="'/static/ng-template/result_section.html'" ng-init="sections=res.result.sections;parent=res.response.service_name+'_'+$index;tags=tagTypeList(res.result.tags);"></div>
+								</div>
+								
+								<div class="row part" ng-show="res.result.tags">
+									<div class="col-xs-12 clickable" data-toggle="collapse" data-target="#{{res.response.service_name}}_tags"><h4>Generated tags</h4></div>
+									<div class="col-xs-12 collapse in" id="{{res.response.service_name}}_tags">
+										<div class="row" ng-repeat="tagType in tagTypeList(res.result.tags) | filter:filterTagType | orderBy:'type'">
+											<div class="col-xs-6 col-sm-4 col-md-3"><strong>{{tagType.type}}</strong></div>
+											<div class="col-xs-6 col-sm-8 col-md-9">
+												<span title="{{tag.context}}" id="{{tag.value}}" class="label label-tag" style="cursor: pointer;" ng-repeat="tag in res.result.tags | filter:{type: tagType.type} | orderBy:'value'" ng-class="{'label-context': !isHighlighted(tag.type, tag.value)&&hasContext(tag), 'label-nolight': !isHighlighted(tag.type, tag.value)&&!hasContext(tag), 'label-highlight': isHighlighted(tag.type, tag.value)}" ng-click="trigger_highlight(tag.type, tag.value);" >{{tag.value | breakableStr }}<a href='/search.html?query=result.tags.type:{{uri_encode(tag.type)}} AND result.tags.value:"{{uri_encode(tag.value)}}"' class="search_tag clickable_color glyphicon glyphicon-search" ng-click="$event.stopPropagation();"></a></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row part" ng-show="res.response.supplementary">
+									<div class="col-xs-12 clickable" data-toggle="collapse" data-target="#{{res.response.service_name}}_supplementary"><h4>Supplementary files</h4></div>
+									<div class="col-xs-12 collapse in" id="{{res.response.service_name}}_supplementary">
+										<div ng-repeat="file in res.response.supplementary">
+                                            <a title="Download file" href="/api/v3/file/download/{{file[1]}}/?name={{file[0]}}">{{file[0]}}</a><span class="text-muted text-tiny"> :: {{file[2]}}</span>
+                                            <a title="Open in file viewer" href="file_viewer.html?srl={{file[1]}}" class="text-muted text-tiny">&nbsp;&nbsp;[View file]</a>
+										</div>
+									</div>
+								</div>
+								<div class="row part" ng-show="res.response.extracted">
+									<div class="col-xs-12 clickable" data-toggle="collapse" data-target="#{{res.response.service_name}}_files"><h4>Extracted files</h4></div>
+									<div class="col-xs-12 collapse in" id="{{res.response.service_name}}_files">
+										<div ng-repeat="file in res.response.extracted" title="{{file[2]}}">
+											<a ng-if="!current_file.file_viewer_only" href="#/{{file[1]}}/{{file[0]}}" ng-click="view_file_details(file[1], file[0]);">{{file[0]}}</a>
+											<a ng-if="current_file.file_viewer_only" href="file_detail.html?srl={{file[1]}}">{{file[0]}}</a>
+                                            <span class="text-muted text-tiny"> :: {{file[2]}}</span>
+                                            <a title="Open in file viewer" href="file_viewer.html?srl={{file[1]}}" class="text-muted text-tiny">&nbsp;&nbsp;[View file]</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="footer" ng-if="!options.hide_raw_results" data-toggle="collapse" data-target="#{{res.response.service_name}}_raw">
+								<div id="{{res.response.service_name}}_raw" class="collapse">
+									<div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+									<pre class="part" style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(res)}}</pre>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section class="header_title">
+			<div class="menuheader" data-toggle="collapse" data-target="#nrs">
+				<span class="text-big">Empty Results</span>
+			</div>
+			<div id="nrs" class="collapse in">
+			
+				<div ng-if="(current_file.results | filter:good_results()).length == 0">
+					<span class="text-muted">No empty results</span>
+				</div>
+				<div ng-if="(current_file.results | filter:good_results()).length != 0">
+					<div ng-repeat="res in current_file.results | orderBy:sort_by_name | filter:good_results()">
+						<section id="{{res.response.service_name}}" class="card">
+							<div class="header_title" data-toggle="collapse" data-target="#{{res.response.service_name}}_content">
+								<div ng-if="current_file.alternates[res.response.service_name].length == 1" class="text-muted pull-right">
+									{{res.created | date:"yyyy-MM-dd HH:mm:ss"}}
+								</div>
+								<div ng-if="current_file.alternates[res.response.service_name].length > 1" class="dropdown pull-right">
+									<button class="btn btn-default btn-xs dropdown-toggle" type="button" id="#{{res.response.service_name}}_select" data-toggle="dropdown">
+										{{res.created | date:"yyyy-MM-dd HH:mm:ss"}}
+										<span class="caret"></span>
+									</button>	
+									<ul class="dropdown-menu" role="menu" aria-labelledby="#{{res.response.service_name}}_select">
+										<li class="small" ng-repeat="a in current_file.alternates[res.response.service_name]" ng-class="{disabled: a.created==res.created}"><a ng-click="select_alternate(a.response.service_name, a.created);$event.stopPropagation();">{{a.response.service_name}} :: {{a.response.service_version}} <span ng-show="a.response.service_context"> ({{a.response.service_context}}) </span>:: [{{a.result.score}}] @ {{a.created | date:"yyyy-MM-dd HH:mm:ss"}}</a></li>
+									</ul>
+								</div>
+								<strong><span ng-if="res.result.classification" class="{{res.result.classification | class_text_color }}" >({{res.result.classification | class_sm}})&nbsp;</span>{{res.response.service_name}}</strong>&nbsp;[<span class="{{res.result.score | score_color}}"><strong>{{res.result.score}}</strong></span>]&nbsp;<span class="text-muted">:: {{res.response.service_version}}<span ng-show="res.response.service_context"> ({{res.response.service_context}})</span></span>
+							</div>
+							<div id="{{res.response.service_name}}_content" class="content collapse" ng-class="{'in': res.result.score >= options.expand_min_score || res.response.service_name == switch_service }">
+								<div ng-if="res.result.sections.length == 0" >
+									<span class="center text-muted">The service had nothing to report on this file.</span>	
+								</div>
+							</div>
+							<div class="footer" ng-if="!options.hide_raw_results" data-toggle="collapse" data-target="#{{res.response.service_name}}_raw">
+								<div id="{{res.response.service_name}}_raw" class="collapse">
+									<div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+									<pre class="part" style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(res)}}</pre>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section class="header_title" ng-show="current_file.errors.length != 0">
+			<div class="menuheader" data-toggle="collapse" data-target="#errors">
+				<span class="text-big">Errors</span>
+			</div>
+			<div id="errors" class="collapse in">
+				<div ng-repeat="res in current_file.errors | orderBy:sort_by_name">
+					<section id="{{res.response.service_name}}" class="card_error">
+						<div class="header_title" data-toggle="collapse" data-target="#{{res.response.service_name}}_content"><strong>{{res.response.service_name}}</strong>&nbsp;[<strong>{{res.response.status}}</strong>]&nbsp;<span ng-if="res.response.service_version" class="text-muted">:: {{res.response.service_version}}</span></div>
+						<div id="{{res.response.service_name}}_content" class="collapse in">
+							<p class="content">{{res.response.message}}</p>
+						</div>
+						<div class="footer" ng-if="!options.hide_raw_results" data-toggle="collapse" data-target="#{{res.response.service_name}}_raw_error">
+							<div id="{{res.response.service_name}}_raw_error" class="collapse">
+								<div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+								<pre class="part" style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(res)}}</pre>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+	

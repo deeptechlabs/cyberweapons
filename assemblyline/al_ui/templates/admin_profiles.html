@@ -1,0 +1,198 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Service profiles{% endblock %}
+{% block js_import %}
+	<script src="/static/js/modal-ext.js"></script>
+	<script src="/static/js/admin_profiles.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Host Profile Management</h1>
+			<h4 ng-hide="profile_list == null || (total == 0 && !filtered)" class="text-muted">:: {{total}} Profile<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4>
+		</div>
+		<div ng-hide="profile_list == null || (total == 0 && !filtered)">
+			<div ng-controller="pagerCtrl" ng-init="pager_page='profile'" pager></div>
+		</div>
+		<section class="table-responsive" ng-hide="profile_list == null || (total == 0 && !filtered)">
+			<table class="table table-hover">
+				<thead>
+					<tr class="active">
+						<th>Profile Name</th>
+						<th># Services</th>
+						<th># Workers</th>
+						<th># Virtual Machines</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="viewProfile(s.name)" ng-repeat="s in profile_list" style="cursor: pointer;" ng-class="{info: s.vm_default && !s.used, success: s.used}">
+						<td>{{s.name}}</td>
+						<td ng-class="{'text-muted':s.num_service==0, strong:s.num_service>=10}">{{s.num_service}}</td>
+						<td ng-class="{'text-muted':s.num_worker==0, strong:s.num_worker>=10}">{{s.num_worker}}</td>
+						<td ng-class="{'text-muted':s.num_vm==0, strong:s.num_vm>=10}">{{s.num_vm}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+				
+		<div ng-show="profile_list != null && profile_list.length == 0 && searchText == '' && !loading_extra">
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are currently no profiles in the system.
+				</h2>
+                                <div style="margin-top: 20px">
+                                        <button class="btn btn-success" ng-click="pager_add();">Create a profile</button>
+                                </div>
+
+			</div>
+		</div>
+				
+		<!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div ng-show="!new_profile" class="pull-right" style="padding-top: 5px;">
+							<button type="button" class="btn btn-danger" ng-click="del();">Remove</button>
+						</div>
+						<h4 class="modal_title" id="myModalLabel"><span ng-show="new_profile">Add </span>Profile<span ng-show="!new_profile"> :: {{profile}}</span></h4>
+					</div>
+					<div class="modal-body">
+						<div ng-show="new_profile" class="row pad">
+							<div id="profile_name_group" class="col-md-12 form-group">
+								<label class="control-label">Profile Name</label>
+								<input id="profile_name" type="text" class="form-control input-sm" ng-model="profile" placeholder="Profile name">
+								<div id="error_ctrl" class="text-danger"><b>{{error_exist}}</b></div>
+							</div>
+						</div>
+						<div class="row pad">
+							<div class="col-md-12">
+								<label class="control-label">System Configuration Overrides</label>
+							</div>
+						</div>
+						<div class="row" style="padding: 2px 8px 2px 0px;" ng-repeat="(key, val) in current_profile.system_overrides | orderBy:key ">
+							<div class="col-md-2">
+									{{key}}:					
+							</div>
+							<div class="col-md-9">
+								<input type="text" class="form-control input-sm" ng-model="current_profile.system_overrides[key]" smart-input="{type: typeOf(current_profile.system_overrides[key]), update_ctrl: 'current_profile.system_overrides.'+key}">
+							</div>
+							<div class="col-md-1 text-right">
+								<span class="btn btn-sm btn-default btn-danger" ng-click="remove_meta(key);"><span class="glyphicon glyphicon-minus"></span></span>					
+							</div>
+						</div>
+						<div class="row pad" style="padding-right: 8px;">
+							<div id="new_glob_name" class="col-md-2">
+								<input id="glob_name" class="form-control input-sm" type="text" ng-model="conf_temp_key" placeholder="Variable name"/>
+							</div>
+							<div id="new_glob_type" class="col-md-2">
+								<select id="glob_type" class="form-control input-sm" ng-model="conf_temp_type">
+									<option>bool</option>
+									<option>int</option>
+									<option>list</option>
+									<option>str</option>
+									<option>unicode</option>
+								</select>
+							</div>
+							<div id="new_glob_default" class="col-md-7">
+								<input id="glob_default" class="form-control input-sm" type="text" ng-model="conf_temp_val" placeholder="Default variable value" smart-input="{type_var: 'conf_temp_type', update_ctrl: 'conf_temp_val'}"/>
+							</div>
+							<div class="col-md-1 text-right">
+								<span class="btn btn-sm btn-default btn-success" ng-click="add_meta();"><span class="glyphicon glyphicon-plus"></span></span>					
+							</div>
+						</div>
+						<div class="row pad">
+							<div class="col-md-12">
+								<label class="control-label">Services</label>
+							</div>
+						</div>
+						<div class="table-responsive row">
+							<div class="col-md-12">
+								<table class="table table-hover" style="min-width: 500px;">
+									<thead>
+										<tr class="active">
+											<th>
+												Name
+											</th>
+											<th>
+												# of Workers
+											</th>
+											<th>
+												Service Variable Overrides
+											</th>
+											<th class="text-right" style="padding-top: 2px; padding-bottom: 2px;">
+												<a ng-show="notInComponents().length > 0" type="button" class="btn btn-default btn-sm btn-success" data-toggle="modal" href="#profile_component" ng-click="toggleAddComponent()"><span class="glyphicon glyphicon-plus"></span></a>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="(key, val) in current_profile.services | orderBy:key ">
+											<td>{{key}}</td>
+											<td>{{val.workers}}</td>
+											<td>{{val.service_overrides}}</td>
+											<td class="text-right" style="padding-top: 2px; padding-bottom: 2px;">
+												<a type="button" class="btn btn-default btn-sm" data-toggle="modal" href="#profile_component" ng-click="toggleEditComponent(key)"><span class="glyphicon glyphicon-edit"></span></a>
+												<button type="button" class="btn btn-default btn-sm btn-danger" ng-click="removeComponent(key)"><span class="glyphicon glyphicon-minus"></span></button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="row pad">
+							<div class="col-md-12">
+								<label class="control-label">Virtual Machines</label>
+							</div>
+						</div>
+						<div class="table-responsive row">
+							<div class="col-md-12">
+								<table class="table table-hover" style="min-width: 500px;">
+									<thead>
+										<tr class="active">
+											<th>
+												Name
+											</th>
+											<th>
+												# of Instances
+											</th>
+											<th>
+												Virtual Machine Variable Overrides
+											</th>
+											<th class="text-right" style="padding-top: 2px; padding-bottom: 2px;">
+												<a ng-show="notInVMs().length > 0" type="button" class="btn btn-default btn-sm btn-success" data-toggle="modal" href="#profile_vm" ng-click="toggleAddVM()"><span class="glyphicon glyphicon-plus"></span></a>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="(key, val) in current_profile.virtual_machines | orderBy:key ">
+											<td>{{key}}</td>
+											<td>{{val.num_instances}}</td>
+											<td>{{val.vm_overrides}}</td>
+											<td class="text-right" style="padding-top: 2px; padding-bottom: 2px;">
+												<a type="button" class="btn btn-default btn-sm" data-toggle="modal" href="#profile_vm" ng-click="toggleEditVM(key)"><span class="glyphicon glyphicon-edit"></span></a>
+												<button type="button" class="btn btn-default btn-sm btn-danger" ng-click="removeVM(key)"><span class="glyphicon glyphicon-minus"></span></button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button ng-if="!new_profile" type="button" class="btn btn-primary" ng-click="save()">Save changes</button>
+						<button ng-if="new_profile" type="button" class="btn btn-primary" ng-click="add()">Add profile</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+		
+		<div profile-service></div>
+		<div profile-vm></div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="profile_list != null"{% endblock %}

@@ -1,0 +1,78 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - API Documentation{% endblock %}
+{% block js_import %}
+	<script src="/static/js/api_doc.js"></script>
+{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent"  class="container">
+		<div class="header_title text-right">
+			<h1>API Documentation</h1>
+			<div class="row">
+				<div class="col-sm-9 col-md-10"></div>
+				<div class="col-sm-3 col-md-2">
+					<select id="api" class="input-sm-compact form-control" ng-model="selected_api">
+						<option ng-repeat="version in api_versions | sortList" value="{{version}}">API {{version}}</option>
+					</select>
+				</div>
+				
+			</div>
+		</div>
+		<div ng-repeat="(group, doc) in api_groups" class="col-sm-12">
+			<div class="api-header row" data-toggle="collapse" data-target="#{{group}}">
+				<div class="col-sm-6"><span class="api-header-pre">/api/{{selected_api}}/&nbsp;</span>{{group}}</div><div class="col-sm-6 api-sub-header">{{doc}}</div>
+			</div>
+			<div class="collapse row indent" id="{{group}}">
+				<div class="api-data col-sm-12" id="section_{{function.id}}" ng-repeat="function in APIMatching(group) | orderBy:'name'" ng-class="{'alert-danger': !function.complete}">
+					<div data-toggle="collapse" data-target="#{{function.id}}" class="header_title row">
+						<div class="col-sm-9"><span class="label" ng-repeat="method in function.methods" ng-class="{'label-primary': method=='GET', 'label-success': method=='POST', 'label-warning': method=='PUT', 'label-danger': method=='DELETE'}">{{ method }}</span>&nbsp;{{function.path}}</div><div class="col-sm-3 text-right"><span class="sub_title">{{function.name}}</span></div>
+					</div>
+					<div id="{{function.id}}" class="collapse col-sm-12 data">
+						<div class="row" ng-show="function.ui_only||function.protected||function.require_admin">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Requirements:</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								<span class="label label-warning label-tag" ng-show="function.ui_only">Reserved for UI</span>
+								<span class="label label-info label-tag" ng-show="function.protected">Require Login</span>
+								<span class="label label-danger label-tag" ng-show="function.require_admin">Administrators Only</span>
+							</div>
+						</div>
+                        <div class="row" ng-show="function.required_priv">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>APIKey Requirements:</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								<span class="label label-danger label-tag" ng-show="function.required_priv.indexOf('E') != -1">Unavailable</span>
+								<span class="label label-success label-tag" ng-show="function.required_priv.indexOf('R') != -1">Read</span>
+								<span class="label label-warning label-tag" ng-show="function.required_priv.indexOf('W') != -1">Write</span>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Absolute path:</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{ function.path }}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Allowed&nbsp;Methods:</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{ function.methods | joinBy:' | '}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Internal Function:</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{function.function}}
+							</div>
+						</div>
+						<div ng-show="function.description">
+							<div><strong>Description:</strong></div>
+							<div><pre style="padding-left: 20px;">{{function.description}}</pre></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}		
+{% block loading_jumbo %}ng-hide="api_functions"{% endblock %}		

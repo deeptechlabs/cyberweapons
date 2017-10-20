@@ -1,0 +1,9 @@
+#!/bin/sh
+
+curl -s http://localhost:9200/_cat/indices |
+grep `date --date='__DAYS__ days ago' +%Y.%m.%d` |
+awk '{print $3}' |
+grep -E '^(__PATTERNS__)-' |
+while read idx; do
+    curl -XDELETE "http://localhost:9200/${idx}/"
+done

@@ -1,0 +1,1 @@
+from al_services.alsvc_frankenstrings.frankenstrings import FrankenStrings

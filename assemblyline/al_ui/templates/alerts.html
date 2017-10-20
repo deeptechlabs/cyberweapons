@@ -1,0 +1,315 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Alerts{% endblock %}
+{% block css_import %}
+    <link rel="stylesheet" href="/static/css/select.min.css"/>
+    <link rel="stylesheet" href="/static/css/selectize.bootstrap3.css"/>
+{% endblock %}
+{% block js_import %}
+	<script src="/static/js/infinite-scroll/ng-infinite-scroll.min.js"></script>
+	<script src="/static/js/angular/ui-bootstrap-custom.js"></script>
+	<script src="/static/js/alerts.js"></script>
+    <script src="/static/js/angular/angular-sanitize.min.js"></script>
+    <script src="/static/js/ui-select/select.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};filter='{{search_text}}';time_slice='{{time_slice}}';group_by='{{group_by}}';filtering_group_by={{filtering_group_fields}};non_filtering_group_by={{non_filtering_group_fields}};{% if start_time %}start_time='{{start_time}}';{% endif %}filter_queries={{filter_queries}};view_type='{{view_type}}';start();"{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>{{ app_name }} Alerts</h1>
+	{%raw%}
+    		<h4 class="text-muted">:: {{total}}<span ng-show="total_instances">/{{total_instances}}</span> alert<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4>
+            <div class="row" ng-show="view_type!='list'">
+				<div class="col-sm-6 col-md-8"></div>
+				<div class="col-sm-3 col-md-2">
+                    <label>Time constraint</label>
+                    <select class="form-control" ng-model="time_slice" ng-click="filterData(filter)" ng-options="option.value as option.name for option in time_slice_array"></select>
+            	</div>
+                <div class="col-sm-3 col-md-2">
+                    <label>Group By</label>
+                    <select class="form-control" ng-model="group_by" ng-click="filterData(filter)" ng-options="grp for grp in possible_group_by"></select>
+            	</div>
+			</div>
+		</div>
+
+        <div class="pad">
+            <div ng-if="filter_queries.length > 0">
+                <b>Post filters :</b> <span class="text-muted">{{filter_queries | split}}</span>
+            </div>
+            <div ng-if="view_type == 'list' && start_time && time_slice">
+                <b>Time restiction :</b> <span class="text-muted"> reporting_ts:[{{ start_time }}-{{ time_slice }} TO {{ start_time }}]</span>
+            </div>
+            <div ng-if="(view_type=='list'&&time_slice)||(view_type=='list'&&start_time)||filter_queries.length>1||(view_type=='grouped'&&filter_queries.length>0)"><a href="" ng-click="clear_forced_filter()" class="btn btn-default btn-xs">Clear extra filters</a></div>
+        </div>
+
+        <div class="modal fade" id="statsModal" tabindex="-1" role="dialog" aria-labelledby="statsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-resize">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal_title" id="statsModalLabel">Alert statistics</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div ng-show="val.length>0" ng-repeat="(key, val) in statistics">
+                            <div class="row hint_row">
+                                <div class="col-xs-4 col-sm-3 col-md-2"><strong style="font-size: 110%;">{{key | titleCase}}</strong></div>
+                                <div id='{{key}}' class="col-xs-8 col-sm-9 col-md-10 expandable-tags">
+                                    <div id='{{key}}_expand' class="clickable pull-right" ng-click="expand(key);">&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></div>
+                                    <a href="/alerts.html?filter={{filter}}&time_slice={{time_slice}}&fq={{key}}:&quot;{{meta.0 | quote}}&quot;{{forced_filter}}" class="label label-tag label-nolight" style="font-size: 85%;" ng-repeat="meta in val">{{meta.1}}x {{meta.0}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="related_ids_mdl" tabindex="-1" role="dialog" aria-labelledby="related_id_label" aria-hidden="true">
+            <div class="modal-dialog modal-resize">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="pull-right text-muted text-big">{{ related_ids.length }} alert<span ng-show="related_ids.length>1">s</span></h3>
+                        <h3 class="modal_title" id="related_id_label">Listing of all related Alert IDs</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="pad">All IDs listed bellow match the following parameters:</div>
+                        <div ng-if="last_params.q"><b>Query:</b> {{ last_params.q }}</div>
+                        <div ng-if="last_params.fq"><b>Post filters:</b> {{ last_params.fq | split }}</div>
+                        <div ng-if="last_params.start&&last_params.tc"><b>Time restriction:</b> reporting_ts:[{{ last_params.start }}-{{ last_params.tc }} TO {{ last_params.start }}]</div>
+                        <hr/>
+                        <div class="form-group">
+                            <label for="alert_ids_ta">Alert IDs:</label>
+                            <textarea class="form-control" rows="10" id="alert_ids_ta">{{ related_ids | joinBy:", " }}</textarea>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="worflow_action" tabindex="-1" role="dialog" aria-labelledby="worflow_action_lbl" aria-hidden="true">
+            <div class="modal-dialog modal-resize">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal_title" id="worflow_action_lbl">Workflow action</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4 ng-if="current_alert&&!current_alert.group_count">The workflow action will be applied to a single alert with the following alert ID: {{ current_alert.event_id }}</h4>
+                        <h4 ng-if="current_alert.group_count">
+                            The workflow action will be applied to <b>{{ current_alert.group_count }}</b> alert<span ng-show="current_alert.group_count>1">s</span>. This <span ng-show="current_alert.group_count>1">group of alerts</span><span ng-show="current_alert.group_count==1">single alert</span> is matching the following criterias:
+                        </h4>
+                        <h4 ng-if="!current_alert">The workflow action will be applied to all {{ total }} alerts in the current view matching to following filters:</h4>
+                        <div ng-if="!current_alert || current_alert.group_count" class="pad">
+                            <div ng-if="current_alert&&group_by"><b>Grouping focus:</b> {{ group_by }}:{{ current_alert[group_by] }}</div>
+                            <div ng-if="filter_queries.length > 0"><b>Post filters:</b> {{ filter_queries | split }}</div>
+                            <div ng-if="filter"><b>Current query:</b> {{ filter }}</div>
+                            <div ng-if="time_slice&&start_time"><b>Time restriction:</b> reporting_ts:[{{ start_time }}-{{ time_slice }} TO {{ start_time }}]</div>
+                        </div>
+                        <hr/>
+                        <h4>Change the following workflow attributes:</h4>
+                        <div style="padding-top: 20px;" class="form-group form-inline">
+                            <label class="control-label">Labels</label><br/>
+                            <ui-select tagging multiple tagging-tokens='ENTER|TAB|SPACE|,' autofocus="true" ng-model="user_input.label" theme="bootstrap" class="form-control input" style="width: 100%">
+                                <ui-select-match>{{ $item }}</ui-select-match>
+                                <ui-select-choices repeat="label in label_suggestions | filter:$select.search">{{ label }}</ui-select-choices>
+                            </ui-select>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Priority</label>
+                            <select class="form-control input" ng-model="user_input.priority">
+                                <option></option>
+                                <option>LOW</option>
+                                <option>MEDIUM</option>
+                                <option>HIGH</option>
+                                <option>CRITICAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Status</label>
+                            <select class="form-control input" ng-model="user_input.status">
+                                <option></option>
+                                <option>MALICIOUS</option>
+                                <option>NON-MALICIOUS</option>
+                                <option>ASSESS</option>
+                            </select>
+                        </div>
+                        <div class="text-danger text-center text-large">{{ last_error }}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button id="default_btn" type="button" class="btn btn-primary" ng-click="workflow_action(user_input);" ng-disabled="user_input.label.length==0&&!user_input.priority&&!user_input.status">Apply action</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-controller="SearchController" ng-init="page='alert';bucket='alert';query=filter;load_favorites=view_type!='list';load_global_favorites=view_type!='list'">
+            <div ng-controller="classificationCtrl" classification-picker></div>
+            <div ng-if="view_type!='list'" id="appMenu" ng-class="{menushow:showmenu,menuslide:!showmenu,clickable:!showmenu}" ng-click="forceOpenMenu()">
+                <div class="menu-data" style="overflow-x: hidden">
+                    <section id="section_global_filters">
+                        <div id="workflow_filters" style="margin-bottom: 12px">
+                            <a style="font-weight: 400" class="clickable text-muted text-large" href="workflows.html">Manage workflow filters&nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span></a>
+                        </div>
+
+                        <div class="menuheader" data-toggle="collapse" data-target="#statuses">
+                            <span class="text-big">Status</span>
+                        </div>
+                        <div id="statuses" class="collapse in">
+                            <div ng-hide="current_statuses.length"><i>No statuses matching this query</i></div>
+                            <a href="/alerts.html?filter={{filter}}&time_slice={{time_slice}}&fq=status:&quot;{{status.0 | quote}}&quot;{{forced_filter}}" class="label label-tag label-nolight" style="font-size: 85%;" ng-repeat="status in current_statuses">{{status.1}}x {{status.0}}</a>
+                        </div>
+
+                        <div class="menuheader" data-toggle="collapse" data-target="#priorities">
+                            <span class="text-big">Priority</span>
+                        </div>
+                        <div id="statuses" class="collapse in">
+                            <div ng-hide="current_priorities.length"><i>No priorities matching this query</i></div>
+                            <a href="/alerts.html?filter={{filter}}&time_slice={{time_slice}}&fq=priority:&quot;{{priority.0 | quote}}&quot;{{forced_filter}}" class="label label-tag label-nolight" style="font-size: 85%;" ng-repeat="priority in current_priorities">{{priority.1}}x {{priority.0}}</a>
+                        </div>
+
+                        <div class="menuheader" data-toggle="collapse" data-target="#labels">
+                            <span class="text-big">Labels</span>
+                        </div>
+                        <div id="labels" class="collapse in">
+                            <div ng-hide="current_labels.length"><i>No labels matching this query</i></div>
+                            <a href="/alerts.html?filter={{filter}}&time_slice={{time_slice}}&fq=label:&quot;{{label.0 | quote}}&quot;{{forced_filter}}" class="label label-tag label-nolight" style="font-size: 85%;" ng-repeat="label in current_labels">{{label.1}}x {{label.0}}</a>
+                        </div>
+
+                        <div class="menuheader" data-toggle="collapse" data-target="#global_filters">
+                            <span class="text-big">Global filters</span>
+                        </div>
+                        <div id="global_filters" class="collapse in">
+                            <div ng-hide="global_filters.length"><i>No global filters</i></div>
+                            <div ng-repeat="glob_f in global_filters" class="checkbox">
+                                <div class="row">
+                                    <div class="col-xs-10">
+                                        <label class="clickable" title="{{glob_f.query}}" ng-class="{checked:global_toggled[$index]}">
+                                            <input type="checkbox" ng-model="global_toggled[$index]" ng-click="toggleFQ($index, false)"> {{glob_f.name}} by {{glob_f.created_by}}
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-2 clickable" ng_show="isOwner(glob_f.created_by)" ng-click="removeFromFavorites(glob_f.name, 'global')"><span class="glyphicon glyphicon-trash"></span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="menuheader" data-toggle="collapse" data-target="#personal_filters">
+                            <span class="text-big">Personal filters</span>
+                        </div>
+                        <div id="personal_filters" class="collapse in">
+                            <div ng-hide="favorites.length"><i>No personal filters</i></div>
+                            <div ng-repeat="fav in favorites" class="checkbox">
+                                <div class="row">
+                                    <div class="col-xs-10">
+                                        <label class="clickable" title="{{query}}" ng-class="{checked:favorites_toggled[$index]}">
+                                        <input type="checkbox" ng-model="favorites_toggled[$index]" ng-click="toggleFQ($index, true)"> {{fav.name}}
+                                    </label>
+                                    </div>
+                                    <div class="col-xs-2 clickable" ng-click="removeFromFavorites(fav.name, 'private')"><span class="glyphicon glyphicon-trash"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                   </section>
+                </div>
+                <div class="menu-anchor" ng-click="toggleMenu();$event.stopPropagation();"><i class="text-icon" ng-class="{'icon-fastleft':showmenu,'icon-fastright':!showmenu}"></i></div>
+            </div>
+            <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-resize">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="pull-right form-group">
+                                <label class="control-label">Favorite type</label>
+                                <select class="form-control input" ng-model="cur_favorite.type" ng-hide="edit_mode">
+                                    <option>private</option>
+                                    <option>global</option>
+                                </select>
+                                <input type="text" id="status" class="form-control" ng-model="cur_favorite.type" disabled ng-show="edit_mode">
+                            </div>
+                            <h3 class="modal_title" id="myModalLabel">Adding filter to favorites</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-danger text-center text-large">{{ last_error }}</div>
+                            <div class="pad" ng-hide="cur_favorite.type == 'private'">
+                                <div class="label classification {{cur_favorite.classification | class_label_color}}" data-toggle="modal" href="#classification_picker" ng-click="setClassification(cur_favorite.classification)">{{cur_favorite.classification | class_long}}</div>
+                            </div>
+                            <div id="modal-form" class="form-group">
+                                <label class="control-label">Query</label>
+                                <input autocomplete="off" type="text" id="name" class="form-control" ng-model="cur_favorite.query" typeahead="s for s in suggestions | filter:$viewValue | limitTo:20" typeahead-min-length='1' typeahead-on-select='onSelectPart($item, $model, $label)' ng-disabled="!edit_mode">
+                            </div>
+                            <div id="modal-form" class="form-group">
+                                <label class="control-label">Name</label>
+                                <input type="text" id="name" class="form-control" ng-model="cur_favorite.name" ng-disabled="edit_mode">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="default_btn" type="button" class="btn btn-primary" ng-click="addToFavorites();"><span ng-show="!edit_mode">Add to</span><span ng-show="edit_mode">Save to</span> favorites</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-bar" data-spy="affix" data-offset-top="150">
+                <form id="search-term" class="input-group" method="get" role="search" ng-submit="filterData(query)">
+                    <div class="inner-addon right-addon">
+                        <span ng-show="view_type!='list'&&query&&!inFavorites(query)" ng-click="promptAddFavorites(query)" class="text-muted glyphicon glyphicon-star-empty" title="Add to favorites"></span>
+                        <span ng-show="view_type!='list'&&inFavorites(query)" ng-click="removeFromFavorites(nameOfQuery(query), false)" class="text-info glyphicon glyphicon-star" title="Remove from favorites"></span>
+                        <input autocomplete="off" id="search-box" placeholder="Filter" name="query" type="text" class="form-control" ng-model="query" typeahead="s for s in suggestions | filter:$viewValue | limitTo:20" typeahead-min-length='1' typeahead-on-select='onSelectPart($item, $model, $label)' />
+                    </div>
+                    <span class="input-group-btn">
+                        <a href="/alerts.html?filter={{query}}&time_slice={{time_slice}}&view_type={{view_type}}&group_by={{group_by}}{{forced_filter}}" class="btn btn-primary" >Filter</a>
+                        <div ng-disabled="total == 0" class="btn btn-primary" ng-click="show_statistics()"><span class="glyphicon glyphicon-stats" title="Show alerts statistics"></span></div>
+                        <button ng-if="view_type!='list'" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="caret"></span>
+                        </button>
+                        <ul ng-if="view_type!='list'"  class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li ng-hide="favorites.length"><a><i>No favorites</i></a></li>
+                            <li ng-repeat="fav in favorites"><a href="/alerts.html?filter={{fav.query}}&time_slice={{time_slice}}&view_type={{view_type}}&group_by={{group_by}}{{forced_filter}}">{{fav.name}}</a></li>
+                        </ul>
+
+                    </span>
+
+                </form>
+                <div class="pull-right">
+                    <a class="btn btn-link" href="/search_help.html"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>Filter&nbsp;Syntax</a>
+                </div>
+                <div class="pad">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="{{ alert_idx }}_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Take action on all
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="all_dropdown">
+                            <li><a id="all_related_alerts" href="" ng-click="list_related_alerts();">Related IDs</a></li>
+                            <li><a id="all_ownership" href="" ng-click="take_ownership();">Take ownership</a></li>
+                            <li><a id="all_workflow" href="" ng-click="prompt_workflow_action();">Workflow action</a></li>
+                        </ul>
+                    </div>
+                    <span ng-show="filter_queries.length != 0" class="pad text-muted" title="{{filter_queries | split}}">&nbsp;<span class="glyphicon glyphicon-filter">&nbsp;</span></span>
+                    <span class="text-danger"><b>{{invalid_query}}</b></span>
+                </div>
+            </div>
+        </div>
+
+        <section ng-hide="alert_list == null || (!filtered && alert_list.length == 0)" infinite-scroll="getNextAlertPage()" infinite-scroll-disabled="(counted_total != 0 && counted_total >= total) || loading_extra" infinite-scroll-distance="1">
+			<div ng-repeat="alert in alert_list">
+				<div alert-card ng-init="alert_idx=$index;user=user"></div>
+			</div>
+		</section>
+		<div ng-show="alert_list != null && alert_list.length == 0 && !loading_extra" >
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are no alerts <span ng-show="!filtered">in the system</span><span ng-show="filtered">matching this filter</span>.
+				</h2>
+			</div>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="alert_list != null && !loading_extra"{% endblock %}

@@ -1,0 +1,76 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Configuration Settings{% endblock %}
+{% block js_import %}
+	<script src="/static/js/configuration.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Configuration Settings</h1>
+		</div>
+        <div ng-show="configuration != null && constants != null">
+            <div class="pad">
+                <h3>Tags</h3>
+                <p>Assemblyline pulls potentially interesting identifiers and assign them a type. Assemblyline calls these tags.</p>
+                <p>Below are the different tag types that you can find throughout the system:</p>
+                <div>
+                    <span ng-repeat="type in constants.tag_types" class="label label-tag label-nolight">{{ type }}</span>
+                </div>
+
+                <p style="padding-top: 20px">Tags can be assigned a context which defines how the information was extracted. </p>
+                <p>Below are the different contexts you'll find throughout the system:</p>
+                <div>
+                    <span ng-repeat="context in constants.tag_contexts" class="label label-tag label-nolight">{{ context }}</span>
+                </div>
+            </div>
+            <div class="pad">
+                <h3>Priorities</h3>
+                <p>Every submission in Assemblyline is assigned a priority. Submissions are processed in descending order of priority with higher priority submissions processed first. If two submissions have the same priority they are performed in the order they were received. The priority field is a number which allows for very fine-grained control over priorities.</p>
+                <p>For convenience, we define a number of preset priorities, these are listed below:</p>
+                <div class="row">
+                    <span class="col-md-2 col-sm-3 col-xs-6" ng-repeat="(p, n) in constants.priorities"><b>{{ p }}</b>:&nbsp;<span class="text-muted">{{ n }}</span></span>
+                </div>
+            </div>
+            <div class="pad">
+                <h3>File Types</h3>
+                <p>Assemblyline assigns all files a type by analysing the file's structure and uses that type to route the file to the appropriate service.</p>
+                <p>Some file types will be routed to specific services:</p>
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-lg-4" ng-repeat="ftype in constants.file_types" ng-if="ftype[1].length>0&&ftype[0]!='*'">
+                       <span class="strong">{{ ftype[0] }}</span><span class="text-muted"> :: {{ ftype[1] | joinBy:", "}}</span>
+                    </div>
+                </div>
+                <p style="padding-top: 20px">Other files types are identified but not routed to specific services:</p>
+                <div class="row">
+                    <span class="col-xs-6 col-sm-4 col-md-3" ng-repeat="ftype in constants.file_types" ng-if="ftype[1].length==0">
+                       <b>{{ftype[0]}}</b>
+                    </span>
+                </div>
+                <p style="padding-top: 20px">The following services process all file types:</p>
+                <div>
+                    <span class="strong">
+                       {{constants.file_types[0][1] | joinBy}}
+                    </span>
+                </div>
+
+            </div>
+            <div class="pad">
+                <h3>Configuration variables</h3>
+                <p>Every assemblyline instance has a unique configuration. Some configuration parameters are particularly useful to understand how the system works:</p>
+                <div class="row" ng-repeat="(k, v) in configuration">
+                    <div class="col-sm-5 col-md-4 col-lg-3 strong" style="padding-right: 0;">{{ k }}</div>
+                    <div class="col-sm-7 col-md-8 col-lg-9" >
+                        <div class="text-muted" ng-if="typeOf(v)!='object'">{{ v }}</div>
+                        <div class="text-muted" ng-if="typeOf(v)=='object'" ng-repeat="data in v"><b>{{data[0]}}</b> => {{data[1] | joinBy}}</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="configuration != null && constants != null"{% endblock %}

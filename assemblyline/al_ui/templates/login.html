@@ -1,0 +1,223 @@
+<html ng-app="app" class="ng-scope">
+<head>
+    <meta charset="utf-8">
+    <title>AssemblyLine - Login</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/css/whhg.css"/>
+    {% block fav_icon %}<link rel="shortcut icon" href="/static/images/favicon.ico"/>{% endblock %}
+    <script src="/static/js/jsencrypt/jsencrypt.min.js"></script>
+    <script src="/static/js/u2f/u2f-api.js"></script>
+    <script src="/static/js/jquery/jquery-2.1.0.min.js"></script>
+    <script src="/static/js/angular/angular.js"></script>
+    <script src="/static/js/login.js"></script>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            min-width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+        .btn {
+            font-weight: 700;
+            height: 36px;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+            cursor: default;
+        }
+
+        .banner-img {
+            height: auto;
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        /*
+         * Card component
+         */
+        @media (min-width: 400px){
+             html, body{
+                background-color: #f7f7f7;
+             }
+
+            .banner-img{
+                width: 250px;
+                margin: 0 auto 40px;
+            }
+
+            .card {
+                background-color: #FFF;
+                /* just in case there no content*/
+                padding: 20px 25px 30px;
+                margin: auto auto;
+                /* shadows and rounded borders */
+                -moz-border-radius: 2px;
+                -webkit-border-radius: 2px;
+                border-radius: 2px;
+                -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+                -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            .card-container.card {
+                max-width: 350px;
+                padding: 40px 40px;
+            }
+        }
+
+        .profile-img-card {
+            width: 150px;
+            margin: 0 auto 10px;
+            display: block;
+        }
+
+        /*
+         * Form styles
+         */
+        .profile-name-card {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0 0;
+            min-height: 1em;
+        }
+
+        .form-signin label{
+            display: block;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .form-signin #inputUser,
+        .form-signin #inputPassword,
+        .form-signin #inputOTP {
+            direction: ltr;
+            height: 44px;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .form-signin input[type=email],
+        .form-signin input[type=password],
+        .form-signin input[type=text],
+        .form-signin button {
+            width: 100%;
+            display: block;
+            margin-bottom: 10px;
+            z-index: 1;
+            position: relative;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .form-signin .form-control:focus {
+            border-color: rgb(66, 139, 202);
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(66, 139, 202);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(66, 139, 202);
+        }
+
+        .btn.btn-signin {
+            /*background-color: #4d90fe; */
+            background-color: rgb(66, 139, 202);
+            /* background-color: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
+            padding: 0;
+            font-weight: 700;
+            font-size: 14px;
+            height: 36px;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            border: none;
+            -o-transition: all 0.218s;
+            -moz-transition: all 0.218s;
+            -webkit-transition: all 0.218s;
+            transition: all 0.218s;
+            margin-top: 20px;
+
+        }
+
+        .btn.btn-signin:hover,
+        .btn.btn-signin:active,
+        .btn.btn-signin:focus {
+            background-color: rgb(50, 118, 177);
+        }
+
+        .container-fluid {
+            height: 100%;
+            display: table;
+            width: 100%;
+            padding: 0;
+        }
+
+        .row-fluid {
+            height: 100%;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .centering {
+            float: none;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body ng-controller="ALController" ng-init="username='{{username}}';alternate_login={{alternate_login}};public_key='{{public_key}}';next='{{next}}';start();">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="centering text-center">
+            <div class="container">
+                <div class="card card-container">
+                    {% block banner %}<img class="banner-img" src="/static/images/banner.svg">{% endblock %}
+                    <form class="form-signin" ng-submit="login()">
+                        {% if avatar %}
+                        <div ng-show="!u2f_request && !otp_request && !alternate_login" style="display: inline-block; text-align: center; width: 250px; height: 200px;">
+                            <img class="profile-img-card" id="avatar" src="{{ avatar }}"/>
+                            <div class="profile-name-card">
+                                <b>{{ username }}</b>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% raw %}
+                        <div ng-show="!u2f_request && !otp_request && alternate_login">
+                            <input ng-disabled="!alternate_login" ng-model="username" id="inputUser" class="form-control" placeholder="Username" required autofocus>
+                            <input ng-disabled="!alternate_login" ng-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                        </div>
+
+                        <div ng-show="!u2f_request && otp_request">
+                            <input ng-model="otp" id="inputOTP" class="form-control" placeholder="OTP Token" type="tel" maxlength="6" minlength="6">
+                        </div>
+
+                        <div ng-show="u2f_request && !otp_request">
+                            <div class="icon-lock" style="font-size: 700%;"></div>
+                            <p>Please touch the flashing U2F device now.</p>
+                            <p>Having trouble finding your security key? <a style="cursor: hand" ng-click="switch_to_otp()">Enter a verification code instead.</a></p>
+                        </div>
+
+                        <div class="text-danger"><b>{{error}}</b></div>
+                        <button ng-show="!u2f_request" ng-disabled="loading==true" class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
+                        <div ng-show="!u2f_request && !otp_request && !alternate_login" style="margin-top: 15px">
+                            <a style="cursor: hand;" ng-click="switch_to_userpass()">Or sign in as a different user...</a>
+                        </div>
+                        {% endraw %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

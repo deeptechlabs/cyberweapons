@@ -1,0 +1,27 @@
+{% for context in contexts %}
+auto {{ context.virt_bridge_name }}_dmy
+iface {{ context.virt_bridge_name }}_dmy inet manual
+    pre-up /sbin/ip link add {{ context.virt_bridge_name }}_dmy type dummy
+    up /sbin/ip link set {{ context.virt_bridge_name }}_dmy address {{ context.mac }}
+
+auto {{ context.virt_bridge_name }}
+iface {{ context.virt_bridge_name }} inet static
+    bridge_ports {{ context.virt_bridge_name }}_dmy
+    bridge_stp on
+    bridge_fd 2
+    address {{ context.virt_bridge_ip }}
+    netmask {{ context.virt_bridge_netmask }}
+{% if context.fake_ip_stub %}
+auto {{ context.virt_bridge_name }}:0
+iface {{ context.virt_bridge_name }}:0 inet static
+    address {{ context.fake_ip_stub }}
+    netmask {{ context.virt_bridge_netmask }}
+{% endif %}
+{% endfor %}
+{% for ins_meta in inetsim %}
+auto {{ ins_meta.iface_name }}
+iface {{ ins_meta.iface_name }} inet manual
+    pre-up /sbin/ip link add {{ ins_meta.iface_name }} type dummy
+    up /sbin/ip link set {{ ins_meta.iface_name }} address {{ ins_meta.mac }}
+    up /sbin/ip addr add {{ ins_meta.ip }}/24 dev {{ ins_meta.iface_name }}
+{% endfor %}

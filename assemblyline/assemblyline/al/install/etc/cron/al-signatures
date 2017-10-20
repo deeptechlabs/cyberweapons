@@ -1,0 +1,3 @@
+# Run once every day to keep our signature statistics up to date.
+0 3 * * * user /opt/al/pkg/assemblyline/al/run/invoke.sh python /opt/al/pkg/assemblyline/al/run/signature_statistics.py
+

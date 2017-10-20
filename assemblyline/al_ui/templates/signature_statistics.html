@@ -1,0 +1,129 @@
+{% extends base_template %}
+
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Signature Statistics{% endblock %}
+{% block js_import %}
+	<script src="/static/js/signature_statistics.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Signature Statistics</h1>
+			<h4 class="text-muted">:: {{total}} signature<span ng-show="total > 1">s where</span><span ng-show="total <= 1"> was</span> triggered<span ng-show="filtered"> (filtered)</span> ::</h4>
+            <h4 class="text-muted"><span ng-hide="timestamp == null"> Last update: {{timestamp}}</span></h4>
+		</div>
+		<div>
+			<div ng-controller="pagerCtrl" ng-init="pager_page='sig_stats'" pager></div>
+		</div>
+		<section class="table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr class="active" style="cursor: pointer;">
+						<th class="hover" ng-click="sort_stats('id')">ID
+                            <span ng-show="sort.column=='id' && sort.order" class="glyphicon glyphicon-sort-by-alphabet"></span>
+                            <span ng-show="sort.column=='id' && !sort.order" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+                        </th>
+                        <th class="hover" ng-click="sort_stats('name')">Name
+                            <span ng-show="sort.column=='name' && sort.order" class="glyphicon glyphicon-sort-by-alphabet"></span>
+                            <span ng-show="sort.column=='name' && !sort.order" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('count')">Count
+                            <span ng-show="sort.column=='count' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span>
+                            <span ng-show="sort.column=='count' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('min')">Min Score
+                            <span ng-show="sort.column=='min' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span>
+                            <span ng-show="sort.column=='min' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('avg')">Average Score
+                            <span ng-show="sort.column=='avg' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span>
+                            <span ng-show="sort.column=='avg' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-click="sort_stats('max')">Max Score
+                            <span ng-show="sort.column=='max' && sort.order" class="glyphicon glyphicon-sort-by-attributes"></span>
+                            <span ng-show="sort.column=='max' && !sort.order" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </th>
+                        <th ng-if="user.c12n_enforcing" ng-click="sort_stats('classification')">
+                            Classification
+                            <span ng-show="sort.column=='classification' && sort.order" class="glyphicon glyphicon-sort-by-alphabet"></span>
+                            <span ng-show="sort.column=='classification' && !sort.order" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+                        </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="viewSignature(s.id, s.rev)" ng-repeat="s in stats_output" style="cursor: pointer;">
+						<td>{{s.id}} r.{{s.rev}}</td>
+						<td>{{s.name | maxLength:45}}</td>
+						<td>{{s.count}}</td>
+						<td>{{s.min}}</td>
+                        <td>{{s.avg}}</td>
+                        <td>{{s.max}}</td>
+                        <td ng-if="user.c12n_enforcing">
+                            <label class="label classification  {{s.classification | class_label_color}}">
+                                {{s.classification | class_sm}}
+                            </label>
+                        </td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+        <div ng-show="stats_output.length == 0 && searchText == ''" >
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are no statistics in the system.
+				</h2>
+			</div>
+		</div>
+		<div ng-show="total == 0 && searchText != ''" >
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are no matching statistics found.
+				</h2>
+			</div>
+		</div>
+
+
+		<!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<section class="row">
+							<div class="col-md-9">
+								<h4 ng-if="editmode" class="modal_title" id="myModalLabel">Signature Details:: {{current_signature.meta.id}}r.{{current_signature.meta.rule_version}}</h4>
+							</div>
+                            <div ng-if="user.c12n_enforcing" class="col-md-3">
+                                <label class="control-label">
+                                    Classification
+                                </label>
+                                <label class="label classification  {{current_signature.meta.classification | class_label_color}}">
+                                    {{current_signature.meta.classification | class_sm}}
+                                </label>
+                            </div>
+						</section>
+					</div>
+									
+					<div class="modal-body">
+						<pre style="word-wrap: normal;">{{current_signature | signature}}</pre>
+                        <div ng-show="current_signature.depends.length > 0">
+                            <p>Depends on rules:</p>
+                            <ul>
+                                <li ng-repeat="dep in current_signature.depends">
+                                    <a href="/search.html?query=name:{{dep}}">{{dep}}</a>
+                                </li>
+                            </ul>
+                        </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="stats_output != null"{% endblock %}

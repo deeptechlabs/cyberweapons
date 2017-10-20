@@ -1,0 +1,465 @@
+{% extends base_template %}
+{% block title_page %}AL - Malware standard{% endblock %}
+{% block body_param %}data-target=".bs-docs-sidebar" data-scroll-offset="60" data-spy="scroll"{% endblock %}
+{% block content %}
+<section id="appContent" class="container">
+	<div class="header_title text-right">
+		<h1>Yara Signatures</h1>
+		<h4 class="text-muted">:: {% block sub_title %}MALWARE standard{% endblock %} ::</h4>
+	</div>
+
+	<div class="row">
+		<div class="col-md-10">
+			<div class="bs-docs-section" id="introduction">
+			{% block intro%}
+				<h2 class="anchor-offset">Introduction</h2>
+				<p>The MALWARE standard defines the sets of required and optional meta data fields
+				essential for rule sharing across multiple organisations.  It also provides a
+				styling guide for the construction and sharing of consistent of Yara rules.</p>
+				<p>The MALWARE standard reflects the requirements necessary for successful yara
+				rules sharing amongst each of the collaborating organisations.  This standard
+				should evolve and adapt to the shape and nature of the underlying business
+				demands as time progresses.</p>
+			{% endblock %}
+			</div>
+			<div class="bs-docs-section" id="versioning-and-revision">
+			{% block versioning %}
+				<h2 class="anchor-offset">Versioning and revision</h2>
+				<p>Passing a new revision of the <em>MALWARE standard</em> requires input and agreement
+				from each of the contributing organisations.</p>
+				<div class="bs-docs-section" id="version-management">
+					<h3 class="anchor-offset">Version management</h3>
+					<p>The version number indicates breaks down into [major].[minor].[release].</p>
+					<p>The major number indicates that there were changes applied to the standard
+					which break backwards compatibility with the previous standard.</p>
+					<p>The minor number indicates changes were made to the standard but still maintain
+					compatibility with the major revision number.</p>
+					<p>The release number is used for project releases.  This is where fixes and
+					enhancements have been applied to the project that do not change the standard in
+					any way.</p>
+				</div>
+				<div class="bs-docs-section" id="history">
+					<h3 class="anchor-offset">History</h3>
+					<ul>
+						<li>
+							<b>1.0.x - Initial draft.</b>
+						</li>
+					</ul>
+				</div>
+			{% endblock %}
+			</div>
+			<div class="bs-docs-section" id="sharing">
+				<h2 class="anchor-offset">Sharing</h2>
+				<p>The sharing of rules to anyone not defined by the organisations listed in the
+				required metadata field section <em>organisation</em> is prohibited without acquiring
+				official consent from that organisation’s <em>poc</em>.</p>
+			</div>
+			<div class="bs-docs-section" id="style-guide">
+				<h2 class="anchor-offset">Style guide</h2>
+				<p>The following outlines the coding conventions that should be applied when
+				defining a Yara rule.</p>
+				<p>The aim of this guide is to foster consistency across rule definitions in order
+				to build common look and feel across all rules.  As they are only guidelines,
+				they may be ignored if it is absolutely sensible and necessary to do so.</p>
+				<ul>
+					<li><p>Field names will be all lowercase.</p>
+					</li>
+					<li><p>The meta fields should begin with the <em>rule_group</em> definition.</p>
+					</li>
+					<li><p>Required fields should be in alphabetical order and grouped together after
+					the <em>rule_group</em> definition.</p>
+					</li>
+					<li><p>Optional fields should be in alphabetical order and grouped together after
+					the required fields.</p>
+					</li>
+					<li><p>By convention, comma separated values will be in the format ”, ” where it is
+					comma space instead of just a comma:</p>
+					<div>
+	<pre>Good: technique = "cryptography, xor"
+	Bad:  technique = "cryptography,xor"</pre>
+					</div>
+					<p>Whitespace at the start and end of each value will be stripped:</p>
+					<div><pre>technique = "xor , shellcode " will resolve to "xor" and "shellcode"</pre>
+					</div>
+					</li>
+				</ul>
+			</div>
+			<div class="bs-docs-section" id="required-metadata-fields">
+				<h2 class="anchor-offset">Required metadata fields</h2>
+				<p>This section outlines and defines each of the required metadata fields.</p>
+				<div class="bs-docs-section" id="rule-group-and-name-of-rule-group">
+					<h3 class="anchor-offset">rule_group and [name of rule_group]</h3>
+					<dl>
+						<dt>The <em>rule_group</em> field must be one of the following:</dt>
+						<dd>
+							<ul>
+								<li>implant</li>
+								<li>exploit</li>
+								<li>technique</li>
+								<li>info</li>
+								<li>tool</li>
+							</ul>
+						</dd>
+					</dl>
+					<p>Rules are to have only one <em>rule_group</em> definition.</p>
+					<p>The <em>[rule_group value]</em> field may have multiple comma separated values.
+					Spaces are allowed in these values and by convention should be used (i.e. there is no requirement to use underscores or other substitute characters in place of spaces in names or phrases).</p>
+					<p>Example of a <cite>technique</cite> rule:</p>
+					<div>
+<pre>meta:
+    rule_group = "technique"
+    technique = "cryptograph, xor"</pre>
+					</div>
+					<p>The remainder of this section will document the concepts and intent behind each
+					of the defined <em>rule_group</em> types.</p>
+					<div class="bs-docs-section" id="implant">
+						<h4 class="anchor-offset">implant</h4>
+						<p>Name of the implant.</p>
+						<p>Example values for <em>implant</em>:</p>
+						<ul>
+							<li>poison ivy</li>
+							<li>zeus</li>
+						</ul>
+						<p>Example of a <cite>implant</cite> rule:</p>
+						<div>
+<pre>meta:
+    rule_group = "implant"
+    implant = "poison ivy"</pre>
+						</div>
+					</div>
+					<div class="bs-docs-section" id="exploit">
+						<h4 class="anchor-offset">exploit</h4>
+						<p>Example values for <em>exploit</em>:</p>
+						<div>
+							<pre>exploit = "rtf, CVE-2010-3333"</pre>
+						</div>
+						<p>or</p>
+						<div>
+							<pre>exploit = "javascript"</pre>
+						</div>
+					</div>
+					<div class="bs-docs-section" id="info">
+						<h4 class="anchor-offset">info</h4>
+						<p>Signature that identifies an inherently benign functionality or information,
+						but is of interest to an analyst.</p>
+						<p>The follow are sets of examples to help describe specific information that has
+						been identified by a rule.</p>
+						<p>An example on how to capture information about an API:</p>
+						<div>
+							<pre>info = "api, socket"</pre>
+						</div>
+						<p>An example on how to capture information on a library:</p>
+						<div>
+							<pre>info = "library, openssl"</pre>
+						</div>
+						<p>An example on how to capture information regarding types of communications.
+						Note that implant labeled communications protocols should go under <em>implant</em>.</p>
+						<div>
+							<pre>info = "communications, http, https, ftp"</pre>
+						</div>
+						<p>An example of labeling different types of files</p>
+						<div>
+							<pre>info = "magic, pdf"</pre>
+						</div>
+					</div>
+					<div class="bs-docs-section" id="technique">
+						<h4 class="anchor-offset">technique</h4>
+						<p>Examples values for <em>technique</em>:</p>
+						<div><pre>technique = "keylogger"</pre></div>
+						<p>Other types of techniques may be cryptography, obfuscation, obfuscator,
+						deobfuscator, injector, downloader, etc...</p>
+					</div>
+					<div class="bs-docs-section" id="tool">
+						<h4 class="anchor-offset">tool</h4>
+						<p>Example values for <em>tool</em>:</p>
+						<div><pre>tool = "metasploit framework, meterpreter"</pre></div>
+					</div>
+				</div>
+				{% block extra_1%}
+				{% endblock %}
+				<div class="bs-docs-section" id="description">
+					<h3 class="anchor-offset">description</h3>
+					<p>Contains a single sentence description about what the rule hits on.  Maximum of
+					80 characters.</p>
+					<p>Example:</p>
+					<div><pre>description = "My blarg blobs foo bar"</pre></div>
+				</div>
+				<div class="bs-docs-section" id="id">
+					<h3 class="anchor-offset">id</h3>
+					<p>This field is a unique rule identifier to be used by organisations as a point
+					of reference.</p>
+					<p>The format of the <em>rule</em> must be as follows:</p>
+					<ul>
+						<li>Must begin with the organisation name from the organisation field.</li>
+						<li>Organisation must be uppercase.</li>
+						<li>Must end with a 6 digit value as determined by the originating organisation.</li>
+						<li>The organisation and numerical value are separated by a single underscore “_”.</li>
+					</ul>
+					<p>Example:</p>
+					<div><pre>id = "ORG_000459"</pre></div>
+				</div>
+				{% block organisation %}
+				<div class="bs-docs-section" id="organisation">
+					<h3 class="anchor-offset">organisation</h3>
+					<p>Organisation must be willing to contribute to the sharing of rules and setting
+					of rule standards.  Values must be uppercase.</p>
+				</div>
+				{% endblock %}
+				<div class="bs-docs-section" id="poc">
+					<h3 class="anchor-offset">poc</h3>
+					<p>This field denotes the main point of contact from the originating organisation
+					for the rule.</p>
+					<p>The format of the <em>poc</em> must be as follows:</p>
+					<ul>
+						<li>Must contain the UserID POC for this signature.</li>
+						<li>Must have the @ symbol followed by the organisation of the indivdual.</li>
+						<li>The organisation in this field must be lowercase.</li>
+						<li>Can have multiple, comma separated list of POCs.</li>
+					</ul>
+					<p>Example:</p>
+					<div><pre>poc = "bob@org, user@org"</pre></div>
+				</div>
+				<div class="bs-docs-section" id="rule-version">
+					<h3 class="anchor-offset">rule_version</h3>
+					<p>The <em>rule_version</em> is used to keep track of revisions of a given rule.</p>
+					<p>The format for <em>rule_version</em> must be as follows:</p>
+					<ul>
+						<li>Must belong to the natural number set.</li>
+						<li>Should start at the number “1”.</li>
+					</ul>
+					<p>If the rule is ever modified/edited, the rule_version should be incremented by
+					1.</p>
+					<div class="text-danger">
+						<p>
+							<b>Note:</b>
+							When a rule is modified, the modification date should also be changed
+							to reflect the change.
+						</p>
+					</div>
+				</div>
+				<div class="bs-docs-section" id="yara-version">
+					<h3 class="anchor-offset">yara_version</h3>
+					<p>The yara library version this rule was designed against.</p>
+					<p>Example:</p>
+					<div><pre>yara_version = "3.3"</pre></div>
+				</div>
+			</div>
+			<div class="bs-docs-section" id="optional-metadata-fields">
+				<h2 class="anchor-offset">Optional metadata fields</h2>
+				<div class="bs-docs-section" id="creation-date">
+					<h3 class="anchor-offset">creation_date</h3>
+					<p>Date the original rule was created. The format must be YYYY-MM-DD.</p>
+					<p>Example:</p>
+					<div><pre>creation_date = "2013-09-20" </pre></div>
+				</div>
+				<div class="bs-docs-section" id="exemplar-hash">
+					<h3 class="anchor-offset">exemplar_hash</h3>
+					<p>Hash of a binary representing an exemplar samples for the rule. The supported
+					hash formats are:</p>
+					<ul>
+						<li>MD5</li>
+						<li>SHA1</li>
+						<li>SHA256</li>
+					</ul>
+					<p>Example:</p>
+					<div><pre>exemplar_hash = "00000000000000000000000000000000" </pre></div>
+				</div>
+				<div class="bs-docs-section" id="modification-date">
+					<h3 class="anchor-offset">modification_date</h3>
+					<p>Date the rule was last modified. The format must be YYYY-MM-DD.</p>
+					<p>Example:</p>
+					<div><pre>modification_date = "2013-09-22" </pre></div>
+				</div>
+				<div class="bs-docs-section" id="origin">
+					<h3 class="anchor-offset">origin</h3>
+					<p>The where, who, or how this rule was acquired or created.  The format for this field is freeform text with a maximum of 80 characters.</p>
+					<p>Example 1:</p>
+					<div><pre>origin = "John Doe - ORGANISATION" </pre></div>
+					<p>Example 2:</p>
+					<div><pre>origin = "http://code.google.com/yarasigs" </pre></div>
+					<p>Example 3:</p>
+					<div><pre>origin = "COMPANY FOO, Inc. - Description about company" </pre></div>
+				</div>
+				{% block extra_2%}
+				{% endblock %}
+			</div>
+			<div class="bs-docs-section" id="al-specific">
+				<h2 class="anchor-offset">{{app_name}} specific fields</h2>
+				<div class="bs-docs-section" id="summary">
+					<h3 class="anchor-offset">summary</h3>
+					<p>This is a summary of the description that will generate a summary TAG to be referenced in the executive summary section of a submission.</p>
+					<p>Example:</p>
+					<div><pre>summary = "Obfuscated PDF" </pre></div>
+				</div>
+				<div class="bs-docs-section" id="al-score">
+					<h3 class="anchor-offset">al_score</h3>
+					<p>
+						This is a score override for {{app_name}} scoring. Usually,
+						implant, tool and exploit generate a score of 500 in {{app_name}}. Technique
+						a score of 100 and info a score of zero. If you are not satisfied with 
+						these score and you want to bump up the score of a given rule, you can
+						set the score override to a integer value that will replace the default
+						score.
+					</p>
+					<p>Example:</p>
+					<div><pre>al_score = "1000"</pre></div>
+				</div>
+				<div class="bs-docs-section" id="al-state-change-user">
+					<h3 class="anchor-offset">al_state_change_user (control)</h3>
+					<p>
+						This is a control field. You should not be able to edit it.
+						It contains the name of the last person who changed the al_status
+						field of the rule. This field is only modified by the API.
+					</p>
+					<p>Example:</p>
+					<div><pre>al_state_change_user = "user" </pre></div>
+				</div>
+				<div class="bs-docs-section" id="al-state-change-date">
+					<h3 class="anchor-offset">al_state_change_date</h3>
+					<p>
+						This is a control field. You should not be able to edit it.
+						It contains the date at which the al_status	field of the rule
+						was last modified. This field is only modified by the API.
+					</p>
+					<p>Example:</p>
+					<div><pre>al_state_change_date = "2014-07-23" </pre></div>
+				</div>
+				<div class="bs-docs-section" id="al-status">
+					<h3 class="anchor-offset">al_status</h3>
+					<p>This is the state of the rule in the system.</p>
+					<p>These are the different possible states:</p>
+					<ul>
+						<li>TESTING =&gt; Rule is being created</li>
+						<li>STAGING =&gt; Rule is being tested in staging environment</li>
+						<li>DEPLOYED =&gt; Rule is deployed in production</li>
+						<li>NOISY =&gt; Rule is deployed in production but marked as noisy</li>
+						<li>DISABLED =&gt; Rule was disabled</li>
+                        <li>INVALID =&gt; Rule hash been marked by the Yara service as invalid.
+                            See rule comments.</li>
+					</ul>
+					<p>Example:</p>
+					<div><pre>al_status = "DEPLOYED" </pre></div>
+				</div>
+				<div class="bs-docs-section" id="last-saved-by">
+					<h3 class="anchor-offset">last_saved_by</h3>
+					<p> This is a control field. You should not be able to edit it.
+						It contains the uid of the user who last modified the rule. 
+						This field is only modified by the API. </p>
+					<p>Example:</p>
+					<div><pre>last_saved_by = "user" </pre></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-2 hidden-sm hidden-xs">
+			<div data-spy="affix" data-offset-top="100" class="bs-docs-sidebar hidden-print" role="complementary">
+			    <ul class="nav bs-docs-sidenav">
+			        <li>
+			            <a href="#introduction">Introduction</a>
+			        </li>
+			        <li>
+			            <a href="#versioning-and-revision">Versioning and revision</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#version-management">Version management</a>
+			                </li>
+			                <li>
+			                    <a href="#history">History</a>
+			                </li>
+			            </ul>
+			        </li>
+			        <li>
+			            <a href="#sharing">Sharing</a>
+			        </li>
+			        <li>
+			        	<a href="#style-guide">Style guide</a>
+			        </li>    
+			        <li>
+			        	<a href="#required-metadata-fields">Required metadata fields</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#rule-group-and-name-of-rule-group">rule_group</a>
+			                    <ul class="nav">
+					                <li>
+					                    <a href="#implant">implant</a>
+					                </li>
+					                <li>
+					                    <a href="#exploit">exploit</a>
+					                </li>
+					                <li>
+					                    <a href="#info">info</a>
+					                </li>
+					                <li>
+					                    <a href="#technique">technique</a>
+					                </li>
+					                <li>
+					                    <a href="#tool">tool</a>
+					                </li>
+					            </ul>
+			                </li>
+			                <li>
+			                    <a href="#description">description</a>
+			                </li>
+			                <li>
+			                    <a href="#id">id</a>
+			                </li>
+			                <li>
+			                    <a href="#organisation">organisation</a>
+			                </li>
+			                <li>
+			                    <a href="#poc">poc</a>
+			                </li>
+			                <li>
+			                    <a href="#rule-version">rule_version</a>
+			                </li>
+			                <li>
+			                    <a href="#yara-version">yara_version</a>
+			                </li>
+			            </ul>
+			        </li>
+			        <li>
+			            <a href="#optional-metadata-fields">Optional metadata fields</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#creation-date">creation_date</a>
+			                </li>
+			                <li>
+			                    <a href="#exemplar-hash">exemplar_hash</a>
+			                </li>
+			                <li>
+			                    <a href="#modification-date">modification_date</a>
+			                </li>
+			                <li>
+			                    <a href="#origin">origin</a>
+			                </li>
+			            </ul>
+			        </li>
+			        <li>
+			            <a href="#al-specific">{{app_name}} specific fields</a>
+			            <ul class="nav">
+			                <li>
+			                    <a href="#summary">summary</a>
+			                </li>
+			                <li>
+			                    <a href="#al-score">al_score</a>
+			                </li>
+			                <li>
+			                    <a href="#al-state-change-user">al_state_change_user</a>
+			                </li>
+			                <li>
+			                    <a href="#al-state-change-date">al_state_change_date</a>
+			                </li>
+			                <li>
+			                    <a href="#al-status">al_status</a>
+			                </li>
+			                <li>
+			                    <a href="#last-saved-by">last_saved_by</a>
+			                </li>
+			            </ul>
+			        </li>
+			    </ul>
+			    <a class="back-to-top" href="#top">Back to top</a>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

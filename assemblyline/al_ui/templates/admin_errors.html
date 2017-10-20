@@ -1,0 +1,82 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Errors{% endblock %}
+{% block js_import %}
+    <script src="/static/js/admin_errors.js"></script>
+	<script src="/static/js/infinite-scroll/ng-infinite-scroll.min.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};filter='{{filter}}';searchText='{{filter}}';start();"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Errors Viewer</h1>
+			<h4 ng-hide="error_list == null || (total == 0 && !filtered)" class="text-muted">:: {{total}} total error<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4>
+		</div>
+		<div ng-controller="SearchController" ng-init="page='error';bucket='error';query=searchText">
+            <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-resize">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal_title" id="myModalLabel">Adding query to favorites</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div>What name do you want this query to have in your favorite list?</div>
+                            <div class="pad text-muted">{{searchText}}</div>
+                            <div id="modal-form" class="form-group">
+                                <input type="text" id="confirm" class="form-control" ng-model="user_input">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="default_btn" type="button" class="btn btn-primary" ng-click="addToFavorites(user_input, searchText);">Add to favorites</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-bar" data-spy="affix" data-offset-top="150">
+                <form id="search-term" class="input-group" method="get" role="search" ng-submit="filterData(query)">
+                    <div class="inner-addon right-addon">
+                        <span ng-show="view_type!='list'&&query&&!inFavorites(query)" ng-click="promptAddFavorites()" class="text-muted glyphicon glyphicon-star-empty" title="Add to favorites"></span>
+                        <span ng-show="view_type!='list'&&inFavorites(query)" ng-click="removeFromFavorites(nameOfQuery(query))" class="text-info glyphicon glyphicon-star" title="Remove from favorites"></span>
+                        <input autocomplete="off" id="search-box" placeholder="Filter" name="query" type="text" class="form-control" ng-model="query" typeahead="s for s in suggestions | filter:$viewValue | limitTo:20" typeahead-min-length='1' typeahead-on-select='onSelectPart($item, $model, $label)' />
+                    </div>
+                    <span class="input-group-btn">
+                        <a href="/admin/errors.html?filter={{query}}" class="btn btn-primary">Filter</a>
+                        <button ng-if="view_type!='list'" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="caret"></span>
+                        </button>
+                        <ul ng-if="view_type!='list'"  class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li ng-hide="getKeys(favorites).length"><a><i>No favorites</i></a></li>
+                            <li ng-repeat="(text, query) in favorites"><a href="/admin/errors.html?filter={{query}}">{{text}}</a></li>
+                        </ul>
+
+                    </span>
+
+                </form>
+                <div class="pull-right">
+                    <a class="btn btn-link" href="/search_help.html"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>Filter&nbsp;Syntax</a>
+                </div>
+                <div class="text-danger"><b>{{invalid_query}}</b></div>
+            </div>
+        </div>
+
+
+
+		<section ng-hide="error_list == null || (!filtered && error_list.length == 0)" infinite-scroll="getNextErrorPage()" infinite-scroll-disabled="error_list.length >= total">
+			<div ng-repeat="error in error_list">
+				<div error-card></div>
+			</div>
+		</section>
+		<div ng-show="error_list != null && error_list.length == 0 && searchText == '' && !loading_extra" >
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are no errors in the system.
+				</h2>
+			</div>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="error_list != null"{% endblock %}

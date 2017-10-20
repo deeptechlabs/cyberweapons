@@ -1,0 +1,10 @@
+<div ng-show="file_tree">
+	<div ng-repeat="file in file_tree | orderByObjectInt:'score':'name'">
+		<div ng-if="file.key != 'TBD' || obj_len(file.children) > 0 ">
+			<a href="#/{{file.key}}/{{file.name[0]}}" class="file_item" ng-class="{'bg-unselected': (file_highlight==null || (file_highlight.indexOf(file.key) == -1)), 'bg-selected': ((file_highlight.indexOf(file.key) != -1) && file_highlight)}"><span class="{{file.score | score_color}}"><strong>{{file.score}}</strong></span><span class="text-muted">&nbsp;::&nbsp;</span>{{file.name|split}}&nbsp;<span class="text-muted text-tiny">[{{file.key}}]</span></a>
+			<div class="indent">
+				<ng-include src="'/static/ng-template/file_item.html'" ng-init="file_tree=file.children;"></ng-include>
+			</div>
+		</div>
+	</div>
+</div>

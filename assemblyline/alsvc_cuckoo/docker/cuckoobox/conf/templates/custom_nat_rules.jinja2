@@ -1,0 +1,76 @@
+# This format is understood by iptables-restore. See `man iptables-restore`.
+
+*mangle
+:PREROUTING ACCEPT [0:0]
+{%- for ins in inetsim %}
+{%- for ctx in contexts %}
+-A PREROUTING -i {{ ctx.virt_bridge_name }} -d {{ eth_ip }} -p tcp -m tcp --sport 8000 -j RETURN
+-A PREROUTING -i {{ ctx.virt_bridge_name }} -d {{ eth_ip }} -p tcp -m tcp --dport 2042 -j RETURN
+{%-  if ctx.route_opt == "inetsim" %}
+-A PREROUTING ! -d {{ eth_ip }}/24  -m conntrack --ctorigsrc {{ ctx.vm_ip }} -j MARK --set-mark {{ ctx.mark }}
+{%- else %}
+-A PREROUTING ! -d {{ eth_ip }}/24  -m conntrack --ctorigsrc {{ ctx.vm_ip }} -j MARK --set-mark {{ ctx.mark }}
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+# DHCP packets sent to VMs have no checksum (due to a longstanding bug).
+{%- for ctx in contexts %}
+-A POSTROUTING -o {{ ctx.virt_bridge_name }} -p udp -m udp --dport 68 -j CHECKSUM --checksum-fill
+{%- endfor %}
+COMMIT
+
+*nat
+:PREROUTING ACCEPT [0:0]
+# Route to the inetsim appliance:
+{%- for ins in inetsim %}
+{%- for ctx in contexts %}
+{%-  if ctx.route_opt == "inetsim" %}
+-A PREROUTING -i {{ ctx.virt_bridge_name }} -d {{ eth_ip }} -p tcp -m tcp --sport 8000 -j RETURN
+-A PREROUTING -i {{ ctx.virt_bridge_name }} -d {{ eth_ip }} -p tcp -m tcp --dport 2042 -j RETURN
+-A PREROUTING -i {{ ctx.virt_bridge_name }} -j DNAT --to-destination {{ ins.ip }}
+{%- else %}
+-A PREROUTING -i {{ ctx.virt_bridge_name }} -d 8.8.8.8/32 -j DNAT --to-destination {{ dns_ip }}
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+:OUTPUT ACCEPT [0:0]
+{%- for ins in inetsim %}
+#-A OUTPUT -o {{ ins.iface_name }} -j DNAT --to-destination {{ ins.ip }}
+{%- endfor %}
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -o eth0 -j SNAT --to-source {{ eth_ip }}
+COMMIT
+
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+# Allow basic INPUT traffic.
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+-A INPUT -p tcp -m tcp --syn -m conntrack --ctstate NEW --dport 8090 -j ACCEPT
+-A INPUT -p tcp -m tcp --syn -m conntrack --ctstate NEW --dport 8000 -j ACCEPT
+-A INPUT -p tcp -m tcp --syn -m conntrack --ctstate NEW --dport 2042 -j ACCEPT
+{%- for ins in inetsim %}
+-A FORWARD -d {{ ins.ip }} -j ACCEPT
+-A FORWARD -s {{ ins.ip }} -j ACCEPT
+-A INPUT -d {{ ins.ip }} -j ACCEPT
+-A INPUT -s {{ ins.ip }} -j ACCEPT
+{%- endfor %}
+{%- for ctx in contexts %}
+-A FORWARD -i {{ ctx.virt_bridge_name }} -o {{ ctx.virt_bridge_name }} -j ACCEPT
+-A FORWARD -d {{ ctx.virt_route_addr }} -o {{ ctx.virt_bridge_name }} -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i {{ ctx.virt_bridge_name }} -j ACCEPT
+-A FORWARD -o {{ ctx.virt_bridge_name }} -j REJECT --reject-with icmp-port-unreachable
+{%- endfor %}
+# Reject everything else.
+#-A INPUT -m conntrack --ctstate INVALID -j DROP
+#-A INPUT -p tcp -m tcp -j REJECT --reject-with tcp-reset
+#-A INPUT -j REJECT
+COMMIT
+# nostrip

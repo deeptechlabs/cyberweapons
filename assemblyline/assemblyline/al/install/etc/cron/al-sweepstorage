@@ -1,0 +1,12 @@
+*/5 * * * *	root	find /tmp/ -name 'alerter.*' -amin +15 -type f -delete
+*/5 * * * *	root	find /tmp/ -name 'filestore.*' -amin +15 -type f -delete
+*/5 * * * *	root	find /tmp/ -name 'ip_map.*' -amin +15 -type f -delete
+*/5 * * * *	root	find /tmp/ -name 'submission.*' -amin +15 -type f -delete
+*/5 * * * *	root	find /tmp/ -name 'tmp[a-zA-Z0-9]*' -amin +15 -type d -exec rm -r "{}" \;
+*/5 * * * *	root	find /tmp/ -name 'tmp*' -amin +15 -type f -delete
+*/5 * * * *	root	find /tmp/ -name '*_tmp*' -amin +15 -delete
+*/5 * * * *	root	find /tmp/ -name '*_vm_meta' -amin +15 -delete 2> /dev/null
+*/5 * * * *	root	find /tmp/al/ -amin +15 -delete 2> /dev/null
+*/5 * * * *	root	find /run/shm/storage/ -amin +15 -type f -delete 2> /dev/null
+*/5 * * * *	root	find /tmp/al_ui/ -type f -amin +15 -delete 2> /dev/null
+*/5 * * * *	root	find /opt/al/var/cache/signatures -type f -atime +7 -delete 2> /dev/null

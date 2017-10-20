@@ -1,0 +1,116 @@
+{% extends base_template %}
+
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Classification Documentation {% endblock %}
+{% block js_import %}
+	<script src="/static/js/classification_help.js"></script>
+{% endblock %}
+{% block content %}
+	<section ng-show="classification_definition" id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Classification Help</h1>
+            <h4 class="text-muted">:: {{app_name}} Classification Engine Documentation ::</h4>
+		</div>
+
+		<h3>Submission based classification</h3>
+        <p>When you submit one or many files to {{ app_name }}, you are required to provide the classification of the
+            files you are submitting. This classification is for the submission itself and will be applied to all files
+            in the submission. If the files that you want to submit have a different classification, you should submit
+            them one by one and apply the proper classification to each submission.</p>
+        <p>If you realize that you've submitted a file with the wrong classification, you can always use the delete
+            button in the submission detail page to get rid of the submission.</p>
+
+        <h3>One file, multiple submissions</h3>
+        <p>If two submission contain the same file but those submissions have different classifications, the system
+        	will assign to lowest classification of the two submissions to the file.</p>
+        <p><strong>Example:</strong></p>
+        <div class="indent">
+            {% raw %}
+            <p>Lets assume the following:</p>
+            <ul>
+                <li><strong>Submission1</strong> is classified <strong class="{{ classification_definition.RESTRICTED | class_text_color }}">{{ classification_definition.RESTRICTED | class_long }}</strong></li>
+                <li><strong>Submission2</strong> is classified <strong class="{{ classification_definition.UNRESTRICTED | class_text_color }}">{{ classification_definition.UNRESTRICTED | class_long }}</strong></li>
+                <li><strong>File1</strong> is in all submissions.</li>
+            </ul>
+            <p><strong>File1</strong>'s classification will be <strong class="{{ classification_definition.UNRESTRICTED | class_text_color }}">{{ classification_definition.UNRESTRICTED | class_long }}</strong>.
+            	<strong>Submission1</strong>and <strong>Submission2</strong> will remain to their original classification.</p>
+            <p><i><strong>If one of the submission is deleted</strong></i>, let's says <strong>Submission2</strong>. The system will
+            	re-calculate the classification of all the files related to the deleted submission.
+            	<strong>File1</strong>'s classification will now be <strong class="{{ classification_definition.RESTRICTED | class_text_color }}">{{ classification_definition.RESTRICTED | class_long }}</strong>.
+            	<strong>Submission1</strong> will remain to its original classification.</p>
+            {% endraw %}
+        </div>
+
+		<h3>Service results have classification too!</h3>
+		<p>The various {{ app_name }} services will output their results at different classification levels depending on the
+        	technique/tool used to provide the result. To prevent the search engine from displaying results of
+        	classified files to unclassified users, the system will apply the maximum classification between the
+        	file classification and the service result classification to the results.</p>
+		<p><strong>Example:</strong></p>
+        {% raw %}
+        <div class="indent">
+            <p>Lets assume the following:</p>
+            <ul>
+                <li><strong>File1</strong> is classified <strong class="{{ classification_definition.RESTRICTED | class_text_color }}">{{ classification_definition.RESTRICTED | class_long }}</strong></li>
+                <li><strong>ServiceX</strong> results for <strong>File1</strong> are
+                    <strong class="{{ classification_definition.UNRESTRICTED | class_text_color }}">{{ classification_definition.UNRESTRICTED | class_long }}</strong></li>
+                <li><strong>File2</strong> is <strong class="{{ classification_definition.UNRESTRICTED | class_text_color }}">{{ classification_definition.UNRESTRICTED | class_long }}</strong></li>
+                <li><strong>ServiceY</strong> results for <strong>File2</strong> are classified
+                    <strong class="{{ classification_definition.RESTRICTED | class_text_color }}">{{ classification_definition.RESTRICTED | class_long }}</strong></li>
+            </ul>
+            <p><strong>ServiceX</strong> results for <strong>File1</strong> are going to be classified
+                <strong class="{{ classification_definition.RESTRICTED | class_text_color }}">{{ classification_definition.RESTRICTED | class_long }}</strong> because the file is classified higher then the service
+                results. In the eyes of an <strong class="{{ classification_definition.UNRESTRICTED | class_text_color }}">{{ classification_definition.UNRESTRICTED | class_long }}</strong> user, they will not
+                exist.</p>
+            <p><strong>ServiceY</strong> results for <strong>File2</strong> will remain classified
+                <strong class="{{ classification_definition.RESTRICTED | class_text_color }}">{{ classification_definition.RESTRICTED | class_long }}</strong> since the classification of the results is higher
+            	than the classification of the file itself.</p>
+        {% endraw %}
+        </div>
+
+		<h3>How is the classification validated?</h3>
+        <h4>Classification</h4>
+        <p>Classification is validated by using <strong>greater than or equal</strong>. The user's classification has to
+            be greater than or equal to submission/file/result he or she is trying to view/search.</p>
+        {% raw %}
+        <p><strong>Currently Supported classifications:</strong></p>
+        <ul>
+            <li ng-repeat="slvl in level_list()"><strong class="{{ slvl | class_text_color }}">{{ classification_definition.levels_map_stl[slvl] }}</strong> :: {{ classification_definition.description[slvl] }}</li>
+		</ul>
+
+        <h4>Required tokens</h4>
+        <p>To view a piece of information protected with required tokens, the user <strong>must have all</strong> the
+            tokens that the submission/file/result the user is trying to view has.
+            </p>
+        <p><strong>Currently Supported Required Tokens:</strong></p>
+        <ul>
+            <li ng-repeat="(sreq, val) in classification_definition.access_req_map_stl"><strong>{{ classification_definition.access_req_map_stl[sreq] }}</strong> :: {{ classification_definition.description[sreq] }}</li>
+            <li ng-if="getLength(classification_definition.access_req_map_stl) == 0">No required tokens available</li>
+		</ul>
+
+        <h4>Groups Releaseability</h4>
+        <p>To view a piece of information protected with a group releaseability, the user <strong>must have at least
+            one</strong> of the groups that the submission/file/result the user is trying to view has.</p>
+        <p><strong>Currently Supported Groups:</strong></p>
+        <ul>
+		    <li ng-repeat="(sgrp, val) in classification_definition.groups_map_stl"><strong>{{ classification_definition.groups_map_stl[sgrp] }}</strong> :: {{ classification_definition.description[sgrp] }}</li>
+            <li ng-if="getLength(classification_definition.groups_map_stl) == 0">No groups available</li>
+		</ul>
+        <p class="text-danger"><strong>** NOTE:</strong> not providing a group makes it available to all.</p>
+
+        <h4>Sub-Groups Releaseability</h4>
+		<p>To view a piece of information protected with a sub-groups releaseability, the user <strong>must have at least
+            one</strong> of the sub-groups that the submission/file/result the user is trying to view has.</p>
+		<p><strong>Currently Supported Sub-Groups:</strong></p>
+        <ul>
+		    <li ng-repeat="(ssgrp, val) in classification_definition.subgroups_map_stl"><strong>{{ classification_definition.subgroups_map_stl[ssgrp] }}</strong> :: {{ classification_definition.description[ssgrp] }}</li>
+            <li ng-if="getLength(classification_definition.subgroups_map_stl) == 0">No subgroups available</li>
+		</ul>
+        <p class="text-danger"><strong>** NOTE:</strong> not providing a subgroup makes it available to all.</p>
+        {% endraw %}
+		<h3>I don't understand, now what?</h3>
+		<p>If any clarification is needed about the Security Classification engine of {{ app_name }}, don't hesitate to contact any of {{ app_name }}'s system admins.</p>
+    </section>
+{% endblock%}
+
+{% block loading_jumbo %}ng-show="!classification_definition"{% endblock %}

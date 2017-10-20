@@ -1,0 +1,134 @@
+{% extends base_template %}
+{% block title_page %}AL - Dashboard{% endblock %}
+{% block js_import %}
+	<script src="/static/js/socket.io/socket.io.min.js"></script>
+	<script src="/static/js/socket.io/ng-socket.js"></script>
+	<script src="/static/js/dashboard.js"></script>
+{% endblock %}
+
+{% block section %}
+	<div class="table" style="padding-top: 80px;" style="width: 99%;">
+    {%raw%}
+        <div class="row" style="margin: 0;">
+            <div class="alert alert-danger" style="margin-left: 15px; margin-right: 15px; margin-bottom: 0px;" ng-show="bad_disks.length > 0">
+                <h4>Warning: The following machines are reporting hardware failure(s). Contact system administrators about this issue.</h4>
+                <span style="padding-right: 20px;" ng-repeat="bd in bad_disks">Disk {{ bd.bad_disks | joinBy:"," }} on {{ bd.hostname }} @ {{ bd.ip }}</span>
+            </div>
+            <div class="alert alert-warning" style="margin-left: 15px; margin-right: 15px; margin-bottom: 0px;" ng-show="expiry_late.length > 0">
+                <span class="text-large">Warning: Expiry is running late deleting data for the following buckets: <b>{{ expiry_late | joinBy }}</b></span>
+            </div>
+        </div>
+        <div class="row" style="margin: 0;">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" ng-if="data.middleman">
+                <div class="dashboard_card dashboard_card_big" ng-class="{ok: !middleman_in_error(data.middleman), error: middleman_in_error(data.middleman)}">
+                    <div class="row ">
+                        <div class="title col-sm-11 col-xs-10">Middleman :: {{data.middleman_stat.count}} / {{ middleman_shards_count }}</div>
+                        <div ng-show="middleman_in_error(data.middleman)" class="col-sm-1 col-xs-2 text-right"><span class="text-danger text-icon icon-erroralt"></span></div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div><label>Ingest:</label></div>
+                            <div>
+                                <span title="Ingest Queue" ng-class="{'text-muted': data.middleman.ingest <= 100000, 'text-danger': data.middleman.ingest > 100000}" class="text-icon icon-squarei"></span><span ng-class="{'text-danger': data.middleman.ingest > 100000}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.ingest}}&nbsp;</span>&nbsp;
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <div><label>Queued:</label></div>
+                            <div>
+                                <span title="Critical Priority Files Waiting" ng-class="{'text-muted': data.middleman.ingesting.critical==1, 'text-danger': data.middleman.ingesting.critical!=1}" class="text-icon icon-squarec"></span><span ng-class="{'text-danger': data.middleman.ingesting.critical!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.queues.critical}}&nbsp;</span><span class="text-danger" ng-show="data.middleman.ingesting.critical!=1" style="vertical-align: top; font-size: 11pt;">({{data.middleman.ingesting.critical * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                                <span title="High Priority Files Waiting" ng-class="{'text-muted': data.middleman.ingesting.high==1, 'text-danger': data.middleman.ingesting.high!=1}" class="text-icon icon-squareh"></span><span ng-class="{'text-danger': data.middleman.ingesting.high!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.queues.high}}&nbsp;</span><span class="text-danger" ng-show="data.middleman.ingesting.high!=1" style="vertical-align: top; font-size: 11pt;">({{data.middleman.ingesting.high * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                                <span title="Medium Priority Files Waiting" ng-class="{'text-muted': data.middleman.ingesting.medium==1, 'text-danger': data.middleman.ingesting.medium!=1}" class="text-icon icon-squarem"></span><span ng-class="{'text-danger': data.middleman.ingesting.medium!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.queues.medium}}&nbsp;</span><span class="text-danger" ng-show="data.middleman.ingesting.medium!=1" style="vertical-align: top; font-size: 11pt;">({{data.middleman.ingesting.medium * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                                <span title="Low Priority Files Waiting" ng-class="{'text-muted': data.middleman.ingesting.low==1, 'text-danger': data.middleman.ingesting.low!=1}" class="text-icon icon-squarel"></span><span ng-class="{'text-danger': data.middleman.ingesting.low!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.queues.low}}&nbsp;</span><span class="text-danger" ng-show="data.middleman.ingesting.low!=1" style="vertical-align: top; font-size: 11pt;">({{data.middleman.ingesting.low * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div><label>Processing:</label></div>
+                            <div>
+                                <span title="Inflight Submissions" class="text-muted text-icon icon-squarei"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.inflight}}&nbsp;</span>
+                                <span title="Waiting for Submission" class="text-muted text-icon icon-squarew"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.waiting}}&nbsp;</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div><label>Uptime:</label></div>
+                            <div>
+                                <span class="text-muted text-icon icon-uptime"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman.up_hours | floatStr}}h</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-9 col-xs-12">
+                            <div><label>Throughput: (for the last minute)</label></div>
+                            <div>
+                                <span title="Completed files" class="text-muted text-icon icon-squaref"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman['ingest.files_completed'] | floatStr}}&nbsp;</span>&nbsp;
+                                <span title="Completed submissions" class="text-muted text-icon icon-squarec"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman['ingest.submissions_completed'] | floatStr}}&nbsp;</span>&nbsp;
+                                <span title="Whitelisted files" class="text-muted text-icon icon-squarew"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman['ingest.whitelisted'] | floatStr}}&nbsp;</span>&nbsp;
+                                <span title="Skipped files" class="text-muted text-icon icon-squares"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman['ingest.skipped'] | floatStr}}&nbsp;</span>&nbsp;
+                                <span title="Duplicate files" class="text-muted text-icon icon-squared"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman['ingest.duplicates'] | floatStr}}&nbsp;</span>
+                                <span ng-class="{'text-muted': data.middleman['ingest.bytes_completed'] != 0, 'text-danger': data.middleman['ingest.bytes_completed'] == 0}" class="text-icon icon-speed"></span><span ng-class="{'text-danger': data.middleman['ingest.bytes_completed'] == 0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.middleman['ingest.bytes_completed']/((1024*1024*60)/8) | floatStr}} / {{data.middleman['ingest.bytes_ingested']/((1024*1024*60)/8) | floatStr}} Mbps</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                <div class="dashboard_card dashboard_card_big" ng-class="{ok: data.dispatchers_stat.errors.length==0, error: data.dispatchers_stat.errors.length!=0, disabled: data.dispatchers_stat.count==0}">
+                    <div ng-show="data.dispatchers_stat.errors.length!=0" class="pull-right"><span class="text-danger text-icon icon-erroralt"></span></div>
+                    <div class="title">Dispatcher :: {{data.dispatchers_stat.count}} / {{ dispatcher_shards_count }}</div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div><label>Services:</label></div>
+                            <div>
+                                {{ data.dispatchers_stat.services.up | split }}
+                                <span ng-show="data.dispatchers_stat.services.up.length>0&&data.dispatchers_stat.services.not_provisioned.length>0"> :: </span><span class="text-muted">{{ data.dispatchers_stat.services.not_provisioned | split }}</span>
+                                <span ng-show="(data.dispatchers_stat.services.up.length>0||data.dispatchers_stat.services.not_provisioned.length>0)&&data.dispatchers_stat.services.down.length>0"> :: </span><span class="text-danger" style="font-weight: 800">{{ data.dispatchers_stat.services.down | split }}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div><label>Outstanding Submissions:</label></div>
+                            <div>
+                                {{data.dispatchers_stat.outstanding}}&nbsp;/&nbsp;{{data.dispatchers_stat.queues.max_inflight}}
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div><label>Queues:</label></div>
+                            <div>
+                                <span title="Ingest Queue" ng-class="{'text-danger': data.dispatchers_stat.queues.ingest>=data.dispatchers_stat.queues.max_inflight&&data.dispatchers_stat.count>0, 'text-muted': data.dispatchers_stat.queues.ingest<data.dispatchers_stat.queues.max_inflight||data.dispatchers_stat.count==0}" class="text-icon icon-squarei"></span><span ng-class="{'text-danger': data.dispatchers_stat.queues.ingest>=data.dispatchers_stat.queues.max_inflight&&data.dispatchers_stat.count>0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.dispatchers_stat.queues.ingest}}&nbsp;</span>
+                                <span title="Response Queue" ng-class="{'text-danger': data.dispatchers_stat.queues.response>=data.dispatchers_stat.queues.max_inflight&&data.dispatchers_stat.count>0, 'text-muted': data.dispatchers_stat.queues.response<data.dispatchers_stat.queues.max_inflight||data.dispatchers_stat.count==0}" class="text-muted text-icon icon-squarer"></span><span ng-class="{'text-danger': data.dispatchers_stat.queues.response>=data.dispatchers_stat.queues.max_inflight&&data.dispatchers_stat.count>0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.dispatchers_stat.queues.response}}&nbsp;</span>
+                                <span title="Control Queue" ng-class="{'text-danger': data.dispatchers_stat.queues.control>0, 'text-muted': data.dispatchers_stat.queues.control==0}" class="text-muted text-icon icon-squarec"></span><span ng-class="{'text-danger': data.dispatchers_stat.queues.control>0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{data.dispatchers_stat.queues.control}}&nbsp;</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div><label>Shard(s) in error:</label></div>
+                            <div>
+                                <span class="text-danger" style="font-weight: 800">{{data.dispatchers_stat.errors | split}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="service.enabled" class="col-lg-2 col-md-3 col-sm-6 col-xs-12" ng-repeat="service in data.services">
+                <div class="dashboard_card" ng-class="{error: service.enabled&&has_errors(service), ok: service.enabled&&!has_errors(service), disabled: !service.enabled||service.errors.not_provisioned}">
+                    <div class="pull-right"><span ng-show="service.errors.over_provisioned" class="text-info text-icon icon-speed">&nbsp;&nbsp;</span><span ng-show="has_errors(service)&&service.enabled" class="text-danger text-icon icon-erroralt">&nbsp;&nbsp;</span></div>
+                    <div class="title">{{service.name}}</div>
+                    <div class="row">
+                        <div ng-class="{'text-danger': service.errors.under_provisioned, 'text-info': service.errors.over_provisioned}" class="col-xs-6" title="Number of workers (Running / Provisioned)"><span ng-class="{'text-muted': !service.errors.over_provisioned&&!service.errors.under_provisioned}" class="text-icon icon-squarew"></span>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{running_workers(service.name)}} / {{service.workers}}</span></div>
+                        <div class="col-xs-6" title="Number of profile referencing it"><span class="text-muted text-icon icon-squarep"></span>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{service.profiles.length}}</span></div>
+                    </div>
+                    <div class="row">
+                        <div ng-class="{'text-danger': service.errors.over_queued}" class="col-xs-6" title="Number of items in the service's queue"><span ng-class="{'text-muted': !service.errors.over_queued}" class="text-icon icon-squareq"></span>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{service.queue}}</span></div>
+                        <div ng-class="{'text-danger': service.enabled&&(service.errors.marked_down||service.errors.not_reported)}" class="col-xs-6" title="Status reported by dispatcher"><span ng-class="{'text-muted': !service.enabled||(!service.errors.marked_down&&!service.errors.not_reported)}" class="text-icon icon-squares"></span>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{report_status(service.name)}}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin: 0;">
+            <div class="bigpad ng-hide container" ng-show="loading">
+                <div class="bigpad jumbotron text-center">
+                    <h2 class="text-muted">Loading</h2>
+                    <div class="throbber">
+                        Loading
+                    </div>
+                </div>
+            </div>
+        </div>
+	{%endraw%}
+	</div>
+{% endblock %}
+		

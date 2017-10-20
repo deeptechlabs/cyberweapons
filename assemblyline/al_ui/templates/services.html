@@ -1,0 +1,43 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Service Listing{% endblock %}
+{% block js_import %}
+	<script src="/static/js/services.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Service Listing</h1>
+            <h4 ng-hide="service_list == null" class="text-muted">:: {{service_list.length}} Service<span ng-show="service_list.length > 1">s</span>  ::</h4>
+		</div>
+        <div class="row">
+            <div ng-repeat="srv in service_list" class="col-md-6">
+                <div class="alert_card" ng-class="{danger: !srv.enabled}">
+                    <div ng-if="!srv.enabled" class="pull-right label label-danger text-large">Disabled</div>
+                    <div><span class="text-big">{{ srv.name }}</span><span style="padding-left: 10px" class="text-muted">:: {{ srv.classpath }}</span></div>
+                    <div class="pad" style="height: 100px; overflow: hidden">{{ srv.description }}</div>
+                    <div class="row">
+                        <div class="col-sm-6"><label>Accepts:&nbsp;</label>{{ srv.accepts }}</div>
+                        <div class="col-sm-6"><label>Rejects:&nbsp;</label>{{ srv.rejects }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6"><label>Category:&nbsp;</label>{{ srv.category }}</div>
+                        <div class="col-sm-6"><label>Stage:&nbsp;</label>{{ srv.stage }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="service_list != null && service_list.length == 0 && !loading_extra">
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are currently no services in the system.
+				</h2>
+        	</div>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="service_list != null"{% endblock %}

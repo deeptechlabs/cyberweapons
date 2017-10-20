@@ -1,0 +1,111 @@
+0	string	CART
+>0x6	quad	0	custom: archive/cart
+
+0	string	IDA1\000\000	custom: code/ida
+
+0	string	JFIF\000\001	custom: image/jpg
+
+0	string	{\\rt	custom: document/office/rtf
+
+0	string	ZWS custom: archive/audiovisual/flash
+
+0	string	CWS custom: archive/audiovisual/flash
+
+0		string
+>&0     regex/10        \^(Subject|MIME)
+>>0x10 	search/0x100    multipart/related
+>>>0x50	search/0x300	urn:schemas-microsoft-com:office    custom: document/office/mhtml
+
+0   string
+>&0     regex/20        \^#@~\\^[^=]{6}==     custom: code/vbe
+
+0   string
+>&0     regex/300        \(On\ Error\ Resume\ Next|WScript\.CreateObject)     custom: code/vbs
+
+0	string	\003\000\010\000	custom: android/xml
+
+0	string	\002\000\014\000	custom: android/resource
+
+0	string	dex\n	custom: android/dex
+
+0   string  FSB     custom: audiovisual/fsb
+
+0	string	AFS2 	custom: audiovisual/afs
+
+0	string	@UTF\000 	custom: audiovisual/acb
+
+0	string	PVR custom: image/texture/powervr
+
+0	string	KA3D	custom: image/texture/ka3d
+
+0	string	RVIO	custom: image/texture/rvio
+
+0	string	PKM 	custom: image/texture/pkm
+
+0	string	\253KTX\040 	custom: image/texture/ktx
+
+0   string  4\000\000\000
+>&0 search/0x40 PVR!	custom: font/texture/pvr
+
+0       search/0x100     technique
+>&0     search/0x100     pass
+>>&0    regex/0x100      VertexShader|PixelShader   custom: code/gles
+
+0    regex/0x100      COMPILEVS|COMPILEPS
+>&0 regex/0x100      vec2|vec3|vec4   custom: code/glsl
+
+1   string      technique    custom: code/glsl
+1   string      renderpath    custom: code/glsl
+1   string      material    custom: code/glsl
+1   string      texture    custom: code/glsl
+
+0	string	ibcc 	custom: code/animation/ccb
+
+0   string   Manifest-Version:   custom: java/manifest
+
+0   string   Signature-Version:  custom: java/signature
+
+0   string
+>0  search/0x20 \006\011\052\206\110\206\367\015\001\007\002\240    custom: certificate/rsa
+
+0   string  \x001jbdiff     custom: java/jbdiff
+
+0    long 4
+>8   byte 0                 custom: resource/pak
+
+0    long 4
+>8   byte 1                 custom: resource/pak
+
+0    long 4
+>8   byte 2                 custom: resource/pak
+
+0	 string	CPK\040\377     custom: resource/cpk
+
+0	 string	DTRZ            custom: resource/dz
+
+0   string
+>(0.S-2)   string  Mesh   custom: resource/sbm
+
+0   string  SC\000\000\000\001\000\000\000\020  custom: resource/sc
+
+0   string  CCZ!\000\000\000\001\000\000\000\000  custom: resource/ccz
+
+0   string  EB\000\003\000\000\000  custom: resource/big
+
+0   string  PTCH\007\001  custom: resource/ptc
+
+0       string  SBle
+>16     string  MRAH     custom: resource/sbr
+
+0   string
+>&0     regex/40        [0-9]\\.[0-9]\\.[0-9][a-zA-Z][0-9]     custom: resource/unity
+
+0   string  DBPF\002\000\000\000\001    custom: db/dbf
+
+0   string  SQLite\040format\040    custom: db/sqlite
+
+0      string         \<job
+>&0    search/0x30    \<script\ language   custom: code/wsf
+
+0   short   0x3C4D
+>&0 short   0xA1B2        custom: network\tcpdump

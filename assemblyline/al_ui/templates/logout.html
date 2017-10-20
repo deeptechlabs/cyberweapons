@@ -1,0 +1,96 @@
+<html ng-app="app" class="ng-scope">
+<head>
+    <meta charset="utf-8">
+    <title>AssemblyLine - Logout</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    {% block fav_icon %}<link rel="shortcut icon" href="/static/images/favicon.ico"/>{% endblock %}
+    <script src="/static/js/angular/angular.js"></script>
+    <script src="/static/js/logout.js"></script>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+            min-width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+        .banner-img {
+            height: auto;
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        /*
+         * Card component
+         */
+        @media (min-width: 400px){
+             html, body{
+                background-color: #f7f7f7;
+            }
+
+            .banner-img{
+                width: 250px;
+                margin: 0 auto 40px;
+            }
+
+            .card {
+                background-color: #FFF;
+                /* just in case there no content*/
+                padding: 20px 25px 30px;
+                margin: auto auto;
+                /* shadows and rounded borders */
+                -moz-border-radius: 2px;
+                -webkit-border-radius: 2px;
+                border-radius: 2px;
+                -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+                -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            .card-container.card {
+                max-width: 350px;
+                padding: 40px 40px;
+            }
+        }
+
+        .container-fluid {
+            height: 100%;
+            display: table;
+            width: 100%;
+            padding: 0;
+        }
+
+        .row-fluid {
+            height: 100%;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .centering {
+            float: none;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body ng-controller="ALController" ng-init="start();">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="centering text-center card card-container">
+            {% block banner %}<img class="banner-img" src="/static/images/banner.svg">{% endblock %}
+            <strong class="text-big">Login out...</strong>
+        </div>
+    </div>
+</div>
+</body>
+</html>

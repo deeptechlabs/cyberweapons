@@ -1,0 +1,93 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Signature management{% endblock %}
+{% block js_import %}
+	<script src="/static/js/signatures.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};organisation='{{org}}';start();"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>Signature Management</h1>
+			<div><h4 ng-hide="signature_list == null || (total == 0 && !filtered)" class="text-muted">:: {{total}} Yara signature<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4></div>
+			<div ng-hide="signature_list == null || (total == 0 && !filtered)">
+				<a class="btn btn-success btn-sm" ng-click="add_signature();"><span class="glyphicon glyphicon-plus">&nbsp;</span>Add Signature</a>
+				<a ng-disabled="total == 0" href="/api/v3/signature/download/?query={{filter}}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-download-alt">&nbsp;</span>Download <span ng-show="filtered">Filtered </span>Signatures</a>
+			</div>
+		</div>
+		<div ng-hide="signature_list == null || (!filtered && signature_list.length == 0)">
+			<div ng-controller="pagerCtrl" ng-init="pager_page='signature'" pager></div>
+		</div>
+		<section class="table-responsive" ng-hide="signature_list == null || (!filtered && signature_list.length == 0)">
+			<table class="table table-hover">
+				<thead>
+					<tr class="active">
+						<th>ID</th><th>Name</th><th>Group</th><th ng-if="user.c12n_enforcing">Classification</th><th>Contact</th><th>Yara</th><th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="editSignature(s.meta.id, s.meta.rule_version)" ng-repeat="s in signature_list" style="cursor: pointer;">
+						<td nowrap>{{s.meta.id}} r.{{s.meta.rule_version}}</td>
+						<td width="100%" style="word-break: break-all; overflow: hidden;">{{s.name}}</td>
+						<td>{{s.meta.rule_group}}</td>
+						<td ng-if="user.c12n_enforcing"><label class="label classification {{s.meta.classification | class_label_color}}">{{s.meta.classification | class_long}}</label></td>
+						<td nowrap>{{s.meta.poc}}</td>
+						<td>{{s.meta.yara_version}}</td>
+						<td>
+							<span ng-show="s.meta.al_status=='DEPLOYED'" class="label classification label-success">{{s.meta.al_status}}</span>
+							<span ng-show="s.meta.al_status=='NOISY'" class="label classification label-info">{{s.meta.al_status}}</span>
+							<span ng-show="s.meta.al_status=='DISABLED'" class="label classification label-danger">{{s.meta.al_status}}</span>
+							<span ng-show="s.meta.al_status=='TESTING'" class="label classification label-warning">{{s.meta.al_status}}</span>
+							<span ng-show="s.meta.al_status=='STAGING'" class="label classification label-primary">{{s.meta.al_status}}</span>
+                            <span ng-show="s.meta.al_status=='INVALID'" class="label classification label-default">{{s.meta.al_status}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+		
+		<div ng-show="signature_list != null && signature_list.length == 0 && searchText == '' && !loading_extra">
+			<div class="jumbotron text-center">
+				<h2 class="text-muted">
+					There are currently no signatures in the system.
+				</h2>
+				<div style="margin-top: 20px">
+					<button class="btn btn-success" ng-click="add_signature();">Add Signature</button>
+				</div>
+			</div>
+		</div>
+		
+		<div ng-controller="classificationCtrl" classification-picker></div>
+				
+		<!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="pull-right text-large pad">
+							<span ng-show="current_signature.meta.al_status=='DEPLOYED'" class="label label-success">{{current_signature.meta.al_status}}</span>
+							<span ng-show="current_signature.meta.al_status=='NOISY'" class="label label-info">{{current_signature.meta.al_status}}</span>
+							<span ng-show="current_signature.meta.al_status=='DISABLED'" class="label label-danger">{{current_signature.meta.al_status}}</span>
+							<span ng-show="current_signature.meta.al_status=='TESTING'" class="label label-warning">{{current_signature.meta.al_status}}</span>
+							<span ng-show="current_signature.meta.al_status=='STAGING'" class="label label-primary">{{current_signature.meta.al_status}}</span>
+                            <span ng-show="current_signature.meta.al_status=='INVALID'" class="label label-default">{{current_signature.meta.al_status}}</span>
+					
+						</div>
+						<h4 class="modal_title" id="myModalLabel">Signature detail ::{{current_signature.meta.id}} r.{{current_signature.meta.rule_version}}::</h4>
+					</div>
+					<div class="modal-body">
+						<div signature-detail></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="signature_list != null"{% endblock %}

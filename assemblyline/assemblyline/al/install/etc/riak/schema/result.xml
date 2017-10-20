@@ -1,0 +1,93 @@
+<schema name="al_result" version="1.5">
+    <fields>
+        <!--  AL result/error fields  -->
+        <field name="created" type="date" indexed="true" stored="true"/>
+        <field name="srl" type="string" indexed="true" stored="false"/>
+
+        <field name="response.service_name" type="string" indexed="true" stored="true"/>
+        <field name="response.extracted" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="response.service_version" type="string" indexed="true" stored="false"/>
+        <field name="response.supplementary" type="string" indexed="true" stored="false" multiValued="true"/>
+        <copyField source="response.extracted" dest="text"/>
+        <copyField source="response.service_name" dest="text"/>
+
+        <!--  result.*  -->
+        <field name="result.classification" type="string" indexed="true" stored="true"/>
+        <field name="result.score" type="int" indexed="true" stored="true"/>
+
+        <!-- result.tags.* -->
+        <field name="result.tags.classification" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="result.tags.type" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="result.tags.usage" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="result.tags.value" type="string" indexed="true" stored="false" multiValued="true"/>
+        <copyField source="result.tags.value" dest="text"/>
+
+        <!-- result.sections.* -->
+        <copyField source="*.links" dest="links"/>
+        <field name="links" type="string" indexed="true" stored="false" multiValued="true"/>
+        <copyField source="*.title_text" dest="text"/>
+        <copyField source="*.body" dest="text"/>
+
+        <field name="__expiry_ts__" type="date" indexed="true" stored="false"/>
+
+        <!-- AL Access fields  -->
+        <field name="classification" type="string" indexed="true" stored="true"/>
+        <field name="__access_lvl__" type="int" indexed="true" stored="false"/>
+        <field name="__access_req__" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="__access_grp1__" type="string" indexed="true" stored="false" multiValued="true" default="__EMPTY__"/>
+        <field name="__access_grp2__" type="string" indexed="true" stored="false" multiValued="true" default="__EMPTY__"/>
+
+        <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
+
+
+        <field name="_yz_id" type="_yz_str" indexed="true" stored="true" multiValued="false" required="true"/>
+        <field name="_yz_ed" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_pn" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_fpn" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_vtag" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_rk" type="_yz_str" indexed="true" stored="true" multiValued="false"/>
+        <field name="_yz_rt" type="_yz_str" indexed="true" stored="true" multiValued="false"/>
+        <field name="_yz_rb" type="_yz_str" indexed="true" stored="true" multiValued="false"/>
+        <field name="_yz_err" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+
+        <!-- catch-all field -->
+        <dynamicField name="*" type="ignored" />
+    </fields>
+
+    <uniqueKey>_yz_id</uniqueKey>
+
+    <types>
+        <field name="_version_" type="long" indexed="true" stored="true"/>
+        <fieldType name="_yz_str" class="solr.StrField" sortMissingLast="true" />
+        <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+        <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+
+        <!-- A text field that only splits on whitespace for exact matching of words -->
+        <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
+            <analyzer>
+                <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            </analyzer>
+        </fieldType>
+
+
+        <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+            <analyzer type="index">
+                <tokenizer class="solr.StandardTokenizerFactory" maxTokenLength="100"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+            <analyzer type="query">
+                <tokenizer class="solr.StandardTokenizerFactory" maxTokenLength="100"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+        </fieldType>
+
+
+    </types>
+
+</schema>

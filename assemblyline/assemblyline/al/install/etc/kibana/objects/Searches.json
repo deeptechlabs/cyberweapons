@@ -1,0 +1,47 @@
+[
+  {
+    "_id": "UI-Audit-Logs",
+    "_type": "search",
+    "_source": {
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "hits": 0,
+      "description": "",
+      "title": "UI Audit Logs",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"audit-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+      },
+      "columns": [
+        "al_user",
+        "al_function",
+        "al_params"
+      ]
+    }
+  },
+  {
+    "_id": "AL-Logs",
+    "_type": "search",
+    "_source": {
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "hits": 0,
+      "description": "",
+      "title": "AL Logs",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"logs-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+      },
+      "columns": [
+        "al_severity",
+        "component",
+        "al_host",
+        "message"
+      ]
+    }
+  }
+]

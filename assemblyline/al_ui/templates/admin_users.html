@@ -1,0 +1,138 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - User management{% endblock %}
+{% block js_import %}
+	<script src="/static/js/admin_users.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>User Management</h1>
+			<h4 ng-hide="user_list == null || (total == 0 && !filtered)" class="text-muted">:: {{total}} User<span ng-show="total > 1">s</span><span ng-show="filtered"> (filtered)</span> ::</h4>
+		</div>
+		<div ng-hide="user_list == null || (total == 0 && !filtered)">
+			<div ng-controller="pagerCtrl" ng-init="pager_page='user'" pager></div>
+		</div>
+		<section class="table-responsive" ng-hide="user_list == null || (total == 0 && !filtered)">
+			<table class="table table-hover">
+				<thead>
+					<tr class="active">
+						<th>UID</th><th>Fullname</th><th>Groups</th><th ng-if="user.c12n_enforcing">Classification</th><th>Active</th><th>Admin</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="editUser(u)" ng-repeat="u in user_list | orderBy:'uname'" ng-class="{danger:!u.is_active, success:u.is_admin&&u.is_active}" style="cursor: pointer;">
+						<td>{{u.uname}}</td>
+						<td>{{u.name}}</td>
+						<td>{{u.groups | joinBy:' | '}}</td>
+						<td ng-if="user.c12n_enforcing"><label class="label classification  {{u.classification | class_label_color}}">{{u.classification | class_sm}}</label></td>
+						<td class="text-muted">
+							<span ng-show="u.is_active" class="glyphicon glyphicon-ok text-success"></span>
+							<span ng-hide="u.is_active" class="glyphicon glyphicon-remove text-danger"></span>
+						</td>
+						<td class="text-muted">
+							<span ng-show="u.is_admin" class="glyphicon glyphicon-ok text-success"></span>
+							<span ng-hide="u.is_admin" class="glyphicon glyphicon-remove text-danger"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+		
+		<div ng-controller="classificationCtrl" classification-picker></div>
+			
+		<!-- HIDE FOLLOWING: Should go inside a modal form -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-resize">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div ng-show="editmode" class="pull-right" style="padding-top: 5px;">
+							<button type="button" class="btn btn-danger" ng-click="delUser(current_user);">Remove</button>
+						</div>
+						<h4 ng-if="!editmode" class="modal_title" id="myModalLabel">Adding User</h4>
+						<h4 ng-if="editmode" class="modal_title" id="myModalLabel">User Settings :: {{current_user.uname}}</h4>
+					</div>
+					<div class="modal-body">
+						<section class="row">
+							<div class="col-md-3 pad">
+								<div ng-controller="imageCtrl" image-preview></div>
+							</div>
+							<div class="col-md-5 pad">
+								<div id="uname" class="form-group">
+									<label id="uname_lbl" class="control-label">User ID</label>
+									<input type="text" class="form-control input-sm" ng-model="current_user.uname" ng-disabled="editmode">
+                                    <error class="text-smaller text-danger"></error>
+								</div>
+								<div class="form-group">
+									<label class="control-label">Full name</label>
+									<input type="text" class="form-control" placeholder="User's name" ng-model="current_user.name">
+								</div>
+								<div id="new_pass" ng-if="user.internal_auth_enabled" class="form-group">
+                                    <label class="control-label"><span ng-if="current_user.has_password">New</span><span ng-if="!current_user.has_password">Add</span> password</label>
+                                    <div class="input-group">
+                                        <input id="pwd" type="password" class="form-control input-sm" placeholder="New password for user" ng-model="current_user.new_pass">
+                                        <span class="input-group-btn">
+                                            <button id="reveal" ng-mousedown="reveal_show()" ng-mouseup="reveal_hide()" ng-mouseleave="reveal_hide()" class="btn btn-default btn-sm input-sm" type="button"><i class="glyphicon glyphicon-eye-open"></i></button>
+                                        </span>
+                                    </div>
+                                    <error class="text-smaller text-danger"></error>
+								</div>
+								<div class="form-group">
+									<label class="control-label">Member of (space seperated)</label>
+									<input type="text" class="form-control input-sm" ng-model="current_user.groups" ng-disabled="!user.is_admin" split-array="{splitter: ' '}">
+								</div>
+								<div class="form-group" ng-show="current_user.dn">
+									<label class="control-label">Client Certificate DN</label>
+									<input type="text" class="form-control input-sm" ng-model="current_user.dn" disabled>
+								</div>
+							</div>
+							<div class="col-md-4 pad">
+								<div ng-if="user.c12n_enforcing" class="pad">
+									<div class="label classification {{current_user.classification | class_label_color}}" data-toggle="modal" href="#classification_picker" ng-click="setClassification(current_user.classification)">{{current_user.classification | class_sm}}</div>
+								</div>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" ng-model="current_user.is_admin" ng-disabled="!user.is_admin"> Administrative account
+									</label>
+								</div>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" ng-model="current_user.is_active" ng-disabled="!user.is_admin"> Account active
+									</label>
+								</div>
+                                <div class="form-group">
+									<label class="control-label">API quota</label>
+									<input type="number" class="form-control input-sm" ng-model="current_user.api_quota" ng-disabled="!user.is_admin" min="0" max="1024">
+								</div>
+                                <div class="form-group">
+									<label class="control-label">Submission quota</label>
+									<input type="number" class="form-control input-sm" ng-model="current_user.submission_quota" ng-disabled="!user.is_admin" min="0" max="1024">
+								</div>
+
+							</div>
+							<div class="col-md-12 text-center text-muted pad" ng-show="current_user.agrees_with_tos">
+								<span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Agreed to Terms of Service on: {{ current_user.agrees_with_tos | date:"yyyy-MM-dd HH:mm:ss" }}
+							</div>
+							<div class="col-md-12 text-center text-muted pad" ng-show="current_user.2fa_enabled&&user.allow_2fa">
+								<span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;2-Factor Authentication enabled on this account
+							</div>
+							<div class="col-md-12 text-center text-muted pad" ng-show="current_user.u2f_enabled&&user.allow_u2f">
+								<span class="icon-lock">&nbsp;&nbsp;</span>A security token is configured on this account
+							</div>
+						</section>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button ng-if="editmode" type="button" class="btn btn-primary" ng-click="save();">Save changes</button>
+						<button ng-if="!editmode" type="button" class="btn btn-primary" ng-click="add();">Add user</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END HIDE -->
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="user_list != null"{% endblock %}

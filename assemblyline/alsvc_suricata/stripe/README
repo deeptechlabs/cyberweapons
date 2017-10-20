@@ -1,0 +1,58 @@
+stripe v0.3c
+Written by Foeh Mannay, January 2016
+
+PURPOSE
+=======
+
+"stripe" is a tool which attempts to remove any and all encapsulating headers (i.e.
+VLAN tags, MPLS shim headers, PPPoE, GRE, L2TP, GTP and VXLAN) from a pcap file, leaving
+plain old payload over Ethernet. This is useful as some tools cannot work with
+encapsulated frames and, until now, I couldn't find any automatic way to convert a pcap
+with such headers into a usable format.
+
+The nested IP fragment re-assembly support *seems* to be stable now and is at the point
+where I can no longer find any pcap files that trip it up. Please feel free to contribute
+any that you find!
+
+This version of stripe adds VXLAN support on the two standard UDP ports (8472 and 4789).
+
+Please see http://networkingbodges.blogspot.com/ for more information on the
+theory behind this if you are interested.
+
+INSTALLATION
+============
+
+For Linux / Mac / MinGW it should be possible to build from source using:
+
+gcc -o stripe stripe.c
+
+I will make some binaries available for convenience but I make no assurances that I will
+keep them up to date.
+
+USAGE
+=====
+
+There are only two parameters and both are mandatory. You must specify your
+input capture file (original pcap format) with the -r flag and your output capture file
+with the -w flag. Here's an example:
+
+Harrys-MacBook-Air:stripe foeh$ ./stripe -r mpls-frames.cap -w clean-frames.cap
+
+Parsing capfile...
+
+4 frames processed.
+Harrys-MacBook-Air:stripe foeh$
+
+CHANGE LOG
+==========
+
+v0.1a	First working release, tested with 802.1Q VLANs, MPLS, GRE and PPPoE. L2TP in 
+development.
+
+v0.2a	Added "experimental" GTP support, realised the need to pad small frames!
+
+v0.3a	Added IP fragment reassembly support
+
+v0.3b	Added VXLAN support
+
+v0.3c	Fixed L2TPv2 support, which flat out didn't work up until now.

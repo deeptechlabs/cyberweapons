@@ -1,0 +1,104 @@
+#!/usr/bin/env python
+from urllib import quote
+from assemblyline.al.install.seeds.assemblyline_common import seed
+
+IP_CORE = '{ip_core}'
+IP_LOGGER = '{ip_logger}'
+IP_WORKERS = {ips_worker}
+IP_RIAK_NODES = {ips_riak}
+
+SYS_USER = 'al'
+FTP_USER = 'ftp_user'
+FTP_PASS = '{ftp_pass}'
+LOGGER_PASS = '{logger_pass}'
+
+try:
+    from {update_seed_path} import update_seed
+    update_seed(seed)
+except:
+    pass
+
+seed['auth']['internal']['users']['admin']['password'] = '{password}'
+seed['auth']['internal']['users']['internal']['password'] = '{internal_pass}'
+
+seed['core']['alerter']['shards'] = 4
+seed['core']['dispatcher']['max']['inflight'] = 5000
+seed['core']['dispatcher']['shards'] = 4
+seed['core']['expiry']['workers'] = 20
+seed['core']['middleman']['shards'] = 4
+seed['core']['nodes'] = [IP_CORE]
+seed['core']['redis']['nonpersistent']['host'] = IP_CORE
+seed['core']['redis']['persistent']['host'] = IP_CORE
+
+seed['datastore']['port'] = {ds_port_prefix}087
+seed['datastore']['stream_port'] = {ds_port_prefix}098
+seed['datastore']['solr_port'] = {ds_port_prefix}093
+
+seed['datastore']['riak']['nodes'] = IP_RIAK_NODES
+seed['datastore']['riak']['solr']['heap_max_gb'] = {solr_heap}
+seed['datastore']['riak']['solr']['heap_min_gb'] = {solr_heap}
+seed['datastore']['riak']['ring_size'] = {ring_size}
+seed['datastore']['riak']['nvals'] = {nvals}
+
+seed['filestore']['ftp_password'] = FTP_PASS
+seed['filestore']['ftp_user'] = FTP_USER
+seed['filestore']['support_urls'] = [
+    'ftp://{{user}}:{{password}}@{{core}}/opt/al/var/support'.format(core=IP_CORE,
+                                                                     user=FTP_USER,
+                                                                     password=quote(FTP_PASS))
+]
+seed['filestore']['urls'] = [
+    'ftp://{{user}}:{{password}}@{{core}}/opt/al/var/storage'.format(core=IP_CORE,
+                                                                     user=FTP_USER,
+                                                                     password=quote(FTP_PASS))
+]
+
+seed['installation']['hooks']['ui_pre'].append('al_private.common.hook_ui_pre')
+
+seed['logging']['log_to_syslog'] = {log_to_syslog}
+seed['logging']['logserver']['elasticsearch']['heap_size'] = {elastic_heap}
+seed['logging']['logserver']['kibana']['host'] = IP_LOGGER
+seed['logging']['logserver']['kibana']['password'] = LOGGER_PASS
+seed['logging']['logserver']['node'] = IP_LOGGER
+seed['logging']['syslog_ip'] = IP_LOGGER
+
+seed['services']['master_list']['ConfigDecoder']['config']['SIGNATURE_PASS'] = "{internal_pass}"
+seed['services']['master_list']['ConfigDecoder']['config']['SIGNATURE_URL'] = "https://%s:443" % IP_CORE
+seed['services']['master_list']['ConfigDecoder']['config']['SIGNATURE_USER'] = 'internal'
+seed['services']['master_list']['Cuckoo']['install_by_default'] = {install_kvm}
+seed['services']['master_list']['Yara']['config']['SIGNATURE_PASS'] = "{internal_pass}"
+seed['services']['master_list']['Yara']['config']['SIGNATURE_URL'] = "https://%s:443" % IP_CORE
+seed['services']['master_list']['Yara']['config']['SIGNATURE_USER'] = 'internal'
+
+seed['submissions']['url'] = "https://%s:443" % IP_CORE
+seed['submissions']['password'] = '{internal_pass}'
+
+seed['system']['name'] = '{sys_name}'
+seed['system']['organisation'] = '{organisation}'
+seed['system']['password'] = None
+seed['system']['internal_repository'] = {{
+    'branch': '{repo_branch}',
+    'url': 'http://{{core}}/git/'.format(core=IP_CORE)
+}}
+seed['system']['user'] = SYS_USER
+
+seed['ui']['audit'] = True
+seed['ui']['context'] = "al_private.ui.site_specific.context"
+seed['ui']['debug'] = False
+seed['ui']['fqdn'] = '{fqdn}'
+seed['ui']['secret_key'] = "{secret_key}"
+
+seed['workers']['install_kvm'] = {install_kvm}
+seed['workers']['nodes'] = IP_WORKERS
+seed['workers']['virtualmachines']['use_parent_as_queue'] = True
+seed['workers']['virtualmachines']['use_parent_as_datastore'] = True
+
+if __name__ == '__main__':
+    import sys
+
+    if "json" in sys.argv:
+        import json
+        print json.dumps(seed)
+    else:
+        import pprint
+        pprint.pprint(seed)

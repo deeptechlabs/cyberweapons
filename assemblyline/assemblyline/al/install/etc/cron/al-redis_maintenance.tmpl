@@ -1,0 +1,2 @@
+*/15 * * * *	root	/usr/bin/redis-cli -n ___DB___ -p ___PORT___ bgrewriteaof >/dev/null 2>&1
+* * * * *       root    pgrep -f redis-server | while read PID; do echo -17 > /proc/$PID/oom_adj; done

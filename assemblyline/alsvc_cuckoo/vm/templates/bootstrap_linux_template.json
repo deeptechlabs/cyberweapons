@@ -1,0 +1,29 @@
+{
+  "timeout": 60,
+  "files": {
+    "/etc/network/interfaces": {
+      "render": true,
+      "contents":
+      [
+        "auto lo eth0",
+        "iface lo inet loopback",
+        "iface eth0 inet static",
+        "address {{ ip }}",
+        "netmask {{ netmask }}",
+        "gateway {{ gateway }}",
+        "dns-nameservers {{ dns_ip }}"
+      ]
+    },
+    "/bootstrap.sh": {
+      "render": true,
+      "contents": [
+        "sudo hostname {{ hostname }}",
+        "sudo rm /bootstrap.sh",
+        "sudo sync",
+        "sudo shutdown -h now"
+      ]
+    }
+  }
+}
+
+

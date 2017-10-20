@@ -1,0 +1,12 @@
+<div class="alert_card" ng-class="{danger: getErrorTypeFromKey(error.key)=='EXCEPTION'}">
+	<div class="row">
+		<div class="col-sm-12">
+            <div class="pull-right text-muted small">{{ getErrorHash(error.key) }}</div>
+			<div><b ng-class="{'text-danger': getErrorTypeFromKey(error.key)=='EXCEPTION', 'text-primary': getErrorTypeFromKey(error.key)!='EXCEPTION'}">{{ error.key | getErrorTypeFromKey }}</b> :: <b>{{error.response.service_name}}<span ng-if="error.response.service_version"> - {{error.response.service_version}}</span></b> :: {{error.created | date:"yyyy-MM-dd HH:mm:ss"}}</div>
+			<pre style="background-color: #EEE">{{error.response.message}}</pre>
+            <div class="pull-right text-muted small">File: {{ error.key | getHashFromKey }}</div>
+		</div>
+	</div>
+</div>
+
+

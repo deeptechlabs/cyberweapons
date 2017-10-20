@@ -1,0 +1,69 @@
+# {app_name} installation instruction
+This will install your assemblyline deployment in a self contained VirtualMachine. All actions need to be performed from inside de virtual machine your installing.
+
+*NOTE: VM Appliance installation disables Assemblyline VirtualMachine service support.*
+
+**Prerequisites:**
+
+* You have to install the Ubuntu base OS before. See [Install Ubuntu Server](documentation.html?fname=install_ubuntu_server.md)
+* Your machine should have a minimum of 8GB RAM and 20GB of disk space(less is possible through SOLR/Riak configs)
+* You are on a network connected to the internet and can download file from Amazon S3
+* You've ran the create_deployment.py script and committed the output to your personal git repo as al_private.
+** If you didn't commit the code to your repo, you can always copy the files over manually instead of running the git clone command.
+
+## Install bootstrap and source
+
+### Install GIT and SSH
+
+    sudo apt-get update
+    sudo apt-get -y install git ssh
+
+### Update .bashrc
+
+    cat >> ~/.bashrc <<EOF
+    export PYTHONPATH=/opt/al/pkg
+    source /etc/default/al
+    EOF
+
+    source ~/.bashrc
+
+    # The source command will generate an error, but it will disappear once the install is complete.
+
+### Create repository directory
+
+    sudo mkdir -p ${{PYTHONPATH}} &&
+    sudo chown -R `whoami`:`groups | awk '{{print $1}}'` ${{PYTHONPATH}}/.. &&
+    cd ${{PYTHONPATH}}
+
+### Clone/create main repos
+
+    export BB_USER=<your bitbucket user>
+
+    cd $PYTHONPATH
+    git clone https://bitbucket.org/cse-assemblyline/assemblyline.git -b prod_3.2
+    git clone https://bitbucket.org/$BB_USER/al_private.git -b prod_3.2
+
+## Install Riak
+
+### Run install script
+
+    export AL_SEED=al_private.seeds.deployment.seed
+    /opt/al/pkg/assemblyline/al/install/install_riak.py
+    sudo reboot
+
+    export AL_SEED=al_private.seeds.deployment.seed
+    /opt/al/pkg/assemblyline/al/install/install_riak.py
+    unset AL_SEED
+
+## Install Core
+
+### Run install script
+
+    /opt/al/pkg/assemblyline/al/install/install_core.py
+
+## Install Worker
+
+### Run install script
+
+    /opt/al/pkg/assemblyline/al/install/install_worker.py
+

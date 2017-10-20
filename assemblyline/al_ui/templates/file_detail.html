@@ -1,0 +1,27 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - File detail [{{srl}}]{% endblock %}
+{% block js_import %}
+	<script src="/static/js/file_detail.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};srl='{{srl}}';options={{options}};start();"{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container">
+		<label ng-if="user.c12n_enforcing" style="margin-top: 8px;" class="label classification {{current_file.file_info.classification | class_label_color}}">{{current_file.file_info.classification | class_long}}</label>
+		<div ng-include="'/static/ng-template/file_detail.html'" ng-model="current_file"></div>
+	</section>
+	
+	<div ng-show="!current_file">
+		<div class="bigpad container">
+			<div class="bigpad jumbotron text-center">
+				<h2 class="text-muted">Loading</h2>
+				<div class="throbber">
+					Loading 
+				</div>
+			</div>
+		</div>
+	</div>
+	{%endraw%}
+{% endblock %}				

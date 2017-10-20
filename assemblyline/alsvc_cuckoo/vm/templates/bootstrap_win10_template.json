@@ -1,0 +1,18 @@
+{
+  "timeout": 120,
+  "files":
+    {
+      "/bootstrap.bat": {
+        "render": true,
+        "contents": [
+          "netsh interface ip set address name=\"Ethernet\" static {{ ip }} {{ netmask }} {{ gateway }}",
+          "netsh interface ip set dns name=\"Ethernet\" static {{ dns_ip }} validate=no",
+          "wmic ComputerSystem where name=\"%COMPUTERNAME%\" call Rename Name=\"{{ hostname }}\"",
+          "shutdown -s -f -t 1",
+          "del c:\bootstrap.bat"
+        ]
+      }
+    }
+}
+
+

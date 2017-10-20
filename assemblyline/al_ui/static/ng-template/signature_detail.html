@@ -1,0 +1,210 @@
+<div>
+	<ul class="nav nav-tabs" id="tabContent">
+		<li id="preview_tab" class="active"><a href="#preview" data-toggle="tab">Preview</a></li>
+		<li ng-hide="organisation!=current_signature.meta.organisation" id="edit_tab"><a href="#edit" data-toggle="tab"><span ng-show="editmode">Edit</span><span ng-show="!editmode">Add</span> Signature</a></li>
+		<li ng-if="current_signature_state=='TESTING'||current_signature_state=='STAGING'||user.is_admin" ng-show="editmode" id="state_tab"><a href="#state" data-toggle="tab">Change State</a></li>
+	</ul>
+				
+	<div class="tab-content">
+		<div class="tab-pane active" id="preview">
+			<div ng-if="user.c12n_enforcing" class="pad">
+				<div class="label classification {{current_signature.meta.classification | class_label_color}}">{{current_signature.meta.classification | class_long}}</div>
+			</div>
+			<pre style="word-wrap: normal;">{{current_signature | signature}}</pre>
+			<div ng-show="current_signature.depends.length > 0">
+				<p>Depends on rules:</p>
+				<ul>
+					<li ng-repeat="dep in current_signature.depends">
+						<a href="/search.html?query=name:{{dep}}">{{dep}}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="tab-pane" id="edit" ng-hide="organisation!=current_signature.meta.organisation">
+			<div class="pad">
+				<p ng-show="current_signature.meta.al_status=='DEPLOYED'||current_signature.meta.al_status=='NOISY'||current_signature.meta.al_status=='DISABLED'" class="text-center text-danger pad"><b>Warning:</b> Because this signature is not in a TESTING/STAGING phase anymore, any important modification will trigger a revision bump.</p>
+				<div ng-if="user.c12n_enforcing" class="label classification {{current_signature.meta.classification | class_label_color}}" data-toggle="modal" href="#classification_picker" ng-click="setClassification(current_signature.meta.classification)">{{current_signature.meta.classification | class_long}}</div>
+			</div>
+			<section class="row">
+				<div class="col-md-12">
+					<div class="pull-right">
+						<a class="btn btn-xs btn-link" href="/yara_standard.html"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>MALWARE&nbsp;Standard</a>&nbsp;
+						<a class="btn btn-xs btn-link" href="/static/pdf/yara.pdf"><span class="glyphicon glyphicon-book">&nbsp;</span>Yara&nbsp;User&nbsp;Manual</a>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Signature Type</label>&nbsp;&nbsp;<label class="label label-danger">required</label>
+						<select class="form-control input-sm" ng-model="current_signature.type">
+							<option>rule</option>
+							<option>private rule</option>
+							<option>global rule</option>
+							<option>global private rule</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Signature Name</label>&nbsp;&nbsp;<label class="label label-danger">required</label>
+						<input type="text" class="form-control input-sm " placeholder="Signature name" ng-model="current_signature.name">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Tags (space seperated)</label>
+						<input type="text" class="form-control input-sm" placeholder="Tags (space seperated)" ng-model="current_signature.tags" split-array="{splitter: ' '}">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Comments</label>
+						<textarea style="font-family: monospace;" wrap="off" class="form-control input-sm" rows="3" placeholder="No comments for this signature" ng-model="current_signature.comments" split-array="{splitter: '\n'}"></textarea>
+					</div>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-12">
+					<label class="form-group"><h4><strong>Metadata:</strong></h4></label>&nbsp;&nbsp;<label class="label label-danger">required</label>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">rule_group:</label>
+				</div>
+				<div class="col-md-10">
+					<select class="form-control input-sm" ng-model="current_signature.meta.rule_group">
+						<option>exploit</option>
+						<option>implant</option>
+						<option>info</option>
+						<option>technique</option>
+						<option>tool</option>
+					</select>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">{{current_signature.meta.rule_group}}:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta[current_signature.meta.rule_group]">
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-12 pad"></div>
+			</section>
+			<section ng-if="user.c12n_enforcing" class="row">
+				<div class="col-md-2">
+					<label class="control-label">classification:</label>
+				</div>
+				<div class="col-md-10">
+                    <input type="text" class="form-control input-sm clickable" ng-model="current_signature.meta.classification" readonly data-toggle="modal" href="#classification_picker" ng-click="setClassification(current_signature.meta.classification)">
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">description:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta.description">
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">id:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta.id" disabled>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">organisation:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta.organisation" disabled>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">poc:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta.poc">
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">rule_version:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta.rule_version" disabled>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-2">
+					<label class="control-label">yara_version:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta.yara_version" disabled>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-12 pad"></div>
+			</section>
+			<div ng-repeat="key in otherKeys() | orderBy:key " class="row">
+				<div class="col-md-2">
+					<label class="control-label">{{key}}:</label>
+				</div>
+				<div class="col-md-9">
+					<input type="text" class="form-control input-sm" ng-model="current_signature.meta[key]" ng-disabled="non_editable.indexOf(key)!=-1">
+				</div>
+				<div class="col-md-1">
+					<span ng-if="non_editable.indexOf(key)==-1" class="btn btn-sm btn-danger" ng-click="remove_meta(key);"><span class="glyphicon glyphicon-minus"></span></span>
+				</div>
+			</div>
+			<section class="row">
+				<div class="col-md-2">
+					<input type="text" class="form-control input-sm" ng-model="sig_temp_key">
+				</div>
+				<div class="col-md-9">
+					<input type="text" class="form-control input-sm" ng-model="sig_temp_val">
+				</div>
+				<div class="col-md-1">
+					<span class="btn btn-sm btn-success" ng-click="add_meta();"><span class="glyphicon glyphicon-plus"></span></span>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-12 pad">
+					<div class="form-group">
+						<label class="control-label"><h4><strong>Strings:</strong></h4></label>
+						<textarea style="font-family: monospace;" wrap="off" class="form-control input-sm" rows="6" placeholder="No Strings is this signature" ng-model="current_signature.strings" split-array="{splitter: '\n'}"></textarea>
+					</div>
+				</div>
+			</section>
+			<section class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="control-label"><h4><strong>Condition:</strong></h4></label>&nbsp;&nbsp;<label class="label label-danger">required</label>
+						<textarea style="font-family: monospace;" wrap="off" class="form-control input-sm" rows="3" placeholder="Add a condition to the signature" ng-model="current_signature.condition" split-array="{splitter: '\n'}"></textarea>
+					</div>
+				</div>
+			</section>
+
+			<button type="button" class="btn btn-primary" ng-click="save();">Save signature</button>
+		</div>
+		<div ng-show="editmode" class="tab-pane" id="state">
+			<div class="pad">
+				<h4>Changing the status of a signature</h4>
+				<p>Before changing the signature state take note of the following:</p>
+				<ul>
+					<li>Only when the signature is in state TESTING or STAGING that you can edit any part of it without triggering a revision bump.</li>
+					<li>After a signature has been either DEPLOYED, marked NOISY or DISABLED, it cannot go back in TESTING or STAGING status.</li>
+					<li>Any important modification to a signature in DEPLOYED, NOISY or DISABLED status triggers a revision bump.</li>
+					<li>Only one revision of a signature can run at the same time in the system.</li>
+				</ul>
+				<label>Choose the new signature state:</label>
+				<select class="form-control" ng-model="current_signature.meta.al_status" ng-change="set_state_change()">
+					<option ng-if="user.is_admin && current_signature_state!='INVALID'">DEPLOYED</option>
+					<option ng-if="user.is_admin && current_signature_state!='INVALID'">NOISY</option>
+					<option ng-if="user.is_admin && current_signature_state!='INVALID'">DISABLED</option>
+					<option ng-if="current_signature_state=='TESTING'||current_signature_state=='STAGING'||current_signature_state=='INVALID'">STAGING</option>
+					<option ng-if="current_signature_state=='TESTING'||current_signature_state=='STAGING'||current_signature_state=='INVALID'">TESTING</option>
+                    <option ng-if="current_signature_state=='INVALID'">INVALID</option>
+				</select>
+			</div>
+			<button type="button" class="btn btn-primary" ng-click="change_state(current_signature.meta.al_status);" ng-disabled="!state_changed">Save state</button>
+		</div>
+	</div>
+</div>

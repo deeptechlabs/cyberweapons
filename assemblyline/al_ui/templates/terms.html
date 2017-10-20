@@ -1,0 +1,46 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Terms of service{% endblock %}
+{% block js_import %}
+	<script src="/static/js/terms.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};"{% endblock %}
+{% block section %}
+    <section id="main" role="main" style="padding-top: 25px;">
+        {%raw%}
+        <section id="appContent" class="container">
+            <div class="header_title text-right">
+                <h1>Terms of Service</h1>
+                <h4 class="text-muted">:: {{user.name}} ::</h4>
+            </div>
+
+            <div class="banner">
+                {%endraw%}{% block banner %}<img class="banner_img" src="/static/images/banner.svg">{% endblock %}{%raw%}
+            </div>
+            <section id="section_tos" class="text-large bigpad">
+                {%endraw%}{{ tos }}{%raw%}
+            </section>
+            {%endraw%}
+            {% if agreed_date %}
+            <div class="bigpad text-center">
+                <!--suppress HtmlUnknownAttribute -->
+                <div class="text-large text-muted"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Agreed to Terms of Service on: {{ agreed_date }}</div>
+            </div>
+            {% else %}
+            <div class="checkbox">
+                <label ng-class="{checked:tos}">
+                    <input type="checkbox" ng-model="tos"/> I, <i>{{ user.name }}</i>, agree to the Terms of Service previously mentioned
+                </label>
+            </div>
+            <div class="bigpad text-center">
+                <!--suppress HtmlUnknownAttribute -->
+                <button class="btn btn-primary bigbutton" ng-click="send_tos_agreement();" ng-disabled="!tos">Agree to Terms of Service</button>
+
+            </div>
+            {% endif %}
+            {%raw%}
+        </section>
+        {%endraw%}
+    </section>
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="user"{% endblock %}

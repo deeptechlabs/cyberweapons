@@ -1,0 +1,86 @@
+global
+    log      127.0.0.1   local0
+    log      127.0.0.1   local1 notice
+    maxconn  8192
+    user     haproxy
+    group    haproxy
+    daemon
+    quiet
+
+defaults
+    log      global
+    option   dontlognull
+    option   redispatch
+    option   allbackups
+    maxconn  4096
+    timeout  connect 5s
+    timeout  client  50s
+    timeout  server  50s
+
+backend riak_rest_backend
+    mode     http
+    balance  leastconn
+    option   httpchk GET /ping
+    option   httplog
+    timeout  server 10s
+    {% for node in nodes %}server {{ node['hostname'] }} {{ node['ip'] }}:8098 weight 1 maxconn 1024 check{% endfor %}
+
+frontend riak_rest
+    bind     0.0.0.0:{{datastore_stream_port}}
+    mode     http
+    maxconn  4096
+    option   contstats
+    timeout  client 10s
+    default_backend riak_rest_backend
+
+backend riak_solr_backend
+    mode     http
+    balance  leastconn
+    option   httpchk HEAD /internal_solr/profile/admin/ping\ HTTP/1.1\r\nHost:\ solr
+    option   httplog
+    option   http-pretend-keepalive
+    option   http-server-close
+    timeout  check 5s
+    {% for node in nodes %}server {{ node['hostname'] }} {{ node['ip'] }}:8093 weight 1 maxconn 1024 check{% endfor %}
+
+frontend riak_solr
+    bind     0.0.0.0:{{datastore_solr_port}}
+    mode     http
+    maxconn  4096
+    option   contstats
+    default_backend riak_solr_backend
+
+
+backend riak_pb_backend
+    mode     tcp
+    balance  leastconn
+    option   tcpka
+    option   srvtcpka
+    {% for node in nodes %}server {{ node['hostname'] }} {{ node['ip'] }}:8087 weight 1 maxconn 1024 check{% endfor %}
+
+frontend riak_pb
+    bind     0.0.0.0:{{datastore_port}}
+    mode     tcp
+    maxconn  4096
+    option   tcplog
+    option   contstats
+    option   tcpka
+    option   srvtcpka
+    default_backend riak_pb_backend
+
+{% if include_redis %}defaults REDIS
+    mode     tcp
+    timeout  connect 4s
+    timeout  server 30s
+    timeout  client 30s
+
+frontend redis
+    bind     0.0.0.0:6379
+    maxconn  1024
+    default_backend redis_backend
+
+backend redis_backend
+    server redis {{ redis_ip }}:6379 maxconn 1024 check inter 1s{% endif %}
+
+{% if worker_extensions %}{{ worker_extensions }}{% endif %}
+

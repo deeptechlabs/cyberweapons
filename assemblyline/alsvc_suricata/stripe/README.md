@@ -1,0 +1,1 @@
+The files in this folder are from https://github.com/theclam/stripe

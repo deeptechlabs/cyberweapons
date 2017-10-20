@@ -1,0 +1,375 @@
+<!--
+languages.xml is part of the pestudio (www.winitor.com)
+It contains the languages that will be detected as blackListed by pestudio. 
+-->
+<xml version="1.0" encoding="utf-8">
+
+  <!-- 
+  You can edit this part using the id according to your needs
+  Please use following URL as Reference for the appropriate ids
+  http://msdn.microsoft.com/en-us/library/dd318693(v=vs.85).aspx 
+  -->
+  <languages>
+    <language id="0x0C00" bl="0">neutral</language>
+    <language id="0x1400" bl="0">neutral</language>
+    <language id="0x007F" bl="0">neutral</language>
+    <language id="0x0000" bl="0">neutral</language>
+    <language id="0x0800" bl="0">neutral</language>
+    <language id="0x1000" bl="0">neutral</language>
+    <language id="0x080c" bl="1">French Belgium</language>
+    <language id="0x0C0C" bl="1">French Canada</language>
+    <language id="0x040c" bl="0">French France</language>
+    <language id="0x140C" bl="0">French Luxembourg</language>
+    <language id="0x180C" bl="0">French Monaco</language>
+    <language id="0x100C" bl="0">French Switzerland</language>
+    <language id="0x2801" bl="1">Syria</language>
+    <language id="0x0401" bl="1">Saudi Arabia</language>
+    <language id="0x0436" bl="0">Afrikaans</language>
+    <language id="0x041C" bl="1">Albanian</language>
+    <language id="0x0484" bl="0">Alsatian</language>
+    <language id="0x045E" bl="0">Amharic</language>
+    <language id="0x1401" bl="0">Arabic</language>
+    <language id="0x3C01" bl="0">Arabic Bahrain</language>
+    <language id="0x0C01" bl="0">Arabic Egypt</language>
+    <language id="0x0801" bl="0">Arabic Iraq</language>
+    <language id="0x2C01" bl="0">Arabic Jordan</language>
+    <language id="0x3401" bl="0">Arabic Kuwait</language>
+    <language id="0x3001" bl="0">Arabic Lebanon</language>
+    <language id="0x1001" bl="0">Arabic Libya</language>
+    <language id="0x1801" bl="0">Arabic Morocco</language>
+    <language id="0x2001" bl="0">Arabic Oman</language>
+    <language id="0x4001" bl="0">Arabic Qatar</language>
+    <language id="0x0401" bl="0">Arabic Saudi</language>
+    <language id="0x2801" bl="0">Arabic Syria</language>
+    <language id="0x1C01" bl="0">Arabic Tunisia</language>
+    <language id="0x3801" bl="0">Arabic U.A.E</language>
+    <language id="0x042B" bl="0">Armenian</language>
+    <language id="0x044D" bl="0">Assamese</language>
+    <language id="0x082C" bl="0">Azeri</language>
+    <language id="0x0445" bl="0">Bangla</language>
+    <language id="0x046D" bl="0">Bashkir</language>
+    <language id="0x042D" bl="0">Basque</language>
+    <language id="0x0423" bl="0">Belarusian</language>
+    <language id="0x781A" bl="1">Bosnian</language>
+    <language id="0x201A" bl="1">Bosnian</language>
+    <language id="0x047E" bl="1">Breton</language>
+    <language id="0x0402" bl="0">Bulgarian</language>
+    <language id="0x0492" bl="0">Central Kurdish</language>
+    <language id="0x045C" bl="0">Cherokee</language>
+    <language id="0x0403" bl="0">Catalan</language>
+    <language id="0x0C04" bl="1">Chinese Hong Kong</language>
+    <language id="0x1404" bl="1">Chinese Macao SAR</language>
+    <language id="0x1004" bl="1">Chinese Singapore</language>
+    <language id="0x0804" bl="1">Chinese Simplified</language>
+    <language id="0x0404" bl="1">Chinese Traditional</language>
+    <language id="0x0483" bl="0">Corsican</language>
+    <language id="0x001A" bl="0">Croatian neutral</language>
+    <language id="0x101A" bl="0">Croatian Bosnia Herzegovina</language>
+    <language id="0x041A" bl="0">Croatian Croatia</language>
+    <language id="0x0405" bl="1">Czech</language>
+    <language id="0x0406" bl="0">Danish Denmark</language>
+    <language id="0x048C" bl="1">Dari</language>
+    <language id="0x0465" bl="1">Divehi Maldives </language>
+    <language id="0x0813" bl="0">Belgium Dutch</language>
+    <language id="0x0413" bl="0">netherlands</language>
+    <language id="0x0409" bl="0">English United States</language>
+    <language id="0x0C09" bl="0">English Australia</language>
+    <language id="0x2809" bl="0">English Belize</language>
+    <language id="0x1009" bl="0">English Canada</language>
+    <language id="0x2409" bl="0">English Caribbean</language>
+    <language id="0x4009" bl="0">English India</language>
+    <language id="0x1809" bl="0">English Ireland</language>
+    <language id="0x1809" bl="0">English Ireland</language>
+    <language id="0x2009" bl="0">English Jamaica</language>
+    <language id="0x4409" bl="0">English Malaysia</language>
+    <language id="0x1409" bl="0">English new Zealand</language>
+    <language id="0x3409" bl="0">English Philippines</language>
+    <language id="0x4809" bl="0">English Singapore</language>
+    <language id="0x1c09" bl="0">English South Africa</language>
+    <language id="0x2C09" bl="0">English Trinidad and Tobago</language>
+    <language id="0x0809" bl="0">English United Kingdom</language>
+    <language id="0x3009" bl="0">English Zimbabwe</language>
+    <language id="0x0425" bl="0">Estonian</language>
+    <language id="0x0438" bl="0">Faroese</language>
+    <language id="0x0464" bl="0">Filipino</language>
+    <language id="0x040B" bl="0">Finnish</language>
+    <language id="0x0462" bl="0">Frisian</language>
+    <language id="0x0456" bl="0">Galician</language>
+    <language id="0x0437" bl="0">Georgian</language>
+    <language id="0x0400" bl="0">neutral</language>
+    <language id="0x0407" bl="0">German</language>
+    <language id="0x0C07" bl="0">German Austria</language>
+    <language id="0x1407" bl="0">German Lichtenstein</language>
+    <language id="0x1007" bl="0">German Luxembourg</language>
+    <language id="0x0807" bl="0">German Switzerland</language>
+    <language id="0x0408" bl="0">Greek</language>
+    <language id="0x046F" bl="0">Greenlandic</language>
+    <language id="0x0447" bl="0">Gujarati</language>
+    <language id="0x0468" bl="0">Hausa</language>
+    <language id="0x0475" bl="1">Hawiian</language>
+    <language id="0x040D" bl="0">Hebrew</language>
+    <language id="0x0439" bl="0">Hindi</language>
+    <language id="0x040E" bl="0">Hungarian</language>
+    <language id="0x040F" bl="0">Icelandic</language>
+    <language id="0x0470" bl="0">Igb</language>
+    <language id="0x0421" bl="0">Indonesian</language>
+    <language id="0x085D" bl="0">Inuktitut</language>
+    <language id="0x083C" bl="0">Irish</language>
+    <language id="0x0434" bl="0">isiXhosa</language>
+    <language id="0x0435" bl="0">isiZulu</language>
+    <language id="0x0410" bl="0">Italian</language>
+    <language id="0x0411" bl="0">Japanese</language>
+    <language id="0x044B" bl="0">Kannada</language>
+    <language id="0x043F" bl="0">Kazakh</language>
+    <language id="0x0453" bl="0">Khmer</language>
+    <language id="0x0486" bl="0">Kiche</language>
+    <language id="0x0487" bl="0">Kinyarwanda</language>
+    <language id="0x0457" bl="0">Konkani</language>
+    <language id="0x0412" bl="1">Korean</language>
+    <language id="0x0440" bl="0">Kyrgyz</language>
+    <language id="0x0454" bl="0">Lao</language>
+    <language id="0x0426" bl="0">Latvian</language>
+    <language id="0x0427" bl="0">Lithuanian</language>
+    <language id="0x082E" bl="0">Lower Sorbian</language>
+    <language id="0x046E" bl="0">Luxembourgish</language>
+    <language id="0x042F" bl="0">Macedonian</language>
+    <language id="0x083E" bl="0">Malay</language>
+    <language id="0x044C" bl="0">Malayalam</language>
+    <language id="0x043A" bl="0">Maltese</language>
+    <language id="0x0481" bl="1">Maori</language>
+    <language id="0x047A" bl="0">Mapudungun</language>
+    <language id="0x044E" bl="0">Marathi</language>
+    <language id="0x047C" bl="0">Mohawk</language>
+    <language id="0x0450" bl="0">Mongolian</language>
+    <language id="0x0461" bl="0">nepali</language>
+    <language id="0x0414" bl="0">norwegian</language>
+    <language id="0x0482" bl="0">Occitan</language>
+    <language id="0x0448" bl="0">Oriya</language>
+    <language id="0x0463" bl="0">Pashto</language>
+    <language id="0x0429" bl="0">Persian</language>
+    <language id="0x0415" bl="0">Polish</language>
+    <language id="0x0416" bl="0">Portuguese</language>
+    <language id="0x0867" bl="0">Pular</language>
+    <language id="0x0446" bl="0">Punjabi</language>
+    <language id="0x046B" bl="0">Quechua</language>
+    <language id="0x0418" bl="1">Romanian</language>
+    <language id="0x0417" bl="0">Romansh</language>
+    <language id="0x0419" bl="1">Russian</language>
+    <language id="0x0485" bl="0">Sakha</language>
+    <language id="0x243B" bl="0">Sami</language>
+    <language id="0x103B" bl="0">Sami</language>
+    <language id="0x0C3B" bl="0">Sami</language>
+    <language id="0x203B" bl="0">Sami</language>
+    <language id="0x183B" bl="0">Sami</language>
+    <language id="0x044F" bl="0">Sanskrit</language>
+    <language id="0x7C1A" bl="0">Serbian</language>
+    <language id="0x046C" bl="0">Sesotho sa Leboa</language>
+    <language id="0x0832" bl="0">Setswana Tswana</language>
+    <language id="0x0859" bl="0">Sindhi</language>
+    <language id="0x045B" bl="0">Sinhala</language>
+    <language id="0x041B" bl="1">Slovak</language>
+    <language id="0x0424" bl="1">Slovenian</language>
+    <language id="0x2C0A" bl="0">Spanish</language>
+    <language id="0x400A" bl="0">Spanish Bolivia</language>
+    <language id="0x340A" bl="0">Spanish Chile</language>
+    <language id="0x240A" bl="0">Spanish Colombia</language>
+    <language id="0x140A" bl="0">Spanish Costa Rica</language>
+    <language id="0x1C0A" bl="0">Spanish Dominican Republic</language>
+    <language id="0x300A" bl="0">Spanish Ecuador</language>
+    <language id="0x440A" bl="0">Spanish El Salvador</language>
+    <language id="0x100A" bl="0">Spanish Guatemala</language>
+    <language id="0x480A" bl="0">Spanish Honduras</language>
+    <language id="0x080A" bl="0">Spanish Mexico</language>
+    <language id="0x4C0A" bl="0">Spanish nicaragua</language>
+    <language id="0x180A" bl="0">Spanish Panama</language>
+    <language id="0x3C0A" bl="0">Spanish Paraguay</language>
+    <language id="0x280A" bl="0">Spanish Peru</language>
+    <language id="0x500A" bl="0">Spanish Puerto Rico</language>
+    <language id="0x0C0A" bl="0">Spanish Spain</language>
+    <language id="0x040A" bl="0">Spanish Spain Traditional</language>
+    <language id="0x540A" bl="0">Spanish United States</language>
+    <language id="0x380A" bl="0">Spanish Uruguay</language>
+    <language id="0x200A" bl="0">Spanish Venezuela</language>
+    <language id="0x0441" bl="0">Swahili</language>
+    <language id="0x081D" bl="0">Swedish</language>
+    <language id="0x041D" bl="0">Swedish</language>
+    <language id="0x045A" bl="0">Syria</language>
+    <language id="0x0428" bl="0">Tajik</language>
+    <language id="0x085F" bl="0">Tamazight</language>
+    <language id="0x0449" bl="0">Tamil</language>
+    <language id="0x0444" bl="0">Tatar</language>
+    <language id="0x044A" bl="1">Telugu</language>
+    <language id="0x041E" bl="0">Thai</language>
+    <language id="0x0451" bl="0">Tibetan</language>
+    <language id="0x0873" bl="0">Tigrinya</language>
+    <language id="0x041F" bl="0">Turkish</language>
+    <language id="0x0442" bl="0">Turkmen</language>
+    <language id="0x0422" bl="0">Ukrainian</language>
+    <language id="0x042E" bl="0">Upper Sorbian</language>
+    <language id="0x0820" bl="0">Urdu</language>
+    <language id="0x0480" bl="0">Uyghur</language>
+    <language id="0x0843" bl="0">Uzbek</language>
+    <language id="0x0803" bl="0">Valencian</language>
+    <language id="0x042A" bl="0">Vietnamese</language>
+    <language id="0x0452" bl="0">Welsh</language>
+    <language id="0x0488" bl="0">Wolof</language>
+    <language id="0x0478" bl="0">Yi</language>
+    <language id="0x046A" bl="0">Yoruba</language>
+  </languages>
+
+  <codepages>
+    <codepage id="037">IBM EBCDIC US-Canada</codepage>
+    <codepage id="437">OEM United States</codepage>
+    <codepage id="500">IBM EBCDIC International</codepage>
+    <codepage id="708">Arabic</codepage>
+    <codepage id="709">Arabic</codepage>
+    <codepage id="710">Arabic</codepage>
+    <codepage id="720">Arabic</codepage>
+    <codepage id="737">OEM Greek)</codepage>
+    <codepage id="775">OEM Baltic</codepage>
+    <codepage id="850">OEM Multilingual Latin 1</codepage>
+    <codepage id="852">OEM Latin 2</codepage>
+    <codepage id="855">OEM Cyrillic (primarily Russian)</codepage>
+    <codepage id="857">OEM Turkish</codepage>
+    <codepage id="858">OEM Multilingual Latin 1 + Euro symbol</codepage>
+    <codepage id="860">OEM Portuguese</codepage>
+    <codepage id="861">OEM Icelandic</codepage>
+    <codepage id="862">OEM Hebrew</codepage>
+    <codepage id="863">OEM French Canadian</codepage>
+    <codepage id="864">OEM Arabic</codepage>
+    <codepage id="865">OEM nordic</codepage>
+    <codepage id="866">OEM Russian</codepage>
+    <codepage id="869">OEM Modern Greek</codepage>
+    <codepage id="870">IBM EBCDIC Multilingual</codepage>
+    <codepage id="874">ANSI/OEM Thai</codepage>
+    <codepage id="875">EBCDIC Greek Modern</codepage>
+    <codepage id="932">ANSI/OEM Japanese</codepage>
+    <codepage id="936">ANSI/OEM Simplified Chinese</codepage>
+    <codepage id="949">ANSI/OEM Korean</codepage>
+    <codepage id="950">ANSI/OEM Traditional Chinese</codepage>
+    <codepage id="1026">IBM EBCDIC Turkish (Latin 5)</codepage>
+    <codepage id="1047">IBM EBCDIC Latin 1/Open System</codepage>
+    <codepage id="1140">IBM EBCDIC US-Canada</codepage>
+    <codepage id="1141">IBM EBCDIC Germany</codepage>
+    <codepage id="1142">IBM EBCDIC Denmark-Norway</codepage>
+    <codepage id="1143">IBM EBCDIC Finland-Sweden</codepage>
+    <codepage id="1144">IBM EBCDIC Italy</codepage>
+    <codepage id="1145">IBM EBCDIC Latin America-Spain</codepage>
+    <codepage id="1146">IBM EBCDIC United Kingdom</codepage>
+    <codepage id="1147">IBM EBCDIC France</codepage>
+    <codepage id="1148">IBM EBCDIC International</codepage>
+    <codepage id="1149">IBM EBCDIC Icelandic</codepage>
+    <codepage id="1200">Unicode UTF-16, little endian</codepage>
+    <codepage id="1201">Unicode UTF-16, big endian</codepage>
+    <codepage id="1250">ANSI Central European</codepage>
+    <codepage id="1251">ANSI Cyrillic</codepage>
+    <codepage id="1252">ANSI Latin 1</codepage>
+    <codepage id="1253">ANSI Greek</codepage>
+    <codepage id="1254">ANSI Turkish</codepage>
+    <codepage id="1255">ANSI Hebrew</codepage>
+    <codepage id="1256">ANSI Arabic</codepage>
+    <codepage id="1257">ANSI Baltic</codepage>
+    <codepage id="1258">ANSI/OEM Vietnamese</codepage>
+    <codepage id="1361">Korean (Johab)</codepage>
+    <codepage id="10000">MAC Roman</codepage>
+    <codepage id="10001">Japanese (Mac)</codepage>
+    <codepage id="10002">MAC Traditional Chinese (Big5)</codepage>
+    <codepage id="10003">Korean</codepage>
+    <codepage id="10004">Arabic</codepage>
+    <codepage id="10005">Hebrew</codepage>
+    <codepage id="10006">Greek</codepage>
+    <codepage id="10007">Cyrillic</codepage>
+    <codepage id="10008">MAC Simplified Chinese</codepage>
+    <codepage id="10010">Romanian</codepage>
+    <codepage id="10017">Ukrainian</codepage>
+    <codepage id="10021">Thai</codepage>
+    <codepage id="10029">MAC Latin 2</codepage>
+    <codepage id="10079">Icelandic</codepage>
+    <codepage id="10081">Turkish</codepage>
+    <codepage id="10082">Croatian</codepage>
+    <codepage id="12000">UTF-32, little endian</codepage>
+    <codepage id="12001">Unicode UTF-32, big endian</codepage>
+    <codepage id="20000">CNS Taiwan</codepage>
+    <codepage id="20001">TCA Taiwan</codepage>
+    <codepage id="20002">Eten Taiwan</codepage>
+    <codepage id="20003">IBM5550 Taiwan</codepage>
+    <codepage id="20004">TeleText Taiwan</codepage>
+    <codepage id="20005">Wang Taiwan</codepage>
+    <codepage id="20105">IRV International Alphabet</codepage>
+    <codepage id="20106">IA5 German</codepage>
+    <codepage id="20107">IA5 Swedish</codepage>
+    <codepage id="20108">IA5 norwegian</codepage>
+    <codepage id="20127">US-ASCII</codepage>
+    <codepage id="20261">T.61</codepage>
+    <codepage id="20269">ISO 6937 non-Spacing Accent</codepage>
+    <codepage id="20273">IBM EBCDIC Germany</codepage>
+    <codepage id="20277">IBM EBCDIC Denmark-norway</codepage>
+    <codepage id="20278">IBM EBCDIC Finland-Sweden</codepage>
+    <codepage id="20280">IBM EBCDIC Italy</codepage>
+    <codepage id="20284">IBM EBCDIC Latin America-Spain</codepage>
+    <codepage id="20285">IBM EBCDIC United Kingdom</codepage>
+    <codepage id="20290">IBM EBCDIC Japanese Katakana Extended</codepage>
+    <codepage id="20297">IBM EBCDIC France</codepage>
+    <codepage id="20420">IBM EBCDIC Arabic</codepage>
+    <codepage id="20423">IBM EBCDIC Greek</codepage>
+    <codepage id="20424">IBM EBCDIC Hebrew</codepage>
+    <codepage id="20833">IBM EBCDIC Korean Extended</codepage>
+    <codepage id="20838">IBM EBCDIC Thai</codepage>
+    <codepage id="20866">Russian</codepage>
+    <codepage id="20871">IBM EBCDIC Icelandic</codepage>
+    <codepage id="20880">IBM EBCDIC Cyrillic Russian</codepage>
+    <codepage id="20905">IBM EBCDIC Turkish</codepage>
+    <codepage id="20924">IBM EBCDIC Latin</codepage>
+    <codepage id="20932">Japanese</codepage>
+    <codepage id="20936">Simplified Chinese</codepage>
+    <codepage id="20949">Korean Wansung</codepage>
+    <codepage id="21025">IBM EBCDIC Cyrillic Serbian-Bulgarian</codepage>
+    <codepage id="21027">deprecated</codepage>
+    <codepage id="21866">Ukrainian (KOI8-U)</codepage>
+    <codepage id="28591">ISO 8859-1 Latin 1</codepage>
+    <codepage id="28592">ISO 8859-2 Central European</codepage>
+    <codepage id="28593">ISO 8859-3 Latin 3</codepage>
+    <codepage id="28594">ISO 8859-4 Baltic</codepage>
+    <codepage id="28595">ISO 8859-5 Cyrillic</codepage>
+    <codepage id="28596">ISO 8859-6 Arabic</codepage>
+    <codepage id="28597">SO 8859-7 Greek</codepage>
+    <codepage id="28598">ISO 8859-8 Hebrew</codepage>
+    <codepage id="28599">ISO 8859-9 Turkish</codepage>
+    <codepage id="28603">ISO 8859-13 Estonian</codepage>
+    <codepage id="28605">ISO 8859-15 Latin 9</codepage>
+    <codepage id="29001">Europa 3</codepage>
+    <codepage id="38598">ISO 8859-8 Hebrew</codepage>
+    <codepage id="50220">ISO 2022 Japanese</codepage>
+    <codepage id="50221">ISO 2022 Japanese</codepage>
+    <codepage id="50222">ISO 2022 Japanese</codepage>
+    <codepage id="50225">ISO 2022 Korean</codepage>
+    <codepage id="50227">ISO 2022 Simplified Chinese</codepage>
+    <codepage id="50229">ISO 2022 Traditional Chinese</codepage>
+    <codepage id="50930">EBCDIC Japanese Extended</codepage>
+    <codepage id="50931">EBCDIC US-Canada and Japanese</codepage>
+    <codepage id="50933">EBCDIC Korean Extended and Korean</codepage>
+    <codepage id="50935">EBCDIC Simplified Chinese Extended and Simplified Chinese</codepage>
+    <codepage id="50936">EBCDIC Simplified Chinese</codepage>
+    <codepage id="50937">EBCDIC US-Canada and Traditional Chinese</codepage>
+    <codepage id="50939">EBCDIC Japanese (Latin) Extended and Japanese</codepage>
+    <codepage id="51932">EUC Japanese</codepage>
+    <codepage id="51936">EUC Simplified Chinese</codepage>
+    <codepage id="51949">EUC Korean</codepage>
+    <codepage id="51950">EUC Traditional Chinese</codepage>
+    <codepage id="52936">HZ-GB2312 Simplified Chinese</codepage>
+    <codepage id="54936">GB18030 Simplified Chinese</codepage>
+    <codepage id="57002">ISCII Devanagari</codepage>
+    <codepage id="57003">ISCII Bengali</codepage>
+    <codepage id="57004">ISCII Tamil</codepage>
+    <codepage id="57005">ISCII Telugu</codepage>
+    <codepage id="57006">ISCII Assamese</codepage>
+    <codepage id="57007">ISCII Oriya</codepage>
+    <codepage id="57008">ISCII Kannada</codepage>
+    <codepage id="57009">ISCII Malayalam</codepage>
+    <codepage id="57010">ISCII Gujarati</codepage>
+    <codepage id="57011">ISCII Punjabi</codepage>
+    <codepage id="65000">Unicode (UTF-7)</codepage>
+    <codepage id="65001">Unicode (UTF-8)</codepage>
+  </codepages>
+
+</xml>

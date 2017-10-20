@@ -1,0 +1,31 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Signature detail [{{sid}} r.{{rev}}]{% endblock %}
+{% block js_import %}
+	<script src="/static/js/signature_detail.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};sid='{{sid}}';rev='{{rev}}';organisation='{{organisation}}';options={{options}};start();"{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<section id="appContent" class="container" ng-show="current_signature">
+		<div class="header_title text-right">
+			<h1>Signature Detail</h1>
+			<h4 class="text-muted">:: {{sid}} r.{{rev}} ::</h4>
+			<div class="text-large">
+				<span ng-show="current_signature.meta.al_status=='DEPLOYED'" class="label label-success">{{current_signature.meta.al_status}}</span>
+				<span ng-show="current_signature.meta.al_status=='NOISY'" class="label label-info">{{current_signature.meta.al_status}}</span>
+				<span ng-show="current_signature.meta.al_status=='DISABLED'" class="label label-danger">{{current_signature.meta.al_status}}</span>
+				<span ng-show="current_signature.meta.al_status=='TESTING'" class="label label-warning">{{current_signature.meta.al_status}}</span>
+				<span ng-show="current_signature.meta.al_status=='STAGING'" class="label label-primary">{{current_signature.meta.al_status}}</span>
+                <span ng-show="current_signature.meta.al_status=='INVALID'" class="label label-default">{{current_signature.meta.al_status}}</span>
+			</div>
+		</div>
+		<div>
+		    <div signature-detail></div>
+        	<div ng-controller="classificationCtrl" classification-picker></div>
+		</div>
+	</section>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="current_signature"{% endblock %}

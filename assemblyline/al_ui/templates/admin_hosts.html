@@ -1,0 +1,414 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Service hosts{% endblock %}
+{% block js_import %}
+	<script src="/static/js/socket.io/socket.io.min.js"></script>
+	<script src="/static/js/socket.io/ng-socket.js"></script>
+	<script src="/static/js/admin_hosts.js"></script>
+{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block body_param %}ng-class="{'disconnected': socket_status=='fail' && !loading}"{% endblock %}
+{% block section %}
+	<div class="table" style="padding-top: 80px; width: 99%;">
+	{%raw%}
+		<div class="row" style="margin: 0;">
+			<div class="col-md-2 col-sm-5 col-xs-5">
+				<div class="small text-muted">Controller actions:</div>
+				<div> 
+					<span class="btn btn-xs text-muted text-icon-sm icon-refresh" title="Restart Hostagents" ng-click="action_restart_all();"></span>&nbsp;
+					<span class="btn btn-xs text-muted text-icon-sm icon-stop" title="Stop Hostagents" ng-click="action_stop_all();"></span>&nbsp;
+					<span class="btn btn-xs text-muted text-icon-sm icon-play" title="Start Hostagents" ng-click="action_start_all()"></span>&nbsp;
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-5 col-xs-5">
+				<div class="small text-muted">Hostagent actions:</div>
+				<div>
+					<span class="btn btn-xs text-muted text-icon icon-circlepause" title="Pause all hostagents task processing" ng-click="action_pause_all();"></span>&nbsp;
+					<span class="btn btn-xs text-muted text-icon icon-circleplay" title="Resume all hostagents task processing" ng-click="action_resume_all()"></span>
+				</div>
+			</div>
+			<div class="col-md-1 col-sm-2 col-xs-2">
+				<div class="small text-muted">Hosts:</div>
+				<div>
+					<span class="btn btn-xs text-muted text-icon-sm icon-fliphorizontal" title="Toggle Host Cards" ng-click="flipAll();"></span>
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-12 col-xs-12">
+				<div class="input-group">
+					<input class="form-control" type="text" ng-model="searchText" placeholder="Filter">
+					<span ng-class="{clickable: machine_type!='metal'||searchText!=''}" class="input-group-addon" ng-click="resetFilter();"><span class="glyphicon glyphicon-remove"></span></span>
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-12 col-xs-12">
+				<span style="font-size: 140%" class="text-danger" ng-show="socket_status=='fail' && !loading"><strong>Disconnected</strong></span>
+				<span style="font-size: 140%" class="text-muted" ng-show="socket_status=='init' && !loading"><strong>Initializing</strong></span>
+			</div>
+			<div class="col-md-2 col-sm-12 col-xs-12">
+				<select class="form-control" ng-model="machine_type">	
+					<option value="metal">Physical Servers</option>
+					<option value="vm">Virtual Machines</option>
+					<option value="both">Both</option>
+				</select>
+			</div>
+		</div>
+        <div class="row" style="margin: 0;">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-click="flip(host.mac_address);" ng-repeat="host in host_list | orderBy:'hostname' | filter:doSearch">
+                <div class="perspective">
+                    <div id="{{host.mac_address}}" name="host_card" class="host_card" ng-class="{'disabled': get_node_state(host) == 'disabled', 'up': get_node_state(host) == 'up', 'flex': get_node_state(host) == 'flex', 'down': get_node_state(host) == 'down', 'degraded': get_node_state(host) == 'degraded'}">
+                        <figure class="front">
+                            <div style="height: 130px">
+                            <div class="pull-right text-muted small">{{host.mac_address}}</div>
+                            <div class="title">{{host.hostname | uppercase}}<span ng-show="host.parent_name" class="text-muted small">&nbsp;[{{host.parent_name}}]</span></div>
+                            <div>{{host.ip}}</div>
+                            <div class="small nowrap">{{host.machine_info.cores}} cores - {{host.machine_info.memory}} GB [{{host.machine_info.os}}]</div>
+                            <div ng-show="host.resources" class="row">
+                                <div class="col-xs-6" title="CPU usage">
+                                    <i class="text-icon icon-cpualt-processoralt"></i>&nbsp;
+                                    <span class="usage">
+                                        <svg ng-style="{ width: host.resources['cpu_usage.percent'] + '%' }" height="14">
+                                            <linearGradient id="{{host.mac_address}}_gradient_cpu" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                <stop offset="0%" stop-color="#0F0"/>
+                                                <stop offset="100%" stop-color="#F00"/>
+                                            </linearGradient>
+                                            <rect x="0" y="0" width="90" height="14" fill="url(#{{host.mac_address}}_gradient_cpu)"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="col-xs-6" title="Diskspace usage">
+                                    <i class="text-icon icon-diskspace"></i>&nbsp;
+                                    <span class="usage">
+                                        <svg ng-style="{ width: host.resources['disk_usage.percent'] + '%' }" height="16">
+                                            <linearGradient id="{{host.mac_address}}_gradient_disk" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                <stop offset="0%" stop-color="#0F0"/>
+                                                <stop offset="100%" stop-color="#F00"/>
+                                            </linearGradient>
+                                            <rect x="0" y="0" width="90" height="14" fill="url(#{{host.mac_address}}_gradient_disk)"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="col-xs-6" title="Memory usage">
+                                    <i class="text-icon icon-ram"></i>&nbsp;
+                                    <span class="usage">
+                                        <svg ng-style="{ width: host.resources['mem_usage.percent'] + '%' }" height="14">
+                                            <linearGradient id="{{host.mac_address}}_gradient_mem" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                <stop offset="0%" stop-color="#0F0"/>
+                                                <stop offset="100%" stop-color="#F00"/>
+                                            </linearGradient>
+                                            <rect x="0" y="0" width="90" height="14" fill="url(#{{host.mac_address}}_gradient_mem)"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <span ng-show="host.resources['service.count']" title="Worker : Service count">
+                                        <i class="text-icon icon-squares" ng-class="{'text-danger': host.service_status == 'error'}"></i>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{host.resources['worker.count']}} : {{host.resources['service.count']}}</span>&nbsp;
+                                    </span>
+                                    <span ng-show="host.resources['vm.count']" title="Virtual Machines count">
+                                        <i class="text-icon icon-squarev" ng-class="{'text-danger': host.vm_status == 'error'}"></i>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{host.resources['vm.count']}}</span>&nbsp;
+                                    </span>
+                                    <span ng-show="host.roles.indexOf('dispatcher') != -1" title="Dispatchers count">
+                                        <i class="text-icon icon-squared" ng-class="{'text-danger': host.dispatcher_status == 'down'}"></i>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{host.dispatchers_stat.count || 0}}</span>&nbsp;
+                                    </span>
+                                    <span ng-show="host.roles.indexOf('middleman') != -1" title="Middleman count">
+                                        <i class="text-icon icon-squarem" ng-class="{'text-danger': host.middleman_status == 'down'}"></i>&nbsp;<span style="vertical-align: top; font-size: 11pt;">{{host.middleman_stat.count || 0}}</span>&nbsp;
+                                    </span>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="pull-right text-muted small">{{host.profile}}</div>
+                        </figure>
+                        <figure class="back">
+                            <a class="btn btn-xs text-icon pull-right text-muted" ng-click="viewHost(host);$event.stopPropagation();">
+                                <span class="glyphicon glyphicon-resize-full"></span>
+                            </a>
+                            <div style="height: 120px; overflow: hidden;">
+                                <div ng-if="!host.last_hb&&!host.dispatchers&&!host.middleman" class="text-muted">
+                                    Waiting for host information...
+                                </div>
+                                <div ng-if="host.last_hb.vmm">
+                                    <div>
+                                        <b>Virtual Machines:</b>
+                                        <span class="btn btn-xs text-muted" ng-click="showVMs(host.mac_address);$event.stopPropagation();">
+                                            <span class="glyphicon glyphicon-filter"></span> Show Virtual Machines
+                                        </span>
+                                    </div>
+                                    <div class="small">
+                                         <div style="display: inline-flex; padding-right: 3px" ng-repeat="vm in getKeys(host.last_hb.vmm)" ng-class="{'text-danger': !validate_vm_for_host(host, vm)}">{{vm}}</div>
+                                    </div>
+                                </div>
+                                <div ng-if="host.last_hb.services">
+                                    <div>
+                                        <b>Services:</b>
+                                    </div>
+                                    <div class="small">
+                                        <div style="display: inline-flex; padding-right: 3px" ng-repeat="service in host.resources.services" ng-class="{'text-danger': !host.last_hb.services.details.hasOwnProperty(service)}">{{service}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div ng-if="host.hostagent_status=='up'&&host.last_hb.services" class="pull-right">
+                                    <span name="action_pause" id="{{host.mac_address}}_pause" class="btn btn-xs text-muted text-icon icon-circlepause" title="Pause hostagent's tasks" ng-click="action_pause(host.mac_address);$event.stopPropagation();"></span>&nbsp;
+                                    <span name="action_resume" id="{{host.mac_address}}_resume" class="btn btn-xs text-muted text-icon icon-circleplay" title="Resume hostagent's task processing" ng-click="action_resume(host.mac_address);$event.stopPropagation();"></span>&nbsp;
+                                </div>
+                                <div ng-if="host.controller_status=='up'">
+                                    <span name="action_restart" id="{{host.mac_address}}_restart" class="btn btn-xs text-muted text-icon-sm icon-refresh" title="Restart hostagent" ng-click="action_restart(host.mac_address);$event.stopPropagation();"></span>&nbsp;
+                                    <span name="action_stop" id="{{host.mac_address}}_stop" class="btn btn-xs text-muted text-icon-sm icon-stop" title="Stop hostagent" ng-click="action_stop(host.mac_address);$event.stopPropagation();"></span>&nbsp;
+                                    <span name="action_start" id="{{host.mac_address}}_start" class="btn btn-xs text-muted text-icon-sm icon-play" title="Start hostagent" ng-click="action_start(host.mac_address);$event.stopPropagation();"></span>&nbsp;
+                                </div>
+                            </div>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+		
+
+        <div class="row" style="margin: 0;">
+            <div class="bigpad ng-hide container" ng-show="loading">
+                <div class="bigpad jumbotron text-center">
+                    <h2 class="text-muted">Loading</h2>
+                    <div class="throbber">
+                        Loading
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+
+    <!-- HIDE FOLLOWING: Should go inside a modal form -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-resize">
+            <div class="modal-content" style="background: #FAFAFA">
+                <div class="modal-header">
+                    <div ng-show="!new_host&&!current_host.is_vm" class="pull-right" style="padding-top: 5px;">
+                        <button type="button" class="btn btn-danger" ng-click="del();">Remove</button>
+                    </div>
+                    <h4 class="modal_title" id="myModalLabel"><b>{{current_host.hostname | uppercase}}</b><span class="text-muted small"> :: {{current_host.mac_address}} - {{current_host.ip}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <section class="row">
+
+                        <div class="col-xs-10 text-big">
+                            <span ng-if="current_host.roles.indexOf('controller') != -1" class="label" ng-class="{'label-danger': current_host.controller_status=='down', 'label-success': current_host.controller_status=='up', 'label-default': current_host.controller_status!='up'&&current_host.controller_status!='down'}">CONTROLLER</span>
+                            <span ng-if="current_host.roles.indexOf('hostagent') != -1" class="label" ng-class="{'label-danger': current_host.hostagent_status=='down', 'label-success': current_host.hostagent_status=='up', 'label-default': current_host.hostagent_status!='up'&&current_host.hostagent_status!='down'}">HOSTAGENT</span>
+                            <span ng-if="current_host.roles.indexOf('middleman') != -1" class="label" ng-class="{'label-danger': current_host.middleman_status=='down', 'label-success': current_host.middleman_status=='up', 'label-default': current_host.middleman_status!='up'&&current_host.middleman_status!='down'}">MIDDLEMAN</span>
+                            <span ng-if="current_host.roles.indexOf('dispatcher') != -1" class="label" ng-class="{'label-danger': current_host.dispatcher_status=='down', 'label-success': current_host.dispatcher_status=='up', 'label-default': current_host.dispatcher_status!='up'&&current_host.dispatcher_status!='down'}">DISPATCHER</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span ng-show="!current_host.is_vm" class="btn pull-right" ng-class="{'btn-success': current_host.enabled, 'btn-default': !current_host.enabled}" ng-click="current_host.enabled = current_host.enabled ? false : true"><span ng-if="current_host.enabled">ENABLED</span><span ng-if="!current_host.enabled">DISABLED</span></span>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="pad">
+                                    <label for="profile">Profile</label>
+                                    <select ng-show="!current_host.is_vm" class="form-control" ng-model="current_host.profile">
+                                        <option ng-repeat="profile in profile_list">{{profile.name}}</option>
+                                    </select>
+                                    <input ng-show="current_host.is_vm" ng-disabled="current_host.is_vm" type="text" class="form-control input" ng-model="current_host.profile"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="pad">
+                                    <label for="roles">Roles</label>
+                                    <input ng-disabled="current_host.is_vm" type="text" class="form-control input" ng-model="current_host.roles" split-array="{splitter: ' '}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dashboard_card">
+                            <span class="text-large"><b>Machine Info</b></span>
+                            <div class="row" ng-repeat="(key, val) in current_host.machine_info | orderBy:key ">
+                                <div class="col-xs-3"><b>{{key | titleCase}}:</b></div>
+                                <div class="col-xs-9">{{current_host.machine_info[key]}}</div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dashboard_card">
+                            <span class="text-large"><b>Platform</b></span>
+                            <div class="row" ng-repeat="(key, val) in current_host.platform | orderBy:key ">
+                                <div class="col-xs-3"><b>{{key | titleCase}}:</b></div>
+                                <div class="col-xs-9">{{current_host.platform[key]}}</div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="current_host.last_hb||current_host.dispatchers||current_host.middleman" class="col-sm-12 col-md-6">
+                            <div class="dashboard_card">
+                            <span class="text-large"><b>Load</b></span>
+                            <div class="pad">
+                                <div ng-show="current_host.resources" class="row">
+                                    <div class="col-xs-12" title="CPU usage">
+                                        <i class="text-icon icon-cpualt-processoralt"></i>&nbsp;
+                                        <span class="usage_wide">
+                                            <svg ng-style="{ width: current_host.resources['cpu_usage.percent'] + '%' }" height="14">
+                                                <linearGradient id="current_{{current_host.mac_address}}_gradient_cpu" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                    <stop offset="0%" stop-color="#0F0"/>
+                                                    <stop offset="100%" stop-color="#F00"/>
+                                                </linearGradient>
+                                                <rect x="0" y="0" width="190" height="14" fill="url(#current_{{current_host.mac_address}}_gradient_cpu)"/>
+                                            </svg>
+                                        </span>&nbsp;
+                                        <span class="text-icon">{{ current_host.resources['cpu_usage.percent'] }} %</span>
+                                    </div>
+                                    <div class="col-xs-12" title="Memory usage">
+                                        <i class="text-icon icon-ram"></i>&nbsp;
+                                        <span class="usage_wide">
+                                            <svg ng-style="{ width: current_host.resources['mem_usage.percent'] + '%' }" height="14">
+                                                <linearGradient id="current_{{current_host.mac_address}}_gradient_mem" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                    <stop offset="0%" stop-color="#0F0"/>
+                                                    <stop offset="100%" stop-color="#F00"/>
+                                                </linearGradient>
+                                                <rect x="0" y="0" width="190" height="14" fill="url(#current_{{current_host.mac_address}}_gradient_mem)"/>
+                                            </svg>
+                                        </span>&nbsp;
+                                        <span class="text-icon">{{ (current_host.machine_info.memory - (current_host.resources['mem_usage.percent'] * current_host.machine_info.memory / 100)).toFixed(2) }} GB free</span>
+                                    </div>
+                                    <div class="col-xs-12" title="Diskspace usage">
+                                        <i class="text-icon icon-diskspace"></i>&nbsp;
+                                        <span class="usage_wide">
+                                            <svg ng-style="{ width: current_host.resources['disk_usage.percent'] + '%' }" height="16">
+                                                <linearGradient id="current_{{current_host.mac_address}}_gradient_disk" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+                                                    <stop offset="0%" stop-color="#0F0"/>
+                                                    <stop offset="100%" stop-color="#F00"/>
+                                                </linearGradient>
+                                                <rect x="0" y="0" width="190" height="14" fill="url(#current_{{current_host.mac_address}}_gradient_disk)"/>
+                                            </svg>
+                                        </span>&nbsp;
+                                        <span class="text-icon">{{ current_host.resources['disk_usage.free'] | unit }} free</span>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="current_host.last_hb" class="col-sm-12 col-md-6">
+                            <div class="dashboard_card">
+                                <div class="title" ng-if="current_host.last_hb.vmm" style="padding-bottom: 5px;">
+                                    <div>
+                                        <span><b>Virtual Machines</b></span>
+                                    </div>
+                                    <div>
+                                        <span class="label label-tag" ng-repeat="vm in getKeys(current_host.last_hb.vmm)" ng-class="{'label-danger': !validate_vm_for_host(current_host, vm), 'label-primary': validate_vm_for_host(current_host, vm)}">{{vm}}</span>
+                                    </div>
+                                </div>
+                                <div class="title" ng-if="current_host.last_hb.services">
+                                    <div>
+                                        <span><b>Services</b></span>
+                                    </div>
+                                    <div>
+                                        <span class="label label-info label-tag" ng-repeat="svc in current_host.resources.services" ng-class="{'label-danger': !current_host.last_hb.services.details.hasOwnProperty(svc), 'label-primary': current_host.last_hb.services.details.hasOwnProperty(svc)}"><span ng-show="current_host.last_hb.services.details.hasOwnProperty(svc)">{{current_host.last_hb.services.details[svc].num_workers}}x&nbsp;</span>{{svc}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div ng-if="current_host.middleman" class="col-xs-12">
+                            <div class="dashboard_card">
+                            <span class="title"><b>Middleman</b></span><span> :: {{current_host.middleman_stat.count}} / {{ middleman_shards_count }}</span>
+                            <div class="row">
+                                <div class="col-sm-3 col-xs-12">
+                                    <div><label>Ingest:</label></div>
+                                    <div>
+                                        <span title="Ingest Queue" ng-class="{'text-muted': current_host.middleman.ingest <= 100000, 'text-danger': current_host.middleman.ingest > 100000}" class="text-icon icon-squarei"></span><span ng-class="{'text-danger': current_host.middleman.ingest > 100000}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.ingest}}&nbsp;</span>&nbsp;
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-xs-12">
+                                    <div><label>Queued:</label></div>
+                                    <div>
+                                        <span title="Critical Priority Files Waiting" ng-class="{'text-muted': current_host.middleman.ingesting.critical==1, 'text-danger': current_host.middleman.ingesting.critical!=1}" class="text-icon icon-squarec"></span><span ng-class="{'text-danger': current_host.middleman.ingesting.critical!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.queues.critical}}&nbsp;</span><span class="text-danger" ng-show="current_host.middleman.ingesting.critical!=1" style="vertical-align: top; font-size: 11pt;">({{current_host.middleman.ingesting.critical * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                                        <span title="High Priority Files Waiting" ng-class="{'text-muted': current_host.middleman.ingesting.high==1, 'text-danger': current_host.middleman.ingesting.high!=1}" class="text-icon icon-squareh"></span><span ng-class="{'text-danger': current_host.middleman.ingesting.high!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.queues.high}}&nbsp;</span><span class="text-danger" ng-show="current_host.middleman.ingesting.high!=1" style="vertical-align: top; font-size: 11pt;">({{current_host.middleman.ingesting.high * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                                        <span title="Medium Priority Files Waiting" ng-class="{'text-muted': current_host.middleman.ingesting.medium==1, 'text-danger': current_host.middleman.ingesting.medium!=1}" class="text-icon icon-squarem"></span><span ng-class="{'text-danger': current_host.middleman.ingesting.medium!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.queues.medium}}&nbsp;</span><span class="text-danger" ng-show="current_host.middleman.ingesting.medium!=1" style="vertical-align: top; font-size: 11pt;">({{current_host.middleman.ingesting.medium * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                                        <span title="Low Priority Files Waiting" ng-class="{'text-muted': current_host.middleman.ingesting.low==1, 'text-danger': current_host.middleman.ingesting.low!=1}" class="text-icon icon-squarel"></span><span ng-class="{'text-danger': current_host.middleman.ingesting.low!=1}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.queues.low}}&nbsp;</span><span class="text-danger" ng-show="current_host.middleman.ingesting.low!=1" style="vertical-align: top; font-size: 11pt;">({{current_host.middleman.ingesting.low * 100 | floatStr}}%)&nbsp;</span>&nbsp;
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <div><label>Processing:</label></div>
+                                    <div>
+                                        <span title="Inflight Submissions" class="text-muted text-icon icon-squarei"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.inflight}}&nbsp;</span>
+                                        <span title="Waiting for Submission" class="text-muted text-icon icon-squarew"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.waiting}}&nbsp;</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <div><label>Uptime:</label></div>
+                                    <div>
+                                        <span class="text-muted text-icon icon-uptime"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman.up_hours | floatStr}}h</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div><label>Throughput: (for the last minute)</label></div>
+                                    <div>
+                                        <span title="Completed files" class="text-muted text-icon icon-squaref"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman['ingest.files_completed'] | floatStr}}&nbsp;</span>&nbsp;
+                                        <span title="Completed submissions" class="text-muted text-icon icon-squarec"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman['ingest.submissions_completed'] | floatStr}}&nbsp;</span>&nbsp;
+                                        <span title="Whitelisted files" class="text-muted text-icon icon-squarew"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman['ingest.whitelisted'] | floatStr}}&nbsp;</span>&nbsp;
+                                        <span title="Skipped files" class="text-muted text-icon icon-squares"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman['ingest.skipped'] | floatStr}}&nbsp;</span>&nbsp;
+                                        <span title="Duplicate files" class="text-muted text-icon icon-squared"></span><span style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman['ingest.duplicates'] | floatStr}}&nbsp;</span>
+                                        <span ng-class="{'text-muted': current_host.middleman['ingest.bytes_completed'] != 0, 'text-danger': current_host.middleman['ingest.bytes_completed'] == 0}" class="text-icon icon-speed"></span><span ng-class="{'text-danger': current_host.middleman['ingest.bytes_completed'] == 0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.middleman['ingest.bytes_completed']/((1024*1024*60)/8) | floatStr}} / {{current_host.middleman['ingest.bytes_ingested']/((1024*1024*60)/8) | floatStr}} Mbps</span>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div ng-if="current_host.dispatchers" class="col-xs-12">
+                            <div class="dashboard_card">
+                            <span class="title"><b>Dispatchers</b></span><span> :: {{current_host.dispatchers_stat.count}} / {{ dispatcher_shards_count }}</span>
+                            <div class="row">
+                                <div class="col-xs-12" style="padding-bottom: 5px;">
+                                    <div><label>Services:</label></div>
+                                    <div>
+                                        {{ current_host.dispatchers_stat.services.up | split }}
+                                        <span ng-show="current_host.dispatchers_stat.services.up.length>0&&current_host.dispatchers_stat.services.down.length>0"> :: </span><span class="text-danger" style="font-weight: 800">{{ current_host.dispatchers_stat.services.down | split }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12 ">
+                                    <div><label>Outstanding Submissions:</label></div>
+                                    <div>
+                                        {{current_host.dispatchers_stat.outstanding}}&nbsp;/&nbsp;{{current_host.dispatchers_stat.queues.max_inflight}}
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12 ">
+                                    <div><label>Queues:</label></div>
+                                    <div>
+                                        <span title="Ingest Queue" ng-class="{'text-danger': current_host.dispatchers_stat.queues.ingest>=current_host.dispatchers_stat.queues.max_inflight&&current_host.dispatchers_stat.count>0, 'text-muted': current_host.dispatchers_stat.queues.ingest<current_host.dispatchers_stat.queues.max_inflight||current_host.dispatchers_stat.count==0}" class="text-icon icon-squarei"></span><span ng-class="{'text-danger': current_host.dispatchers_stat.queues.ingest>=current_host.dispatchers_stat.queues.max_inflight&&current_host.dispatchers_stat.count>0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.dispatchers_stat.queues.ingest}}&nbsp;</span>
+                                        <span title="Response Queue" ng-class="{'text-danger': current_host.dispatchers_stat.queues.response>=current_host.dispatchers_stat.queues.max_inflight&&current_host.dispatchers_stat.count>0, 'text-muted': current_host.dispatchers_stat.queues.response<current_host.dispatchers_stat.queues.max_inflight||current_host.dispatchers_stat.count==0}" class="text-muted text-icon icon-squarer"></span><span ng-class="{'text-danger': current_host.dispatchers_stat.queues.response>=current_host.dispatchers_stat.queues.max_inflight&&current_host.dispatchers_stat.count>0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.dispatchers_stat.queues.response}}&nbsp;</span>
+                                        <span title="Control Queue" ng-class="{'text-danger': current_host.dispatchers_stat.queues.control>0, 'text-muted': current_host.dispatchers_stat.queues.control==0}" class="text-muted text-icon icon-squarec"></span><span ng-class="{'text-danger': current_host.dispatchers_stat.queues.control>0}" style="vertical-align: top; font-size: 11pt;">&nbsp;{{current_host.dispatchers_stat.queues.control}}&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-8 text-left">
+                            <span ng-if="current_host.controller_status=='up'">
+                                <span name="action_restart" id="current_{{current_host.mac_address}}_restart" class="btn btn-xs text-muted text-icon-sm icon-refresh" title="Restart hostagent" ng-click="action_restart(current_host.mac_address);$event.stopPropagation();"></span>
+                                <span name="action_stop" id="current_{{current_host.mac_address}}_stop" class="btn btn-xs text-muted text-icon-sm icon-stop" title="Stop hostagent" ng-click="action_stop(current_host.mac_address);$event.stopPropagation();"></span>
+                                <span name="action_start" id="current_{{current_host.mac_address}}_start" class="btn btn-xs text-muted text-icon-sm icon-play" title="Start hostagent" ng-click="action_start(current_host.mac_address);$event.stopPropagation();"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                            <span ng-if="current_host.hostagent_status=='up'&&current_host.last_hb.services">
+                                <span name="action_pause" id="current_{{current_host.mac_address}}_pause" class="btn btn-xs text-muted text-icon icon-circlepause" title="Pause hostagent's tasks" ng-click="action_pause(current_host.mac_address);$event.stopPropagation();"></span>
+                                <span name="action_resume" id="current_{{current_host.mac_address}}_resume" class="btn btn-xs text-muted text-icon icon-circleplay" title="Resume hostagent's task processing" ng-click="action_resume(current_host.mac_address);$event.stopPropagation();"></span>
+                            </span>
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button ng-show="!current_host.is_vm" type="button" class="btn btn-primary" ng-click="save();">Save Changes</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- END HIDE -->
+    {%endraw%}
+{% endblock %}

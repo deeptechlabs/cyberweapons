@@ -1,0 +1,10 @@
+/opt/al/var/log/uwsgi/*.log {
+        copytruncate
+        daily
+        missingok
+        rotate 12
+        compress
+        delaycompress
+        notifempty
+        su root root
+}

@@ -1,0 +1,35 @@
+/var/log/al-full.log
+{
+    rotate 4
+    daily
+    missingok
+    compress
+    sharedscripts
+    postrotate
+        reload rsyslog >/dev/null 2>&1 || true
+    endscript
+}
+/var/log/al.log
+{
+    rotate 14
+    daily
+    missingok
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        reload rsyslog >/dev/null 2>&1 || true
+    endscript
+}
+/var/log/alui-audit.log
+{
+    rotate 365
+    daily
+    missingok
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        reload rsyslog >/dev/null 2>&1 || true
+    endscript
+}

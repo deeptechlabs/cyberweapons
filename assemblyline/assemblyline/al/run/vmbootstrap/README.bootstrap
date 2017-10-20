@@ -1,0 +1,22 @@
+vmbootstrap is used to bootstrap VM or container based worker node images.
+
+vmbootstrap compatable images contain just enough dependencies and code to 'bootstrap' into a fully functioning worker.  
+
+This gives us the ability to reuse worker VM disks or container images on different sites/branches/configuraitions without having to remaster the disks. This comes at the cost of 5-10 seconds of additional boot time.
+
+An vmbootstrap image will have an upstart job installed which will invoke
+     /opt/al/pkg/hostagent-bootstrap-stage-0.py
+
+stage 0 assumes it can reach riak via hostname 'datastore.al'. The host VM layer is reponsible for setting up DNS such that that hostname points to this VM's actualy riak store.
+stage 0 will fetch a bootstrap config from riak. This contains the location of the assemblyline git repo (including branch) as well as any other supplementary repos. It will fetch all these repos to a standard location.
+
+After stage 0 is complete, we will now have the appropriate assemblyline source on disk and can then pass execute to stage 1 (which is in the assemblyline source tree just cloned by stage 0):
+    /opt/al/pkg/assemblyline/al/run/vmbootstrap/hostagent-bootstrap-stage-1.py
+
+we try to keep stage 0 as minimal as possible since it is placed on the VM hard disk images.  we defer as much as possible to stage 1 (so that we can take advantage of the git updates)
+
+stage 1 is responsible for for doing any final config / seed / environment setup.
+
+For linux environments copy /assemblyline/al/run/vmbootstrap/hostagent-withbootstrap.conf to /etc/init/hostagent.conf
+Fro windows you'll want to use the vbs script.
+

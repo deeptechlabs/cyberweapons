@@ -1,0 +1,304 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - Submission detail [{{sid}}]{% endblock %}
+{% block js_import %}
+    <script src="/static/js/d3/d3.v3.js"></script>
+	<script src="/static/js/socket.io/socket.io.min.js"></script>
+	<script src="/static/js/socket.io/ng-socket.js"></script>
+	<script src="/static/js/submission_detail.js"></script>
+{% endblock %}
+{% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};sid='{{sid}}';new={{new}};options={{options}};start();"{% endblock %}
+{% block loading_menu %}ng-hide="!loading_extra"{% endblock %}
+{% block content %}
+	{%raw%}
+	<div id="slider" class="menuslide" ng-class={menushow:showslider}>
+		<a class="close btn" ng-click="hide_slider();">x</a>
+		<section id="appContent" class="container">
+			<label ng-if="user.c12n_enforcing" ng-show="current_file" style="margin-top: 8px;" class="label classification {{current_file.file_info.classification | class_label_color}}">{{current_file.file_info.classification | class_long}}</label>
+			<div id="fd-view" file-detail ng-model="current_file"></div>
+		</section>
+	
+		<div ng-show="!current_file">
+			<div class="bigpad container">
+				<div class="bigpad jumbotron text-center">
+					<h2 class="text-muted">Loading</h2>
+					<div class="throbber">
+						Loading 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="outstanding" ng-show="outstanding" class="fade-animate hidden-xs">
+		<div class="popup-info alert alert-warning" ng-click="outstanding=null;">
+			<div style="padding-bottom: 20px"><strong>You are waiting for the following service(s) to finish:</strong></div>
+			
+			<div class="row">
+				<div class="col-sm-7"><strong>Service</strong></div>
+				<div class="col-sm-5"><strong># files</strong></div>
+			</div>
+			<div ng-repeat="(srv, count) in outstanding" class="row">
+				<div class="col-sm-7"><strong>{{srv}}</strong></div>
+				<div class="col-sm-5">{{count}}</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="underlay">
+		<section id="appContent" class="container">
+			<label ng-if="user.c12n_enforcing" style="margin-top: 8px;" class="label classification {{data.classification | class_label_color}}">{{data.classification | class_long}}</label>
+			<div class="bigpad pull-left" ng-show="started && !data.times.completed"><div class="throbber"></div></div>
+			<div class="header_title text-right">
+				<h1>Submission Details</h1>
+				<h4 class="text-muted" ng-hide="!sid">:: {{sid}} ::</h4>
+				<p ng-show="started">
+					<!-- <a ng-click="share_submission();" class="btn btn-default btn-sm" title="Share Submission"><span class="glyphicon glyphicon-share"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Share Submission</span></a>  -->
+                    <a ng-click="resubmit_submission();" class="btn btn-default btn-sm" title="Resubmit current submission"><span class="glyphicon glyphicon-repeat"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Resubmit</span></a>&nbsp;
+					<a ng-click="delete_submission();" class="btn btn-danger btn-sm" title="Delete Submission"><span class="glyphicon glyphicon-remove"><span class="hidden-sm hidden-xs">&nbsp;</span></span><span class="hidden-sm hidden-xs">Delete Submission</span></a>
+				</p>
+			</div>
+			
+			<div class="jumbotron" ng-show="new&&!started">
+				<div class="pad">
+					<strong class="text-big">Your files were successfully submitted.</strong>
+					<div class="throbber pull-right"></div>
+					<p><i>Waiting for the  dispatcher to start processing them...</i></p>
+				</div>
+			</div>
+
+			<div ng-show="started">
+				<section class="header_title" id="section_submission" ng-show="data">
+					<div class="menuheader " data-toggle="collapse" data-target="#submission">
+						<span class="text-big">Submission Information</span>
+					</div>
+					<div id="submission" class="collapse in">
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Description</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.submission.description}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Groups</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.submission.groups | joinBy:' | '}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Selected&nbsp;Services</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.services.selected | joinBy:' | '}}
+							</div>
+						</div>
+						<div class="row" ng-show="data.submission.eligible_parents">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Eligible&nbsp;Parents</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.submission.eligible_parents | joinBy:' | '}}
+							</div>
+						</div>
+						<div class="row" ng-if="obj_len(data.submission.params) != 0">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Specific&nbsp;Parameters</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+                                <div ng-repeat="(service,extra) in data.submission.params">
+                                    <div><i>{{service}}</i>:</div>
+                                    <div class="indent" ng-repeat="(var,val) in extra">{{var | titleCase}} => {{val}}</div>
+                                </div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Deep&nbsp;Scan</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								<span ng-if="data.submission.deep_scan" class="icon-check"></span>
+								<b><span ng-if="!data.submission.deep_scan" class="icon-roundrectangle"></span></b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Ignore&nbsp;Cache</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								<span ng-if="data.submission.ignore_cache" class="icon-check"></span>
+								<b><span ng-if="!data.submission.ignore_cache" class="icon-roundrectangle"></span></b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Ignore&nbsp;Filtering</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								<span ng-if="data.submission.ignore_filtering" class="icon-check"></span>
+								<b><span ng-if="!data.submission.ignore_filtering" class="icon-roundrectangle"></span></b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Ignore&nbsp;File&nbsp;Types</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								<span ng-if="data.submission.ignore_tag" class="icon-check"></span>
+								<b><span ng-if="!data.submission.ignore_tag" class="icon-roundrectangle"></span></b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Submitted&nbsp;By</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.submission.submitter}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Priority</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.submission.priority}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Time&nbsp;To&nbsp;Live</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.submission.ttl}} days
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Max&nbsp;Score</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10 {{data.submission.max_score | score_color}}">
+								<strong>{{data.submission.max_score}}</strong> 
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Start&nbsp;Time</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.times.submitted | date:"yyyy-MM-dd HH:mm:ss"}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>Completed&nbsp;Time</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">
+								{{data.times.completed | date:"yyyy-MM-dd HH:mm:ss"}}
+							</div>
+						</div>
+					</div>
+                    <div ng-if="!options.hide_raw_results">
+                        <div class="raw_footer" data-toggle="collapse" data-target="#submission_raw">
+                            <div id="submission_raw" class="collapse">
+                                <div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+                                <pre style="cursor: auto;" ng-click="$event.stopPropagation()">{
+"submission": {{dump(data.submission)}},
+"services": {{dump(data.services)}}}</pre>
+                            </div>
+                        </div>
+                    </div>
+				</section>
+				
+				<section class="header_title" id="section_metadata" ng-show="data.submission.metadata">
+					<div class="menuheader" data-toggle="collapse" data-target="#metadata">
+						<span class="text-big">Metadata</span>
+					</div>
+					<div id="metadata" class="collapse in">
+						
+						<div class="row" ng-repeat="(key, val) in data.submission.metadata | orderBy:key">
+							<div class="col-xs-5 col-sm-3 col-md-2"><strong>{{key | titleCase }}</strong></div>
+							<div class="col-xs-7 col-sm-9 col-md-10">{{val | stripNull }}</div>
+						</div>
+					</div>
+                    <div ng-if="!options.hide_raw_results">
+                        <div class="raw_footer" data-toggle="collapse" data-target="#meta_raw">
+                            <div id="meta_raw" class="collapse">
+                                <div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+                                <pre style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(data.submission.metadata)}}</pre>
+                            </div>
+                        </div>
+                    </div>
+				</section>
+				
+				<section class="header_title" id="section_summary" ng-show="data">
+					<div class="menuheader" data-toggle="collapse" data-target="#summary">
+						<span class="text-big">Executive Summary</span>
+						<span class="indent"><input type="button" class="btn btn-xs btn-default text-tiny" ng-click="clear_selection();$event.stopPropagation();" value="Clear selection"/></span>
+						<div ng-show="!summary" class="throbber pull-right"></div>
+					</div>
+					<div id="summary" class="collapse in">
+						
+						<div ng-show="!summary" class="jumbotron">
+							<div class="pad">
+								Generating summary...
+							</div>
+						</div>
+						
+						<div ng-show="obj_len(summary) != 0">
+							<div class="row" ng-repeat="(tag, val) in summary | orderBy:tag">
+								<div class="col-xs-6 col-sm-4 col-md-3"><strong>{{tag}}</strong></div>
+								<div class="col-xs-6 col-sm-8 col-md-9">
+									<span title="{{detail.context}}" id="{{tag}}" class="label label-tag" style="cursor: pointer;" ng-repeat="detail in val" ng-class="{'label-context': !isHighlighted(tag, detail.value)&&hasContext(detail), 'label-nolight': !isHighlighted(tag, detail.value)&&!hasContext(detail), 'label-highlight': isHighlighted(tag, detail.value)}" ng-click="trigger_highlight(tag, detail.value);" >{{detail.value | breakableStr }}<a href='/search.html?query=result.tags.type:{{uri_encode(tag)}} AND result.tags.value:"{{uri_encode(detail.value)}}"' class="search_tag clickable_color glyphicon glyphicon-search" ng-click="$event.stopPropagation();"></a></span>
+								</div>
+							</div>
+						
+						</div>
+						
+						<div ng-show="summary && (obj_len(summary) == 0)" >
+							<div class="pad text-muted">
+								Nothing to report.
+							</div>
+						</div>
+					</div>
+                    <div ng-if="!options.hide_raw_results">
+                        <div class="raw_footer" data-toggle="collapse" data-target="#summary_raw">
+                            <div id="summary_raw" class="collapse">
+                                <div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+                                <pre style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(summary)}}</pre>
+                            </div>
+                        </div>
+                    </div>
+				</section>
+				
+				<section class="header_title" ng-show="data && data.errors && data.errors.length != 0">
+					<div class="menuheader" data-toggle="collapse" data-target="#error_summary">
+						<span class="text-big">Errors</span>
+					</div>
+					<div id="error_summary" class="collapse in">
+						<div ng-repeat="(type, services) in data.parsed_errors.aggregated" class="text-danger">
+							<span ng-if="services">The following services generated <strong>{{ type | titleCase }}</strong> errors: <strong>{{ services | split }}</strong></span>
+						</div>
+						<div ng-repeat="err in data.parsed_errors.listed" class="text-danger">
+							<strong>{{err | getServiceFromKey }}</strong> generated an error for file hash: <strong><a class="text-danger" href="submission_detail.html?sid={{sid}}#/{{err | getHashFromKey }}/">{{err | getHashFromKey }}</a></strong><span class="small">&nbsp;::&nbsp;{{err | getErrorTypeFromKey}}</span>
+						</div>
+					</div>
+                    <div ng-if="!options.hide_raw_results">
+                        <div class="raw_footer" data-toggle="collapse" data-target="#error_raw">
+                            <div id="error_raw" class="collapse">
+                                <div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+                                <pre style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(data.parsed_errors)}}</pre>
+                            </div>
+                        </div>
+                    </div>
+				</section>
+				
+				
+				<section class="header_title" id="section_files" ng-show="data">
+					<div class="menuheader " data-toggle="collapse" data-target="#files">
+						<span class="text-big">Files</span>
+						<div ng-show="!file_tree" class="throbber pull-right"></div>
+					</div>
+					<div id="files" class="collapse in">
+						
+						<div ng-show="!file_tree" class="jumbotron">
+							<div class="pad">
+								Generating file tree...
+							</div>
+						</div>
+						<div ng-include="'/static/ng-template/file_item.html'" ng-model="file_tree"></div>
+						
+						<div ng-show="file_tree && (obj_len(file_tree) == 0)" >
+							<div class="pad text-muted">
+								No files associated to this submission.
+							</div>
+						</div>
+					</div>
+                    <div ng-if="!options.hide_raw_results">
+                        <div class="raw_footer" data-toggle="collapse" data-target="#ftree_raw">
+                            <div id="ftree_raw" class="collapse">
+                                <div class="text-muted text-center clickable pad" width="100%">Close raw viewer</div>
+                                <pre style="cursor: auto;" ng-click="$event.stopPropagation()">{{dump(file_tree)}}</pre>
+                            </div>
+                        </div>
+                    </div>
+				</section>
+			</div>
+		</section>
+	</div>
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-show="!new&&!started"{% endblock %}

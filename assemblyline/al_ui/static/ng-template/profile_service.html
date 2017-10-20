@@ -1,0 +1,63 @@
+<div id="profile_component" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="component_label" aria-hidden="true">
+	<div class="modal-dialog modal-resize">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div ng-if="!edit_mode"><h4>Adding service :: {{profile}}</h4></div>
+				<div ng-if="edit_mode"><h4>Editing service :: {{profile}}</h4></div>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label>Service Name</label>
+					<select ng-show="!edit_mode" class="form-control" ng-model="temp_srv_name">
+						<option ng-repeat="srv in notInComponents() | orderBy: srv.name" value="{{srv.name}}">{{srv.name}}</option>
+					</select>
+					<div ng-show="edit_mode" class="text-big">{{temp_srv_name}}</div>
+				</div>
+				<div class="form-group">
+					<label>Number of workers</label>
+					<input type="number" class="form-control" ng-model="temp_srv_workers" min="1" max="100">
+				</div>
+				<div class="form-group">
+					<label>Service Variable Overrides</label>
+					<div class="row" style="padding: 2px 0px;" ng-repeat="(key, val) in temp_srv_config | orderBy:key ">
+						<div class="col-md-2">
+								{{key}}:					
+						</div>
+						<div class="col-md-9">
+							<input type="text" class="form-control input-sm" ng-model="temp_srv_config[key]">
+						</div>
+						<div class="col-md-1 text-right">
+							<span class="btn btn-sm btn-default btn-danger" ng-click="remove_temp_override(key);"><span class="glyphicon glyphicon-minus"></span></span>					
+						</div>
+					</div>
+					<div class="row pad">
+						<div id="new_comp_name" class="col-md-2">
+							<input id="comp_name" type="text" class="form-control input-sm" ng-model="temp_override_key" placeholder="Variable Name">					
+						</div>
+						<div id="new_comp_type" class="col-md-2">
+							<select id="comp_type" class="form-control input-sm" ng-model="temp_override_type">
+								<option>bool</option>
+								<option>int</option>
+								<option>list</option>
+								<option>str</option>
+								<option>unicode</option>
+							</select>
+						</div>
+						<div id="new_comp_default" class="col-md-7">
+							<input id="comp_default" type="text" class="form-control input-sm" ng-model="temp_override_val" placeholder="Variable Value" smart-input="{type_var: 'temp_override_type', update_ctrl: 'temp_override_val'}">
+						</div>
+						<div class="col-md-1 text-right">
+							<span class="btn btn-sm btn-default btn-success" ng-click="add_temp_override(key, val);"><span class="glyphicon glyphicon-plus"></span></span>					
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel();">Close</button>
+				<button ng-show="!edit_mode" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addComponent();">Add to profile</button>
+				<button ng-show="edit_mode" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveComponent();">Update changes</button>
+			</div>
+			
+		</div>
+	</div>
+</div>

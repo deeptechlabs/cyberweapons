@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html {% block html_param %}ng-app="app"{% endblock %}>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatbile" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{% block title_page %}{{app_name}} {{build_master}}{% endblock %}</title>
+		{% block fav_icon %}<link rel="shortcut icon" href="/static/images/favicon.ico"/>{% endblock %}
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="/static/css/whhg.css"/>
+		<link rel="stylesheet" href="/static/css/angular-csp.css"/>
+		<link rel="stylesheet" href="/static/css/default.css"/>
+		<link rel="stylesheet" href="/static/css/throbber.css"/>
+		<link rel="stylesheet" href="/static/css/sweet-alert.css"/>
+		{% block css_import %}{% endblock %}
+		<script src="/static/js/jquery/jquery-2.1.0.min.js"></script>
+		<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+		<script src="/static/js/angular/angular.js"></script>
+		<script src="/static/js/angular/angular-animate.min.js"></script>
+		<script src="/static/js/modal-ext.js"></script>
+		<script src="/static/js/swal/sweet-alert.js"></script>
+	    <script src="/static/js/angular/ui-bootstrap-custom.js"></script>
+		<script src="/static/js/ng-search.js"></script>
+        <script src="/static/js/copy-paste.js"></script>
+        <script src="/static/js/ng-utils.js"></script>
+        <script src="/static/js/ng-classification.js"></script>
+	    {% block js_import %}
+		<script src="/static/js/blank.js"></script>
+		{% endblock %}
+	</head>
+	<body {% block body_param %}{% endblock %} {% block ng_init %}ng-controller="ALController" ng-init="user={{user_js}};debug={{debug}};start();"{% endblock %} ng-cloak role="document">
+		{%raw%}
+		<div id="error_msg" ng-show="error" class="fade-animate">
+			<div class="popup-message alert alert-danger">
+				<a class="close" ng-click="error='';">x</a>
+				<h3><strong>Something went wrong...</strong></h3>
+				<p class="pre-wrap">{{ error }}</p>
+			</div>
+		</div>
+		<div id="warning_msg" ng-show="warning" class="fade-animate popup-message alert alert-warning">
+			<a class="close" ng-click="warning='';">x</a>
+			<strong>WARNING: </strong>{{ warning }}
+		</div>
+		<div id="success_msg" ng-show="success" class="fade-animate popup-message alert alert-success">
+			<a class="close" ng-click="success='';">x</a>
+			<strong>SUCCESS: </strong>{{ success }}
+		</div>
+		{%endraw%}
+		
+		<div ng-hide="!debug">
+			<button class="debug btn btn-sm btn-warning " ng-click="showParams()"><span class="glyphicon glyphicon-record">&nbsp;</span>Debug Log</button>
+		</div>
+		
+		<div class="loading ng-hide" {% block loading_menu %}{% endblock %}>
+			<div class="throbber">
+				Loading
+			</div>
+		</div>
+		
+		{% block msg_head %}{%raw%}<div ng-if="user.c12n_enforcing" role="classification" class="classification-head {{ user.classification | class_banner_color }}"><span class="hidden-xs">Dynamic page - Highest possible classification: </span><strong>{{user.classification}}</strong></div>{%endraw%}{% endblock %}
+
+		<div id="wrap">
+			{% if menu %}
+			<nav class="navbar navbar-inverse{% if not is_prod %} navbar-dev{% endif %} navbar-fixed-top" role="navigation">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="sr-only">Toggle Navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>	
+						</button>
+						{% block overflow_menu %}{% endblock %}<a class="navbar-brand" href="/">{% block menu_brand %}{{app_name}}{% endblock %}</a>
+					</div>
+					<div ng-controller="SearchControllerQuick" class="collapse navbar-collapse">
+						<ul class="nav navbar-nav">
+							{% for menu_item in menu %}
+								{% if menu_item.has_submenu %}
+									<li class="dropdown{% if menu_item.active %} active{% endif %} {{menu_item.class}}">
+										<a class="clickable dropdown-toggle" data-toggle="dropdown">{{menu_item.title}}<b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											{% for submenu_item in menu_item.submenu %}
+												<li class="{% if submenu_item.active %}active{% endif %} {{submenu_item.class}}">{% if submenu_item.link%}<a href="{{submenu_item.link}}">{% endif %}{{submenu_item.title}}{% if submenu_item.link %}</a>{% endif %}</li>
+											{% endfor %}
+										</ul>
+									</li>
+								{% else %}
+									<li class="{% if menu_item.active %}active{% endif %} {{menu_item.class}}"><a href="{{menu_item.link}}">{{menu_item.title}}</a></li>
+								{% endif %}
+							{% endfor %}
+							<li class="visible-md">
+								<form class="navbar-form" action="/search.html" method="get" role="search">
+									<div class="form-group btn-group">
+                                        <input autocomplete="off" placeholder="Search" name="query" type="text" class="btn form-control" style="cursor: text; text-align: left; margin-right: 1px;" ng-model="quick" typeahead="s for s in quick_suggestions | filter:$viewValue | limitTo:20" typeahead-min-length='1' typeahead-on-select='onSelectPart($item, $model, $label)' />
+										<!--<input name="query" type="text" placeholder="Search" class="btn form-control" style="cursor: text; text-align: left; margin-right: 1px;">-->
+										<button type="submit" class="btn btn-primary" style="height: 34px;"><span class="glyphicon glyphicon-search" style="font-size: 120%"></span></button>
+									</div>
+								</form>
+							</li>
+							<li class="hidden-lg dropdown{% if user.menu_active %} active{% endif %}">
+								<a class="clickable dropdown-toggle avatar" data-toggle="dropdown">
+									<img class="img-avatar"{% if avatar %} src="{{avatar}}"{%else%} src="/static/images/user_default.png"{% endif %}>
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li class="dropdown-header">{{user.name}}</li>
+									{% for submenu_item in user.submenu %}
+										<li class="{% if submenu_item.active %}active{% endif %} {{submenu_item.class}}">
+											<a href="{{submenu_item.link}}">
+												{% if submenu_item.icon%}<i class="glyphicon {{submenu_item.icon}}"></i>{% endif %}
+												{{submenu_item.title}}
+											</a>
+										</li>
+									{% endfor %}
+									{% if user.is_admin %}
+										{% if user.kibana_dashboards|length > 0 %}
+                                            <li class="divider"></li>
+                                            <li class="dropdown-header">Kibana Dashboards</li>
+                                            {% for submenu_item in user.kibana_dashboards %}
+                                                <li {% if submenu_item.active %}class="active"{% endif %}><a href="{{submenu_item.link}}">{{submenu_item.title}}</a></li>
+                                            {% endfor %}
+                                        {% endif %}
+										<li class="divider"></li>
+										<li class="dropdown-header">Administration</li>
+										{% for submenu_item in user.admin_menu %}
+											<li {% if submenu_item.active %}class="active"{% endif %}><a href="{{submenu_item.link}}">{{submenu_item.title}}</a></li>
+										{% endfor %}
+									{% endif %}
+								</ul>
+							</li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right visible-lg">
+							<li>
+								<form class="navbar-form hidden-sm" action="/search.html" method="get" role="search">
+									<div class="form-group btn-group">
+										<input autocomplete="off" placeholder="Search" name="query" type="text" class="btn form-control" style="cursor: text; text-align: left; margin-right: 1px;" ng-model="quick" typeahead="s for s in quick_suggestions | filter:$viewValue | limitTo:20" typeahead-min-length='1' typeahead-on-select='onSelectPart($item, $model, $label)' />
+										<!--<input name="query" type="text" placeholder="Search" class="btn form-control" style="cursor: text; text-align: left; margin-right: 1px;">-->
+										<button type="submit" class="btn btn-primary" style=" height: 34px;"><span class="glyphicon glyphicon-search" style="font-size: 120%"></span></button>
+									</div>
+								</form>
+							</li>
+							<li class="dropdown{% if user.menu_active %} active{% endif %}">
+								<a class="clickable dropdown-toggle avatar" data-toggle="dropdown">
+									<img class="img-avatar"{% if avatar %} src="{{avatar}}"{%else%} src="/static/images/user_default.png"{% endif %}>
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li class="dropdown-header">{{user.name}}</li>
+									{% for submenu_item in user.submenu %}
+										<li class="{% if submenu_item.active %}active{% endif %} {{submenu_item.class}}">
+											<a href="{{submenu_item.link}}">
+												{% if submenu_item.icon%}<i class="glyphicon {{submenu_item.icon}}"></i>{% endif %}
+												{{submenu_item.title}}
+											</a>
+										</li>
+									{% endfor %}
+									{% if user.is_admin %}
+                                        {% if user.kibana_dashboards|length > 0 %}
+                                            <li class="divider"></li>
+                                            <li class="dropdown-header">Kibana Dashboards</li>
+                                            {% for submenu_item in user.kibana_dashboards %}
+                                                <li {% if submenu_item.active %}class="active"{% endif %}><a href="{{submenu_item.link}}">{{submenu_item.title}}</a></li>
+                                            {% endfor %}
+                                        {% endif %}
+										<li class="divider"></li>
+										<li class="dropdown-header">Administration</li>
+										{% for submenu_item in user.admin_menu %}
+											<li {% if submenu_item.active %}class="active"{% endif %}><a href="{{submenu_item.link}}">{{submenu_item.title}}</a></li>
+										{% endfor %}
+									{% endif %}
+								</ul>
+							</li>
+						</ul>
+						
+					</div>
+				</div>
+			</nav>
+			{% endif %}
+			{% block section %}
+			<section id="main" role="main">
+				{% block content %}
+				
+				<div class="text-center container bigpad">
+					<div class="alert alert-dismissable alert-warning">
+						<div class="pad">
+							<strong class="text-big">Under construction</strong>
+							<p>Your receving the page template because this page as been assigned a link but hasn't been built yet...</p>
+						</div>
+					</div>
+				</div>
+				{% endblock %}
+	
+				<div class="bigpad ng-hide container" {% block loading_jumbo %}{% endblock %}>
+					<div class="bigpad jumbotron text-center">
+						<h2 class="text-muted">Loading</h2>
+						<div class="throbber">
+							Loading 
+						</div>
+					</div>
+				</div>
+			</section>
+			{% endblock %}
+
+			<div id="push"></div>
+		</div>
+		<div id="footer">
+            {% block poweredby %}
+			<div class="text-center"><a class="text-large" href="https://bitbucket.org/cse-assemblyline/assemblyline">Powered by <img style="vertical-align: bottom" height="32px" src="/static/images/banner.svg"></a></div>
+            {% endblock %}
+            <div class="build-no text-right">{% if not is_prod %}<b>DEV build</b> {% endif %}:: {{app_name}} v{{build_master}} :: {{build_no}} ::</div>
+		</div>
+	</body>
+</html>

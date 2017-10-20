@@ -1,0 +1,173 @@
+<section class="row pad">
+	<div class="col-md-6">
+		<div class="form-group">
+			<label class="control-label">Service name</label>
+			<input type="text" class="form-control input-sm input" ng-model="current_service.name" ng-disabled="!new_service">
+		</div>
+		<div class="form-group">
+			<label class="control-label">Python path</label>
+			<input type="text" class="form-control input-sm input-medium" ng-model="current_service.classpath">
+		</div>
+		<div class="form-group">
+			<label class="control-label">Expected files</label>
+			<input type="text" class="form-control input-sm input-medium" ng-model="current_service.accepts">
+		</div>
+		<div class="form-group">
+			<label class="control-label">Timeout</label>
+			<input type="number" class="form-control input-sm" ng-model="current_service.timeout" min=1>
+		</div>
+		<div class="form-group">
+			<label class="control-label">CPU Usage (# Cores)</label>
+			<input type="number" class="form-control input-sm" ng-model="current_service.cpu_cores" min=0.05 step="0.05">
+		</div>
+		<div class="form-group">
+			<label class="control-label">RAM Usage (MB)</label>
+			<input type="number" class="form-control input-sm" ng-model="current_service.ram_mb" min=32 step="16">
+		</div>
+
+		
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<label class="control-label">Stage</label>
+			<select class="form-control input-sm" ng-model="current_service.stage">
+				<option ng-repeat="cat in service_constants.stages">{{cat}}</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label class="control-label">Service category</label>
+			<select class="form-control input-sm" ng-model="current_service.category">
+				<option ng-repeat="cat in service_constants.categories">{{cat}}</option>
+			</select>
+		</div>
+		<div class="checkbox">
+			<label ng-class="{checked:current_service.enabled}">
+				<input type="checkbox" ng-model="current_service.enabled" value="enabled" ng-checked="current_service.enabled"> Enabled
+			</label>
+			
+		</div>
+		<div class="checkbox">
+			<label ng-class="{checked:current_service.install_by_default}">
+				<input type="checkbox" ng-model="current_service.install_by_default" value="enabled" ng-checked="current_service.install_by_default"> Install by default
+			</label>
+
+		</div>
+		<div class="form-group">
+			<label class="control-label">Runs on ...</label>
+			<span class="checkbox">
+				<label ng-class="{checked:current_service.supported_platforms.indexOf('Linux') > -1}">
+					<input type="checkbox" value="Linux" ng-checked="current_service.supported_platforms.indexOf('Linux') > -1" ng-click="toggleOS('Linux')"> Linux
+				</label>
+			</span>
+			<span class="checkbox">
+				<label ng-class="{checked:current_service.supported_platforms.indexOf('Windows') > -1}">
+				    <input type="checkbox" value="Windows" ng-checked="current_service.supported_platforms.indexOf('Windows') > -1" ng-click="toggleOS('Windows')"> Windows
+				</label>
+			</span>
+		</div>
+	</div>
+    <div class="col-md-12">
+		<div class="form-group">
+			<label class="control-label">Description</label>
+			<textarea class="form-control input-sm" ng-model="current_service.description"></textarea>
+		</div>
+    </div>
+</section>
+<section class="row pad">
+    <div class="col-md-12">
+		<h4><strong>User Specified Parameters</strong></h4>
+	</div>
+	<div class="col-md-12">
+		<section class="row" style="padding: 2px 0px" ng-repeat="param in current_service.submission_params" >
+			<div class="col-md-3">
+				<label class="control-lablel">{{param.name}} [{{param.type}}]: </label>
+			</div>
+			<div ng-if="param.type!='list'" class="col-md-8">
+				<input class="form-control input-sm" type="text" ng-model="param.default" placeholder="Empty default value" smart-input="{type: param.type}"/>
+			</div>
+			<div ng-if="param.type=='list'" class="col-md-5">
+				<input class="form-control input-sm" type="text" ng-model="param.list" placeholder="Empty default value" smart-input="{type: param.type}"/>
+			</div>
+			<div ng-if="param.type=='list'" class="col-md-3">
+				<input class="form-control input-sm" type="text" ng-model="param.default" placeholder="Empty default value" smart-input="{type: 'str'}"/>
+			</div>
+			<div class="col-md-1">
+				<span class="btn btn-sm btn-danger" ng-click="remove_specific(param.name);"><span class="glyphicon glyphicon-minus"></span></span>					
+			</div>
+		</section>
+		<section class="row" style="margin-top: 10px;">
+			<div id="new_spec_name" class="col-md-3">
+				<input id="spec_name" class="form-control input-sm" type="text" ng-model="spec_temp.name" placeholder="Parameter name"/>
+			</div>
+			<div id="new_spec_type" class="col-md-2">
+				<select id="spec_type" class="form-control input-sm" ng-model="spec_temp.type">
+					<option>bool</option>
+					<option>int</option>
+					<option value="list">list (comma)</option>
+					<option>str</option>
+					<option>unicode</option>
+				</select>
+			</div>
+			<div ng-if="spec_temp.type!='list'" id="new_spec_default" class="col-md-6">
+				<input id="spec_default" class="form-control input-sm" type="text" ng-model="spec_temp.default" placeholder="Default parameter value" smart-input="{type_var: 'spec_temp.type', update_ctrl: 'spec_temp.default'}"/>
+			</div>
+			<div ng-if="spec_temp.type=='list'" id="new_spec_list" class="col-md-4">
+				<input id="spec_list" class="form-control input-sm" type="text" ng-model="spec_temp.list" placeholder="List of items" smart-input="{type: 'list', update_ctrl: 'spec_temp.list'}"/>
+			</div>
+			<div ng-if="spec_temp.type=='list'" id="new_spec_default" class="col-md-2">
+				<input id="spec_default" class="form-control input-sm" type="text" ng-model="spec_temp.default" placeholder="Default parameter value" smart-input="{type: 'str', update_ctrl: 'spec_temp.default'}"/>
+			</div>
+			<div class="col-md-1">
+				<span class="btn btn-sm btn-success" ng-click="add_specific();"><span class="glyphicon glyphicon-plus"></span></span>					
+			</div>
+		</section>
+		<section class="row">
+			<div id="spec_error" class="col-md-12 text-danger">{{spec_error}}</div>
+		</section>
+	</div>
+</section>
+
+<section class="row pad">
+	<div class="col-md-12">
+		<h4><strong>Service Variables</strong></h4>
+	</div>
+	<div class="col-md-12">
+		<div ng-repeat="(key, val) in current_service.config | orderBy:key" class="row" style="padding: 2px 0px">
+			<div class="col-md-3">
+				<label class="control-lablel">{{key}}:</label>
+			</div>
+			<div class="col-md-8">
+				<input type="text" class="form-control input-sm" ng-model="current_service.config[key]" json-input/>
+			</div>
+			<div class="col-md-1">
+				<span class="btn btn-sm btn-danger" ng-click="remove_meta(key);"><span class="glyphicon glyphicon-minus"></span></span>
+			</div>
+		</div>
+		<div class="row" style="margin-top: 10px;">
+			<div id="new_conf_temp_key" class="col-md-3">
+				<input id="conf_temp_key" type="text" class="form-control input-sm" ng-model="conf_temp.key" placeholder="Variable name"/>
+			</div>
+			<div id="new_conf_temp_type" class="col-md-2">
+				<select id="conf_temp_type" class="form-control input-sm" ng-model="conf_temp.type">
+					<option>bool</option>
+					<option>int</option>
+					<option value="list">list (comma)</option>
+					<option>str</option>
+                    <option>json</option>
+				</select>
+			</div>
+			<div ng-if="conf_temp.type!='json'" id="new_conf_temp.val" class="col-md-6">
+				<input id="conf_temp_val" type="text" class="form-control input-sm" ng-model="conf_temp.val" placeholder="Variable value" smart-input="{type_var: 'conf_temp.type', update_ctrl: 'conf_temp.val'}"/>
+			</div>
+			<div ng-if="conf_temp.type=='json'" id="new_conf_temp.val" class="col-md-6">
+				<input id="conf_temp_val" type="text" class="form-control input-sm" ng-model="conf_temp.val" placeholder="Variable value" json-input="{update_ctrl: 'conf_temp.val'}"/>
+			</div>
+			<div class="col-md-1">
+				<span class="btn btn-sm btn-success" ng-click="add_meta();"><span class="glyphicon glyphicon-plus"></span></span>
+			</div>
+		</div>
+		<section class="row">
+			<div id="conf_temp_error" class="col-md-12 text-danger">{{conf_temp_error}}</div>
+		</section>
+	</div>
+</section>

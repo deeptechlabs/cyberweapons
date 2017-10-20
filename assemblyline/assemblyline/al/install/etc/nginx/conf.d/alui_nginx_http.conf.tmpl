@@ -1,0 +1,24 @@
+server {
+    server_name              _;
+    listen                   80;
+    listen                   [::]:80;
+
+    location / {
+        return 301 https://$host;
+    }
+
+    location ~ /git(/.*) {
+        allow                {{seed['ui']['allowed_checkout_range']}};
+        deny                 all;
+
+        client_max_body_size 0;
+
+        fastcgi_param        SCRIPT_FILENAME      /usr/lib/git-core/git-http-backend;
+        include              fastcgi_params;
+        fastcgi_param        GIT_HTTP_EXPORT_ALL  "";
+        fastcgi_param        GIT_PROJECT_ROOT     /opt/al/pkg/;
+        fastcgi_param        PATH_INFO            $1;
+
+        fastcgi_pass         unix:/var/run/fcgiwrap.socket;
+    }
+}

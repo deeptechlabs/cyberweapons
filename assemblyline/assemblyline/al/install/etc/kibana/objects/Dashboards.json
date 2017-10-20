@@ -1,0 +1,135 @@
+[
+  {
+    "_id": "Cluster-Overview",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Cluster Overview",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Metrics-Ingest-Distribution\",\"panelIndex\":1,\"row\":1,\"size_x\":8,\"size_y\":2,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Metrics-Overview\",\"panelIndex\":2,\"row\":1,\"size_x\":4,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Riak-PUTs-and-GETs-slash-Minute\",\"panelIndex\":3,\"row\":3,\"size_x\":4,\"size_y\":2,\"type\":\"visualization\"},{\"col\":5,\"id\":\"Riak-Cluster-GET-MEAN-Latency\",\"panelIndex\":4,\"row\":3,\"size_x\":4,\"size_y\":2,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Riak-Cluster-PUT-MEAN-Latency\",\"panelIndex\":5,\"row\":3,\"size_x\":4,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Metrics-Alert-Created\",\"panelIndex\":6,\"row\":5,\"size_x\":6,\"size_y\":2,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Log-Events-by-Severity\",\"panelIndex\":7,\"row\":5,\"size_x\":6,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"columns\":[\"al_severity\",\"component\",\"al_host\",\"message\"],\"id\":\"AL-Logs\",\"panelIndex\":8,\"row\":7,\"size_x\":12,\"size_y\":5,\"sort\":[\"@timestamp\",\"desc\"],\"type\":\"search\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-24h",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "UI-Audit-Logs",
+    "_type": "dashboard",
+    "_source": {
+      "hits": 0,
+      "timeFrom": "now-24h",
+      "timeRestore": true,
+      "description": "",
+      "title": "UI Audit Logs",
+      "uiStateJSON": "{\"P-1\":{\"vis\":{\"legendOpen\":false}},\"P-2\":{\"vis\":{\"legendOpen\":false}}}",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Audit-Events\",\"panelIndex\":1,\"row\":1,\"size_x\":8,\"size_y\":3,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Audit-Log-Severity\",\"panelIndex\":2,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Top-20-Functions\",\"panelIndex\":3,\"row\":4,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Top-20-Users\",\"panelIndex\":4,\"row\":4,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"columns\":[\"al_user\",\"al_function\",\"al_params\"],\"id\":\"UI-Audit-Logs\",\"panelIndex\":5,\"row\":8,\"size_x\":12,\"size_y\":4,\"sort\":[\"@timestamp\",\"desc\"],\"type\":\"search\"}]",
+      "timeTo": "now",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "System-Metrics",
+    "_type": "dashboard",
+    "_source": {
+      "hits": 0,
+      "timeFrom": "now-24h",
+      "timeRestore": true,
+      "description": "",
+      "title": "System Metrics",
+      "uiStateJSON": "{}",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Network-RX\",\"panelIndex\":1,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"CPU-Usage\",\"panelIndex\":2,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":5,\"id\":\"Load\",\"panelIndex\":3,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Memory-Usage\",\"panelIndex\":4,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":5,\"id\":\"Network-TX\",\"panelIndex\":5,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Network-Errors\",\"panelIndex\":6,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Disk-Usage\",\"panelIndex\":7,\"row\":7,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":5,\"id\":\"Disk-Read\",\"panelIndex\":8,\"row\":7,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"id\":\"Disk-Write\",\"type\":\"visualization\",\"panelIndex\":9,\"size_x\":4,\"size_y\":3,\"col\":9,\"row\":7}]",
+      "timeTo": "now",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "AL-Logs",
+    "_type": "dashboard",
+    "_source": {
+      "hits": 0,
+      "timeFrom": "now-24h",
+      "timeRestore": true,
+      "description": "",
+      "title": "AL Logs",
+      "uiStateJSON": "{\"P-2\":{\"vis\":{\"legendOpen\":false}}}",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Log-Events-by-Severity\",\"panelIndex\":1,\"row\":1,\"size_x\":8,\"size_y\":3,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Log-Severity-Distribution\",\"panelIndex\":2,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Top-20-Components\",\"panelIndex\":3,\"row\":4,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Top-20-Hosts\",\"panelIndex\":4,\"row\":4,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"id\":\"AL-Logs\",\"type\":\"search\",\"panelIndex\":5,\"size_x\":12,\"size_y\":4,\"col\":1,\"row\":8,\"columns\":[\"al_severity\",\"component\",\"al_host\",\"message\"],\"sort\":[\"@timestamp\",\"desc\"]}]",
+      "timeTo": "now",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "AL-Metrics",
+    "_type": "dashboard",
+    "_source": {
+      "title": "AL Metrics",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Metrics-Ingest-Distribution\",\"panelIndex\":1,\"row\":1,\"size_x\":7,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Metrics-Ingest-Bytes\",\"panelIndex\":2,\"row\":4,\"size_x\":7,\"size_y\":2,\"type\":\"visualization\"},{\"col\":8,\"id\":\"Metrics-Ingested\",\"panelIndex\":3,\"row\":1,\"size_x\":5,\"size_y\":2,\"type\":\"visualization\"},{\"col\":8,\"id\":\"Metrics-Submission-Completed\",\"panelIndex\":4,\"row\":3,\"size_x\":5,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Metrics-Dispatcher-Completed\",\"panelIndex\":5,\"row\":6,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Metrics-Service-Caching\",\"panelIndex\":6,\"row\":6,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Metrics-Alert-Created\",\"panelIndex\":7,\"row\":9,\"size_x\":7,\"size_y\":2,\"type\":\"visualization\"},{\"id\":\"Metrics-Alert-Stats\",\"type\":\"visualization\",\"panelIndex\":8,\"size_x\":5,\"size_y\":2,\"col\":8,\"row\":9}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-2\":{\"vis\":{\"legendOpen\":true}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-24h",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "SOLR-Shard-Statistics",
+    "_type": "dashboard",
+    "_source": {
+      "title": "SOLR - Shard Statistics",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"SOLR-Average-Query-Time\",\"panelIndex\":4,\"row\":5,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"SOLR-Core-Statistics\",\"panelIndex\":5,\"row\":1,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":5,\"id\":\"SOLR-99th-Percentile-Query-Time\",\"panelIndex\":6,\"row\":5,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"SOLR-Query-Rate\",\"panelIndex\":7,\"row\":3,\"size_x\":3,\"size_y\":2,\"type\":\"visualization\"},{\"col\":10,\"id\":\"SOLR-Update-Rate\",\"panelIndex\":8,\"row\":3,\"size_x\":3,\"size_y\":2,\"type\":\"visualization\"},{\"col\":9,\"id\":\"SOLR-Average-Queries\",\"panelIndex\":9,\"row\":5,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"SOLR-Average-Update-Time\",\"panelIndex\":10,\"row\":8,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":5,\"id\":\"SOLR-99th-Percentile-Update-Time\",\"panelIndex\":11,\"row\":8,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":9,\"id\":\"SOLR-Average-Updates\",\"panelIndex\":12,\"row\":8,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"SOLR-Number-of-documents\",\"panelIndex\":13,\"row\":1,\"size_x\":6,\"size_y\":2,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-24h",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "Riak-Cluster-Health",
+    "_type": "dashboard",
+    "_source": {
+      "hits": 0,
+      "timeFrom": "now-24h",
+      "timeRestore": true,
+      "description": "",
+      "title": "Riak - Cluster Health",
+      "uiStateJSON": "{}",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Riak-Object-Size\",\"panelIndex\":1,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":5,\"id\":\"Riak-Protobuf-Connections\",\"panelIndex\":2,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Riak-PUTs-and-GETs-slash-Minute\",\"panelIndex\":3,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Riak-Cluster-GET-MEAN-Latency\",\"panelIndex\":4,\"row\":4,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Riak-Cluster-99th-Percentile-GET-Latency\",\"panelIndex\":5,\"row\":4,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Riak-Cluster-PUT-MEAN-Latency\",\"panelIndex\":6,\"row\":7,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Riak-Cluster-99th-Percentile-PUT-Latency\",\"panelIndex\":7,\"row\":7,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"}]",
+      "timeTo": "now",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  }
+]

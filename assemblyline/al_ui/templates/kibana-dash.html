@@ -1,0 +1,7 @@
+{% extends base_template %}
+{% block title_page %}AL - Kibana ({{dash}}){% endblock %}
+{% block section %}
+    <div style="position: fixed; left: 0; right: 0; bottom: 0; top: 0; padding-top: {{ padding }}px; box-sizing: initial">
+	    <iframe width="100%" height="100%" frameborder="0" src="kibana-proxy/app/kibana#/dashboard/{{dash}}?embed"></iframe>
+    </div>
+{% endblock %}

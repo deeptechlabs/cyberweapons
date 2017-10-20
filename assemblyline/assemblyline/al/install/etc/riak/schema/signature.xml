@@ -1,0 +1,89 @@
+<schema name="al_signature" version="1.5">
+    <fields>
+        <field name="name" type="string" indexed="true" stored="true"/>
+        <field name="meta.al_status" type="string" indexed="true" stored="true"/>
+        <field name="meta.id" type="string" indexed="true" stored="true"/>
+        <field name="meta.rule_version" type="string" indexed="true" stored="true"/>
+        <field name="meta.classification" type="string" indexed="true" stored="true"/>
+        <field name="meta.rule_group" type="string" indexed="true" stored="true"/>
+        <field name="meta.poc" type="string" indexed="true" stored="true"/>
+        <field name="meta.yara_version" type="string" indexed="true" stored="true"/>
+
+        <field name="meta.description" type="text_ws" indexed="true" stored="false" multiValued="true"/>
+        <field name="meta.origin" type="text_ws" indexed="true" stored="false" multiValued="true"/>
+        <field name="comments" type="text_ws" indexed="true" stored="false" multiValued="true"/>
+        <field name="condition" type="text_ws" indexed="true" stored="false" multiValued="true"/>
+        <field name="strings" type="text_general" indexed="true" stored="false" multiValued="true"/>
+        <field name="tags" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="depends" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="type" type="string" indexed="true" stored="false"/>
+        <dynamicField name="meta.*" type="string" indexed="true" stored="false"/>
+
+        <copyField source="comments" dest="text"/>
+        <copyField source="name" dest="text"/>
+        <copyField source="meta.description" dest="text"/>
+        <copyField source="meta.used_by" dest="text"/>
+        <copyField source="meta.info" dest="text"/>
+        <copyField source="meta.implant" dest="text"/>
+        <copyField source="meta.technique" dest="text"/>
+        <copyField source="meta.tool" dest="text"/>
+        <copyField source="meta.exploit" dest="text"/>
+        <copyField source="meta.organisation" dest="text"/>
+        <copyField source="meta.origin" dest="text"/>
+
+        <!-- AL Access fields  -->
+        <field name="__access_lvl__" type="int" indexed="true" stored="false"/>
+        <field name="__access_req__" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="__access_grp1__" type="string" indexed="true" stored="false" multiValued="true" default="__EMPTY__"/>
+        <field name="__access_grp2__" type="string" indexed="true" stored="false" multiValued="true" default="__EMPTY__"/>
+
+        <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
+        <copyField source="__text__" dest="text"/>
+
+        <field name="_version_" type="long" indexed="true" stored="true"/>
+        <field name="_yz_id" type="_yz_str" indexed="true" stored="true" multiValued="false" required="true"/>
+        <field name="_yz_ed" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_pn" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_fpn" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_vtag" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+        <field name="_yz_rk" type="_yz_str" indexed="true" stored="true" multiValued="false"/>
+        <field name="_yz_rt" type="_yz_str" indexed="true" stored="true" multiValued="false"/>
+        <field name="_yz_rb" type="_yz_str" indexed="true" stored="true" multiValued="false"/>
+        <field name="_yz_err" type="_yz_str" indexed="true" stored="false" multiValued="false"/>
+
+        <!-- catch-all field -->
+        <dynamicField name="*" type="ignored" />
+    </fields>
+
+    <uniqueKey>_yz_id</uniqueKey>
+
+    <types>
+        <fieldType name="_yz_str" class="solr.StrField" sortMissingLast="true" />
+        <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+        <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+
+        <!-- A text field that only splits on whitespace for exact matching of words -->
+        <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
+            <analyzer>
+                <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            </analyzer>
+        </fieldType>
+
+        <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+            <analyzer type="index">
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+            <analyzer type="query">
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+        </fieldType>
+    </types>
+</schema>

@@ -1,0 +1,217 @@
+{% extends base_template %}
+{% block html_param %}ng-app="app"{% endblock %}
+{% block title_page %}AL - User account{% endblock %}
+{% block js_import %}
+    <script src="/static/js/u2f/u2f-api.js"></script>
+	<script src="/static/js/account.js"></script>
+{% endblock %}
+{% block content %}
+	<div ng-controller="classificationCtrl" classification-picker></div>
+	
+	{%raw%}
+	<section id="appContent" class="container">
+		<div class="header_title text-right">
+			<h1>User Account</h1>
+		</div>
+		<section ng-show="current_user" class="row">
+			<div class="col-md-3 pad">
+				<div ng-controller="imageCtrl" image-preview></div>
+			</div>
+			<div class="col-md-5 pad">
+				<div class="form-group">
+					<label class="control-label">User ID</label>
+					<input type="text" class="form-control input-sm" ng-model="current_user.uname" disabled>
+				</div>
+				<div class="form-group">
+					<label class="control-label">Full name</label>
+					<input type="text" class="form-control input-sm input-medium" placeholder="User's name" ng-model="current_user.name">
+				</div>
+				<div ng-if="user.internal_auth_enabled" class="form-group">
+					<label class="control-label"><span ng-if="current_user.has_password">New</span><span ng-if="!current_user.has_password">Add</span> password</label>
+					<input type="password" class="form-control input-sm input-medium" placeholder="New password" ng-model="current_user.new_pass">
+				</div>
+                <div ng-if="user.internal_auth_enabled" class="form-group">
+					<label class="control-label">Confirm password</label>
+					<input type="password" class="form-control input-sm input-medium" placeholder="Confirm new password" ng-model="current_user.new_pass_confirm">
+				</div>
+				<div class="form-group">
+					<label class="control-label">Member of (space seperated)</label>
+					<input type="text" class="form-control input-sm" ng-model="current_user.groups" split-array="{splitter: ' '}">
+				</div>
+				<div class="form-group" ng-show="current_user.dn">
+					<label class="control-label">Client Certificate DN</label>
+					<input type="text" class="form-control input-sm" ng-model="current_user.dn" disabled>
+				</div>
+			</div>
+			<div class="col-md-4 pad">
+                <div ng-if="user.c12n_enforcing" class="pad">
+					<div ng-if="user.is_admin" class="label classification {{current_user.classification | class_label_color}}" data-toggle="modal" href="#classification_picker" ng-click="setClassification(current_user.classification)">{{current_user.classification | class_sm}}</div>
+					<div ng-if="!user.is_admin" class="label classification {{current_user.classification | class_label_color}}">{{current_user.classification | class_sm}}</div>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="current_user.is_admin" ng-disabled="!user.is_admin"> Administrative account
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="current_user.is_active" ng-disabled="!user.is_admin"> Account active
+					</label>
+				</div>
+                <div class="form-group">
+                    <label class="control-label">API quota</label>
+                    <input type="number" class="form-control input-sm" ng-model="current_user.api_quota" ng-disabled="!user.is_admin" min="0" max="1024">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Submission quota</label>
+                    <input type="number" class="form-control input-sm" ng-model="current_user.submission_quota" ng-disabled="!user.is_admin" min="0" max="1024">
+                </div>
+				<div class="form-group" ng-if="!current_user['2fa_enabled']&&user.allow_2fa">
+					<span class="btn btn-success button" ng-click="enable_2fa();"><span class="glyphicon glyphicon-lock"></span> Enable 2-Factor Authentication</span>
+                </div>
+				<div class="form-group" ng-if="current_user['2fa_enabled']&&user.allow_2fa">
+					<span class="btn btn-danger button" ng-click="disable_2fa();"><span class="glyphicon glyphicon-lock"></span> Disable 2-Factor Authentication</span>
+                </div>
+				<div class="form-group" ng-if="!current_user['u2f_enabled']&&user.allow_u2f">
+					<span class="btn btn-success button" ng-click="register_u2f_device();"><span class="icon-lock">&nbsp;&nbsp;</span>Enable U2F Security Token</span>
+                </div>
+                <div class="form-group" ng-if="current_user['u2f_enabled']&&user.allow_u2f">
+					<span class="btn btn-danger button" ng-click="disable_u2f_device();"><span class="icon-lock">&nbsp;&nbsp;</span>Disable U2F Security Token</span>
+                </div>
+                <div class="form-group" ng-if="user.allow_apikeys">
+					<span class="btn btn-primary button" ng-click="manage_apikeys();"><span class="icon-authentication-keyalt">&nbsp;&nbsp;</span>Manage APIKeys</span>
+                </div>
+			</div>
+            <div class="col-md-12 text-center text-muted pad" ng-show="current_user.agrees_with_tos">
+                <span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Agreed to Terms of Service on: {{ current_user.agrees_with_tos | date:"yyyy-MM-dd HH:mm:ss" }}
+            </div>
+		</section>
+		<div class="bigpad text-center" ng-show="current_user">
+			<span class="btn btn-primary bigbutton" ng-disabled="!new_pass_valid()" ng-click="save();">Save changes</span>
+		</div>
+	</section>
+
+	<!-- HIDE FOLLOWING: Should go inside a modal form -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-resize">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal_title" id="myModalLabel">2-Factor Authentication Setup</h4>
+				</div>
+				<div class="modal-body">
+					<section>
+                        <div class="bigpad">
+                            <p>You can now read the QRCode bellow with your OTP app</p>
+                            <div ng-bind-html="safe_qrcode" title="{{otp_data.otp_url}}"></div>
+                            <p>Or you can manually add the secret key in your OTP application</p>
+                            <span>{{otp_data.secret_key}}</span>
+                        </div>
+                        <div>
+                            <label class="strong">Enter temporary OTP Token:</label>
+                            <input type="tel" maxlength="6" minlength="6" class="form-control" id="temp_otp_token" ng-model="temp_otp_token" placeholder="OTP Token" required autofocus/>
+                            <div class="pad"><span class="text-danger strong">{{ otp_error }}</span></div>
+                        </div>
+					</section>
+				</div>
+				<div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" ng-click="validate_2fa()">Validate OTP Token</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="modal fade" id="apikeyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-resize">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal_title" id="myModalLabel">{{ current_user.name }}'s APIKeys</h4>
+				</div>
+				<div class="modal-body">
+					<section>
+                        <table class="table table-hover table-striped table-clickthrough">
+                            <thead>
+                                <tr class="active">
+                                    <th nowrap>Available APIKeys</th><th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="key in current_user.apikeys">
+                                    <td nowrap>{{ key }}</td>
+                                    <td nowrap class="text-right">
+                                        <button class="btn btn-xs btn-danger" ng-click="delete_apikey(key)"><span class="glyphicon glyphicon-minus"></span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row pad">
+                            <form name="form">
+                                <div class="col-sm-7"><input placeholder="Enter key name" name="input_apikey" class="form-control input-sm" id="apikey_name" ng-model="apikey_name" ng-pattern="apikey_pattern" ng-required="true"/></div>
+                                <div class="col-sm-3">
+                                    <select class="form-control input-sm" id="apikey_priv" ng-model="apikey_priv">
+                                        <option value="READ">READ</option>
+                                        <option value="READ_WRITE">READ/WRITE</option>
+                                        <option value="WRITE">WRITE</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="submit" class="btn btn-sm btn-success" ng-disabled="!form.input_apikey.$valid" ng-click="add_apikey()"><span class="glyphicon glyphicon-plus"><span>&nbsp;</span></span><span>Add APIKey</span></button>
+                                </div>
+                                <div class="col-sm-12 pad"><span class="text-danger strong">{{ apikey_error }}</span></div>
+                            </form>
+                        </div>
+					</section>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="modal fade" id="apikeyDisplayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-resize">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal_title" id="myModalLabel">{{ new_apikey_name }} :: {{ new_apikey_priv }}</h4>
+				</div>
+				<div class="modal-body">
+                    <p>This new API Key was randomly generated for you.</p>
+                    <div style="margin-bottom: 30px">
+                        <pre>{{ new_apikey }}</pre>
+                    </div>
+                    <label class="strong">*Important Note*</label>
+                    <p>This will be the only time where you'll actually see the key. Make sure you paste that key in the script where you want to use it now because once you close this window you can no longer see the key. If you forget the key you'll have to delete it and re-create another.</p>
+
+				</div>
+				<div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="u2f_prompt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-resize">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal_title" id="myModalLabel">Performing U2F action</h4>
+				</div>
+				<div class="modal-body">
+                    <p>Please touch the flashing U2F device now.
+
+You may be prompted to allow the site permission to access your security keys. After granting permission, the device will start to blink.</p>
+					<h4 class="text-danger" style="margin-top: 20px">{{ u2f_error }}</h4>
+				</div>
+				<div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel_u2f()">Abort</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- END HIDE -->
+	{%endraw%}
+{% endblock %}				
+{% block loading_jumbo %}ng-hide="current_user"{% endblock %}

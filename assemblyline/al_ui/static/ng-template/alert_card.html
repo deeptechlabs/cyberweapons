@@ -1,0 +1,56 @@
+<div>
+    <div id="alert_idx" class="alert_card" ng-class="{success: alert.owner||alert.hint_owner, danger: alert.al_attrib.length>0}">
+        <div class="row">
+            <div class="col-xs-2 col-sm-1 text-center">
+                <div class="{{alert.al_score | score_color}}" style="font-size: 110%;"><b>{{alert.al_score}}</b></div>
+                <div ng-if="alert.group_count" class="bigger" style="padding-top: 15px;"><h4><b><a href="/alerts.html?start_time={{start_time}}&time_slice={{time_slice}}&view_type=list&group_by={{group_by}}&fq={{group_by}}:&quot;{{alert[group_by] | quote}}&quot;&fq={{filter}}{{forced_filter}}">{{alert.group_count}}x</a></b></h4></div>
+                <div style="padding-top: 20px;" ng-if="alert.extended_scan" class="text-large">
+                    <span ng-if="alert.extended_scan=='completed'" class="text-success icon icon-ok-circle" title="Extended Scan completed successfully"></span>
+                    <span ng-if="alert.extended_scan=='incomplete'" class="text-danger icon icon-remove-circle" title="Extended Scan completed with errors that where not present in original scan"></span>
+                    <span ng-if="alert.extended_scan=='submitted'" class="icon icon-circleselection" title="Waiting on extended scan to be completed"></span>
+                    <span ng-if="alert.extended_scan=='skipped'" class="text-warning icon icon-ban-circle" title="Extended Scan was skipped for this alert"></span>
+                </div>
+            </div>
+            <div class="col-xs-10 col-sm-11">
+                <div ng-if="user.c12n_enforcing" class="pull-right">
+                    <label class="label classification {{alert.classification | class_label_color}}">&nbsp;&nbsp;{{alert.classification | class_sm}}&nbsp;&nbsp;</label>
+                </div>
+                <div><b>{{alert.type}}<span ng-if="alert.ts">&nbsp;&nbsp;::&nbsp;&nbsp;{{alert.ts | iso_to_utc}}&nbsp;(UTC)</span></b></div>
+                <div class="row" ng-if="alert.label"><div class="col-sm-2">Labels:</div><div class="col-sm-10"><label ng-repeat="l in alert.label" class="label label-tag label-default">{{l}}</label></div></div>
+                <div class="row" ng-if="alert.priority"><div class="col-sm-2">Priority:</div><div class="col-sm-10"><label class="label label-tag label-default">{{alert.priority}}</label></div></div>
+                <div class="row" ng-if="alert.status"><div class="col-sm-2">Status:</div><div class="col-sm-10"><label class="label label-tag label-default">{{alert.status}}</label></div></div>
+                <div class="row"><div class="col-sm-2">File info:</div><div class="col-sm-10"><span class="text-primary"><b>{{alert.filename}}</b></span></div></div>
+                <div class="row"><div class="col-sm-2"></div><div class="col-sm-10 small"><span ng-if="alert.sha256">{SHA256}&nbsp;{{alert.sha256}} :: </span><span ng-if="alert.sha1">{SHA1}&nbsp;{{alert.sha1}} :: </span>{MD5}&nbsp;{{alert.md5}} :: <b>{{alert.size}}</b></div></div>
+                <div class="row" ng-show="alert.owner"><div class="col-sm-2">Ownership:</div><div class="col-sm-10"><b>{{alert.owner}}</b></div></div>
+                <div class="row" ng-show="alert.hint_owner"><div class="col-sm-2">Ownership:</div><div class="col-sm-10"><b>There are owners for previous alerts in the group</b></div></div>
+                <div ng-if="has_meta(alert)" style="padding-top: 10px; padding-bottom: 10px;">
+                    <div ng-repeat="(k,v) in get_alert_meta(alert)" class="row"><div ng-if="v" class="col-sm-2">{{ k | titleCase }}:</div><div ng-if="v" class="col-sm-10">{{ v | joinBy }}</div></div>
+                </div>
+                <div class="row" ng-if="alert.summary"><div class="col-sm-2">Summary:</div><div class="col-sm-10 small"><span class="text-info">{{alert.summary | split}}</span></div></div>
+                <div class="row" ng-if="alert.al_attrib"><div class="col-sm-2">Attribution:</div><div class="col-sm-10"><b class="text-danger">{{alert.al_attrib | split}}</b></div></div>
+                <div class="row" ng-if="alert.al_av"><div class="col-sm-2">AV Hits:</div><div class="col-sm-10"><b class="text-warning">{{alert.al_av | split}}</b></div></div>
+                <div class="row" ng-if="has_items(alert.al_ip)&&!has_items(alert.al_ip_static)&&!has_items(alert.al_ip_dynamic)"><div class="col-sm-2">IPs:</div><div class="col-sm-10 small"><span class="text-success">{{alert.al_ip | split}}</span></div></div>
+                <div class="row" ng-if="has_items(alert.al_ip_static)||has_items(alert.al_ip_dynamic)"><div class="col-sm-2">IPs:</div><div class="col-sm-10 small"><span class="text-success"><b>{{alert.al_ip_dynamic | split}}</b></span><span ng-if="has_items(alert.al_ip_dynamic)&&has_items(alert.al_ip_static)"> | </span><span class="text-success">{{alert.al_ip_static | split}}</span></div></div>
+                <div class="row" ng-if="has_items(alert.al_domain)&&!has_items(alert.al_domain_static)&&!has_items(alert.al_domain_dynamic)"><div class="col-sm-2">Domains:</div><div class="col-sm-10 small"><span class="text-success">{{alert.al_domain | split}}</span></div></div>
+                <div class="row" ng-if="has_items(alert.al_domain_static)||has_items(alert.al_domain_dynamic)"><div class="col-sm-2">Domains:</div><div class="col-sm-10 small"><span class="text-success"><b>{{alert.al_domain_dynamic | split}}</b></span><span ng-if="has_items(alert.al_domain_dynamic)&&has_items(alert.al_domain_static)"> | </span><span class="text-success">{{alert.al_domain_static | split}}</span></div></div>
+                <div class="row" ng-if="alert.yara"><div class="col-sm-2">Yara hits:</div><div class="col-sm-10 small">{{alert.yara | split}}</div></div>
+                <div class="row" style="padding-top: 5px">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10 small form-inline">
+                        <a id="{{alert_idx}}_submission" ng-disabled="!alert.sid" class="btn btn-xs btn-default" href="/submission_detail.html?sid={{alert.sid}}" class="btn btn-xs btn-default">Submission</a>
+                        <a id="{{alert_idx}}_related" href="/search.html?query={{alert.md5}}" class="btn btn-xs btn-default">Search MD5</a>
+                        <a id="{{alert_idx}}_similar" href="" class="btn btn-default btn-xs" ng-click="count_similar(alert, alert_idx);">Count similar</a>
+                        <a id="{{alert_idx}}_related_alerts" href="" class="btn btn-default btn-xs" ng-click="list_related_alerts(alert, alert_idx);">Related IDs</a>
+                        <a id="{{alert_idx}}_ownership" href="" ng-disabled="alert.owner" class="btn btn-xs btn-default" ng-click="take_ownership(alert, alert_idx);"><span ng-show="alert.owner">Has</span><span ng-show="!alert.owner">Take</span> ownership</a>
+                        <a id="{{alert_idx}}_workflow" href="" class="btn btn-xs btn-default" ng-click="prompt_workflow_action(alert, alert_idx);">Workflow action</a>
+                    </div>
+                </div>
+                <div style="padding-top: 3px">
+                    <div class="text-smaller text-muted text-right">{{alert.event_id}} @ <a class="text-muted" href="" ng-click="lock_in_timestamp(alert)">{{alert.reporting_ts | iso_to_utc}} (UTC)</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

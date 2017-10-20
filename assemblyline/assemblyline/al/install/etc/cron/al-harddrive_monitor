@@ -1,0 +1,3 @@
+# Run once every hour to check our drives status
+0 * * * * root /opt/al/pkg/assemblyline/al/run/invoke.sh python /opt/al/pkg/assemblyline/al/run/harddrive_monitor.py
+
