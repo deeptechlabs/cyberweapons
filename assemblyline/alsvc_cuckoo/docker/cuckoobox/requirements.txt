@@ -7,7 +7,7 @@ scapy==2.3.2
 cffi==1.10.0
 cryptography==1.9
 asn1crypto==0.22.0
-pycrypto==2.6.1
+pycrypto==2.7a1
 pyOpenSSL==17.0.0
 cuckoo==2.0.2
 supervisor==3.3.1
