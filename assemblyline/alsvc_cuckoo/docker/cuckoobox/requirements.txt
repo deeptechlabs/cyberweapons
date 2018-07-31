@@ -5,7 +5,7 @@ appdirs==1.4.3
 six==1.10.0
 scapy==2.3.2
 cffi==1.10.0
-cryptography==1.9
+cryptography==2.3
 asn1crypto==0.22.0
 pycrypto==2.7a1
 pyOpenSSL==17.0.0
